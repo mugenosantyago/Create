@@ -6,39 +6,75 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import com.simibubi.create.api.equipment.potatoCannon.PotatoProjectileRenderMode;
+import net.minecraft.world.phys.AABB;
 
-public class PotatoProjectileRenderer extends EntityRenderer<PotatoProjectileEntity> {
+/**
+ * Renders the potato cannon's projectile in the world.
+ *
+ * <p>In 1.21.2+, EntityRenderer uses render states; in 1.21.4+ item rendering uses
+ * {@link net.minecraft.client.renderer.item.ItemModelResolver} and {@link ItemStackRenderState}.
+ */
+public class PotatoProjectileRenderer
+        extends EntityRenderer<PotatoProjectileEntity, PotatoProjectileRenderer.PotatoProjectileRenderState> {
 
-	public PotatoProjectileRenderer(EntityRendererProvider.Context context) {
-		super(context);
-	}
+    public PotatoProjectileRenderer(EntityRendererProvider.Context context) {
+        super(context);
+    }
 
-	@Override
-	public void render(PotatoProjectileEntity entity, float yaw, float pt, PoseStack ms, MultiBufferSource buffer,
-		int light) {
-		ItemStack item = entity.getItem();
-		if (item.isEmpty())
-			return;
-		ms.pushPose();
-		ms.translate(0, entity.getBoundingBox()
-			.getYsize() / 2 - 1 / 8f, 0);
-		entity.getRenderMode()
-			.transform(ms, entity, pt);
+    @Override
+    public PotatoProjectileRenderState createRenderState() {
+        return new PotatoProjectileRenderState();
+    }
 
-		Minecraft.getInstance()
-			.getItemRenderer()
-			.renderStatic(item, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, ms, buffer, entity.level(),
-				0);
-		ms.popPose();
-	}
+    @Override
+    public void extractRenderState(PotatoProjectileEntity entity, PotatoProjectileRenderState state, float pt) {
+        super.extractRenderState(entity, state, pt);
+        state.item        = entity.getItem();
+        state.bbYSize     = (float) entity.getBoundingBox().getYsize();
+        state.renderMode  = entity.getRenderMode();
+        state.partialTick = pt;
+        // TODO: extract all fields needed by RenderMode.transform() instead of entity ref.
+        state.entity      = entity;
+    }
 
-	@Override
-	public ResourceLocation getTextureLocation(PotatoProjectileEntity entity) {
-		return null;
-	}
+    @Override
+    public void render(PotatoProjectileRenderState state, PoseStack ms, MultiBufferSource buffer, int light) {
+        ItemStack item = state.item;
+        if (item == null || item.isEmpty())
+            return;
 
+        ms.pushPose();
+        ms.translate(0, state.bbYSize / 2 - 1 / 8f, 0);
+        if (state.renderMode != null && state.entity != null)
+            state.renderMode.transform(ms, state.entity, state.partialTick);
+
+        // In 1.21.4+, items are rendered via ItemModelResolver + ItemStackRenderState.
+        ItemStackRenderState itemState = new ItemStackRenderState();
+        Minecraft.getInstance()
+            .getItemModelResolver()
+            .updateForTopItem(itemState, item, ItemDisplayContext.GROUND, false, null, null, 0);
+        itemState.render(ms, buffer, light, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
+
+        ms.popPose();
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(PotatoProjectileRenderState state) {
+        return null;
+    }
+
+    public static class PotatoProjectileRenderState extends EntityRenderState {
+        public ItemStack item = ItemStack.EMPTY;
+        public float bbYSize;
+        public PotatoProjectileRenderMode renderMode;
+        public float partialTick;
+        /** Live entity reference – TODO: extract into pure fields. */
+        public PotatoProjectileEntity entity;
+    }
 }

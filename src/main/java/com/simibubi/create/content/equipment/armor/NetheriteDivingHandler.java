@@ -6,7 +6,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -57,7 +56,9 @@ public final class NetheriteDivingHandler {
 	}
 
 	public static boolean isNetheriteArmor(ItemStack stack) {
-		return stack.getItem() instanceof ArmorItem && stack.has(DataComponents.FIRE_RESISTANT);
+		// In 1.21.5+, ArmorItem is removed. Netherite armor is identified by the FIRE_RESISTANT
+		// data component and the EQUIPPABLE component (set via ArmorMaterial#humanoidProperties).
+		return stack.has(DataComponents.EQUIPPABLE) && stack.has(DataComponents.FIRE_RESISTANT);
 	}
 
 	public static void setBit(LivingEntity entity, EquipmentSlot slot) {

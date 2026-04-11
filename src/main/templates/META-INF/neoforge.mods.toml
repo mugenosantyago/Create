@@ -31,19 +31,21 @@ versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies."${mod_id}"]]
-modId = "flywheel"
-type = "required"
-versionRange = "${flywheel_version_range}"
-ordering = "AFTER"
-side = "CLIENT"
+# TODO: Flywheel has no MC 1.21.8 build yet. Re-enable once ported.
+# [[dependencies."${mod_id}"]]
+# modId = "flywheel"
+# type = "required"
+# versionRange = "${flywheel_version_range}"
+# ordering = "AFTER"
+# side = "CLIENT"
 
-[[dependencies."${mod_id}"]]
-modId = "ponder"
-type = "required"
-versionRange = "[${ponder_version},)"
-ordering = "AFTER"
-side = "BOTH"
+# TODO: Ponder has no MC 1.21.8 build yet. Re-enable once ported.
+# [[dependencies."${mod_id}"]]
+# modId = "ponder"
+# type = "required"
+# versionRange = "[${ponder_version},)"
+# ordering = "AFTER"
+# side = "BOTH"
 
 # Versions before 0.6.9 do not have sprite util under the api package
 [[dependencies."${mod_id}"]]
@@ -63,12 +65,12 @@ versionRange = "[0.14.7,)"
 ordering = "NONE"
 side = "BOTH"
 
-# Versions before 1.21.1-6.0.0-beta.46 do not contain the fullscreen render event we use
+# TODO: Update JourneyMap version requirement once 1.21.8 release is available
 [[dependencies."${mod_id}"]]
 modId = "journeymap"
 type = "optional"
-reason = "Versions before 1.21.1-6.0.0-beta.46 do not contain the APIs Create requires to work with JourneyMap."
-versionRange = "[1.21.1-6.0.0-beta.46,)"
+reason = "Versions before 1.21.8 builds do not contain the APIs Create requires to work with JourneyMap."
+versionRange = "[1.21.8-6.0.0,)"
 ordering = "NONE"
 side = "CLIENT"
 

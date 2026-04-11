@@ -40,7 +40,7 @@ import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -546,7 +546,8 @@ public class ClipboardScreen extends AbstractSimiScreen {
 	private void renderHighlight(Rect2i[] pSelected) {
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		RenderSystem.setShader(GameRenderer::getPositionShader);
+		// In 1.21.2+, GameRenderer.get*Shader() was removed; use CoreShaders constants.
+		RenderSystem.setShader(CoreShaders.POSITION);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
 //		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();

@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import net.createmod.catnip.gui.element.ScreenElement;
 import net.createmod.catnip.gui.widget.AbstractSimiWidget;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 public class IconButton extends AbstractSimiWidget {
@@ -41,8 +42,9 @@ public class IconButton extends AbstractSimiWidget {
 	}
 
 	protected void drawBg(GuiGraphics graphics, AllGuiTextures button) {
-		graphics.blit(button.location, getX(), getY(), button.getStartX(), button.getStartY(), button.getWidth(),
-			button.getHeight());
+		// In 1.21.6+, blit requires RenderPipeline + PNG size
+		graphics.blit(RenderPipelines.GUI_TEXTURED, button.location, getX(), getY(),
+			(float) button.getStartX(), (float) button.getStartY(), button.getWidth(), button.getHeight(), 256, 256);
 	}
 
 	public void setToolTip(Component text) {

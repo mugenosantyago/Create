@@ -1,5 +1,6 @@
 package com.simibubi.create.foundation.gui;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.simibubi.create.Create;
 
 import net.createmod.catnip.gui.TextureSheetSegment;
@@ -7,6 +8,7 @@ import net.createmod.catnip.gui.UIRenderHelper;
 import net.createmod.catnip.gui.element.ScreenElement;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 
 import net.neoforged.api.distmarker.Dist;
@@ -267,7 +269,8 @@ public enum AllGuiTextures implements ScreenElement, TextureSheetSegment {
 
 	;
 
-	public static final int FONT_COLOR = 0x575F7A;
+	/** Default text color for Create UIs. In 1.21.6+, drawString needs ARGB (non-zero alpha). */
+	public static final int FONT_COLOR = 0xFF575F7A;
 
 	public final ResourceLocation location;
 	private final int width;
@@ -298,7 +301,9 @@ public enum AllGuiTextures implements ScreenElement, TextureSheetSegment {
 
 	@OnlyIn(Dist.CLIENT)
 	public void render(GuiGraphics graphics, int x, int y) {
-		graphics.blit(location, x, y, startX, startY, width, height);
+		// In 1.21.6+, blit() requires a RenderPipeline as the first arg and PNG size at the end.
+		// PNG size is 256x256 for all Create GUI textures.
+		graphics.blit(RenderPipelines.GUI_TEXTURED, location, x, y, (float) startX, (float) startY, width, height, 256, 256);
 	}
 
 	@OnlyIn(Dist.CLIENT)

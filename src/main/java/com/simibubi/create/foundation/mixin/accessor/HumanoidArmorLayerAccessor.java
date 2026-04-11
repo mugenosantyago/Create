@@ -1,29 +1,22 @@
 package com.simibubi.create.foundation.mixin.accessor;
 
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 
+/**
+ * Accessor mixin for HumanoidArmorLayer.
+ *
+ * <p>In 1.21.2+, HumanoidArmorLayer was refactored for the EntityRenderState system.
+ * The old {@code ARMOR_LOCATION_CACHE}, {@code innerModel}, and {@code outerModel}
+ * fields no longer exist in the same form. Armor textures are now data-driven via
+ * {@code EquipmentModel} JSON (introduced in 1.21.4).
+ *
+ * <p>TODO: Re-evaluate what custom armor layer hooks are still needed under the new API
+ * and re-implement this accessor targeting the appropriate 1.21.8 fields.
+ */
 @Mixin(HumanoidArmorLayer.class)
 public interface HumanoidArmorLayerAccessor {
-	@Accessor("ARMOR_LOCATION_CACHE")
-	static Map<String, ResourceLocation> create$getArmorLocationCache() {
-		throw new RuntimeException();
-	}
-
-	@Accessor("innerModel")
-	HumanoidModel<?> create$getInnerModel();
-
-	@Accessor("outerModel")
-	HumanoidModel<?> create$getOuterModel();
-
-	@Invoker("setPartVisibility")
-	void create$callSetPartVisibility(HumanoidModel<?> model, EquipmentSlot slot);
+    // TODO: Re-add @Accessor / @Invoker targets once the 1.21.8 HumanoidArmorLayer
+    // field names and render-state generic types are confirmed.
 }

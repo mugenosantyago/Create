@@ -1,0 +1,17 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "create:item/chromatic_compound",
+    "tints": [
+      {
+        "type": "create:chromatic_compound_layer0"
+      },
+      {
+        "type": "create:chromatic_compound_layer1"
+      },
+      {
+        "type": "create:chromatic_compound_layer2"
+      }
+    ]
+  }
+}

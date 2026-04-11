@@ -16,6 +16,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -23,106 +25,128 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
-public class BlueprintRenderer extends EntityRenderer<BlueprintEntity> {
+/**
+ * Renders the Blueprint entity (crafting blueprint held in the world).
+ *
+ * <p>In 1.21.2+, entity rendering uses the render-state pattern.
+ * In 1.21.4+, item rendering uses {@link ItemStackRenderState} instead of
+ * {@code ItemRenderer.renderStatic}.
+ */
+public class BlueprintRenderer extends EntityRenderer<BlueprintEntity, BlueprintRenderer.BlueprintRenderState> {
 
-	public BlueprintRenderer(EntityRendererProvider.Context context) {
-		super(context);
-	}
+    public BlueprintRenderer(EntityRendererProvider.Context context) {
+        super(context);
+    }
 
-	@Override
-	public void render(BlueprintEntity entity, float yaw, float pt, PoseStack ms, MultiBufferSource buffer,
-		int light) {
-		PartialModel partialModel = entity.size == 3 ? AllPartialModels.CRAFTING_BLUEPRINT_3x3
-			: entity.size == 2 ? AllPartialModels.CRAFTING_BLUEPRINT_2x2 : AllPartialModels.CRAFTING_BLUEPRINT_1x1;
-		SuperByteBuffer sbb = CachedBuffers.partial(partialModel, Blocks.AIR.defaultBlockState());
-		sbb.rotateYDegrees(-yaw)
-			.rotateXDegrees(90.0F + entity.getXRot())
-			.translate(-.5, -1 / 32f, -.5);
-		if (entity.size == 2)
-			sbb.translate(.5, 0, -.5);
+    @Override
+    public BlueprintRenderState createRenderState() {
+        return new BlueprintRenderState();
+    }
 
-		sbb.disableDiffuse()
-			.light(light)
-			.renderInto(ms, buffer.getBuffer(Sheets.solidBlockSheet()));
-		super.render(entity, yaw, pt, ms, buffer, light);
+    @Override
+    public void extractRenderState(BlueprintEntity entity, BlueprintRenderState state, float pt) {
+        super.extractRenderState(entity, state, pt);
+        // Store entity reference as workaround; TODO: extract all needed fields properly.
+        state.entity = entity;
+    }
 
-		ms.pushPose();
+    @Override
+    public void render(BlueprintRenderState state, PoseStack ms, MultiBufferSource buffer, int light) {
+        BlueprintEntity entity = state.entity;
+        if (entity == null) return;
+        float yaw = state.yRot;
 
-		float fakeNormalXRotation = -15;
-		int bl = light >> 4 & 0xf;
-		int sl = light >> 20 & 0xf;
-		boolean vertical = entity.getXRot() != 0;
-		if (entity.getXRot() == -90)
-			fakeNormalXRotation = -45;
-		else if (entity.getXRot() == 90 || yaw % 180 != 0) {
-			bl /= 1.35;
-			sl /= 1.35;
-		}
-		int itemLight = Mth.floor(sl + .5) << 20 | (Mth.floor(bl + .5) & 0xf) << 4;
+        PartialModel partialModel = entity.size == 3 ? AllPartialModels.CRAFTING_BLUEPRINT_3x3
+            : entity.size == 2 ? AllPartialModels.CRAFTING_BLUEPRINT_2x2 : AllPartialModels.CRAFTING_BLUEPRINT_1x1;
+        SuperByteBuffer sbb = CachedBuffers.partial(partialModel, Blocks.AIR.defaultBlockState());
+        sbb.rotateYDegrees(-yaw)
+            .rotateXDegrees(90.0F + entity.getXRot())
+            .translate(-.5, -1 / 32f, -.5);
+        if (entity.size == 2)
+            sbb.translate(.5, 0, -.5);
 
-		TransformStack.of(ms)
-			.rotateYDegrees(vertical ? 0 : -yaw)
-			.rotateXDegrees(fakeNormalXRotation);
-		Matrix3f copy = new Matrix3f(ms.last()
-			.normal());
+        sbb.disableDiffuse()
+            .light(light)
+            .renderInto(ms, buffer.getBuffer(Sheets.solidBlockSheet()));
+        super.render(state, ms, buffer, light);
 
-		ms.popPose();
-		ms.pushPose();
+        ms.pushPose();
 
-		TransformStack.of(ms)
-			.rotateYDegrees(-yaw)
-			.rotateXDegrees(entity.getXRot())
-			.translate(0, 0, 1 / 32f + .001);
+        float fakeNormalXRotation = -15;
+        int bl = light >> 4 & 0xf;
+        int sl = light >> 20 & 0xf;
+        boolean vertical = entity.getXRot() != 0;
+        if (entity.getXRot() == -90)
+            fakeNormalXRotation = -45;
+        else if (entity.getXRot() == 90 || yaw % 180 != 0) {
+            bl /= 1.35;
+            sl /= 1.35;
+        }
+        int itemLight = Mth.floor(sl + .5) << 20 | (Mth.floor(bl + .5) & 0xf) << 4;
 
-		if (entity.size == 3)
-			ms.translate(-1, -1, 0);
+        TransformStack.of(ms)
+            .rotateYDegrees(vertical ? 0 : -yaw)
+            .rotateXDegrees(fakeNormalXRotation);
+        Matrix3f copy = new Matrix3f(ms.last().normal());
 
-		PoseStack squashedMS = new PoseStack();
-		squashedMS.last()
-			.pose()
-			.mul(ms.last()
-				.pose());
+        ms.popPose();
+        ms.pushPose();
 
-		for (int x = 0; x < entity.size; x++) {
-			squashedMS.pushPose();
-			for (int y = 0; y < entity.size; y++) {
-				BlueprintSection section = entity.getSection(x * entity.size + y);
-				Couple<ItemStack> displayItems = section.getDisplayItems();
-				squashedMS.pushPose();
-				squashedMS.scale(.5f, .5f, 1 / 1024f);
-				displayItems.forEachWithContext((stack, primary) -> {
-					if (stack.isEmpty())
-						return;
+        TransformStack.of(ms)
+            .rotateYDegrees(-yaw)
+            .rotateXDegrees(entity.getXRot())
+            .translate(0, 0, 1 / 32f + .001);
 
-					squashedMS.pushPose();
-					if (!primary) {
-						squashedMS.translate(0.325f, -0.325f, 1);
-						squashedMS.scale(.625f, .625f, 1);
-					}
+        if (entity.size == 3)
+            ms.translate(-1, -1, 0);
 
-					squashedMS.last()
-						.normal()
-						.set(copy);
+        PoseStack squashedMS = new PoseStack();
+        squashedMS.last().pose().mul(ms.last().pose());
 
-					Minecraft.getInstance()
-						.getItemRenderer()
-						.renderStatic(stack, ItemDisplayContext.GUI, itemLight, OverlayTexture.NO_OVERLAY, squashedMS,
-							buffer, entity.level(), 0);
-					squashedMS.popPose();
-				});
-				squashedMS.popPose();
-				squashedMS.translate(1, 0, 0);
-			}
-			squashedMS.popPose();
-			squashedMS.translate(0, 1, 0);
-		}
+        for (int x = 0; x < entity.size; x++) {
+            squashedMS.pushPose();
+            for (int y = 0; y < entity.size; y++) {
+                BlueprintSection section = entity.getSection(x * entity.size + y);
+                Couple<ItemStack> displayItems = section.getDisplayItems();
+                squashedMS.pushPose();
+                squashedMS.scale(.5f, .5f, 1 / 1024f);
+                displayItems.forEachWithContext((stack, primary) -> {
+                    if (stack.isEmpty())
+                        return;
 
-		ms.popPose();
-	}
+                    squashedMS.pushPose();
+                    if (!primary) {
+                        squashedMS.translate(0.325f, -0.325f, 1);
+                        squashedMS.scale(.625f, .625f, 1);
+                    }
 
-	@Override
-	public ResourceLocation getTextureLocation(BlueprintEntity entity) {
-		return null;
-	}
+                    squashedMS.last().normal().set(copy);
 
+                    // In 1.21.4+, use ItemModelResolver instead of ItemRenderer.renderStatic
+                    ItemStackRenderState itemRenderState = new ItemStackRenderState();
+                    Minecraft.getInstance().getItemModelResolver().updateForTopItem(
+                        itemRenderState, stack, ItemDisplayContext.GUI, false, entity.level(), null, 0);
+                    itemRenderState.render(squashedMS, buffer, itemLight, OverlayTexture.NO_OVERLAY);
+
+                    squashedMS.popPose();
+                });
+                squashedMS.popPose();
+                squashedMS.translate(1, 0, 0);
+            }
+            squashedMS.popPose();
+            squashedMS.translate(0, 1, 0);
+        }
+
+        ms.popPose();
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(BlueprintRenderState state) {
+        return null;
+    }
+
+    public static class BlueprintRenderState extends EntityRenderState {
+        /** Live entity reference – TODO: extract all fields properly. */
+        public BlueprintEntity entity;
+    }
 }

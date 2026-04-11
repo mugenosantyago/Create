@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "create:copper_diving"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "create:copper_diving_leggings"
+      }
+    ]
+  }
+}

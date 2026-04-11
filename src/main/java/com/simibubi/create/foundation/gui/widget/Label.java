@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
 
 public class Label extends AbstractSimiWidget {
 
@@ -23,13 +24,15 @@ public class Label extends AbstractSimiWidget {
 		super(x, y, Minecraft.getInstance().font.width(text), 10);
 		font = Minecraft.getInstance().font;
 		this.text = Component.literal("Label");
-		color = 0xFFFFFF;
+		// In 1.21.6+, drawString requires ARGB (alpha cannot be 0)
+		color = 0xFFFFFFFF;
 		hasShadow = false;
 		suffix = "";
 	}
 
 	public Label colored(int color) {
-		this.color = color;
+		// Ensure full alpha so text renders in 1.21.6+ (alpha=0 means invisible)
+		this.color = ARGB.opaque(color);
 		return this;
 	}
 

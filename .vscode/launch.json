@@ -1,0 +1,93 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - Create",
+        "order": 0
+      },
+      "projectName": "Create",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcreate%%/Users/otoyume/Documents/GitHub/Create/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Data",
+      "presentation": {
+        "group": "Mod Development - Create",
+        "order": 1
+      },
+      "projectName": "Create",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcreate%%/Users/otoyume/Documents/GitHub/Create/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestServer",
+      "presentation": {
+        "group": "Mod Development - Create",
+        "order": 2
+      },
+      "projectName": "Create",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/gameTestServerRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcreate%%/Users/otoyume/Documents/GitHub/Create/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - Create",
+        "order": 3
+      },
+      "projectName": "Create",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcreate%%/Users/otoyume/Documents/GitHub/Create/bin/main"
+      ],
+      "cwd": "${workspaceFolder}/run/server",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

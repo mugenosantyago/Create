@@ -13,7 +13,6 @@ import com.simibubi.create.compat.computercraft.ComputerCraftProxy;
 import com.simibubi.create.compat.curios.Curios;
 import com.simibubi.create.compat.inventorySorter.InventorySorterCompat;
 import com.simibubi.create.content.decoration.palettes.AllPaletteBlocks;
-import com.simibubi.create.content.equipment.armor.AllArmorMaterials;
 import com.simibubi.create.content.equipment.potatoCannon.AllPotatoProjectileBlockHitActions;
 import com.simibubi.create.content.equipment.potatoCannon.AllPotatoProjectileEntityHitActions;
 import com.simibubi.create.content.equipment.potatoCannon.AllPotatoProjectileRenderModes;
@@ -114,7 +113,7 @@ public class Create {
 
 		AllSoundEvents.prepare();
 		AllCreativeModeTabs.register(modEventBus);
-		AllArmorMaterials.register(modEventBus);
+		// AllArmorMaterials no longer needs registration - ArmorMaterial is a plain record (not a registry object) in 1.21.4+
 		AllDisplaySources.register();
 		AllDisplayTargets.register();
 		AllBlocks.register();

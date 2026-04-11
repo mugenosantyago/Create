@@ -1,17 +1,18 @@
 package com.simibubi.create.foundation.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
+/**
+ * Marker interface for items that supply a custom armor rendering layer.
+ *
+ * <p>In 1.21.2+, entity rendering moved to an {@code EntityRenderState}-based system; the
+ * old {@code HumanoidArmorLayer} signature no longer passes raw entity/model arguments directly.
+ * Custom rendering should be done via a {@link net.minecraft.client.renderer.entity.layers.RenderLayer}
+ * subclass registered on the relevant entity renderer.
+ *
+ * <p>TODO: Update all usages of this interface to the new EntityRenderState render layer API.
+ *
+ * @deprecated Superseded by the 1.21.2 EntityRenderState rendering system.
+ */
+@Deprecated(forRemoval = true)
 public interface CustomRenderedArmorItem {
-	@OnlyIn(Dist.CLIENT)
-	void renderArmorPiece(HumanoidArmorLayer<?, ?, ?> layer, PoseStack poseStack, MultiBufferSource bufferSource, LivingEntity entity, EquipmentSlot slot, int light, HumanoidModel<?> originalModel, ItemStack stack);
+    // Interface kept as stub for gradual migration.
 }

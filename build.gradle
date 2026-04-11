@@ -100,8 +100,9 @@ configurations {
 }
 
 repositories {
-    maven { url = "https://maven.createmod.net" } // Ponder, Flywheel
-    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
+    maven { url = "https://maven.createmod.net" } // Ponder, Flywheel (TODO: awaiting 1.21.8 builds)
+    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate snapshots (MC1.21.8 not yet published here)
+    mavenCentral() // io.github.polari-stars-mc:Registrate-P-STAR:MC1.21.8 stopgap
     maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
     maven { url = "https://maven.theillusivec4.top/" } // Curios API
     maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
@@ -122,54 +123,68 @@ repositories {
 }
 
 dependencies {
-    jarJar(implementation("com.tterrag.registrate:Registrate:$registrate_version"))
+    // TODO: Official com.tterrag.registrate:Registrate has no MC 1.21.8 build published.
+    // Using polari-stars MC1.21.8 fork from Maven Central as a stopgap.
+    // Switch to: jarJar(implementation("com.tterrag.registrate:Registrate:$registrate_version"))
+    // once an official MC1.21.8 build lands on https://maven.ithundxr.dev/snapshots
+    jarJar(implementation("io.github.polari-stars-mc:Registrate-P-STAR:$registrate_version"))
 
-    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-$minecraft_version:$flywheel_version")
-    runtimeOnly(jarJar("dev.engine-room.flywheel:flywheel-neoforge-$minecraft_version:$flywheel_version") {
-        version {
-            strictly "[${flywheel_version},2.0)"
-            prefer flywheel_version
-        }
-    })
-    runtimeOnly("dev.engine-room.vanillin:vanillin-neoforge-$minecraft_version:$vanillin_version")
+    // TODO: Flywheel & Vanillin have no MC 1.21.8 build yet (last build targets 1.21.1).
+    // Using the 1.21.1 builds COMPILE-ONLY so Flywheel API imports resolve.
+    // These will NOT work at runtime until proper 1.21.8 builds are published.
+    // Track progress at: https://github.com/Engine-Room/Flywheel
+    // Restore jarJar once mc1.21.8 artifacts appear on maven.createmod.net:
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1:1.0.6")
+    // vanillin is runtime-only so no compileOnly stub needed for it
 
-    implementation(jarJar("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version") {
-        version {
-            strictly "[$ponder_version+mc$minecraft_version,)"
-            prefer "$ponder_version+mc$minecraft_version"
-        }
-    })
+    // TODO: Ponder has no MC 1.21.8 build yet.
+    // Using the 1.21.1 build COMPILE-ONLY so the Ponder API imports resolve.
+    // This WILL NOT work at runtime until a proper 1.21.8 build is published.
+    // Track progress at: https://github.com/Creators-of-Create/Ponder
+    // Restore jarJar once mc1.21.8 artifacts appear on maven.createmod.net:
+    compileOnly("net.createmod.ponder:ponder-neoforge:1.0.81+mc1.21.1")
 
     //compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
     //compileOnly("mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version")
     implementation("mezz.jei:jei-$minecraft_version-neoforge:$jei_version")
 
+    // Curios 12.0.0+1.21.8 (CurseForge file 6538253)
     compileOnly("top.theillusivec4.curios:curios-neoforge:$curios_version+$minecraft_version:api")
     runtimeOnly("top.theillusivec4.curios:curios-neoforge:$curios_version+$minecraft_version")
 
+    // Sodium 0.7.2 for NeoForge 1.21.8 (modrinth: mc1.21.8-0.7.2-neoforge)
     compileOnly("maven.modrinth:sodium:mc$minecraft_version-$sodium_version-neoforge")
 
+    // CC: Tweaked disabled - no confirmed MC 1.21.8 NeoForge build yet
+    // Re-enable once available: https://modrinth.com/mod/cc-tweaked
     if (cc_tweaked_enable.toBoolean()) {
         compileOnly("cc.tweaked:cc-tweaked-$minecraft_version-core-api:$cc_tweaked_version")
         compileOnly("cc.tweaked:cc-tweaked-$minecraft_version-forge-api:$cc_tweaked_version")
         runtimeOnly("cc.tweaked:cc-tweaked-$minecraft_version-forge:$cc_tweaked_version")
     }
 
-    compileOnly("maven.modrinth:farmers-delight:${farmers_delight_version}")
-    if (farmers_delight_enable.toBoolean()) {
-        implementation("maven.modrinth:farmers-delight:${farmers_delight_version}")
-    }
+    // Farmer's Delight disabled - no confirmed 1.21.8 version yet
+    // Re-enable and set a real version before uncommenting:
+    // compileOnly("maven.modrinth:farmers-delight:${farmers_delight_version}")
+    // if (farmers_delight_enable.toBoolean()) {
+    //     implementation("maven.modrinth:farmers-delight:${farmers_delight_version}")
+    // }
 
+    // TODO: FTB Chunks/Teams/Library have no confirmed 1.21.8 builds (only 1.21.1 and 1.21.11).
+    // Using 1.21.1 builds for now - will fail at runtime but allows compilation.
     runtimeOnly("dev.architectury:architectury-neoforge:13d.0.8")
     implementation("dev.ftb.mods:ftb-chunks-neoforge:2101.1.1")
     implementation("dev.ftb.mods:ftb-teams-neoforge:2101.1.0")
     implementation("dev.ftb.mods:ftb-library-neoforge:2101.1.3")
 
-    implementation("maven.modrinth:journeymap:1.21.1-6.0.0-beta.54+neoforge")
+    // JourneyMap 6.0.0-beta.52 for NeoForge 1.21.8 (CurseForge file available)
+    // TODO: Update journeymap-api to 1.21.8 version when available
+    implementation("maven.modrinth:journeymap:1.21.8-6.0.0-beta.52+neoforge")
     implementation("info.journeymap:journeymap-api-neoforge:2.0.0-1.21.1-20260205.200232-15") {
-        exclude(group: "curse.maven") // Pulls in a old version of journey map which is for forge
+        exclude(group: "curse.maven") // Pulls in old version of journey map which is for forge
     }
 
+    // TODO: Verify Xaero versions for MC 1.21.8
     compileOnly("xaero.lib:xaerolib-neoforge-1.21:1.0.42")
     compileOnly("curse.maven:xaeros-world-map-317780:7401095")
 }

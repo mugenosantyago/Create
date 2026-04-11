@@ -1,85 +1,84 @@
 package com.simibubi.create.content.equipment.armor;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.function.Supplier;
 
-import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.Create;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 
-import org.jetbrains.annotations.ApiStatus.Internal;
-
+/**
+ * Armor materials for Create equipment. In 1.21.4+, ArmorMaterial is a plain record and is
+ * NOT a registry object. Textures are defined by EquipmentAsset JSONs under
+ * {@code assets/create/equipment/}.
+ *
+ * <p>Items use {@code Item.Properties.humanoidArmor(material, type)} to apply components.
+ */
 public class AllArmorMaterials {
-	private static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, Create.ID);
 
-	public static final Holder<ArmorMaterial> COPPER = register(
-				"copper",
-				new int[] { 2, 4, 3, 1, 4 },
-				7,
-				AllSoundEvents.COPPER_ARMOR_EQUIP.getMainEventHolder(),
-				0.0F,
-				0.0F,
-				() -> Ingredient.of(Items.COPPER_INGOT)
-			);
+    /**
+     * Equipment asset key for copper diving armor.
+     * Resolves to {@code assets/create/textures/entity/equipment/humanoid/copper_diving.png}
+     * and {@code assets/create/equipment/copper_diving.json}.
+     */
+    public static final ResourceKey<EquipmentAsset> COPPER_DIVING_ASSET =
+            ResourceKey.create(EquipmentAssets.ROOT_ID, Create.asResource("copper_diving"));
 
-	public static final Holder<ArmorMaterial> CARDBOARD = register(
-				"cardboard",
-				new int[] { 1, 1, 1, 1, 2 },
-				4,
-				SoundEvents.ARMOR_EQUIP_LEATHER,
-				0.0F,
-				0.0F,
-				() -> Ingredient.of(AllItems.CARDBOARD)
-	);
+    /**
+     * Equipment asset key for cardboard armor.
+     * Resolves to {@code assets/create/textures/entity/equipment/humanoid/cardboard.png}
+     * and {@code assets/create/equipment/cardboard.json}.
+     */
+    public static final ResourceKey<EquipmentAsset> CARDBOARD_ASSET =
+            ResourceKey.create(EquipmentAssets.ROOT_ID, Create.asResource("cardboard"));
 
-	private static Holder<ArmorMaterial> register(
-			String name,
-			int[] defense,
-			int enchantmentValue,
-			Holder<SoundEvent> equipSound,
-			float toughness,
-			float knockbackResistance,
-			Supplier<Ingredient> repairIngredient
-	) {
-		List<ArmorMaterial.Layer> list = List.of(new ArmorMaterial.Layer(Create.asResource(name)));
-		return register(name, defense, enchantmentValue, equipSound, toughness, knockbackResistance, repairIngredient, list);
-	}
+    /**
+     * Copper armor material.
+     * Defense values: helmet=2, chestplate=4, leggings=3, boots=1.
+     * Base durability scalar: 15.
+     */
+    public static final ArmorMaterial COPPER = new ArmorMaterial(
+            15,
+            Util.make(new EnumMap<>(ArmorType.class), map -> {
+                map.put(ArmorType.HELMET,     2);
+                map.put(ArmorType.CHESTPLATE, 4);
+                map.put(ArmorType.LEGGINGS,   3);
+                map.put(ArmorType.BOOTS,      1);
+                map.put(ArmorType.BODY,       4);
+            }),
+            7,
+            AllSoundEvents.COPPER_ARMOR_EQUIP.getMainEventHolder(),
+            0.0F,
+            0.0F,
+            ItemTags.REPAIRS_COPPER_ARMOR,
+            COPPER_DIVING_ASSET
+    );
 
-	private static Holder<ArmorMaterial> register(
-			String name,
-			int[] defense,
-			int enchantmentValue,
-			Holder<SoundEvent> equipSound,
-			float toughness,
-			float knockbackResistance,
-			Supplier<Ingredient> repairIngridient,
-			List<ArmorMaterial.Layer> layers
-	) {
-		EnumMap<ArmorItem.Type, Integer> enummap = new EnumMap<>(ArmorItem.Type.class);
-
-		for (ArmorItem.Type armoritem$type : ArmorItem.Type.values()) {
-			enummap.put(armoritem$type, defense[armoritem$type.ordinal()]);
-		}
-
-		return ARMOR_MATERIALS.register(name,
-				() -> new ArmorMaterial(enummap, enchantmentValue, equipSound, repairIngridient, layers, toughness, knockbackResistance)
-		);
-	}
-
-	@Internal
-	public static void register(IEventBus eventBus) {
-		ARMOR_MATERIALS.register(eventBus);
-	}
+    /**
+     * Cardboard armor material.
+     * Defense values: all 1 (basically no protection – it's cardboard!).
+     * Base durability scalar: 2.
+     */
+    public static final ArmorMaterial CARDBOARD = new ArmorMaterial(
+            2,
+            Util.make(new EnumMap<>(ArmorType.class), map -> {
+                map.put(ArmorType.HELMET,     1);
+                map.put(ArmorType.CHESTPLATE, 1);
+                map.put(ArmorType.LEGGINGS,   1);
+                map.put(ArmorType.BOOTS,      1);
+                map.put(ArmorType.BODY,       2);
+            }),
+            4,
+            net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER,
+            0.0F,
+            0.0F,
+            net.minecraft.tags.ItemTags.REPAIRS_LEATHER_ARMOR,
+            CARDBOARD_ASSET
+    );
 }

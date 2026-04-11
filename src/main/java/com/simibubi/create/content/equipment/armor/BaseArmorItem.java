@@ -1,27 +1,39 @@
 package com.simibubi.create.content.equipment.armor;
 
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 
-import org.jetbrains.annotations.Nullable;
+/**
+ * Base class for Create armor pieces. In 1.21.5+, ArmorItem was removed; armor is now an ordinary
+ * Item. Data components (EQUIPPABLE, ATTRIBUTE_MODIFIERS, MAX_DAMAGE, etc.) are set by calling
+ * {@link Item.Properties#humanoidArmor(ArmorMaterial, ArmorType)}.
+ *
+ * <p>Subclasses pass {@link #propertiesFor(ArmorMaterial, ArmorType)} as the constructor
+ * {@code properties} argument, which automatically applies the correct components for the slot.
+ */
+public class BaseArmorItem extends Item {
 
-import java.util.Locale;
+    protected final ArmorMaterial material;
+    protected final ArmorType     armorType;
 
-public class BaseArmorItem extends ArmorItem {
-	protected final ResourceLocation textureLoc;
+    public BaseArmorItem(ArmorMaterial material, ArmorType type, Properties properties) {
+        super(properties);
+        this.material  = material;
+        this.armorType = type;
+    }
 
-	public BaseArmorItem(Holder<ArmorMaterial> armorMaterial, ArmorItem.Type type, Properties properties, ResourceLocation textureLoc) {
-		super(armorMaterial, type, properties.stacksTo(1));
-		this.textureLoc = textureLoc;
-	}
-
-	@Override
-	public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-		return ResourceLocation.parse(String.format(Locale.ROOT, "%s:textures/models/armor/%s_layer_%d.png", textureLoc.getNamespace(), textureLoc.getPath(), slot == EquipmentSlot.LEGS ? 2 : 1));
-	}
+    /**
+     * Creates a fresh {@link Item.Properties} with all armor data components applied for the
+     * given material and slot type, including correct durability.
+     *
+     * @param material  the armor material to use
+     * @param type      the armor slot
+     * @return ready-to-use Item.Properties for this piece; call further modifiers as needed
+     */
+    public static Properties propertiesFor(ArmorMaterial material, ArmorType type) {
+        // humanoidArmor() sets all required data components including MAX_DAMAGE, EQUIPPABLE,
+        // ATTRIBUTE_MODIFIERS, ENCHANTABLE, REPAIRABLE, and MAX_STACK_SIZE(1).
+        return new Item.Properties().humanoidArmor(material, type);
+    }
 }

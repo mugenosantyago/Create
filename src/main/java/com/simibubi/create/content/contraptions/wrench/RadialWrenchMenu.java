@@ -44,7 +44,7 @@ import net.createmod.ponder.enums.PonderGuiTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -330,7 +330,8 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 			.translateY(innerRadius + 3)
 			.translateZ(15);
 
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		// In 1.21.2+, GameRenderer.get*Shader() was removed; use CoreShaders constants.
+		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
 
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);

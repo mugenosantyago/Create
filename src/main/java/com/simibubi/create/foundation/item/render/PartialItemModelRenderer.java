@@ -65,7 +65,8 @@ public class PartialItemModelRenderer {
 		ms.translate(-0.5D, -0.5D, -0.5D);
 
 		if (!model.isCustomRenderer()) {
-			VertexConsumer vc = ItemRenderer.getFoilBufferDirect(buffer, type, true, stack.hasFoil());
+			// In 1.21.2+, getFoilBufferDirect was removed; use getFoilBuffer instead.
+			VertexConsumer vc = ItemRenderer.getFoilBuffer(buffer, type, true, stack.hasFoil());
 			for (BakedModel pass : model.getRenderPasses(stack, false)) {
 				renderBakedItemModel(pass, light, ms, vc);
 			}

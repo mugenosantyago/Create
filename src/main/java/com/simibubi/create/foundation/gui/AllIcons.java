@@ -13,6 +13,7 @@ import net.createmod.catnip.theme.Color;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
@@ -183,6 +184,12 @@ public class AllIcons implements ScreenElement {
 		return new AllIcons(x = 0, ++y);
 	}
 
+	/**
+	 * @deprecated In 1.21.6+, texture binding is handled by the blit RenderPipeline/TextureSetup.
+	 * For world-space rendering via {@link #render(PoseStack, MultiBufferSource, int)},
+	 * texture binding is done by the {@code RenderType.text} render type.
+	 */
+	@Deprecated(forRemoval = true)
 	@OnlyIn(Dist.CLIENT)
 	public void bind() {
 		RenderSystem.setShaderTexture(0, ICON_ATLAS);
@@ -191,7 +198,8 @@ public class AllIcons implements ScreenElement {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void render(GuiGraphics graphics, int x, int y) {
-		graphics.blit(ICON_ATLAS, x, y, 0, iconX, iconY, 16, 16, 256, 256);
+		// In 1.21.6+, blit() requires a RenderPipeline; blitOffset (z) is no longer a parameter.
+		graphics.blit(RenderPipelines.GUI_TEXTURED, ICON_ATLAS, x, y, (float) iconX, (float) iconY, 16, 16, 256, 256);
 	}
 
 	@OnlyIn(Dist.CLIENT)

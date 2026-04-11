@@ -3,6 +3,7 @@ package com.simibubi.create;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.compat.Mods;
+import com.simibubi.create.content.legacy.ChromaticCompoundColor;
 import com.simibubi.create.compat.ftb.FTBIntegration;
 import com.simibubi.create.compat.pojav.PojavChecker;
 import com.simibubi.create.compat.sodium.SodiumCompat;
@@ -31,6 +32,8 @@ import net.createmod.catnip.config.ui.BaseConfigScreen;
 import net.createmod.catnip.config.ui.ConfigScreen;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBufferCache;
+import net.minecraft.client.color.item.ItemTintSources;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GraphicsStatus;
@@ -106,6 +109,11 @@ public class CreateClient {
 
 		AllPartialModels.init();
 
+		// Register ItemTintSources for animated item colors (1.21.4+ Client Items system)
+		// ID_MAPPER is exposed via accesstransformer.cfg
+		ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer0"), ChromaticCompoundColor.Layer0.CODEC);
+		ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer1"), ChromaticCompoundColor.Layer1.CODEC);
+		ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer2"), ChromaticCompoundColor.Layer2.CODEC);
 
 		//AllPonderTags.register();
 		//PonderIndex.register();
@@ -118,10 +126,12 @@ public class CreateClient {
 		ConfigScreen.backgrounds.put(Create.ID, (screen, graphics, partialTicks) -> {
 			CreateMainMenuScreen.PANORAMA.render(graphics, screen.width, screen.height, 1, partialTicks);
 
-			//RenderSystem.setShaderTexture(0, CreateMainMenuScreen.PANORAMA_OVERLAY_TEXTURES);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			graphics.blit(CreateMainMenuScreen.PANORAMA_OVERLAY_TEXTURES, 0, 0, screen.width, screen.height, 0.0F, 0.0F, 16, 128, 16, 128);
+			// In 1.21.6+, blit requires a RenderPipeline. The texture is 16x128 pixels;
+			// we draw the full texture scaled to fill the screen.
+			// TODO: Verify scaling behavior matches the old form.
+			graphics.blit(RenderPipelines.GUI_TEXTURED, CreateMainMenuScreen.PANORAMA_OVERLAY_TEXTURES, 0, 0, 0.0F, 0.0F, 16, 128, 16, 128);
 
 			graphics.fill(0, 0, screen.width, screen.height, 0x90_282c34);
 		});

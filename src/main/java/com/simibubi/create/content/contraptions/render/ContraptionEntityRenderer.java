@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -38,12 +39,33 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 import net.neoforged.neoforge.client.model.data.ModelData;
 
-public class ContraptionEntityRenderer<C extends AbstractContraptionEntity> extends EntityRenderer<C> {
+/**
+ * Renders contraption entities (moving structures).
+ *
+ * <p>In 1.21.2+, {@link EntityRenderer} uses the render-state pattern. The entity's contraption
+ * data is extracted once per frame in {@link #extractRenderState} and consumed in {@link #render}.
+ */
+public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
+        extends EntityRenderer<C, ContraptionEntityRenderer.ContraptionRenderState> {
 	public static final SuperByteBufferCache.Compartment<Pair<Contraption, RenderType>> CONTRAPTION = new SuperByteBufferCache.Compartment<>();
 	private static final ThreadLocal<ThreadLocalObjects> THREAD_LOCAL_OBJECTS = ThreadLocal.withInitial(ThreadLocalObjects::new);
 
 	public ContraptionEntityRenderer(EntityRendererProvider.Context context) {
 		super(context);
+	}
+
+	@Override
+	public ContraptionRenderState createRenderState() {
+		return new ContraptionRenderState();
+	}
+
+	@Override
+	public void extractRenderState(C entity, ContraptionRenderState state, float partialTick) {
+		super.extractRenderState(entity, state, partialTick);
+		// Store the entity reference so render() can access contraption data.
+		// TODO: Properly extract all needed data (contraption, level, matrices) into state
+		// fields rather than keeping a live entity reference.
+		state.entity = entity;
 	}
 
 	public static SuperByteBuffer getBuffer(Contraption contraption, VirtualRenderWorld renderWorld, RenderType renderType) {
@@ -86,7 +108,7 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity> exte
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(C entity) {
+	public ResourceLocation getTextureLocation(ContraptionRenderState state) {
 		return null;
 	}
 
@@ -104,9 +126,12 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity> exte
 	}
 
 	@Override
-	public void render(C entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-		int overlay) {
-		super.render(entity, yaw, partialTicks, poseStack, buffers, overlay);
+	public void render(ContraptionRenderState state, PoseStack poseStack, MultiBufferSource buffers, int light) {
+		super.render(state, poseStack, buffers, light);
+
+		C entity = (C) state.entity;
+		if (entity == null)
+			return;
 
 		Contraption contraption = entity.getContraption();
 		if (contraption == null) {
@@ -166,6 +191,16 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity> exte
 				m.popPose();
 			}
 		}
+	}
+
+	/**
+	 * Render state for contraption entities.
+	 * TODO: Replace the entity reference with properly extracted fields once the
+	 * contraption rendering pipeline is decoupled from the live entity.
+	 */
+	public static class ContraptionRenderState extends EntityRenderState {
+		/** Live entity reference – temporary workaround for the 1.21.2 render-state migration. */
+		public AbstractContraptionEntity entity;
 	}
 
 	private static class ThreadLocalObjects {

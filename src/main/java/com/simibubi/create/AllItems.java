@@ -73,18 +73,18 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorItem.Type;
-import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.component.Weapon;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
 
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.Tags.Items;
@@ -182,8 +182,14 @@ public class AllItems {
 	public static final ItemEntry<CardboardSwordItem> CARDBOARD_SWORD =
 		REGISTRATE.item("cardboard_sword", CardboardSwordItem::new)
 			.burnTime(1000)
-			.properties(p -> p.stacksTo(1))
-			.properties(p -> p.attributes(SwordItem.createAttributes(AllToolMaterials.CARDBOARD, 3, 1)))
+			.properties(p -> p.stacksTo(1)
+				// In 1.21.5+, SwordItem.createAttributes is gone; weapon behaviour
+				// comes from the WEAPON data component.  Cardboard sword does 0 real
+				// damage (the AttackEntityEvent listener cancels the hit), so we give
+				// it a minimal Weapon component (no durability removal on use).
+				.component(DataComponents.WEAPON, new Weapon(0, 1.0f))
+				// enchantmentValue from AllToolMaterials.CARDBOARD = 1
+				.enchantable(1))
 			.model(AssetLookup.itemModelWithPartials())
 			.register();
 
@@ -194,11 +200,13 @@ public class AllItems {
 		ZINC_INGOT = taggedIngredient("zinc_ingot", CommonMetal.ZINC.ingots, CREATE_INGOTS.tag),
 		BRASS_INGOT = taggedIngredient("brass_ingot", CommonMetal.BRASS.ingots, CREATE_INGOTS.tag);
 
+	// In 1.21.4+, item tinting uses ItemTintSource (not ItemColor).
+	// ChromaticCompoundColor.Layer0/1/2 are registered as ItemTintSources in
+	// CreateClient and referenced in assets/create/items/chromatic_compound.json.
 	public static final ItemEntry<ChromaticCompoundItem> CHROMATIC_COMPOUND =
 		REGISTRATE.item("chromatic_compound", ChromaticCompoundItem::new)
 			.properties(p -> p.rarity(Rarity.UNCOMMON))
 			.model(AssetLookup.existingItemModel())
-			.color(() -> ChromaticCompoundColor::new)
 			.register();
 
 	public static final ItemEntry<ShadowSteelItem> SHADOW_STEEL = REGISTRATE.item("shadow_steel", ShadowSteelItem::new)
@@ -292,12 +300,17 @@ public class AllItems {
 		.model((c, p) -> p.withExistingParent(c.getName(), p.mcLoc("item/barrier")))
 		.register();
 
+	// In 1.21.4+, Item.Properties.humanoidArmor(ArmorMaterial, ArmorType) applies all armor
+	// data components. BaseArmorItem.propertiesFor() handles this, plus correct durability.
+	// Equipment textures are in assets/create/textures/entity/equipment/ and
+	// assets/create/equipment/<asset-id>.json (EquipmentAsset JSON).
+
 	public static final ItemEntry<? extends BacktankItem>
 
-		COPPER_BACKTANK =
-		REGISTRATE
+		COPPER_BACKTANK = REGISTRATE
 			.item("copper_backtank",
-				p -> new BacktankItem(AllArmorMaterials.COPPER, p, Create.asResource("copper_diving"),
+				p -> new BacktankItem(AllArmorMaterials.COPPER,
+					BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.CHESTPLATE),
 					COPPER_BACKTANK_PLACEABLE))
 			.model(AssetLookup.customGenericItemModel("_", "item"))
 			.tag(AllItemTags.PRESSURIZED_AIR_SOURCES.tag)
@@ -306,10 +319,10 @@ public class AllItems {
 
 	NETHERITE_BACKTANK = REGISTRATE
 		.item("netherite_backtank",
-			p -> new BacktankItem.Layered(ArmorMaterials.NETHERITE, p, Create.asResource("netherite_diving"),
+			p -> new BacktankItem(ArmorMaterials.NETHERITE,
+				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.CHESTPLATE).fireResistant(),
 				NETHERITE_BACKTANK_PLACEABLE))
 		.model(AssetLookup.customGenericItemModel("_", "item"))
-		.properties(p -> p.fireResistant())
 		.tag(AllItemTags.PRESSURIZED_AIR_SOURCES.tag)
 		.tag(ItemTags.CHEST_ARMOR)
 		.register();
@@ -317,37 +330,38 @@ public class AllItems {
 	public static final ItemEntry<? extends DivingHelmetItem>
 		COPPER_DIVING_HELMET = REGISTRATE
 		.item("copper_diving_helmet",
-			p -> new DivingHelmetItem(AllArmorMaterials.COPPER, p, Create.asResource("copper_diving")))
-		.properties(p -> p.durability(Type.HELMET.getDurability(7)))
+			p -> new DivingHelmetItem(AllArmorMaterials.COPPER,
+				BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.HELMET)))
 		.tag(ItemTags.HEAD_ARMOR)
 		.register(),
 
 	NETHERITE_DIVING_HELMET = REGISTRATE
 		.item("netherite_diving_helmet",
-			p -> new DivingHelmetItem(ArmorMaterials.NETHERITE, p, Create.asResource("netherite_diving")))
-		.properties(p -> p.fireResistant().durability(Type.HELMET.getDurability(37)))
+			p -> new DivingHelmetItem(ArmorMaterials.NETHERITE,
+				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.HELMET).fireResistant()))
 		.tag(ItemTags.HEAD_ARMOR)
 		.register();
 
 	public static final ItemEntry<? extends DivingBootsItem>
 		COPPER_DIVING_BOOTS = REGISTRATE
 		.item("copper_diving_boots",
-			p -> new DivingBootsItem(AllArmorMaterials.COPPER, p, Create.asResource("copper_diving")))
-		.properties(p -> p.durability(Type.BOOTS.getDurability(7)))
+			p -> new DivingBootsItem(AllArmorMaterials.COPPER,
+				BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.BOOTS)))
 		.tag(ItemTags.FOOT_ARMOR)
 		.register(),
 
 	NETHERITE_DIVING_BOOTS = REGISTRATE
 		.item("netherite_diving_boots",
-			p -> new DivingBootsItem(ArmorMaterials.NETHERITE, p, Create.asResource("netherite_diving")))
-		.properties(p -> p.fireResistant().durability(Type.BOOTS.getDurability(37)))
+			p -> new DivingBootsItem(ArmorMaterials.NETHERITE,
+				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.BOOTS).fireResistant()))
 		.tag(ItemTags.FOOT_ARMOR)
 		.register();
 
 	public static final ItemEntry<? extends BaseArmorItem>
 
-		CARDBOARD_HELMET = REGISTRATE.item("cardboard_helmet", p -> new CardboardArmorItem(ArmorItem.Type.HELMET, p))
-		.properties(p -> p.durability(Type.HELMET.getDurability(4)))
+		CARDBOARD_HELMET = REGISTRATE
+		.item("cardboard_helmet", p -> new CardboardArmorItem(ArmorType.HELMET,
+			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.HELMET)))
 		.tag(ItemTags.HEAD_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
@@ -355,26 +369,27 @@ public class AllItems {
 		.clientExtension(() -> () -> new CardboardArmorStealthOverlay())
 		.register(),
 
-	CARDBOARD_CHESTPLATE =
-		REGISTRATE.item("cardboard_chestplate", p -> new CardboardArmorItem(ArmorItem.Type.CHESTPLATE, p))
-			.properties(p -> p.durability(Type.CHESTPLATE.getDurability(4)))
-			.tag(ItemTags.CHEST_ARMOR)
-			.burnTime(1000)
-			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
-			.model(TrimmableArmorModelGenerator::generate)
-			.register(),
+	CARDBOARD_CHESTPLATE = REGISTRATE
+		.item("cardboard_chestplate", p -> new CardboardArmorItem(ArmorType.CHESTPLATE,
+			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.CHESTPLATE)))
+		.tag(ItemTags.CHEST_ARMOR)
+		.burnTime(1000)
+		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
+		.model(TrimmableArmorModelGenerator::generate)
+		.register(),
 
-	CARDBOARD_LEGGINGS =
-		REGISTRATE.item("cardboard_leggings", p -> new CardboardArmorItem(ArmorItem.Type.LEGGINGS, p))
-			.properties(p -> p.durability(Type.LEGGINGS.getDurability(4)))
-			.tag(ItemTags.LEG_ARMOR)
-			.burnTime(1000)
-			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
-			.model(TrimmableArmorModelGenerator::generate)
-			.register(),
+	CARDBOARD_LEGGINGS = REGISTRATE
+		.item("cardboard_leggings", p -> new CardboardArmorItem(ArmorType.LEGGINGS,
+			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.LEGGINGS)))
+		.tag(ItemTags.LEG_ARMOR)
+		.burnTime(1000)
+		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
+		.model(TrimmableArmorModelGenerator::generate)
+		.register(),
 
-	CARDBOARD_BOOTS = REGISTRATE.item("cardboard_boots", p -> new CardboardArmorItem(ArmorItem.Type.BOOTS, p))
-		.properties(p -> p.durability(Type.BOOTS.getDurability(4)))
+	CARDBOARD_BOOTS = REGISTRATE
+		.item("cardboard_boots", p -> new CardboardArmorItem(ArmorType.BOOTS,
+			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.BOOTS)))
 		.tag(ItemTags.FOOT_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
