@@ -153,7 +153,7 @@ public class CopycatBlockEntity extends SmartBlockEntity
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
 
-		consumedItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		consumedItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 
 		BlockState prevMaterial = material;
 		if (!tag.contains("Material")) {

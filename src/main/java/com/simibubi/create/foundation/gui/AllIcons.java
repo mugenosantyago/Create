@@ -192,7 +192,7 @@ public class AllIcons implements ScreenElement {
 	@Deprecated(forRemoval = true)
 	@OnlyIn(Dist.CLIENT)
 	public void bind() {
-		RenderSystem.setShaderTexture(0, ICON_ATLAS);
+		// setShaderTexture(int, ResourceLocation) removed in MC 1.21.8
 	}
 
 	@OnlyIn(Dist.CLIENT)

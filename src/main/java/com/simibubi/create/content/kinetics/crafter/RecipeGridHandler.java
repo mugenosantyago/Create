@@ -213,7 +213,7 @@ public class RecipeGridHandler {
 				CompoundTag entry = (CompoundTag) inbt;
 				int x = entry.getIntOr("x", 0);
 				int y = entry.getIntOr("y", 0);
-				ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, entry.getCompoundOrEmpty("item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+				ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, entry.getCompoundOrEmpty("item")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 				items.grid.put(Pair.of(x, y), stack);
 			});
 			return items;

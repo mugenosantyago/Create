@@ -383,7 +383,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		deferredInventoryList = compound.getListOrEmpty("Inventory");
 		overflowItems = NBTHelper.readItemList(compound.getListOrEmpty("Overflow"), registries);
 		if (compound.contains("HeldItem")) {
-			heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldItem").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+			heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldItem")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		}
 		super.read(compound, registries, clientPacket);
 
@@ -392,7 +392,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		fistBump = compound.getBooleanOr("Fistbump", false);
 		reach = compound.getFloatOr("Reach", 0);
 		if (compound.contains("Particle")) {
-			ItemStack particleStack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("Particle").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+			ItemStack particleStack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("Particle")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 			SandPaperItem.spawnParticles(VecHelper.getCenterOf(worldPosition)
 				.add(getMovementVector().scale(reach + 1)), particleStack, this.level);
 		}

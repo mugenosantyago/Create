@@ -134,7 +134,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
 		recipeIndex = compound.getIntOr("RecipeIndex", 0);
 		if (compound.contains("PlayEvent"))
-			playEvent = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("PlayEvent").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+			playEvent = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("PlayEvent")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 	}
 
 	@Override

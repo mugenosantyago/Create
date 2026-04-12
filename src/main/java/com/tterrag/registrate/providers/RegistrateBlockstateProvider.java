@@ -2,26 +2,34 @@ package com.tterrag.registrate.providers;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 
+import com.tterrag.registrate.providers.generators.RegistrateBlockModelGenerator;
+
+import java.util.Collections;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.BiConsumer;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Stub for removed RegistrateBlockstateProvider (MC 1.21.8 port).
- * Data gen model generation needs to be fully ported to the new system.
+ * Compatibility stub for old RegistrateBlockstateProvider API.
+ * Now extends RegistrateBlockModelGenerator for MC 1.21.8 compatibility.
+ * Data gen methods are stubbed.
  */
 @SuppressWarnings("all")
-public class RegistrateBlockstateProvider {
+public class RegistrateBlockstateProvider extends RegistrateBlockModelGenerator {
 
     private final String modId;
     private final BlockModelProvider models;
 
+    @SuppressWarnings("unchecked")
     public RegistrateBlockstateProvider(String modId) {
+        super(null, definitionGenerator -> {}, loc -> {}, (location, model) -> {});
         this.modId = modId;
         this.models = new BlockModelProvider(ResourceLocation.parse(modId + ":"));
     }

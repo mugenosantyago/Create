@@ -361,7 +361,7 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 			animatedPackage = null;
 		if (tag.contains("AnimatedPackage")) {
 			deferAnimationInward = tag.getBooleanOr("Deposit", false);
-			deferAnimationStart = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("AnimatedPackage").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+			deferAnimationStart = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("AnimatedPackage")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		}
 		if (clientPacket && tag.contains("Anticipate"))
 			anticipate();

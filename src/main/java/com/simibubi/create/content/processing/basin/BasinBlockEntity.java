@@ -182,7 +182,7 @@ public class BasinBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
 			return;
 
 		NBTHelper.iterateCompoundList(compound.getListOrEmpty("VisualizedItems"),
-			c -> visualizedOutputItems.add(IntAttached.with(OUTPUT_ANIMATION_TIME, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c).result().orElse(ItemStack.EMPTY))));
+			c -> visualizedOutputItems.add(IntAttached.with(OUTPUT_ANIMATION_TIME, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c)).result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
 		NBTHelper.iterateCompoundList(compound.getListOrEmpty("VisualizedFluids"),
 			c -> visualizedOutputFluids
 				.add(IntAttached.with(OUTPUT_ANIMATION_TIME, FluidStack.parseOptional(registries, c))));

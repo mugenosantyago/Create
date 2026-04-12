@@ -88,7 +88,7 @@ public abstract class LaunchedItem {
 		target = NBTHelper.readBlockPos(c, "Target");
 		ticksRemaining = c.getIntOr("TicksLeft", 0);
 		totalTicks = c.getIntOr("TotalTicks", 0);
-		stack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c.getCompoundOrEmpty("Stack").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		stack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c.getCompoundOrEmpty("Stack")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 	}
 
 	public static class ForBlockState extends LaunchedItem {

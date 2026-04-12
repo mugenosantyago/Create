@@ -383,7 +383,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 		if (getFilter(side).getItem() instanceof FilterItem && !player.isCreative())
 			refund = getFilter(side).copy();
 
-		ItemStack copied = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Filter").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		ItemStack copied = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Filter")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 
 		if (copied.getItem() instanceof FilterItem filterType && !player.isCreative()) {
 			InvWrapper inv = new InvWrapper(player.getInventory());

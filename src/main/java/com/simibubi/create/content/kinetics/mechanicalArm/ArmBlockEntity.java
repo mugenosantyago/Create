@@ -543,7 +543,7 @@ public class ArmBlockEntity extends KineticBlockEntity implements TransformableB
 		ListTag interactionPointTagBefore = interactionPointTag;
 
 		super.read(tag, registries, clientPacket);
-		heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("HeldItem").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("HeldItem")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		phase = NBTHelper.readEnum(tag, "Phase", Phase.class);
 		chasedPointIndex = tag.getIntOr("TargetPointIndex", 0);
 		chasedPointProgress = tag.getFloatOr("MovementProgress", 0);

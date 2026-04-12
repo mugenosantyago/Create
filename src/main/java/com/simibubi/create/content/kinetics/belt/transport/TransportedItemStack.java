@@ -100,7 +100,7 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 	}
 
 	public static TransportedItemStack read(CompoundTag nbt, HolderLookup.Provider registries) {
-		TransportedItemStack stack = new TransportedItemStack(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		TransportedItemStack stack = new TransportedItemStack(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("Item")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		stack.beltPosition = nbt.getFloatOr("Pos", 0);
 		stack.prevBeltPosition = nbt.getFloatOr("PrevPos", 0);
 		stack.sideOffset = nbt.getFloatOr("Offset", 0);

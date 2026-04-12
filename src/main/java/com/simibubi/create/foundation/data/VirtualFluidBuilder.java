@@ -20,7 +20,9 @@ public class VirtualFluidBuilder<T extends BaseFlowingFluid, P> extends FluidBui
 		NonNullFunction<Properties, T> sourceFactory,
 	    NonNullFunction<Properties, T> flowingFactory
    ) {
-		super(owner, parent, name, callback, stillTexture, flowingTexture, typeFactory, flowingFactory);
+		// In Registrate 1.21.8, FluidBuilder takes FluidTypeFactory and FluidFactory<T>
+		// NonNullFunction is functionally compatible with FluidFactory via method reference
+		super(owner, parent, name, callback, typeFactory, props -> flowingFactory.apply(props));
 		source(sourceFactory);
 	}
 

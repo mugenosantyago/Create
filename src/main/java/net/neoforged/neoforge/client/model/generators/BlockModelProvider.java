@@ -21,6 +21,22 @@ public class BlockModelProvider {
         return new ModelFile(ResourceLocation.parse(path));
     }
 
+    public ModelFile cubeAll(String name, ResourceLocation texture) {
+        return new ModelFile(ResourceLocation.parse(name));
+    }
+
+    public ModelFile cube(String name, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
+        return new ModelFile(ResourceLocation.parse(name));
+    }
+
+    public ModelFile withExistingParent(String name, ResourceLocation parent) {
+        return new ModelFile(ResourceLocation.parse(name));
+    }
+
+    public ModelFile withExistingParent(String name, String parent) {
+        return new ModelFile(ResourceLocation.parse(name));
+    }
+
     public ResourceLocation mcLoc(String path) {
         return ResourceLocation.withDefaultNamespace(path);
     }

@@ -583,8 +583,8 @@ public class PackagerBlockEntity extends SmartBlockEntity implements Clearable {
 		signBasedAddress = compound.getStringOr("SignAddress", "");
 		customComputerAddress = compound.getStringOr("ComputerAddress", "");
 		hasCustomComputerAddress = compound.getBooleanOr("HasComputerAddress", false);
-		heldBox = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldBox").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
-		previouslyUnwrapped = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("InsertedBox").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		heldBox = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldBox")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
+		previouslyUnwrapped = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("InsertedBox")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		if (clientPacket)
 			return;
 		queuedExitingPackages = NBTHelper.readCompoundList(compound.getListOrEmpty("QueuedExitingPackages"),

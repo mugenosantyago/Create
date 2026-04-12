@@ -102,7 +102,7 @@ public class ChainConveyorPackage {
 
 	public static ChainConveyorPackage read(CompoundTag compoundTag, HolderLookup.Provider registries) {
 		float pos = compoundTag.getFloatOr("Position", 0);
-		ItemStack item = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compoundTag.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		ItemStack item = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compoundTag.getCompoundOrEmpty("Item")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		if (compoundTag.contains("NetID"))
 			return new ChainConveyorPackage(pos, item, compoundTag.getIntOr("NetID", 0));
 		return new ChainConveyorPackage(pos, item);

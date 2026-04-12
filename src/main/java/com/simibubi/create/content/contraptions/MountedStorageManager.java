@@ -449,7 +449,7 @@ public class MountedStorageManager {
 			} else if (data.contains("NoFuel")) {
 				this.addStorage(ItemVaultMountedStorage.fromLegacy(registries, data), pos);
 			} else if (data.contains("Bottomless")) {
-				ItemStack supplied = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, data.getCompoundOrEmpty("ProvidedStack").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+				ItemStack supplied = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, data.getCompoundOrEmpty("ProvidedStack")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 				this.addStorage(new CreativeCrateMountedStorage(supplied), pos);
 			} else if (data.contains("Synced")) {
 				this.addStorage(DepotMountedStorage.fromLegacy(registries, data), pos);

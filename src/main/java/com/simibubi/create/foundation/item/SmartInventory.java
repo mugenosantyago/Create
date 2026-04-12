@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -140,7 +141,7 @@ public class SmartInventory extends ItemHandlerContainer
 
 	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag nbt) {
 		ProblemReporter.Collector reporter = new ProblemReporter.Collector();
-		TagValueInput input = TagValueInput.create(reporter, registries, nbt);
+		ValueInput input = TagValueInput.create(reporter, registries, nbt);
 		getInv().deserialize(input);
 	}
 

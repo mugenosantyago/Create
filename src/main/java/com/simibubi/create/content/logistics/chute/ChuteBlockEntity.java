@@ -562,7 +562,7 @@ public class ChuteBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		ItemStack previousItem = item;
-		item = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		item = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("Item")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		itemPosition.startWithValue(compound.getFloatOr("ItemPosition", 0));
 		pull = compound.getFloatOr("Pull", 0);
 		push = compound.getFloatOr("Push", 0);

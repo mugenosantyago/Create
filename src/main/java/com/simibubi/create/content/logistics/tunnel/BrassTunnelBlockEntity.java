@@ -628,7 +628,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements IHa
 		connectedLeft = compound.getBooleanOr("ConnectedLeft", false);
 		connectedRight = compound.getBooleanOr("ConnectedRight", false);
 
-		stackToDistribute = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("StackToDistribute").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		stackToDistribute = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("StackToDistribute")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		stackEnteredFrom =
 			compound.contains("StackEnteredFrom") ? NBTHelper.readEnum(compound, "StackEnteredFrom", Direction.class)
 				: null;

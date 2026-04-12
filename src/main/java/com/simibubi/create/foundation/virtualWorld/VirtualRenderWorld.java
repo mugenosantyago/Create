@@ -520,6 +520,14 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	}
 
 	@Override
+	public void explode(Entity entity, net.minecraft.world.damagesource.DamageSource damageSource, 
+						net.minecraft.world.level.ExplosionDamageCalculator calculator, double x, double y, double z, 
+						float power, boolean fire, Level.ExplosionInteraction interaction,
+						net.minecraft.core.particles.ParticleOptions smallParticle, net.minecraft.core.particles.ParticleOptions largeParticle,
+						net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> sound) {
+	}
+
+	@Override
 	public int getSectionIndex(int y) {
 		return this.getSectionIndexFromSectionY(SectionPos.blockToSectionCoord(y));
 	}

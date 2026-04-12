@@ -150,8 +150,8 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 		newPosition = positionInTag != positionKey;
 
 		super.read(nbt, registries, clientPacket);
-		frequencyFirst = Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("FrequencyFirst").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
-		frequencyLast = Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("FrequencyLast").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		frequencyFirst = Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("FrequencyFirst")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		frequencyLast = Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("FrequencyLast")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 	}
 
 	public void setFrequency(boolean first, ItemStack stack) {
@@ -247,8 +247,8 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 			return false;
 		if (simulate)
 			return true;
-		setFrequency(true, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("First").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
-		setFrequency(false, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Last").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		setFrequency(true, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("First")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		setFrequency(false, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Last")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		return true;
 	}
 

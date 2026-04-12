@@ -68,7 +68,7 @@ public class PlacardBlockEntity extends SmartBlockEntity {
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		int prevTicks = poweredTicks;
 		poweredTicks = tag.getIntOr("PoweredTicks", 0);
-		heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
 		super.read(tag, registries, clientPacket);
 
 		if (clientPacket && prevTicks < poweredTicks)

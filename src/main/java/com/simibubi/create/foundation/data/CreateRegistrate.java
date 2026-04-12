@@ -248,23 +248,8 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 			typeFactory);
 	}
 
-	public static FluidType defaultFluidType(FluidType.Properties properties, ResourceLocation stillTexture,
-											 ResourceLocation flowingTexture) {
+	public static FluidType defaultFluidType(FluidType.Properties properties) {
 		return new FluidType(properties) {
-			@Override
-			public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-				consumer.accept(new IClientFluidTypeExtensions() {
-					@Override
-					public ResourceLocation getStillTexture() {
-						return stillTexture;
-					}
-
-					@Override
-					public ResourceLocation getFlowingTexture() {
-						return flowingTexture;
-					}
-				});
-			}
 		};
 	}
 
@@ -311,6 +296,6 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 	private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
 		ConnectedTextureBehaviour behavior = behaviorSupplier.get();
 		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), behavior);
+			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), model -> model);
 	}
 }

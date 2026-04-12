@@ -559,7 +559,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 		state = NBTHelper.readEnum(compound, "State", State.class);
 		lidProgress.readNBT(compound.getCompoundOrEmpty("Lid"), false);
 		launchedItems = NBTHelper.readCompoundList(compound.getListOrEmpty("LaunchedItems"),
-			nbt -> IntAttached.read(nbt, t -> ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, t).result().orElse(ItemStack.EMPTY)));
+			nbt -> IntAttached.read(nbt, t -> ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, t)).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 
 		earlyTarget = null;
 		earlyTargetTime = 0;
