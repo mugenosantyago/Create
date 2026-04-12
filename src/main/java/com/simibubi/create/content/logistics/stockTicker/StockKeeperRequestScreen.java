@@ -65,6 +65,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -1632,7 +1633,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
 	private Pair<Integer, List<List<BigItemStack>>> maxCraftable(CraftableBigItemStack cbis, InventorySummary summary,
 																 Function<ItemStack, Integer> countModifier, int newTypeLimit) {
-		List<Ingredient> ingredients = cbis.placementInfo().ingredients();
+		List<Ingredient> ingredients = cbis.getIngredients();
 		List<List<BigItemStack>> validEntriesByIngredient = new ArrayList<>();
 		List<BigItemStack> alreadyCreated = new ArrayList<>();
 

@@ -11,11 +11,12 @@ import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.content.equipment.potatoCannon.AllPotatoProjectileRenderModes.StuckToEntity;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.damageTypes.CreateDamageSources;
+import com.simibubi.create.foundation.utility.NbtCompat;
 import com.simibubi.create.foundation.particle.AirParticleData;
 
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +36,7 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
@@ -66,15 +68,15 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		this.stack = stack;
 		type = PotatoCannonProjectileType.getTypeForItem(level().registryAccess(), stack.getItem())
 			.orElseGet(() -> level().registryAccess()
-				.registryOrThrow(CreateRegistries.POTATO_PROJECTILE_TYPE)
-				.getHolderOrThrow(AllPotatoProjectileTypes.FALLBACK))
+				.lookupOrThrow(CreateRegistries.POTATO_PROJECTILE_TYPE)
+				.getOrThrow(AllPotatoProjectileTypes.FALLBACK))
 			.value();
 	}
 
 	public void setEnchantmentEffectsFromCannon(ItemStack cannon) {
-		Registry<Enchantment> enchantmentRegistry = registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-
-		int recovery = cannon.getEnchantmentLevel(enchantmentRegistry.getHolderOrThrow(AllEnchantments.POTATO_RECOVERY));
+		Holder<Enchantment> recoveryEnch =
+			registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(AllEnchantments.POTATO_RECOVERY);
+		int recovery = cannon.getEnchantments().getLevel(recoveryEnch);
 
 		if (recovery > 0)
 			recoveryChance = .125f + recovery * .125f;
@@ -100,7 +102,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 	}
 
 	public void readAdditionalSaveData(CompoundTag nbt) {
-		setItem(net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, this.registryAccess(), nbt.getCompoundOrEmpty("Item").orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		setItem(NbtCompat.parseOptionalItemStack(registryAccess(), nbt.get("Item")));
 		additionalDamageMult = nbt.getFloatOr("AdditionalDamage", 0);
 		additionalKnockback = nbt.getFloatOr("AdditionalKnockback", 0);
 		recoveryChance = nbt.getFloatOr("Recovery", 0);
@@ -272,7 +274,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		if (livingentity != owner && livingentity instanceof Player && owner instanceof ServerPlayer
 			&& !this.isSilent()) {
 			((ServerPlayer) owner).connection
-				.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+				.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PLAY_ARROW_HIT_SOUND, 0.0F));
 		}
 
 		if (onServer && owner instanceof ServerPlayer serverplayerentity) {

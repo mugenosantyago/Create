@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-
 /**
  * Partial item model renderer.
  * Note: In MC 1.21.8, BakedModel was removed and item rendering uses ItemStackRenderState.
@@ -62,12 +60,7 @@ public class PartialItemModelRenderer {
 	private void renderFallback(int light) {
 		if (stack.isEmpty())
 			return;
-		IClientItemExtensions ext = IClientItemExtensions.of(stack);
-		if (ext.getCustomRenderer() != null) {
-			ext.getCustomRenderer().renderByItem(stack, transformType, ms, buffer, light, overlay);
-		} else {
-			Minecraft.getInstance().getItemRenderer().renderStatic(stack, transformType, light, overlay, ms, buffer, null, 0);
-		}
+		Minecraft.getInstance().getItemRenderer().renderStatic(stack, transformType, light, overlay, ms, buffer, null, 0);
 	}
 
 }

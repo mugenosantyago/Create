@@ -11,8 +11,10 @@ import com.simibubi.create.AllPartialModels;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.gui.UIRenderHelper;
 import net.createmod.catnip.platform.NeoForgeCatnipServices;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
 
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -72,7 +74,8 @@ public class AnimatedSpout extends AnimatedKinetics {
 		float from = 3f / 16f;
 		float to = 17f / 16f;
 		FluidStack fluidStack = fluids.get(0);
-		NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(fluidStack, from, from, from, to, to, to, graphics.bufferSource(), matrixStack, LightTexture.FULL_BRIGHT, false, true);
+		MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+		NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(fluidStack, from, from, from, to, to, to, bufferSource, matrixStack, LightTexture.FULL_BRIGHT, false, true);
 		matrixStack.popPose();
 
 		float width = 1 / 128f * squeeze;
@@ -82,9 +85,11 @@ public class AnimatedSpout extends AnimatedKinetics {
 		matrixStack.translate(-0.5f, 0, -0.5f);
 		from = -width / 2 + 0.5f;
 		to = width / 2 + 0.5f;
-		NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(fluidStack, from, 0, from, to, 2, to, graphics.bufferSource(), matrixStack, LightTexture.FULL_BRIGHT, false, true);
+		NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(fluidStack, from, 0, from, to, 2, to, bufferSource, matrixStack, LightTexture.FULL_BRIGHT, false, true);
 		graphics.flush();
-		Lighting.setupFor3DItems();
+		try (Lighting lighting = new Lighting()) {
+			lighting.setupFor(Lighting.Entry.ITEMS_3D);
+		}
 
 		matrixStack.popPose();
 	}

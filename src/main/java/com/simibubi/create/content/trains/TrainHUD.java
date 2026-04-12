@@ -1,6 +1,6 @@
 package com.simibubi.create.content.trains;
 
-import com.mojang.blaze3d.pipeline.RenderPipelines;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.contraptions.actors.trainControls.ControlsBlock;
 import com.simibubi.create.content.contraptions.actors.trainControls.ControlsHandler;

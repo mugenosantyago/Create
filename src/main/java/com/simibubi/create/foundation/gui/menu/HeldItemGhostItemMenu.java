@@ -44,7 +44,7 @@ public abstract class HeldItemGhostItemMenu extends GhostItemMenu<ItemStack> {
 
 	@Override
 	public boolean stillValid(Player player) {
-		return playerInventory.getSelected() == contentHolder;
+		return playerInventory.getSelectedItem() == contentHolder;
 	}
 
 	protected boolean isInSlot(int index) {
