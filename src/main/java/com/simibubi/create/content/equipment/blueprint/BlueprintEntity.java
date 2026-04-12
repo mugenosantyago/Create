@@ -16,6 +16,7 @@ import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement.ItemUseType;
 import com.simibubi.create.foundation.networking.ISyncPersistentData;
 import com.simibubi.create.foundation.utility.IInteractionChecker;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.math.VecHelper;
@@ -308,7 +309,7 @@ public class BlueprintEntity extends HangingEntity
 	@Override
 	public void dropItem(net.minecraft.server.level.ServerLevel serverLevel, @Nullable Entity p_110128_1_) {
 		if (!serverLevel.getGameRules()
-			.getBooleanOr(GameRules.RULE_DOENTITYDROPS, false))
+			.getBoolean(GameRules.RULE_DOENTITYDROPS))
 			return;
 
 		playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
@@ -320,7 +321,6 @@ public class BlueprintEntity extends HangingEntity
 		spawnAtLocation(serverLevel, AllItems.CRAFTING_BLUEPRINT.asStack());
 	}
 
-	@Override
 	public ItemStack getPickedResult(HitResult target) {
 		return AllItems.CRAFTING_BLUEPRINT.asStack();
 	}
@@ -333,11 +333,6 @@ public class BlueprintEntity extends HangingEntity
 	@Override
 	public void playPlacementSound() {
 		this.playSound(SoundEvents.PAINTING_PLACE, 1.0F, 1.0F);
-	}
-
-	@Override
-	public void moveTo(double p_70012_1_, double p_70012_3_, double p_70012_5_, float p_70012_7_, float p_70012_8_) {
-		this.setPos(p_70012_1_, p_70012_3_, p_70012_5_);
 	}
 
 	public void lerpTo(double pX, double pY, double pZ, float pYRot, float pXRot, int pSteps) {
@@ -424,10 +419,12 @@ public class BlueprintEntity extends HangingEntity
 						success = false;
 					} else {
 						amountCrafted += result.getCount();
-						result.onCraftedBy(player.level(), player, 1);
+						result.onCraftedBy(player, result.getCount());
 						EventHooks.firePlayerCraftingEvent(player, result, craftingInventory);
-						NonNullList<ItemStack> nonnulllist = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level())
-							.getRemainingItemsFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), level());
+						NonNullList<ItemStack> nonnulllist = recipe
+							.map(RecipeHolder::value)
+							.map(r -> r.getRemainingItems(craftingInventory.asCraftInput()))
+							.orElseGet(() -> NonNullList.withSize(craftingInventory.getContainerSize(), ItemStack.EMPTY));
 
 						if (firstPass)
 							level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
@@ -540,13 +537,13 @@ public class BlueprintEntity extends HangingEntity
 			CompoundTag invNBT = list.getCompoundOrEmpty(index + "");
 			inferredIcon = list.getBooleanOr("InferredIcon", false);
 			if (!invNBT.isEmpty())
-				newInv.deserializeNBT(registryAccess(), invNBT);
+				NbtCompat.deserializeItemStackHandler(newInv, registryAccess(), invNBT);
 			return newInv;
 		}
 
 		public void save(ItemStackHandler inventory) {
 			CompoundTag list = getOrCreateRecipeCompound();
-			list.put(index + "", inventory.serializeNBT(registryAccess()));
+			list.put(index + "", NbtCompat.serializeItemStackHandler(inventory, registryAccess()));
 			list.putBoolean("InferredIcon", inferredIcon);
 			cachedDisplayItems = null;
 			if (!level().isClientSide)
