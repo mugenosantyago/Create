@@ -2,7 +2,6 @@ package com.simibubi.create.foundation.events;
 
 import java.util.function.Supplier;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.Create;
@@ -247,7 +246,6 @@ public class ClientEvents {
 		ChainConveyorInteractionHandler.drawCustomBlockSelection(ms, buffer, camera);
 
 		buffer.draw();
-		RenderSystem.enableCull();
 		ms.popPose();
 
 		ContraptionPlayerPassengerRotation.frame();
@@ -327,12 +325,10 @@ public class ClientEvents {
 		if (!divingHelmet.isEmpty()) {
 			if (FluidHelper.isWater(fluid)) {
 				event.scaleFarPlaneDistance(6.25f);
-				event.setCanceled(true);
 				return;
 			} else if (FluidHelper.isLava(fluid) && NetheriteDivingHandler.isNetheriteDivingHelmet(divingHelmet)) {
 				event.setNearPlaneDistance(-4.0f);
 				event.setFarPlaneDistance(20.0f);
-				event.setCanceled(true);
 				return;
 			}
 		}
@@ -353,8 +349,8 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
-		event.registerReloadListener(CreateClient.RESOURCE_RELOAD_LISTENER);
-		event.registerReloadListener(TrainHatInfoReloadListener.LISTENER);
+		event.addListener(Create.asResource("client_resources"), CreateClient.RESOURCE_RELOAD_LISTENER);
+		event.addListener(Create.asResource("train_hat_info"), TrainHatInfoReloadListener.LISTENER);
 	}
 
 	@SubscribeEvent
@@ -369,7 +365,7 @@ public class ClientEvents {
 	public static void registerGuiOverlays(RegisterGuiLayersEvent event) {
 		// Register overlays in reverse order
 		event.registerAbove(VanillaGuiLayers.AIR_LEVEL, Create.asResource("remaining_air"), RemainingAirOverlay.INSTANCE);
-		event.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, Create.asResource("train_hud"), TrainHUD.OVERLAY);
+		event.registerAbove(VanillaGuiLayers.EXPERIENCE_LEVEL, Create.asResource("train_hud"), TrainHUD.OVERLAY);
 		event.registerAbove(VanillaGuiLayers.HOTBAR, Create.asResource("value_settings"), CreateClient.VALUE_SETTINGS_HANDLER);
 		event.registerAbove(VanillaGuiLayers.HOTBAR, Create.asResource("track_placement"), TrackPlacementOverlay.INSTANCE);
 		event.registerAbove(VanillaGuiLayers.HOTBAR, Create.asResource("goggle_info"), GoggleOverlayRenderer.OVERLAY);

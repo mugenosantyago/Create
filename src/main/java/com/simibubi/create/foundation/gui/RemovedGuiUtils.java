@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
@@ -148,16 +144,8 @@ public class RemovedGuiUtils {
 			tooltipY = screenHeight - tooltipHeight - 4;
 
 		final int zLevel = 400;
-		RenderTooltipEvent.Color colorEvent = new RenderTooltipEvent.Color(stack, graphics, tooltipX, tooltipY,
-			font, backgroundColor, borderColorStart, borderColorEnd, list);
-		NeoForge.EVENT_BUS.post(colorEvent);
-		backgroundColor = colorEvent.getBackgroundStart();
-		borderColorStart = colorEvent.getBorderStart();
-		borderColorEnd = colorEvent.getBorderEnd();
 
 		pStack.pushPose();
-		Matrix4f mat = pStack.last()
-			.pose();
 		graphics.fillGradient(tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3,
 			tooltipY - 3, backgroundColor, backgroundColor);
 		graphics.fillGradient(tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor);
@@ -172,22 +160,21 @@ public class RemovedGuiUtils {
 			tooltipY - 3 + 1, borderColorStart, borderColorStart);
 		graphics.fillGradient(tooltipX - 3, tooltipY + tooltipHeight + 2, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd);
 
-		MultiBufferSource.BufferSource renderType = graphics.bufferSource();
+		graphics.nextStratum();
 		pStack.translate(0.0D, 0.0D, zLevel);
 
 		for (int lineNumber = 0; lineNumber < list.size(); ++lineNumber) {
 			ClientTooltipComponent line = list.get(lineNumber);
 
 			if (line != null)
-				line.renderText(font, tooltipX, tooltipY, mat, renderType);
+				line.renderText(graphics, font, tooltipX, tooltipY);
 
 			if (lineNumber + 1 == titleLinesCount)
 				tooltipY += 2;
 
-			tooltipY += line == null ? 10 : line.getHeight();
+			tooltipY += line == null ? 10 : line.getHeight(font);
 		}
 
-		renderType.endBatch();
 		pStack.popPose();
 	}
 }

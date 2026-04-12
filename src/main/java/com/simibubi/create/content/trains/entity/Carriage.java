@@ -734,7 +734,7 @@ public class Carriage {
 
 				} else {
 					passenger = EntityType.loadEntityRecursive(tag, entity.level(), EntitySpawnReason.LOAD, e -> {
-						e.moveTo(positionAnchor);
+						e.setPos(positionAnchor);
 						return e;
 					});
 					if (passenger != null)
@@ -846,7 +846,7 @@ public class Carriage {
 				return;
 			}
 
-			entity.moveTo(positionAnchor);
+			entity.setPos(positionAnchor);
 			this.entity = new WeakReference<>(cce);
 
 			cce.setCarriage(Carriage.this);

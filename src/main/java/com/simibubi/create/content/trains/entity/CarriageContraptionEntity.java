@@ -96,11 +96,6 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 	}
 
 	@Override
-	public boolean isControlledByLocalInstance() {
-		return true;
-	}
-
-	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		super.defineSynchedData(builder);
 		builder.define(CARRIAGE_DATA, new CarriageSyncData());
