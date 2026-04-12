@@ -85,8 +85,7 @@ public class ItemHatchBlock extends HorizontalDirectionalBlock
 	}
 
 	@Override
-	public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState,
-		LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		updateWater(pLevel, pState, pPos);
 		return pState;
 	}
@@ -171,8 +170,7 @@ public class ItemHatchBlock extends HorizontalDirectionalBlock
 			pLevel.setBlockAndUpdate(pPos, pState.setValue(OPEN, false));
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
 		IBE.onRemove(state, level, pos, newState);
 	}
 

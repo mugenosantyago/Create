@@ -412,7 +412,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 			player.getInventory()
 				.save(invNBT);
 			compound.put("Inventory", invNBT);
-			NbtCompat.saveItemStack(compound.put("HeldItem", player.getMainHandItem(), registries));
+			compound.put("HeldItem", NbtCompat.saveItemStack(player.getMainHandItem(), registries));
 			compound.put("Overflow", NBTHelper.writeItemList(overflowItems, registries));
 		} else if (deferredInventoryList != null) {
 			compound.put("Inventory", deferredInventoryList);
@@ -426,7 +426,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		compound.putFloat("Reach", reach);
 		if (player == null)
 			return;
-		NbtCompat.saveItemStack(compound.put("HeldItem", player.getMainHandItem(), registries));
+		compound.put("HeldItem", NbtCompat.saveItemStack(player.getMainHandItem(), registries));
 		if (player.spawnedItemEffects != null) {
 			compound.put("Particle", NbtCompat.saveItemStack(player.spawnedItemEffects, registries));
 			player.spawnedItemEffects = null;

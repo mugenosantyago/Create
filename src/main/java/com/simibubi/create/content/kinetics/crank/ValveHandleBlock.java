@@ -72,8 +72,7 @@ public class ValveHandleBlock extends HandCrankBlock {
 		}
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		if (!(pNewState.getBlock() instanceof ValveHandleBlock))
 			super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
 	}

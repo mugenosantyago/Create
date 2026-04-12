@@ -85,8 +85,7 @@ public class MechanicalCrafterBlock extends HorizontalKineticBlock
 			.setValue(POINTING, pointing);
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() == newState.getBlock()) {
 			if (getTargetDirection(state) != getTargetDirection(newState)) {
 				MechanicalCrafterBlockEntity crafter = CrafterHelper.getCrafter(worldIn, pos);
@@ -230,8 +229,8 @@ public class MechanicalCrafterBlock extends HorizontalKineticBlock
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
-		boolean isMoving) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		InvManipulationBehaviour behaviour = BlockEntityBehaviour.get(worldIn, pos, InvManipulationBehaviour.TYPE);
 		if (behaviour != null)
 			behaviour.onNeighborChanged(fromPos);

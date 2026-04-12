@@ -48,8 +48,7 @@ public class PulleyBlock extends HorizontalAxisKineticBlock implements IBE<Pulle
 		}
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		super.onRemove(state, worldIn, pos, newState, isMoving);
 		if (state.is(newState.getBlock()))
 			return;
@@ -101,13 +100,11 @@ public class PulleyBlock extends HorizontalAxisKineticBlock implements IBE<Pulle
 		}
 
 		@Override
-		public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
-										   Player player) {
+		public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 			return AllBlocks.ROPE_PULLEY.asStack();
 		}
 
-		@Override
-		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+				public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 			if (!isMoving && (!state.hasProperty(BlockStateProperties.WATERLOGGED) || !newState.hasProperty(BlockStateProperties.WATERLOGGED) || state.getValue(BlockStateProperties.WATERLOGGED) == newState.getValue(BlockStateProperties.WATERLOGGED))) {
 				onRopeBroken(worldIn, pos.above());
 				if (!worldIn.isClientSide) {
@@ -137,10 +134,9 @@ public class PulleyBlock extends HorizontalAxisKineticBlock implements IBE<Pulle
 		}
 
 		@Override
-		public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState,
-									  LevelAccessor world, BlockPos pos, BlockPos neighbourPos) {
+		public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource _random) {
 			if (state.getValue(BlockStateProperties.WATERLOGGED))
-				world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+				_scheduledTicks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 			return state;
 		}
 

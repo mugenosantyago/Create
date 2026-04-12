@@ -86,8 +86,7 @@ public class RedstoneContactBlock extends WrenchableDirectionalBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
-		BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
 		if (facing != stateIn.getValue(FACING))
 			return stateIn;
 		boolean hasValidContact = hasValidContact(worldIn, currentPos, facing);
@@ -97,8 +96,7 @@ public class RedstoneContactBlock extends WrenchableDirectionalBlock {
 	}
 
 	@SuppressWarnings("deprecation")
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() == this && newState.getBlock() == this)
 			if (state == newState.cycle(POWERED))
 				worldIn.updateNeighborsAt(pos, this);

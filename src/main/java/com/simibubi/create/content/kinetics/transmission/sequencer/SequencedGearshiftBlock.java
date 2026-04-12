@@ -59,8 +59,8 @@ public class SequencedGearshiftBlock extends HorizontalAxisKineticBlock implemen
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-								boolean isMoving) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (level.isClientSide)
 			return;
 		if (!level.getBlockTicks()

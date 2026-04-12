@@ -98,8 +98,7 @@ public class StockTickerBlock extends HorizontalDirectionalBlock implements IBE<
 		return AllPartialModels.LOGISTICS_HAT;
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
 	}
 

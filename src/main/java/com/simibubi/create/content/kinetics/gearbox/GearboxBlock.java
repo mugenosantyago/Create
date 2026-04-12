@@ -42,8 +42,7 @@ public class GearboxBlock extends RotatedPillarKineticBlock implements IBE<Gearb
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
-			Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		if (state.getValue(AXIS).isVertical())
 			return super.getCloneItemStack(state, target, level, pos, player);
 		return new ItemStack(AllItems.VERTICAL_GEARBOX.get());

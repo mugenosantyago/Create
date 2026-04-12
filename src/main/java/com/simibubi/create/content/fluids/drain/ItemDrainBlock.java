@@ -106,8 +106,7 @@ public class ItemDrainBlock extends Block implements IWrenchable, IBE<ItemDrainB
 		return AllShapes.CASING_13PX.get(Direction.UP);
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.hasBlockEntity() || state.getBlock() == newState.getBlock())
 			return;
 		withBlockEntityDo(worldIn, pos, be -> {

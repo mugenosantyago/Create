@@ -40,8 +40,8 @@ public class RedstoneLinkBlock extends WrenchableDirectionalBlock implements IBE
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-		boolean isMoving) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (level.isClientSide)
 			return;
 
@@ -80,8 +80,7 @@ public class RedstoneLinkBlock extends WrenchableDirectionalBlock implements IBE
 		updateTransmittedSignal(state, worldIn, pos);
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
 	}
 

@@ -66,8 +66,7 @@ public class LecternControllerBlock extends LecternBlock
 		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.is(newState.getBlock())) {
 			if (!world.isClientSide)
 				withBlockEntityDo(world, pos, be -> be.dropController(state));
@@ -95,7 +94,7 @@ public class LecternControllerBlock extends LecternBlock
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return Blocks.LECTERN.getCloneItemStack(state, target, level, pos, player);
 	}
 

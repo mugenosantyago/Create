@@ -131,8 +131,7 @@ public class ChuteBlock extends AbstractChuteBlock implements ProperWaterloggedB
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState above, LevelAccessor world,
-		BlockPos pos, BlockPos p_196271_6_) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState above, net.minecraft.util.RandomSource _random) {
 		updateWater(world, state, pos);
 		return super.updateShape(state, direction, above, world, pos, p_196271_6_);
 	}

@@ -167,8 +167,7 @@ public class BasinBlock extends Block implements IBE<BasinBlockEntity>, IWrencha
 		return getShape(state, reader, pos, ctx);
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		IBE.onRemove(state, worldIn, pos, newState);
 	}
 

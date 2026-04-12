@@ -154,8 +154,8 @@ public class PackagerBlock extends WrenchableDirectionalBlock implements IBE<Pac
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
-								boolean isMoving) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (worldIn.isClientSide)
 			return;
 
@@ -171,8 +171,7 @@ public class PackagerBlock extends WrenchableDirectionalBlock implements IBE<Pac
 			withBlockEntityDo(worldIn, pos, PackagerBlockEntity::activate);
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
 	}
 

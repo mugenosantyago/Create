@@ -70,8 +70,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 		super.createBlockStateDefinition(builder.add(EXTRACTING));
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (newState.getBlock() instanceof BeltFunnelBlock bfb && bfb.isOfSameType(this))
 			return;
 		super.onRemove(state, world, pos, newState, isMoving);
@@ -165,8 +164,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState p_196271_3_, LevelAccessor world,
-		BlockPos pos, BlockPos p_196271_6_) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState p_196271_3_, net.minecraft.util.RandomSource _random) {
 		updateWater(world, state, pos);
 		if (getFacing(state).getAxis()
 			.isVertical() || direction != Direction.DOWN)

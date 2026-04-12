@@ -73,8 +73,8 @@ public class SignalBlock extends Block implements IBE<SignalBlockEntity>, IWrenc
 	}
 
 	@Override
-	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos,
-		boolean pIsMoving) {
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (pLevel.isClientSide)
 			return;
 		boolean powered = pState.getValue(POWERED);
@@ -99,8 +99,7 @@ public class SignalBlock extends Block implements IBE<SignalBlockEntity>, IWrenc
 			pLevel.setBlock(pPos, pState.cycle(POWERED), Block.UPDATE_CLIENTS);
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		IBE.onRemove(state, worldIn, pos, newState);
 	}
 

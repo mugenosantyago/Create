@@ -45,8 +45,7 @@ public class CrushingWheelBlock extends RotatedPillarKineticBlock implements IBE
 		return AllShapes.CRUSHING_WHEEL_COLLISION_SHAPE;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		for (Direction d : Iterate.directions) {
 			if (d.getAxis() == state.getValue(AXIS))
 				continue;

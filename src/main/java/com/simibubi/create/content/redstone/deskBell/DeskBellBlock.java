@@ -47,8 +47,7 @@ public class DeskBellBlock extends WrenchableDirectionalBlock
 	}
 
 	@Override
-	public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState,
-		LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		updateWater(pLevel, pState, pPos);
 		return pState;
 	}
@@ -84,8 +83,7 @@ public class DeskBellBlock extends WrenchableDirectionalBlock
 			AllSoundEvents.DESK_BELL_USE.play(level, pPlayer, pPos);
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		if (!pIsMoving && !pState.is(pNewState.getBlock()))
 			if (pState.getValue(POWERED))
 				updateNeighbours(pState, pLevel, pPos);

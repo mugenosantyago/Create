@@ -81,8 +81,7 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction face, BlockState neighbour, LevelAccessor worldIn,
-		BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction face, BlockPos facingPos, BlockState neighbour, net.minecraft.util.RandomSource _random) {
 		Part part = stateIn.getValue(PART);
 		Axis axis = stateIn.getValue(AXIS);
 		boolean connectionAlongFirst = stateIn.getValue(CONNECTED_ALONG_FIRST_COORDINATE);

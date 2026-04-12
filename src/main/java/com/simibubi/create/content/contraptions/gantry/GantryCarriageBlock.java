@@ -77,16 +77,15 @@ public class GantryCarriageBlock extends DirectionalAxisKineticBlock implements 
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block p_220069_4_, BlockPos updatePos,
-								boolean p_220069_6_) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (updatePos.equals(pos.relative(state.getValue(FACING)
 			.getOpposite())) && !canSurvive(state, world, pos))
 			world.destroyBlock(pos, true);
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState otherState, LevelAccessor world,
-								  BlockPos pos, BlockPos p_196271_6_) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState otherState, net.minecraft.util.RandomSource _random) {
 		if (state.getValue(FACING) != direction.getOpposite())
 			return state;
 		return cycleAxisIfNecessary(state, direction, otherState);

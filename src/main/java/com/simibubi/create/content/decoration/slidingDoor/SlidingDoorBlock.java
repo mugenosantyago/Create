@@ -128,8 +128,7 @@ public class SlidingDoorBlock extends DoorBlock implements IWrenchable, IBE<Slid
 	}
 
 	@Override
-	public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel,
-								  BlockPos pCurrentPos, BlockPos pFacingPos) {
+	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
 		BlockState blockState = super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
 		if (blockState.isAir())
 			return blockState;
@@ -167,8 +166,8 @@ public class SlidingDoorBlock extends DoorBlock implements IWrenchable, IBE<Slid
 	}
 
 	@Override
-	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos,
-								boolean pIsMoving) {
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		boolean lower = pState.getValue(HALF) == DoubleBlockHalf.LOWER;
 		boolean isPowered = isDoorPowered(pLevel, pPos, pState);
 		if (defaultBlockState().is(pBlock))

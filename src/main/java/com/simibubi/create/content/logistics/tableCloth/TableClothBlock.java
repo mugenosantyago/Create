@@ -173,8 +173,7 @@ public class TableClothBlock extends Block implements IHaveBigOutline, IWrenchab
 		return state.getValue(HAS_BE) ? IBE.super.newBlockEntity(pos, state) : null;
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
 		if (!pNewState.getOptionalValue(HAS_BE)
 			.orElse(false))
 			pNewState = Blocks.AIR.defaultBlockState();

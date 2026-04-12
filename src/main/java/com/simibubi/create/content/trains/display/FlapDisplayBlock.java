@@ -273,8 +273,7 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction pDirection, BlockState pNeighborState,
-								  LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		return updatedShapeInner(state, pDirection, pNeighborState, pLevel, pCurrentPos);
 	}
 
@@ -317,8 +316,7 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 		return state;
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
 		if (pIsMoving || pNewState.getBlock() == this)
 			return;

@@ -128,8 +128,7 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
 			world.scheduleTick(toUpdate, stateToUpdate.getBlock(), 1);
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		IBE.onRemove(state, world, pos, newState);
 
 		if (state.is(newState.getBlock()))
@@ -155,16 +154,15 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState above, LevelAccessor world,
-		BlockPos pos, BlockPos p_196271_6_) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState above, net.minecraft.util.RandomSource _random) {
 		if (direction != Direction.UP)
 			return state;
 		return updateChuteState(state, above, world, pos);
 	}
 
 	@Override
-	public void neighborChanged(BlockState p_220069_1_, Level world, BlockPos pos, Block p_220069_4_,
-		BlockPos neighbourPos, boolean p_220069_6_) {
+	public void neighborChanged(BlockState p_220069_1_, Level world, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (pos.below()
 			.equals(neighbourPos))
 			withBlockEntityDo(world, pos, ChuteBlockEntity::blockBelowChanged);

@@ -95,7 +95,7 @@ public class WhistleExtenderBlock extends Block implements IWrenchable {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return AllBlocks.STEAM_WHISTLE.asStack();
 	}
 
@@ -118,8 +118,7 @@ public class WhistleExtenderBlock extends Block implements IWrenchable {
 			|| AllBlocks.STEAM_WHISTLE.has(below);
 	}
 
-	public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel,
-		BlockPos pCurrentPos, BlockPos pFacingPos) {
+	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
 		if (pFacing.getAxis() != Axis.Y)
 			return pState;
 
@@ -145,8 +144,7 @@ public class WhistleExtenderBlock extends Block implements IWrenchable {
 			WhistleBlock.queuePitchUpdate(pLevel, findRoot(pLevel, pPos));
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		if (pNewState.getBlock() != this)
 			WhistleBlock.queuePitchUpdate(pLevel, findRoot(pLevel, pPos));
 	}

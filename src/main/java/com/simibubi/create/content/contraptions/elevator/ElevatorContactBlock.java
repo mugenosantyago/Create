@@ -107,8 +107,8 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 	}
 
 	@Override
-	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos,
-		boolean pIsMoving) {
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (pLevel.isClientSide)
 			return;
 
@@ -178,8 +178,7 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
-		BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
 		if (facing != stateIn.getValue(FACING))
 			return stateIn;
 		boolean hasValidContact = RedstoneContactBlock.hasValidContact(worldIn, currentPos, facing);
@@ -199,7 +198,7 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return AllBlocks.REDSTONE_CONTACT.asStack();
 	}
 

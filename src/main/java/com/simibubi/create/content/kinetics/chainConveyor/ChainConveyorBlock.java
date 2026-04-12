@@ -119,8 +119,7 @@ public class ChainConveyorBlock extends KineticBlock implements IBE<ChainConveyo
 		return Shapes.block();
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
 	}
 

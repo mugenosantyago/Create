@@ -35,8 +35,7 @@ public abstract class AbstractSimpleShaftBlock extends AbstractShaftBlock implem
 		return PushReaction.NORMAL;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		boolean wasWaterLogged = state.hasProperty(WATERLOGGED) &&
 				newState.hasProperty(WATERLOGGED) &&
 				(state.getValue(WATERLOGGED) != newState.getValue(WATERLOGGED));

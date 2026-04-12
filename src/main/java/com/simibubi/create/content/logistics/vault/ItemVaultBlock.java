@@ -94,8 +94,7 @@ public class ItemVaultBlock extends Block implements IWrenchable, IBE<ItemVaultB
 		return onWrenched;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean pIsMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean pIsMoving) {
 		if (state.hasBlockEntity() && (state.getBlock() != newState.getBlock() || !newState.hasBlockEntity())) {
 			BlockEntity be = world.getBlockEntity(pos);
 			if (!(be instanceof ItemVaultBlockEntity vaultBE))

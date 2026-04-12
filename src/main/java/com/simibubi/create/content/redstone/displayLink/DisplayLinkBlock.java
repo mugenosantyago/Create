@@ -70,8 +70,7 @@ public class DisplayLinkBlock extends WrenchableDirectionalBlock implements IBE<
 		AdvancementBehaviour.setPlacedBy(pLevel, pPos, pPlacer);
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
 	}
 
@@ -109,8 +108,8 @@ public class DisplayLinkBlock extends WrenchableDirectionalBlock implements IBE<
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos,
-		boolean isMoving) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (worldIn.isClientSide)
 			return;
 

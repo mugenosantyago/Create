@@ -69,7 +69,7 @@ public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implement
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		if (player.isShiftKeyDown())
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
-		if (!stack.is(Tags.Items.SLIMEBALLS)) {
+		if (!stack.is(Tags.Items.SLIME_BALLS)) {
 			if (stack.isEmpty()) {
 				withBlockEntityDo(level, pos, be -> be.assembleNextTick = true);
 				return InteractionResult.SUCCESS;
@@ -98,9 +98,10 @@ public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implement
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-		boolean isMoving) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, net.minecraft.world.level.redstone.Orientation orientation, boolean isMoving) {
 		Direction direction = state.getValue(FACING);
+		// In MC 1.21.8, fromPos was replaced by Orientation
+		BlockPos fromPos = pos.relative(orientation.getFront().getOpposite());
 		if (!fromPos.equals(pos.relative(direction.getOpposite())))
 			return;
 		if (!level.isClientSide && !level.getBlockTicks()

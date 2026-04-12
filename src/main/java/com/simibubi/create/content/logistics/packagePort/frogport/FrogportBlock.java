@@ -76,8 +76,7 @@ public class FrogportBlock extends Block implements IBE<FrogportBlockEntity>, IW
 		return AllBlockEntityTypes.PACKAGE_FROGPORT.get();
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
 		IBE.onRemove(pState, pLevel, pPos, pNewState);
 	}
 

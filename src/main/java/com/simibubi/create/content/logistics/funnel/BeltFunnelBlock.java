@@ -77,8 +77,7 @@ public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock implements Sp
 		return parent.get() == otherFunnel;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (newState.getBlock() instanceof FunnelBlock fb && isOfSameType(fb))
 			return;
 		super.onRemove(state, world, pos, newState, isMoving);
@@ -126,13 +125,12 @@ public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock implements Sp
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return parent.asStack();
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighbour, LevelAccessor world,
-								  BlockPos pos, BlockPos p_196271_6_) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState neighbour, net.minecraft.util.RandomSource _random) {
 		updateWater(world, state, pos);
 		if (!isOnValidBelt(state, world, pos)) {
 			BlockState parentState = ProperWaterloggedBlock.withWater(world, parent.getDefaultState(), pos);

@@ -308,8 +308,7 @@ public class TrackBlock extends Block
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction pDirection, BlockState pNeighborState,
-								  LevelAccessor level, BlockPos pCurrentPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		updateWater(level, state, pCurrentPos);
 		TrackShape shape = state.getValue(SHAPE);
 		if (!shape.isPortal())
@@ -416,8 +415,7 @@ public class TrackBlock extends Block
 			0.04D, 0.0D);
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		boolean removeBE = false;
 		if (pState.getValue(HAS_BE) && (!pState.is(pNewState.getBlock()) || !pNewState.getValue(HAS_BE))) {
 			BlockEntity blockEntity = pLevel.getBlockEntity(pPos);

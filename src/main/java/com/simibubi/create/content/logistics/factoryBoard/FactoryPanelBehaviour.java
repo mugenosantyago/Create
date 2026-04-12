@@ -810,7 +810,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 			return;
 
 		CompoundTag panelTag = new CompoundTag();
-		NbtCompat.saveItemStack(panelTag.put("Filter", getFilter(), registries));
+		panelTag.put("Filter", NbtCompat.saveItemStack(getFilter(), registries));
 		panelTag.putBoolean("UpTo", upTo);
 		panelTag.putInt("FilterAmount", count);
 		panelTag.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(network));

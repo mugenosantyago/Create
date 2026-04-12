@@ -99,8 +99,7 @@ public class ConnectedPillarBlock extends LayeredBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction pDirection, BlockState pNeighborState,
-		LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		if (!canConnect(state, pNeighborState))
 			return setConnection(state, pDirection, false);
 		if (pDirection.getAxis() == state.getValue(AXIS))
@@ -113,8 +112,7 @@ public class ConnectedPillarBlock extends LayeredBlock {
 		return other.getBlock() == this && state.getValue(AXIS) == other.getValue(AXIS);
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		if (pIsMoving || pNewState.getBlock() == this)
 			return;
 		for (Direction d : Iterate.directionsInAxis(pState.getValue(AXIS))) {

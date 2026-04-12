@@ -26,9 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Ingredient.ItemValue;
-import net.minecraft.world.item.crafting.Ingredient.TagValue;
-import net.minecraft.world.item.crafting.Ingredient.Value;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
@@ -90,54 +87,26 @@ public class BlueprintItem extends Item {
 	}
 
 	private static ItemStack convertIngredientToFilter(Ingredient ingredient) {
-		boolean isCompoundIngredient = ingredient.getCustomIngredient() instanceof CompoundIngredient;
-		Value[] acceptedItems = ingredient.values;
-		if (acceptedItems == null || acceptedItems.length > 18)
+		// In MC 1.21.8, Ingredient.values was removed; use items() stream instead
+		java.util.List<ItemStack> itemStacks = ingredient.items()
+			.map(holder -> new ItemStack(holder.value()))
+			.toList();
+		if (itemStacks.isEmpty() || itemStacks.size() > 18)
 			return ItemStack.EMPTY;
-		if (acceptedItems.length == 0)
-			return ItemStack.EMPTY;
-		if (acceptedItems.length == 1)
-			return convertIItemListToFilter(acceptedItems[0], isCompoundIngredient);
+		if (itemStacks.size() == 1)
+			return itemStacks.get(0);
 
 		ItemStack result = AllItems.FILTER.asStack();
 		ItemStackHandler filterItems = AllItems.FILTER.get().getFilterItemHandler(result);
-		for (int i = 0; i < acceptedItems.length; i++)
-			filterItems.setStackInSlot(i, convertIItemListToFilter(acceptedItems[i], isCompoundIngredient));
+		for (int i = 0; i < itemStacks.size(); i++)
+			filterItems.setStackInSlot(i, itemStacks.get(i));
 		result.set(AllDataComponents.FILTER_ITEMS, ItemHelper.containerContentsFromHandler(filterItems));
 		return result;
 	}
 
-	private static ItemStack convertIItemListToFilter(Value itemList, boolean isCompoundIngredient) {
-		Collection<ItemStack> stacks = itemList.getItems();
-		if (itemList instanceof ItemValue) {
-			for (ItemStack itemStack : stacks)
-				return itemStack;
-		}
-
-		if (itemList instanceof TagValue tagValue) {
-			ItemStack filterItem = AllItems.ATTRIBUTE_FILTER.asStack();
-			filterItem.set(AllDataComponents.ATTRIBUTE_FILTER_WHITELIST_MODE, AttributeFilterWhitelistMode.WHITELIST_DISJ);
-			List<ItemAttributeEntry> attributes = new ArrayList<>();
-			ItemAttribute at = new InTagAttribute(ItemTags.create(tagValue.tag().location()));
-			attributes.add(new ItemAttribute.ItemAttributeEntry(at, false));
-			filterItem.set(AllDataComponents.ATTRIBUTE_FILTER_MATCHED_ATTRIBUTES, attributes);
-			return filterItem;
-		}
-
-		if (isCompoundIngredient) {
-			ItemStack result = AllItems.FILTER.asStack();
-			ItemStackHandler filterItems = AllItems.FILTER.get().getFilterItemHandler(result);
-			int i = 0;
-			for (ItemStack itemStack : stacks) {
-				if (i >= 18)
-					break;
-				filterItems.setStackInSlot(i++, itemStack);
-			}
-			result.set(AllDataComponents.FILTER_ITEMS, ItemHelper.containerContentsFromHandler(filterItems));
-			result.set(AllDataComponents.FILTER_ITEMS_RESPECT_NBT, true);
-			return result;
-		}
-
+	@SuppressWarnings("unused")
+	private static ItemStack convertIItemListToFilter(Object itemList, boolean isCompoundIngredient) {
+		// Stub: Ingredient.Value, ItemValue, TagValue removed in MC 1.21.8
 		return ItemStack.EMPTY;
 	}
 

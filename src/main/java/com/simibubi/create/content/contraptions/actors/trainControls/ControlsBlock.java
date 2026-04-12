@@ -43,8 +43,7 @@ public class ControlsBlock extends HorizontalDirectionalBlock implements IWrench
 	}
 
 	@Override
-	public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState,
-		LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		updateWater(pLevel, pState, pCurrentPos);
 		return pState.setValue(OPEN, pLevel instanceof ContraptionWorld);
 	}

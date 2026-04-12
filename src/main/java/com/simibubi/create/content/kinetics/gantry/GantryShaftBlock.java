@@ -92,8 +92,7 @@ public class GantryShaftBlock extends DirectionalKineticBlock implements IBE<Gan
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighbour, LevelAccessor world,
-		BlockPos pos, BlockPos neighbourPos) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbour, net.minecraft.util.RandomSource _random) {
 		Direction facing = state.getValue(FACING);
 		Axis axis = facing.getAxis();
 		if (direction.getAxis() != axis)
@@ -186,8 +185,8 @@ public class GantryShaftBlock extends DirectionalKineticBlock implements IBE<Gan
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block p_220069_4_, BlockPos p_220069_5_,
-		boolean p_220069_6_) {
+	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (worldIn.isClientSide)
 			return;
 		boolean previouslyPowered = state.getValue(POWERED);

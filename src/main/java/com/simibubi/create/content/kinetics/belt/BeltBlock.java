@@ -133,8 +133,7 @@ public class BeltBlock extends HorizontalKineticBlock
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
-									   Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return AllItems.BELT_CONNECTOR.asStack();
 	}
 
@@ -469,8 +468,7 @@ public class BeltBlock extends HorizontalKineticBlock
 
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		super.onRemove(state, world, pos, newState, isMoving);
 
 		if (world.isClientSide)
@@ -509,8 +507,7 @@ public class BeltBlock extends HorizontalKineticBlock
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction side, BlockState p_196271_3_, LevelAccessor world,
-								  BlockPos pos, BlockPos p_196271_6_) {
+	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction side, BlockPos p_196271_6_, BlockState p_196271_3_, net.minecraft.util.RandomSource _random) {
 		updateWater(world, state, pos);
 		if (side.getAxis()
 			.isHorizontal())

@@ -34,7 +34,7 @@ public class FilterItemStack {
 	}
 
 	public static FilterItemStack of(HolderLookup.Provider registries, CompoundTag tag) {
-		return of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag)).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
+		return of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 	}
 
 	public static FilterItemStack empty() {

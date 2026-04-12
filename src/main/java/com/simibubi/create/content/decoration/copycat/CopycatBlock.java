@@ -218,8 +218,7 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 		return material;
 	}
 
-	@Override
-	public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+		public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
 		if (!pState.hasBlockEntity() || pState.getBlock() == pNewState.getBlock())
 			return;
 		if (!pIsMoving)
@@ -322,8 +321,7 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
-									   Player player) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		BlockState material = getMaterial(level, pos);
 		if (AllBlocks.COPYCAT_BASE.has(material) || player != null && player.isShiftKeyDown())
 			return new ItemStack(this);

@@ -90,8 +90,7 @@ public class LargeWaterWheelBlock extends RotatedPillarKineticBlock implements I
 	}
 
 	@Override
-	public BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState,
-		LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pNeighborPos) {
+	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
 		if (pDirection != Direction.fromAxisAndDirection(pState.getValue(AXIS), AxisDirection.NEGATIVE))
 			return pState;
 		return pState.setValue(EXTENSION, pNeighborState.is(this));

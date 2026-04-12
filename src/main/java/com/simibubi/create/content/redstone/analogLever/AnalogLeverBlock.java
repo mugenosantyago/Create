@@ -85,8 +85,7 @@ public class AnalogLeverBlock extends FaceAttachedHorizontalDirectionalBlock imp
 		});
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (isMoving || state.getBlock() == newState.getBlock())
 			return;
 		withBlockEntityDo(worldIn, pos, be -> {

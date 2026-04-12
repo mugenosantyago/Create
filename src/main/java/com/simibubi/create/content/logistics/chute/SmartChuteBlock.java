@@ -26,8 +26,8 @@ public class SmartChuteBlock extends AbstractChuteBlock {
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-		boolean isMoving) {
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		super.neighborChanged(state, level, pos, block, fromPos, isMoving);
 		if (level.isClientSide)
 			return;

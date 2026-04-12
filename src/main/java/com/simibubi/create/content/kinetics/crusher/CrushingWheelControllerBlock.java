@@ -128,8 +128,7 @@ public class CrushingWheelControllerBlock extends DirectionalBlock implements IB
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
-		BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
 		updateSpeed(stateIn, worldIn, currentPos);
 		return stateIn;
 	}
@@ -189,8 +188,7 @@ public class CrushingWheelControllerBlock extends DirectionalBlock implements IB
 		return standardShape;
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.hasBlockEntity() || state.getBlock() == newState.getBlock())
 			return;
 

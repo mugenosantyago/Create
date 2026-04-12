@@ -89,8 +89,7 @@ public class DeployerBlock extends DirectionalAxisKineticBlock implements IBE<De
 			withBlockEntityDo(worldIn, pos, dbe -> dbe.owner = placer.getUUID());
 	}
 
-	@Override
-	public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!isMoving && !state.is(newState.getBlock()))
 			withBlockEntityDo(worldIn, pos, DeployerBlockEntity::discardPlayer);
 		super.onRemove(state, worldIn, pos, newState, isMoving);
@@ -153,8 +152,8 @@ public class DeployerBlock extends DirectionalAxisKineticBlock implements IBE<De
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block p_220069_4_, BlockPos p_220069_5_,
-								boolean p_220069_6_) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
+		BlockPos fromPos = pos.relative(_orientation.getFront());
 		withBlockEntityDo(world, pos, DeployerBlockEntity::redstoneUpdate);
 	}
 

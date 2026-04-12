@@ -89,7 +89,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 
 	@Override
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
-		NbtCompat.saveItemStack(nbt.put("Filter", getFilter(), registries));
+		nbt.put("Filter", NbtCompat.saveItemStack(getFilter(), registries));
 		nbt.putInt("FilterAmount", count);
 		nbt.putBoolean("UpTo", upTo);
 		super.write(nbt, registries, clientPacket);
