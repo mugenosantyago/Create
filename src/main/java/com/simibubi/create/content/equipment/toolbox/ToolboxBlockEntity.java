@@ -288,7 +288,7 @@ public class ToolboxBlockEntity extends SmartBlockEntity implements MenuProvider
 		if (compound.contains("UniqueId"))
 			this.uniqueId = compound.getIntArray("UniqueId").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 		if (compound.contains("CustomName"))
-			this.customName = Component.Serializer.fromJson(compound.getStringOr("CustomName", ""), registries);
+			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 	}
 
 	@Override
@@ -300,7 +300,7 @@ public class ToolboxBlockEntity extends SmartBlockEntity implements MenuProvider
 		compound.putIntArray("UniqueId", net.minecraft.core.UUIDUtil.uuidToIntArray(uniqueId));
 
 		if (customName != null)
-			compound.putString("CustomName", Component.Serializer.toJson(customName, registries));
+			compound.putString("CustomName", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, customName).result().map(Object::toString).orElse(""));
 		super.write(compound, registries, clientPacket);
 	}
 

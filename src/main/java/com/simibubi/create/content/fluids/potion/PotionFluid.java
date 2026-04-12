@@ -69,6 +69,13 @@ public class PotionFluid extends VirtualFluid {
 
 	public static class PotionFluidType extends TintedFluidType {
 
+		private static final ResourceLocation DEFAULT_STILL = net.minecraft.resources.ResourceLocation.withDefaultNamespace("fluid/water_still");
+		private static final ResourceLocation DEFAULT_FLOWING = net.minecraft.resources.ResourceLocation.withDefaultNamespace("fluid/water_flow");
+
+		public PotionFluidType(net.neoforged.neoforge.fluids.FluidType.Properties properties) {
+			super(properties, DEFAULT_STILL, DEFAULT_FLOWING);
+		}
+
 		public PotionFluidType(net.neoforged.neoforge.fluids.FluidType.Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
 			super(properties, stillTexture, flowingTexture);
 		}

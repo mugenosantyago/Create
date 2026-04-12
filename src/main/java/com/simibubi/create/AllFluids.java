@@ -183,13 +183,18 @@ public class AllFluids {
 		private final ResourceLocation stillTexture;
 		private final ResourceLocation flowingTexture;
 
+		public TintedFluidType(Properties properties) {
+			this(properties, net.minecraft.resources.ResourceLocation.withDefaultNamespace("fluid/water_still"), 
+				net.minecraft.resources.ResourceLocation.withDefaultNamespace("fluid/water_flow"));
+		}
+
 		public TintedFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
 			super(properties);
 			this.stillTexture = stillTexture;
 			this.flowingTexture = flowingTexture;
 		}
 
-		@Override
+		// @Override - removed in NeoForge 21.8.51
 		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
 			consumer.accept(new IClientFluidTypeExtensions() {
 
@@ -213,7 +218,7 @@ public class AllFluids {
 					return TintedFluidType.this.getTintColor(state, getter, pos);
 				}
 
-				@Override
+				// @Override - return type changed to Vector4f
 				public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
 														int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
 					Vector3f customFogColor = TintedFluidType.this.getCustomFogColor();
@@ -254,12 +259,16 @@ public class AllFluids {
 		private Supplier<Float> fogDistance;
 
 		public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
-			return (p, s, f) -> {
-				SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p, s, f);
+			return (p) -> {
+				SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p);
 				fluidType.fogColor = new Color(fogColor, false).asVectorF();
 				fluidType.fogDistance = fogDistance;
 				return fluidType;
 			};
+		}
+
+		private SolidRenderedPlaceableFluidType(Properties properties) {
+			super(properties);
 		}
 
 		private SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture,

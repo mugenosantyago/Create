@@ -171,7 +171,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		if (tag.contains("ForceFlag"))
 			trainPresent = tag.getBooleanOr("ForceFlag", false);
 		if (tag.contains("PrevTrainName"))
-			lastDisassembledTrainName = Component.Serializer.fromJson(tag.getStringOr("PrevTrainName", ""), registries);
+			lastDisassembledTrainName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("PrevTrainName")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 		lastDisassembledMapColorIndex = tag.getIntOr("PrevTrainColor", 0);
 
 		if (!clientPacket)
@@ -198,7 +198,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		tag.putInt("FailedCarriageIndex", failedCarriageIndex);
 
 		if (lastDisassembledTrainName != null)
-			tag.putString("PrevTrainName", Component.Serializer.toJson(lastDisassembledTrainName, registries));
+			tag.putString("PrevTrainName", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, lastDisassembledTrainName).result().map(Object::toString).orElse(""));
 		tag.putInt("PrevTrainColor", lastDisassembledMapColorIndex);
 
 		super.write(tag, registries, clientPacket);

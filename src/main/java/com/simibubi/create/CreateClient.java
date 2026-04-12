@@ -124,10 +124,10 @@ public class CreateClient {
 
 	private static void setupConfigUIBackground() {
 		ConfigScreen.backgrounds.put(Create.ID, (screen, graphics, partialTicks) -> {
-			CreateMainMenuScreen.PANORAMA.render(graphics, screen.width, screen.height, 1, partialTicks);
+			CreateMainMenuScreen.PANORAMA.render(graphics, screen.width, screen.height, true);
 
 			RenderSystem.enableBlend();
-			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+			// RenderSystem.blendFunc removed in 1.21.8 - rendering uses RenderPipeline now
 			// In 1.21.6+, blit requires a RenderPipeline. The texture is 16x128 pixels;
 			// we draw the full texture scaled to fill the screen.
 			// TODO: Verify scaling behavior matches the old form.

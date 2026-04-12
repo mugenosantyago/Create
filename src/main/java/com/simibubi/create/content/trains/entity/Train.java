@@ -1163,7 +1163,7 @@ public class Train {
 		if (graph != null)
 			tag.putIntArray("Graph", net.minecraft.core.UUIDUtil.uuidToIntArray(graph.id));
 		tag.put("Carriages", NBTHelper.writeCompoundList(carriages, c -> c.write(dimensions, registries)));
-		tag.putIntArray("CarriageSpacing", carriageSpacing);
+		tag.putIntArray("CarriageSpacing", carriageSpacing.stream().mapToInt(i -> i).toArray());
 		tag.putBoolean("DoubleEnded", doubleEnded);
 		tag.putDouble("Speed", speed);
 		tag.putDouble("Throttle", throttle);
@@ -1173,7 +1173,7 @@ public class Train {
 		tag.putDouble("TargetSpeed", targetSpeed);
 		tag.putString("IconType", icon.id.toString());
 		tag.putInt("MapColorIndex", mapColorIndex);
-		tag.putString("Name", Component.Serializer.toJson(name, registries));
+		tag.putString("Name", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, name).result().map(Object::toString).orElse(""));
 		if (currentStation != null)
 			tag.putIntArray("Station", net.minecraft.core.UUIDUtil.uuidToIntArray(currentStation));
 		tag.putBoolean("Backwards", currentlyBackwards);
@@ -1213,7 +1213,7 @@ public class Train {
 		NBTHelper.iterateCompoundList(tag.getListOrEmpty("Carriages"),
 			c -> carriages.add(Carriage.read(c, registries, graph, dimensions)));
 		List<Integer> carriageSpacing = new ArrayList<>();
-		for (int i : tag.getIntArray("CarriageSpacing"))
+		for (int i : tag.getIntArray("CarriageSpacing").orElse(new int[0]))
 			carriageSpacing.add(i);
 		boolean doubleEnded = tag.getBooleanOr("DoubleEnded", false);
 		int mapColorIndex = tag.getIntOr("MapColorIndex", 0);
@@ -1226,7 +1226,7 @@ public class Train {
 			train.speedBeforeStall = tag.getDoubleOr("SpeedBeforeStall", 0);
 		train.targetSpeed = tag.getDoubleOr("TargetSpeed", 0);
 		train.icon = TrainIconType.byId(ResourceLocation.parse(tag.getStringOr("IconType", "")));
-		train.name = Component.Serializer.fromJson(tag.getStringOr("Name", ""), registries);
+		train.name = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("Name")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 		train.currentStation = tag.contains("Station") ? tag.getIntArray("Station").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 		train.currentlyBackwards = tag.getBooleanOr("Backwards", false);
 		train.derailed = tag.getBooleanOr("Derailed", false);

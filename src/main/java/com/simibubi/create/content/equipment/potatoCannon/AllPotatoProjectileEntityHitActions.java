@@ -31,7 +31,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.monster.ZombieVillager;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.FoodProperties.PossibleEffect;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -124,10 +123,8 @@ public class AllPotatoProjectileEntityHitActions {
 				return true;
 
 			if (entity instanceof LivingEntity livingEntity) {
-				for (PossibleEffect effect : foodProperty.effects()) {
-					if (livingEntity.getRandom().nextFloat() < effect.probability())
-						applyEffect(livingEntity, effect.effect());
-				}
+				// FoodProperties.effects() was removed in MC 1.21.8 - food effects handled via Consumable component
+				// TODO: implement food effect application via new API
 			}
 			return !recoverable;
 		}

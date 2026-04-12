@@ -366,6 +366,11 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	}
 
 	@Override
+	public int getSeaLevel() {
+		return level.getSeaLevel();
+	}
+
+	@Override
 	public PotionBrewing potionBrewing() {
 		return level.potionBrewing();
 	}

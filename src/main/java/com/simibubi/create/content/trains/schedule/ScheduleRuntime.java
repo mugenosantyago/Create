@@ -389,9 +389,9 @@ public class ScheduleRuntime {
 		if (schedule != null)
 			tag.put("Schedule", schedule.write(registries));
 		NBTHelper.writeEnum(tag, "State", state);
-		tag.putIntArray("ConditionProgress", conditionProgress);
+		tag.putIntArray("ConditionProgress", conditionProgress.stream().mapToInt(i -> i).toArray());
 		tag.put("ConditionContext", NBTHelper.writeCompoundList(conditionContext, CompoundTag::copy));
-		tag.putIntArray("TransitTimes", predictionTicks);
+		tag.putIntArray("TransitTimes", predictionTicks.stream().mapToInt(i -> i).toArray());
 		return tag;
 	}
 
@@ -404,11 +404,11 @@ public class ScheduleRuntime {
 		if (tag.contains("Schedule"))
 			schedule = Schedule.fromTag(registries, tag.getCompoundOrEmpty("Schedule"));
 		state = NBTHelper.readEnum(tag, "State", State.class);
-		for (int i : tag.getIntArray("ConditionProgress"))
+		for (int i : tag.getIntArray("ConditionProgress").orElse(new int[0]))
 			conditionProgress.add(i);
 		NBTHelper.iterateCompoundList(tag.getListOrEmpty("ConditionContext"), conditionContext::add);
 
-		int[] readTransits = tag.getIntArray("TransitTimes");
+		int[] readTransits = tag.getIntArray("TransitTimes").orElse(new int[0]);
 		if (schedule != null) {
 			schedule.entries.forEach($ -> predictionTicks.add(TBD));
 			if (readTransits.length == schedule.entries.size())

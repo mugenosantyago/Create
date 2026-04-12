@@ -876,7 +876,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		waitingForNetwork = panelTag.getBooleanOr("Waiting", false);
 		redstonePowered = panelTag.getBooleanOr("RedstonePowered", false);
 		promiseClearingInterval = panelTag.getIntOr("PromiseClearingInterval", 0);
-		if (panelTag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
+		if (panelTag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
 			network = panelTag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 
 		targeting.clear();

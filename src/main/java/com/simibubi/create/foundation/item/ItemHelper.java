@@ -123,8 +123,8 @@ public class ItemHelper {
 		for (Ingredient igd : recipeIngredients) {
 			for (Pair<Ingredient, MutableInt> pair : actualIngredients) {
 				ItemStack[] stacks1 = pair.getFirst()
-					.getItems();
-				ItemStack[] stacks2 = igd.getItems();
+					.items().map(h -> new net.minecraft.world.item.ItemStack(h.value())).toArray(ItemStack[]::new);
+				ItemStack[] stacks2 = igd.items().map(h -> new net.minecraft.world.item.ItemStack(h.value())).toArray(ItemStack[]::new);
 				if (stacks1.length != stacks2.length)
 					continue;
 				for (int i = 0; i <= stacks1.length; i++) {
@@ -145,8 +145,8 @@ public class ItemHelper {
 	public static boolean matchIngredients(Ingredient i1, Ingredient i2) {
 		if (i1 == i2)
 			return true;
-		ItemStack[] stacks1 = i1.getItems();
-		ItemStack[] stacks2 = i2.getItems();
+		ItemStack[] stacks1 = i1.items().map(h -> new ItemStack(h.value())).toArray(ItemStack[]::new);
+		ItemStack[] stacks2 = i2.items().map(h -> new ItemStack(h.value())).toArray(ItemStack[]::new);
 		if (stacks1 == stacks2)
 			return true;
 		if (stacks1.length == stacks2.length) {

@@ -33,7 +33,7 @@ public record ItemNameAttribute(String itemName) implements ItemAttribute {
 		if (stack.has(DataComponents.CUSTOM_NAME)) {
 			try {
 				String customName = stack.getOrDefault(DataComponents.CUSTOM_NAME, Component.empty()).getString();
-				Component component = Component.Serializer.fromJson(customName, level.registryAccess());
+				Component component = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(customName)).result().orElse(net.minecraft.network.chat.Component.empty());
 				if (component != null) {
 					return component.getString();
 				}

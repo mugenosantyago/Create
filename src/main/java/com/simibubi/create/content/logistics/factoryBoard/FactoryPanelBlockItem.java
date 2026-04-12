@@ -57,7 +57,7 @@ public class FactoryPanelBlockItem extends LogisticallyLinkedBlockItem {
 
 			for (PanelSlot slot : PanelSlot.values()) {
 				CompoundTag panelTag = bet.getCompoundOrEmpty(CreateLang.asId(slot.name()));
-				if (panelTag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
+				if (panelTag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
 					frequency = panelTag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 			}
 

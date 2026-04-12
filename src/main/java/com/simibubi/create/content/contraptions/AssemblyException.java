@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class AssemblyException extends Exception {
@@ -20,7 +21,7 @@ public class AssemblyException extends Exception {
 			return;
 
 		CompoundTag nbt = new CompoundTag();
-		nbt.putString("Component", Component.Serializer.toJson(exception.component, registries));
+		nbt.putString("Component", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, exception.component).result().map(Object::toString).orElse(""));
 		if (exception.hasPosition())
 			nbt.putLong("Position", exception.getPosition()
 				.asLong());
@@ -34,7 +35,7 @@ public class AssemblyException extends Exception {
 
 		CompoundTag nbt = compound.getCompoundOrEmpty("LastException");
 		String string = nbt.getStringOr("Component", "");
-		AssemblyException exception = new AssemblyException(Component.Serializer.fromJson(string, registries));
+		AssemblyException exception = new AssemblyException(ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(string)).result().orElse(net.minecraft.network.chat.Component.empty()));
 		if (nbt.contains("Position"))
 			exception.position = BlockPos.of(nbt.getLongOr("Position", 0));
 

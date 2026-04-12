@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -103,7 +104,7 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 		if (level.isClientSide)
 			return InteractionResult.SUCCESS;
 
-		String tagUsed = Component.Serializer.toJson(component, level.registryAccess());
+		String tagUsed = ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, component).result().map(Object::toString).orElse("");
 		// Skip computer check in this walk since it was already performed at the start.
 		walkNixies(level, pos, true, (currentPos, rowPosition) -> {
 			if (display)

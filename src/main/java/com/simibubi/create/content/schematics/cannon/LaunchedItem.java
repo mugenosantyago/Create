@@ -152,7 +152,7 @@ public abstract class LaunchedItem {
 		@Override
 		void readNBT(CompoundTag nbt, HolderLookup.Provider registries, HolderGetter<Block> holderGetter) {
 			length = nbt.getIntOr("Length", 0);
-			int[] intArray = nbt.getIntArray("Casing");
+			int[] intArray = nbt.getIntArray("Casing").orElse(new int[0]);
 			casings = new CasingType[length];
 			for (int i = 0; i < casings.length; i++)
 				casings[i] = i >= intArray.length ? CasingType.NONE

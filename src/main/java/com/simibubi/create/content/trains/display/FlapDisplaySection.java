@@ -11,6 +11,7 @@ import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
@@ -131,8 +132,11 @@ public class FlapDisplaySection {
 			NBTHelper.putMarker(tag, "Gap");
 		if (wideFlaps)
 			NBTHelper.putMarker(tag, "Wide");
-		if (component != null)
-			tag.putString("Text", Component.Serializer.toJson(component, registries));
+		if (component != null) {
+			net.minecraft.nbt.Tag compTag = ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, component).result().orElse(null);
+			if (compTag != null)
+				tag.put("Text", compTag);
+		}
 		if (sendTransition)
 			NBTHelper.putMarker(tag, "Transition");
 		sendTransition = false;
@@ -153,15 +157,14 @@ public class FlapDisplaySection {
 		if (!tag.contains("Text"))
 			return section;
 
-		section.component = Component.Serializer.fromJson(tag.getStringOr("Text", ""), registries);
+		section.component = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.get("Text")).result().orElse(null);
 		section.refresh(tag.getBooleanOr("Transition", false));
 		return section;
 	}
 
 	public void update(CompoundTag tag, HolderLookup.Provider registries) {
-		String text = tag.getStringOr("Text", "");
-		if (!text.isEmpty())
-			component = Component.Serializer.fromJson(text, registries);
+		if (tag.contains("Text"))
+			component = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.get("Text")).result().orElse(null);
 		if (cyclingOptions == null)
 			cyclingOptions = getFlapCycle(cycle);
 		refresh(tag.getBooleanOr("Transition", false));

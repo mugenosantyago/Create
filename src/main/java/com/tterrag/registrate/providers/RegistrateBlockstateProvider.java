@@ -29,7 +29,12 @@ public class RegistrateBlockstateProvider extends RegistrateBlockModelGenerator 
 
     @SuppressWarnings("unchecked")
     public RegistrateBlockstateProvider(String modId) {
-        super(null, definitionGenerator -> {}, loc -> {}, (location, model) -> {});
+        super(null, definitionGenerator -> {}, 
+              new net.minecraft.client.data.models.ItemModelOutput() {
+                  @Override public void accept(net.minecraft.world.item.Item item, net.minecraft.client.renderer.item.ItemModel.Unbaked model) {}
+                  @Override public void copy(net.minecraft.world.item.Item from, net.minecraft.world.item.Item to) {}
+              },
+              (location, model) -> {});
         this.modId = modId;
         this.models = new BlockModelProvider(ResourceLocation.parse(modId + ":"));
     }

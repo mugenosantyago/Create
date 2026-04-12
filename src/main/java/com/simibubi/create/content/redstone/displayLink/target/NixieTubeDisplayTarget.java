@@ -9,6 +9,7 @@ import com.simibubi.create.content.redstone.nixieTube.NixieTubeBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,7 +22,7 @@ public class NixieTubeDisplayTarget extends SingleLineDisplayTarget {
 
 	@Override
 	protected void acceptLine(MutableComponent text, DisplayLinkContext context) {
-		String tagElement = Component.Serializer.toJson(text, context.level().registryAccess());
+		String tagElement = ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, text).result().map(Object::toString).orElse("");
 		NixieTubeBlock.walkNixies(context.level(), context.getTargetPos(), false, (currentPos, rowPosition) -> {
 			BlockEntity blockEntity = context.level()
 				.getBlockEntity(currentPos);

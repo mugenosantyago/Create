@@ -186,7 +186,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 		hiddenCategoriesByPlayer.clear();
 
 		NBTHelper.iterateCompoundList(tag.getListOrEmpty("HiddenCategories"),
-			c -> hiddenCategoriesByPlayer.put(c.getIntArray("Id").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null), IntStream.of(c.getIntArray("Indices"))
+			c -> hiddenCategoriesByPlayer.put(c.getIntArray("Id").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null), IntStream.of(c.getIntArray("Indices").orElse(new int[0]))
 				.boxed()
 				.toList()));
 

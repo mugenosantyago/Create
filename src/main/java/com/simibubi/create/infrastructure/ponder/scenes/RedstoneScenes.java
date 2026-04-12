@@ -30,6 +30,7 @@ import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -642,7 +643,7 @@ public class RedstoneScenes {
 			final int index = i;
 			scene.world().modifyBlockEntityNBT(util.select().position(3 - i, 1, 3), NixieTubeBlockEntity.class, nbt -> {
 				nbt.putString("RawCustomText", component.getString());
-				nbt.putString("CustomText", Component.Serializer.toJson(component, scene.world().getHolderLookupProvider()));
+				nbt.putString("CustomText", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, component).result().map(Object::toString).orElse(""));
 				nbt.putInt("CustomTextIndex", index);
 			});
 		}

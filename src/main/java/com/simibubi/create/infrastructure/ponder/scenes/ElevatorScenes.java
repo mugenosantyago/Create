@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -370,7 +371,7 @@ public class ElevatorScenes {
 		scene.world().modifyBlockEntityNBT(util.select().position(nixiePos), NixieTubeBlockEntity.class, nbt -> {
 			Component component = Component.literal("0F");
 			nbt.putString("RawCustomText", component.getString());
-			nbt.putString("CustomText", Component.Serializer.toJson(component, scene.world().getHolderLookupProvider()));
+			nbt.putString("CustomText", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, component).result().map(Object::toString).orElse(""));
 		});
 
 		scene.overlay().showText(90)
@@ -401,7 +402,7 @@ public class ElevatorScenes {
 		scene.world().modifyBlockEntityNBT(util.select().position(nixiePos), NixieTubeBlockEntity.class, nbt -> {
 			Component component = Component.literal("1F");
 			nbt.putString("RawCustomText", component.getString());
-			nbt.putString("CustomText", Component.Serializer.toJson(component, scene.world().getHolderLookupProvider()));
+			nbt.putString("CustomText", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, component).result().map(Object::toString).orElse(""));
 		});
 
 		scene.idle(40);
@@ -417,7 +418,7 @@ public class ElevatorScenes {
 		scene.world().modifyBlockEntityNBT(util.select().position(nixiePos), NixieTubeBlockEntity.class, nbt -> {
 			Component component = Component.literal("2F");
 			nbt.putString("RawCustomText", component.getString());
-			nbt.putString("CustomText", Component.Serializer.toJson(component, scene.world().getHolderLookupProvider()));
+			nbt.putString("CustomText", ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, component).result().map(Object::toString).orElse(""));
 		});
 	}
 

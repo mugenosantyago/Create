@@ -247,7 +247,7 @@ public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 	@Override
 	public void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
-		if (tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
+		if (tag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
 			freqId = tag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 		redstonePower = tag.getIntOr("Power", 0);
 		addedGlobally = tag.getBooleanOr("Added", false);
