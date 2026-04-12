@@ -222,7 +222,7 @@ public class LinkedControllerClientHandler {
 		if (MODE != Mode.BIND)
 			return;
 
-		PoseStack poseStack = guiGraphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		poseStack.pushPose();
 		Screen tooltipScreen = new Screen(CommonComponents.EMPTY) {
 		};

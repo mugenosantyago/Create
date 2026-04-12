@@ -417,8 +417,7 @@ public class TrainMapManager {
 					int sheetX = col * 16 + colorCol * 128;
 					int sheetY = row * 16 + colorRow * 64;
 
-					graphics.blit(sprite.location, positionX, positionY, sheetX, sheetY, 16, 16, sprite.getWidth(),
-						sprite.getHeight());
+					graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, sprite.location, positionX, positionY, (float)(sheetX), (float)(sheetY), 16, 16, 256, 256);
 				}
 
 				pose.popPose();

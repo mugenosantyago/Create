@@ -323,12 +323,12 @@ public class SchematicannonScreen extends AbstractSimiContainerScreen<Schematica
 	protected void renderPrintingProgress(GuiGraphics graphics, int x, int y, float progress) {
 		progress = Math.min(progress, 1);
 		AllGuiTextures sprite = AllGuiTextures.SCHEMATICANNON_PROGRESS;
-		graphics.blit(sprite.location, x + 44, y + 64, sprite.getStartX(), sprite.getStartY(), (int) (sprite.getWidth() * progress), sprite.getHeight());
+		graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, sprite.location, x + 44, y + 64, (float)(sprite.getStartX()), (float)(sprite.getStartY()), (int) (sprite.getWidth() * progress), sprite.getHeight(), 256, 256);
 	}
 
 	protected void renderChecklistPrinterProgress(GuiGraphics graphics, int x, int y, float progress) {
 		AllGuiTextures sprite = AllGuiTextures.SCHEMATICANNON_CHECKLIST_PROGRESS;
-		graphics.blit(sprite.location, x + 154, y + 20, sprite.getStartX(), sprite.getStartY(), (int) (sprite.getWidth() * progress),
+		graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, sprite.location, x + 154, y + 20, sprite.getStartX(), sprite.getStartY(), (int) (sprite.getWidth() * progress),
 			sprite.getHeight());
 	}
 
@@ -338,7 +338,7 @@ public class SchematicannonScreen extends AbstractSimiContainerScreen<Schematica
 			AllGuiTextures.SCHEMATICANNON_FUEL_CREATIVE.render(graphics, x + 36, y + 19);
 			return;
 		}
-		graphics.blit(sprite.location, x + 36, y + 19, sprite.getStartX(), sprite.getStartY(), (int) (sprite.getWidth() * amount), sprite.getHeight());
+		graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, sprite.location, x + 36, y + 19, (float)(sprite.getStartX()), (float)(sprite.getStartY()), (int) (sprite.getWidth() * amount), sprite.getHeight(), 256, 256);
 	}
 
 	@Override
@@ -352,21 +352,18 @@ public class SchematicannonScreen extends AbstractSimiContainerScreen<Schematica
 		if (mouseX >= fuelX && mouseY >= fuelY && mouseX <= fuelX + AllGuiTextures.SCHEMATICANNON_FUEL.getWidth()
 			&& mouseY <= fuelY + AllGuiTextures.SCHEMATICANNON_FUEL.getHeight()) {
 			List<Component> tooltip = getFuelLevelTooltip(be);
-			graphics.renderComponentTooltip(font, tooltip, mouseX, mouseY);
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, tooltip, mouseX, mouseY);
 		}
 
 		if (hoveredSlot != null && !hoveredSlot.hasItem()) {
 			if (hoveredSlot.index == 0)
-				graphics.renderComponentTooltip(font,
-					TooltipHelper.cutTextComponent(CreateLang.translateDirect(_slotSchematic), Palette.GRAY_AND_BLUE), mouseX,
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, TooltipHelper.cutTextComponent(CreateLang.translateDirect(_slotSchematic), Palette.GRAY_AND_BLUE), mouseX,
 					mouseY);
 			if (hoveredSlot.index == 2)
-				graphics.renderComponentTooltip(font,
-					TooltipHelper.cutTextComponent(CreateLang.translateDirect(_slotListPrinter), Palette.GRAY_AND_BLUE),
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, TooltipHelper.cutTextComponent(CreateLang.translateDirect(_slotListPrinter), Palette.GRAY_AND_BLUE),
 					mouseX, mouseY);
 			if (hoveredSlot.index == 4)
-				graphics.renderComponentTooltip(font,
-					TooltipHelper.cutTextComponent(CreateLang.translateDirect(_slotGunpowder), Palette.GRAY_AND_BLUE), mouseX,
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, TooltipHelper.cutTextComponent(CreateLang.translateDirect(_slotGunpowder), Palette.GRAY_AND_BLUE), mouseX,
 					mouseY);
 		}
 
@@ -374,13 +371,13 @@ public class SchematicannonScreen extends AbstractSimiContainerScreen<Schematica
 			int missingBlockX = x + 128, missingBlockY = y + 49;
 			if (mouseX >= missingBlockX && mouseY >= missingBlockY && mouseX <= missingBlockX + 16
 				&& mouseY <= missingBlockY + 16) {
-				graphics.renderTooltip(font, be.missingItem, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(font, be.missingItem, mouseX, mouseY);
 			}
 		}
 
 		int paperX = x + 112, paperY = y + 19;
 		if (mouseX >= paperX && mouseY >= paperY && mouseX <= paperX + 16 && mouseY <= paperY + 16)
-			graphics.renderTooltip(font, listPrinter, mouseX, mouseY);
+			graphics.setTooltipForNextFrame(font, listPrinter, mouseX, mouseY);
 
 		super.renderForeground(graphics, mouseX, mouseY, partialTicks);
 	}

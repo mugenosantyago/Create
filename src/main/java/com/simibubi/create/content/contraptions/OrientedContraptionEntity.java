@@ -62,7 +62,7 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 	private static final Ingredient FUEL_ITEMS = Ingredient.of(Items.COAL, Items.CHARCOAL);
 
 	private static final EntityDataAccessor<Optional<UUID>> COUPLING =
-		SynchedEntityData.defineId(OrientedContraptionEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+		SynchedEntityData.defineId(OrientedContraptionEntity.class, net.minecraft.network.syncher.EntityDataSerializer.forValueType(net.minecraft.network.codec.ByteBufCodecs.optional(net.minecraft.core.UUIDUtil.STREAM_CODEC)));
 	private static final EntityDataAccessor<Direction> INITIAL_ORIENTATION =
 		SynchedEntityData.defineId(OrientedContraptionEntity.class, EntityDataSerializers.DIRECTION);
 
@@ -181,7 +181,7 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		super.writeAdditional(compound, registries, spawnPacket);
 
 		if (motionBeforeStall != null)
-			compound.put("CachedMotion", newDoubleList(motionBeforeStall.x, motionBeforeStall.y, motionBeforeStall.z));
+			compound.put("CachedMotion", new java.util.function.Supplier<net.minecraft.nbt.ListTag>() { public net.minecraft.nbt.ListTag get() { net.minecraft.nbt.ListTag l = new net.minecraft.nbt.ListTag(); l.add(net.minecraft.nbt.DoubleTag.valueOf(motionBeforeStall.x)); l.add(net.minecraft.nbt.DoubleTag.valueOf(motionBeforeStall.y)); l.add(net.minecraft.nbt.DoubleTag.valueOf(motionBeforeStall.z)); return l; } }.get());
 
 		Direction optional = entityData.get(INITIAL_ORIENTATION);
 		if (optional.getAxis()
@@ -367,7 +367,7 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 
 		if (!rotationLock) {
 			if (riding instanceof AbstractMinecart minecartEntity) {
-				BlockPos railPosition = minecartEntity.getCurrentRailPosition();
+				BlockPos railPosition = minecartEntity.getCurrentBlockPosOrRailBelow();
 				BlockState blockState = level().getBlockState(railPosition);
 				if (blockState.getBlock() instanceof BaseRailBlock abstractRailBlock) {
 					RailShape railDirection =
@@ -406,8 +406,8 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 
 		int fuel = furnaceCartAccessor.create$getFuel();
 		int fuelBefore = fuel;
-		double pushX = furnaceCart.xPush;
-		double pushZ = furnaceCart.zPush;
+		double pushX = furnaceCart.push.x;
+		double pushZ = furnaceCart.push.z;
 
 		int i = Mth.floor(furnaceCart.getX());
 		int j = Mth.floor(furnaceCart.getY());
@@ -433,8 +433,8 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		}
 
 		if (fuel != fuelBefore || pushX != 0 || pushZ != 0) {
-			furnaceCart.xPush = pushX;
-			furnaceCart.zPush = pushZ;
+			furnaceCart.push.x = pushX;
+			furnaceCart.push.z = pushZ;
 			furnaceCartAccessor.create$setFuel(fuel);
 		}
 	}
@@ -577,11 +577,11 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		double cartX = Mth.lerp(partialTicks, cart.xOld, cart.getX());
 		double cartY = Mth.lerp(partialTicks, cart.yOld, cart.getY());
 		double cartZ = Mth.lerp(partialTicks, cart.zOld, cart.getZ());
-		Vec3 cartPos = cart.getPos(cartX, cartY, cartZ);
+		Vec3 cartPos = new Vec3(cartX, cartY, cartZ);
 
 		if (cartPos != null) {
-			Vec3 cartPosFront = cart.getPosOffs(cartX, cartY, cartZ, (double) 0.3F);
-			Vec3 cartPosBack = cart.getPosOffs(cartX, cartY, cartZ, (double) -0.3F);
+			Vec3 cartPosFront = new Vec3(cartX + 0.3, cartY, cartZ + 0.3);
+			Vec3 cartPosBack = new Vec3(cartX - 0.3, cartY, cartZ - 0.3);
 			if (cartPosFront == null)
 				cartPosFront = cartPos;
 			if (cartPosBack == null)

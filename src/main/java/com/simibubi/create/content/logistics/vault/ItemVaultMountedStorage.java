@@ -53,7 +53,7 @@ public class ItemVaultMountedStorage extends WrapperMountedItemStorage<ItemStack
 
 	public static ItemVaultMountedStorage fromLegacy(HolderLookup.Provider registries,  CompoundTag nbt) {
 		ItemStackHandler handler = new ItemStackHandler();
-		handler.deserializeNBT(registries, nbt);
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(handler, registries, nbt);
 		return new ItemVaultMountedStorage(handler);
 	}
 }

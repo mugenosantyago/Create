@@ -47,7 +47,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 	@Nullable
 	public static UUID networkFromStack(ItemStack pStack) {
 		CompoundTag tag = pStack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-		if (!tag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
+		if (!tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
 			return null;
 		return tag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 	}
@@ -58,7 +58,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 		super.appendHoverText(stack, tooltipContext, tooltipComponents, tooltipFlag);
 
 		CompoundTag tag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-		if (!tag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
+		if (!tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
 			return;
 
 		CreateLang.translate("logistically_linked.tooltip")
@@ -127,7 +127,7 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 
 		player.displayClientMessage(CreateLang.translateDirect("logistically_linked.tuned"), true);
 
-		BlockEntity.addEntityType(tag, ((IBE<?>) ((BlockItem) stack.getItem()).getBlock()).getBlockEntityType());
+		com.simibubi.create.foundation.utility.NbtCompat.addEntityType(tag, ((IBE<?>) ((BlockItem) stack.getItem()).getBlock()).getBlockEntityType());
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
 	}
 

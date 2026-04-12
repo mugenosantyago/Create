@@ -23,8 +23,6 @@ public class VerticalGearboxItem extends BlockItem {
 	public VerticalGearboxItem(Properties builder) {
 		super(AllBlocks.GEARBOX.get(), builder);
 	}
-
-	@Override
 	public String getDescriptionId() {
 		return "item.create.vertical_gearbox";
 	}

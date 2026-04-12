@@ -175,4 +175,9 @@ public class SeatEntity extends Entity implements IEntityWithComplexSpawn {
 
 	@Override
 	public void readSpawnData(RegistryFriendlyByteBuf additionalData) {}
+
+	@Override
+	public boolean hurtServer(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, float amount) {
+		return false;
+	}
 }

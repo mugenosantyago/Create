@@ -140,7 +140,7 @@ public class ManualApplicationRecipe extends ItemApplicationRecipe {
 			builder.output(output);
 		if (mar.shouldKeepHeldItem())
 			builder.toolNotConsumed();
-		return new RecipeHolder<>(id, builder.build());
+		return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id), builder.build());
 	}
 
 	public boolean testBlock(BlockState in) {

@@ -84,7 +84,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 
 	public static PackageEntity fromDroppedItem(Level world, Entity originalEntity, ItemStack itemstack) {
 		PackageEntity packageEntity = AllEntityTypes.PACKAGE.get()
-			.create(world);
+			.create(world, net.minecraft.world.entity.EntitySpawnReason.LOAD);
 
 		Vec3 position = originalEntity.position();
 		packageEntity.setPos(position);
@@ -102,7 +102,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 
 	public static PackageEntity fromItemStack(Level world, Vec3 position, ItemStack itemstack) {
 		PackageEntity packageEntity = AllEntityTypes.PACKAGE.get()
-			.create(world);
+			.create(world, net.minecraft.world.entity.EntitySpawnReason.LOAD);
 		packageEntity.setPos(position);
 		packageEntity.setBox(itemstack);
 		return packageEntity;
@@ -147,8 +147,9 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 			clientPos = VecHelper.lerp(Math.min(1, tickCount / 20f), clientPos, new Vec3(lerpX, lerpY, lerpZ));
 		if (tickCount < 5)
 			setPos(clientPos.x, clientPos.y, clientPos.z);
-		if (tickCount < 20)
-			lerpTo(clientPos.x, clientPos.y, clientPos.z, getYRot(), getXRot(), lerpSteps == 0 ? 3 : lerpSteps);
+		if (tickCount < 20) {
+			// lerpTo() removed in 1.21.8 - setPos already handles positioning
+		}
 	}
 
 	@Override
@@ -190,7 +191,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 		if (!(originalEntity instanceof ItemEntity itemEntity))
 			return;
 		CompoundTag nbt = new CompoundTag();
-		itemEntity.addAdditionalSaveData(nbt);
+		com.simibubi.create.foundation.utility.NbtCompat.saveEntityIntoTag(itemEntity, nbt);
 		if (nbt.getIntOr("PickupDelay", 0) != 32767) // See: ItemEntity#makeFakeItem
 			return;
 		discard();
@@ -400,7 +401,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	}
 
 	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
+		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); super.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(__reporter, registryAccess(), compound)); }
 		box = net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), compound.getCompoundOrEmpty("Box").orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		refreshDimensions();
 	}
@@ -418,7 +419,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	}
 
 	public void addAdditionalSaveData(CompoundTag compound) {
-		super.addAdditionalSaveData(compound);
+		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); net.minecraft.world.level.storage.TagValueOutput __output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(__reporter, registryAccess()); super.addAdditionalSaveData(__output); compound.merge(__output.buildResult()); }
 		compound.put("Box", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), box).orElse(new net.minecraft.nbt.CompoundTag()));
 	}
 

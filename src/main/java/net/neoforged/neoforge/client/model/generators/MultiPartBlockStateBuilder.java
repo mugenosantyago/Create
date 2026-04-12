@@ -33,8 +33,7 @@ public class MultiPartBlockStateBuilder {
 
         // Condition methods
         public <T extends Comparable<T>> PartBuilder condition(Property<T> prop, T... values) { return this; }
-        public <T extends Comparable<T>> PartBuilder condition(Property<T> prop, Comparable<?>... values) { return this; }
-        public PartBuilder useOr() { return this; }
+        @SuppressWarnings("all") public PartBuilder useOr() { return this; }
 
         public MultiPartBlockStateBuilder end() { return parent; }
     }

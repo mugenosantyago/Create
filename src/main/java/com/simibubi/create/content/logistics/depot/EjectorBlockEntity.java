@@ -257,7 +257,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 					continue;
 				if (blockState.getValue(ObserverBlock.FACING) != d.getOpposite())
 					continue;
-				blockState.updateShape(d.getOpposite(), blockState, level, worldPosition.relative(d), worldPosition);
+				blockState.updateShape(level, level, worldPosition, d, worldPosition.relative(d), level.getBlockState(worldPosition.relative(d)), level.getRandom());
 			}
 
 		if (depotBehaviour.heldItem != null) {
@@ -559,7 +559,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 		state = NBTHelper.readEnum(compound, "State", State.class);
 		lidProgress.readNBT(compound.getCompoundOrEmpty("Lid"), false);
 		launchedItems = NBTHelper.readCompoundList(compound.getListOrEmpty("LaunchedItems"),
-			nbt -> IntAttached.read(nbt, t -> ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, t)).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+			nbt -> IntAttached.read(nbt, t -> com.simibubi.create.foundation.utility.NbtCompat.parseOptionalItemStack(registries, t)));
 
 		earlyTarget = null;
 		earlyTargetTime = 0;

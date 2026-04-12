@@ -60,7 +60,7 @@ public class FluidTankItem extends BlockItem {
 					nbt.put("TankContent", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, minecraftserver.registryAccess(), fluid).orElse(new net.minecraft.nbt.CompoundTag()));
 				}
 			}
-			BlockEntity.addEntityType(nbt, ((IBE<?>) this.getBlock()).getBlockEntityType());
+			com.simibubi.create.foundation.utility.NbtCompat.addEntityType(nbt, ((IBE<?>) this.getBlock()).getBlockEntityType());
 			itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(nbt));
 		}
 		return super.updateCustomBlockEntityTag(blockPos, level, player, itemStack, blockState);

@@ -203,7 +203,7 @@ public class AttributeFilterScreen extends AbstractFilterScreen<AttributeFilterM
 	protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
 		if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
 			if (this.hoveredSlot.index == 37) {
-				graphics.renderComponentTooltip(font, selectedAttributes, mouseX, mouseY);
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, selectedAttributes, mouseX, mouseY);
 				return;
 			}
 			graphics.renderTooltip(font, this.hoveredSlot.getItem(), mouseX, mouseY);

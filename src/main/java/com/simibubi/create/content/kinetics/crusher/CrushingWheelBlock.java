@@ -37,7 +37,7 @@ public class CrushingWheelBlock extends RotatedPillarKineticBlock implements IBE
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.MODEL;
 	}
 
 	@Override
@@ -92,8 +92,7 @@ public class CrushingWheelBlock extends RotatedPillarKineticBlock implements IBE
 					wheelAxis == Axis.Z ? 1 : 0).cross(
 						new Vec3(sideAxis == Axis.X ? 1 : 0, sideAxis == Axis.Y ? 1 : 0, sideAxis == Axis.Z ? 1 : 0));
 
-				controllerNewDirection = Direction.getNearest(controllerDirVec.x * controllerADO,
-					controllerDirVec.y * controllerADO, controllerDirVec.z * controllerADO);
+				controllerNewDirection = Direction.getNearest(controllerDirVec.x * controllerADO, controllerDirVec.y * controllerADO, controllerDirVec.z * controllerADO, null);
 
 				controllerShouldBeValid = true;
 			}

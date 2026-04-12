@@ -243,7 +243,7 @@ public class SlidingDoorBlock extends DoorBlock implements IWrenchable, IBE<Slid
 			level.gameEvent(player, GameEvent.BLOCK_OPEN, pos);
 		}
 
-		return InteractionResult.sidedSuccess(level.isClientSide);
+		return (level.isClientSide ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.SUCCESS_SERVER);
 	}
 
 	public void deferUpdate(LevelAccessor level, BlockPos pos) {
@@ -258,7 +258,7 @@ public class SlidingDoorBlock extends DoorBlock implements IWrenchable, IBE<Slid
 
 	@Override
 	public RenderShape getRenderShape(BlockState pState) {
-		return pState.getValue(VISIBLE) ? RenderShape.MODEL : RenderShape.ENTITYBLOCK_ANIMATED;
+		return pState.getValue(VISIBLE) ? RenderShape.MODEL : RenderShape.MODEL;
 	}
 
 	private void playSound(@Nullable Entity pSource, Level pLevel, BlockPos pPos, boolean pIsOpening) {

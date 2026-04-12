@@ -192,8 +192,7 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 				return;
 			if (mouseY < gettingStarted.getY() || mouseY > gettingStarted.getY() + 20)
 				return;
-			graphics.renderComponentTooltip(font,
-				FontHelper.cutTextComponent(CreateLang.translateDirect("menu.only_ingame"), Palette.ALL_GRAY), mouseX,
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, FontHelper.cutTextComponent(CreateLang.translateDirect("menu.only_ingame"), Palette.ALL_GRAY), mouseX,
 				mouseY);
 		}
 	}

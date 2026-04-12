@@ -30,7 +30,7 @@ public class DebugHatsCommand {
 					for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
 						ServerLevel level = ctx.getSource().getLevel();
 
-						Entity entity = entityType.create(level);
+						Entity entity = entityType.create(level, net.minecraft.world.entity.EntitySpawnReason.LOAD);
 						if (entity instanceof LivingEntity) {
 							level.setBlockAndUpdate(pos, AllBlocks.SEATS.get(DyeColor.RED).getDefaultState());
 							level.setBlockAndUpdate(pos.east(), AllBlocks.STOCK_TICKER.getDefaultState().setValue(StockTickerBlock.FACING, Direction.EAST));

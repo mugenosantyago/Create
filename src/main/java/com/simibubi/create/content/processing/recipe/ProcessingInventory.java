@@ -55,21 +55,19 @@ public class ProcessingInventory extends ItemStackHandler {
 		return insertItem;
 	}
 
-	@Override
 	public @NotNull CompoundTag serializeNBT(@NotNull HolderLookup.Provider registries) {
-		CompoundTag nbt = super.serializeNBT(registries);
+		CompoundTag nbt = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
 		nbt.putFloat("ProcessingTime", remainingTime);
 		nbt.putFloat("RecipeTime", recipeDuration);
 		nbt.putBoolean("AppliedRecipe", appliedRecipe);
 		return nbt;
 	}
 
-	@Override
 	public void deserializeNBT(@NotNull HolderLookup.Provider registries, CompoundTag nbt) {
 		remainingTime = nbt.getFloatOr("ProcessingTime", 0);
 		recipeDuration = nbt.getFloatOr("RecipeTime", 0);
 		appliedRecipe = nbt.getBooleanOr("AppliedRecipe", false);
-		super.deserializeNBT(registries, nbt);
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(this, registries, nbt);
 		if (isEmpty())
 			appliedRecipe = false;
 	}

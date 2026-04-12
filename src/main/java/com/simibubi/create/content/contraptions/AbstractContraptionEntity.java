@@ -81,7 +81,7 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 	private static final EntityDataAccessor<Boolean> STALLED =
 		SynchedEntityData.defineId(AbstractContraptionEntity.class, EntityDataSerializers.BOOLEAN);
 	private static final EntityDataAccessor<Optional<UUID>> CONTROLLED_BY =
-		SynchedEntityData.defineId(AbstractContraptionEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+		SynchedEntityData.defineId(AbstractContraptionEntity.class, net.minecraft.network.syncher.EntityDataSerializer.forValueType(net.minecraft.network.codec.ByteBufCodecs.optional(net.minecraft.core.UUIDUtil.STREAM_CODEC)));
 
 	public final Map<Entity, MutableInt> collidingEntities;
 
@@ -405,7 +405,7 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 		float angle = AngleHelper.deg(-Mth.atan2(motion.x, motion.z));
 		angle = AngleHelper.angleLerp(0.4f, prevAngle, angle);
 		if (level().isClientSide) {
-			living.lerpTo(0, 0, 0, 0, 0, 0);
+			// living.lerpTo() removed in 1.21.8
 			living.lerpHeadTo(0, 0);
 			living.setYRot(angle);
 			living.setXRot(0);

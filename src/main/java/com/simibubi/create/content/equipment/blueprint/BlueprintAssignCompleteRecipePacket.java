@@ -17,7 +17,7 @@ public record BlueprintAssignCompleteRecipePacket(ResourceLocation recipeId) imp
 	public void handle(ServerPlayer player) {
 		if (player.containerMenu instanceof BlueprintMenu c) {
 			com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(player.level())
-					.byKey(recipeId)
+					.byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, recipeId))
 					.ifPresent(r -> BlueprintItem.assignCompleteRecipe(c.player.level(), c.ghostInventory, r.value()));
 		}
 	}

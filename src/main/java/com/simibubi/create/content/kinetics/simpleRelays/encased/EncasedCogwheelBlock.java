@@ -73,7 +73,7 @@ public class EncasedCogwheelBlock extends RotatedPillarKineticBlock
 					.getAxis() != getRotationAxis(state)
 				? isLarge ? AllBlocks.LARGE_COGWHEEL.asStack() : AllBlocks.COGWHEEL.asStack()
 				: getCasing().asItem().getDefaultInstance();
-		return super.getCloneItemStack(state, target, level, pos, player);
+		return super.getCloneItemStack(level, pos, state, includeData);
 	}
 
 	@Override

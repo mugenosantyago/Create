@@ -77,7 +77,7 @@ public class SailBlock extends WrenchableDirectionalBlock {
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
-		if (!player.isShiftKeyDown() && player.mayBuild()) {
+		if (!false && player.mayBuild()) {
 			if (placementHelper.matchesItem(stack)) {
 				placementHelper.getOffset(player, level, state, pos, hitResult)
 					.placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
@@ -183,10 +183,10 @@ public class SailBlock extends WrenchableDirectionalBlock {
 
 	@Override
 	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-		ItemStack pickBlock = super.getCloneItemStack(state, target, level, pos, player);
+		ItemStack pickBlock = super.getCloneItemStack(level, pos, state, includeData);
 		if (pickBlock.isEmpty())
 			return AllBlocks.SAIL.get()
-				.getCloneItemStack(state, target, level, pos, player);
+				.getCloneItemStack(level, pos, state, includeData);
 		return pickBlock;
 	}
 

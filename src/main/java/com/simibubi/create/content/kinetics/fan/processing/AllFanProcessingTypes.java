@@ -293,14 +293,14 @@ public class AllFanProcessingTypes {
 				level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EXTINGUISH_FIRE,
 					SoundSource.NEUTRAL, 1.25f, 0.65f);
 
-				SkeletonHorse skeletonHorse = EntityType.SKELETON_HORSE.create(level);
-				CompoundTag serializeNBT = horse.saveWithoutId(new CompoundTag());
+				SkeletonHorse skeletonHorse = EntityType.SKELETON_HORSE.create(level, net.minecraft.world.entity.EntitySpawnReason.LOAD);
+				CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.saveEntityWithoutId(horse);
 				serializeNBT.remove("UUID");
 				if (!horse.getBodyArmorItem()
 					.isEmpty())
-					horse.spawnAtLocation(horse.getBodyArmorItem());
+					horse.spawnAtLocation((net.minecraft.server.level.ServerLevel) level(), horse.getBodyArmorItem());
 
-				skeletonHorse.deserializeNBT(entity.registryAccess(), serializeNBT);
+				com.simibubi.create.foundation.utility.NbtCompat.loadEntity(skeletonHorse, serializeNBT);
 				skeletonHorse.setPos(horse.getPosition(0));
 				level.addFreshEntity(skeletonHorse);
 				horse.discard();
@@ -418,7 +418,7 @@ public class AllFanProcessingTypes {
 			if (level.random.nextInt(8) != 0)
 				return;
 			Vector3f color = new Color(0x0055FF).asVectorF();
-			level.addParticle(new DustParticleOptions(color, 1), pos.x + (level.random.nextFloat() - .5f) * .5f,
+			level.addParticle(new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, color.x(), color.y(), color.z()), 1), pos.x + (level.random.nextFloat() - .5f) * .5f,
 				pos.y + .5f, pos.z + (level.random.nextFloat() - .5f) * .5f, 0, 1 / 8f, 0);
 			level.addParticle(ParticleTypes.SPIT, pos.x + (level.random.nextFloat() - .5f) * .5f, pos.y + .5f,
 				pos.z + (level.random.nextFloat() - .5f) * .5f, 0, 1 / 8f, 0);

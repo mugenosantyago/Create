@@ -118,7 +118,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-		compound.put("Inventory", inventory.serializeNBT(registries));
+		compound.put("Inventory", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(inventory, registries));
 		compound.putInt("RecipeIndex", recipeIndex);
 		super.write(compound, registries, clientPacket);
 
@@ -131,7 +131,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
-		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inventory, registries, compound.getCompoundOrEmpty("Inventory"));
 		recipeIndex = compound.getIntOr("RecipeIndex", 0);
 		if (compound.contains("PlayEvent"))
 			playEvent = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("PlayEvent")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);

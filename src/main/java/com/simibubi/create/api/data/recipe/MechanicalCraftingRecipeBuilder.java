@@ -143,7 +143,7 @@ public class MechanicalCraftingRecipeBuilder {
 			new ItemStack(result, count),
 			acceptMirrored
 		);
-		output.accept(id, recipe, null, recipeConditions.toArray(ICondition[]::new));
+		output.accept(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id), recipe, null, recipeConditions.toArray(ICondition[]::new));
 	}
 
 	/**

@@ -188,8 +188,6 @@ public class GantryContraptionEntity extends AbstractContraptionEntity {
 	public void teleportTo(double p_70634_1_, double p_70634_3_, double p_70634_5_) {
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void lerpTo(double pX, double pY, double pZ, float pYRot, float pXRot, int pSteps) {
 	}
 

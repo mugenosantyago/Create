@@ -85,7 +85,7 @@ public class DepotMountedStorage extends WrapperMountedItemStorage<Handler> impl
 
 	public static DepotMountedStorage fromLegacy(HolderLookup.Provider registries, CompoundTag nbt) {
 		ItemStackHandler handler = new ItemStackHandler();
-		handler.deserializeNBT(registries, nbt);
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(handler, registries, nbt);
 		if (handler.getSlots() == 1) {
 			ItemStack stack = handler.getStackInSlot(0);
 			return new DepotMountedStorage(stack);

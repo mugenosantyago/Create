@@ -104,7 +104,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		additionalDamageMult = nbt.getFloatOr("AdditionalDamage", 0);
 		additionalKnockback = nbt.getFloatOr("AdditionalKnockback", 0);
 		recoveryChance = nbt.getFloatOr("Recovery", 0);
-		super.readAdditionalSaveData(nbt);
+		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); super.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(__reporter, registryAccess(), nbt)); }
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		nbt.putFloat("AdditionalDamage", additionalDamageMult);
 		nbt.putFloat("AdditionalKnockback", additionalKnockback);
 		nbt.putFloat("Recovery", recoveryChance);
-		super.addAdditionalSaveData(nbt);
+		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); net.minecraft.world.level.storage.TagValueOutput __output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(__reporter, registryAccess()); super.addAdditionalSaveData(__output); nbt.merge(__output.buildResult()); }
 	}
 
 	@Nullable
@@ -157,7 +157,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		if (stuckEntity != null) {
 			if (getY() < stuckEntity.getY() - 0.1) {
 				pop(position());
-				kill();
+				kill((net.minecraft.server.level.ServerLevel)level());
 			} else {
 				stuckFallSpeed += 0.007 * type.gravityMultiplier();
 				stuckOffset = stuckOffset.add(0, -stuckFallSpeed, 0);
@@ -233,7 +233,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		DamageSource damageSource = causePotatoDamage();
 		if (onServer && !target.hurt(damageSource, damage)) {
 			target.setRemainingFireTicks(k);
-			kill();
+			kill((net.minecraft.server.level.ServerLevel)level());
 			return;
 		}
 
@@ -244,13 +244,13 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 			if (random.nextDouble() <= recoveryChance) {
 				recoverItem();
 			} else {
-				spawnAtLocation(type.dropStack());
+				spawnAtLocation((net.minecraft.server.level.ServerLevel) level(), type.dropStack());
 			}
 		}
 
 		if (!(target instanceof LivingEntity livingentity)) {
 			playHitSound(level(), position());
-			kill();
+			kill((net.minecraft.server.level.ServerLevel)level());
 			return;
 		}
 
@@ -284,14 +284,14 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 		if (type.sticky() && target.isAlive()) {
 			setStuckEntity(target);
 		} else {
-			kill();
+			kill((net.minecraft.server.level.ServerLevel)level());
 		}
 
 	}
 
 	private void recoverItem() {
 		if (!stack.isEmpty())
-			spawnAtLocation(stack.copyWithCount(1));
+			spawnAtLocation((net.minecraft.server.level.ServerLevel) level(), stack.copyWithCount(1));
 	}
 
 	public static void playHitSound(Level world, Vec3 location) {
@@ -310,22 +310,22 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 			if (random.nextDouble() <= recoveryChance) {
 				recoverItem();
 			} else {
-				spawnAtLocation(getProjectileType().dropStack());
+				spawnAtLocation((net.minecraft.server.level.ServerLevel) level(), getProjectileType().dropStack());
 			}
 		}
 
 		super.onHitBlock(ray);
-		kill();
+		kill((net.minecraft.server.level.ServerLevel)level());
 	}
 
 	@Override
-	public boolean hurt(@NotNull DamageSource source, float amt) {
+	public boolean hurtServer(net.minecraft.server.level.ServerLevel serverLevel, @NotNull DamageSource source, float amt) {
 		if (source.is(DamageTypeTags.IS_FIRE))
 			return false;
 		if (this.isInvulnerableTo(source))
 			return false;
 		pop(position());
-		kill();
+		kill(serverLevel);
 		return true;
 	}
 

@@ -67,11 +67,11 @@ public class WindowGen {
 	}
 
 	public static BlockEntry<WindowBlock> woodenWindowBlock(WoodType woodType, Block planksBlock) {
-		return woodenWindowBlock(woodType, planksBlock, () -> RenderType::cutoutMipped, false);
+		return woodenWindowBlock(woodType, planksBlock, () -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED, false);
 	}
 
 	public static BlockBuilder<WindowBlock, CreateRegistrate> randomisedWindowBlock(String name,
-																					Supplier<? extends ItemLike> ingredient, Supplier<Supplier<RenderType>> renderType, boolean translucent,
+																					Supplier<? extends ItemLike> ingredient, Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType, boolean translucent,
 																					Supplier<MapColor> color) {
 		ResourceLocation end_texture = Create.asResource(palettesDir() + name + "_end");
 		ResourceLocation side_texture = Create.asResource(palettesDir() + name);
@@ -84,7 +84,7 @@ public class WindowGen {
 	}
 
 	public static BlockEntry<WindowBlock> customWindowBlock(String name, Supplier<? extends ItemLike> ingredient,
-															Supplier<CTSpriteShiftEntry> ct, Supplier<Supplier<RenderType>> renderType, boolean translucent,
+															Supplier<CTSpriteShiftEntry> ct, Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType, boolean translucent,
 															Supplier<MapColor> color) {
 		NonNullFunction<String, ResourceLocation> end_texture = n -> Create.asResource(palettesDir() + name + "_end");
 		NonNullFunction<String, ResourceLocation> side_texture = n -> Create.asResource(palettesDir() + n);
@@ -92,7 +92,7 @@ public class WindowGen {
 	}
 
 	public static BlockEntry<WindowBlock> woodenWindowBlock(WoodType woodType, Block planksBlock,
-															Supplier<Supplier<RenderType>> renderType, boolean translucent) {
+															Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType, boolean translucent) {
 		String woodName = woodType.name();
 		String name = woodName + "_window";
 		NonNullFunction<String, ResourceLocation> end_texture =
@@ -104,7 +104,7 @@ public class WindowGen {
 
 	public static BlockBuilder<WindowBlock, CreateRegistrate> windowBlock(String name,
 																		  Supplier<? extends ItemLike> ingredient, Supplier<CTSpriteShiftEntry> ct,
-																		  Supplier<Supplier<RenderType>> renderType, boolean translucent,
+																		  Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType, boolean translucent,
 																		  NonNullFunction<String, ResourceLocation> endTexture, NonNullFunction<String, ResourceLocation> sideTexture,
 																		  Supplier<MapColor> color) {
 		return REGISTRATE.block(name, p -> new WindowBlock(p, translucent))
@@ -152,14 +152,14 @@ public class WindowGen {
 		ResourceLocation sideTexture = Create.asResource(palettesDir() + "framed_glass");
 		ResourceLocation itemSideTexture = Create.asResource(palettesDir() + name);
 		ResourceLocation topTexture = Create.asResource(palettesDir() + "framed_glass_pane_top");
-		Supplier<Supplier<RenderType>> renderType = () -> RenderType::cutoutMipped;
+		Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType = () -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED;
 		return connectedGlassPane(name, parent, ctshift, sideTexture, itemSideTexture, topTexture, renderType, true)
 			.register();
 	}
 
 	public static BlockBuilder<ConnectedGlassPaneBlock, CreateRegistrate> customWindowPane(String name,
 																						   Supplier<? extends Block> parent, Supplier<CTSpriteShiftEntry> ctshift,
-																						   Supplier<Supplier<RenderType>> renderType) {
+																						   Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType) {
 		ResourceLocation topTexture = Create.asResource(palettesDir() + name + "_pane_top");
 		ResourceLocation sideTexture = Create.asResource(palettesDir() + name);
 		return connectedGlassPane(name, parent, ctshift, sideTexture, sideTexture, topTexture, renderType, false);
@@ -167,11 +167,11 @@ public class WindowGen {
 
 	public static BlockEntry<ConnectedGlassPaneBlock> woodenWindowPane(WoodType woodType,
 																	   Supplier<? extends Block> parent) {
-		return woodenWindowPane(woodType, parent, () -> RenderType::cutoutMipped);
+		return woodenWindowPane(woodType, parent, () -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED);
 	}
 
 	public static BlockEntry<ConnectedGlassPaneBlock> woodenWindowPane(WoodType woodType,
-																	   Supplier<? extends Block> parent, Supplier<Supplier<RenderType>> renderType) {
+																	   Supplier<? extends Block> parent, Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType) {
 		String woodName = woodType.name();
 		String name = woodName + "_window";
 		ResourceLocation topTexture = ResourceLocation.withDefaultNamespace("block/" + woodName + "_planks");
@@ -181,7 +181,7 @@ public class WindowGen {
 	}
 
 	public static BlockEntry<GlassPaneBlock> standardGlassPane(String name, Supplier<? extends Block> parent,
-															   ResourceLocation sideTexture, ResourceLocation topTexture, Supplier<Supplier<RenderType>> renderType) {
+															   ResourceLocation sideTexture, ResourceLocation topTexture, Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType) {
 		NonNullBiConsumer<DataGenContext<Block, GlassPaneBlock>, RegistrateBlockstateProvider> stateProvider =
 			(c, p) -> p.paneBlock(c.get(), sideTexture, topTexture);
 		return glassPane(name, parent, sideTexture, topTexture, GlassPaneBlock::new, renderType, $ -> {
@@ -190,7 +190,7 @@ public class WindowGen {
 
 	private static BlockBuilder<ConnectedGlassPaneBlock, CreateRegistrate> connectedGlassPane(String name,
 																							  Supplier<? extends Block> parent, Supplier<CTSpriteShiftEntry> ctshift, ResourceLocation sideTexture,
-																							  ResourceLocation itemSideTexture, ResourceLocation topTexture, Supplier<Supplier<RenderType>> renderType, boolean colorless) {
+																							  ResourceLocation itemSideTexture, ResourceLocation topTexture, Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType, boolean colorless) {
 		NonNullConsumer<? super ConnectedGlassPaneBlock> connectedTextures = ctshift == null ? $ -> {
 		} : connectedTextures(() -> new GlassPaneCTBehaviour(ctshift.get()));
 		String CGPparents = "block/connected_glass_pane/";
@@ -221,7 +221,7 @@ public class WindowGen {
 
 	private static <G extends GlassPaneBlock> BlockBuilder<G, CreateRegistrate> glassPane(String name,
 																						  Supplier<? extends Block> parent, ResourceLocation sideTexture, ResourceLocation topTexture,
-																						  NonNullFunction<Properties, G> factory, Supplier<Supplier<RenderType>> renderType,
+																						  NonNullFunction<Properties, G> factory, Supplier<Supplier<net.minecraft.client.renderer.chunk.ChunkSectionLayer>> renderType,
 																						  NonNullConsumer<? super G> connectedTextures,
 																						  NonNullBiConsumer<DataGenContext<Block, G>, RegistrateBlockstateProvider> stateProvider, boolean colorless) {
 		name += "_pane";

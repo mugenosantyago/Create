@@ -57,14 +57,14 @@ public class FactoryPanelBlockItem extends LogisticallyLinkedBlockItem {
 
 			for (PanelSlot slot : PanelSlot.values()) {
 				CompoundTag panelTag = bet.getCompoundOrEmpty(CreateLang.asId(slot.name()));
-				if (panelTag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
+				if (panelTag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
 					frequency = panelTag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 			}
 
 			bet = new CompoundTag();
 			bet.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(frequency));
 
-			BlockEntity.addEntityType(bet, ((IBE<?>) ((BlockItem) stack.getItem()).getBlock()).getBlockEntityType());
+			com.simibubi.create.foundation.utility.NbtCompat.addEntityType(bet, ((IBE<?>) ((BlockItem) stack.getItem()).getBlock()).getBlockEntityType());
 			stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(bet));
 		}
 

@@ -25,7 +25,7 @@ public final class ToolboxColoringRecipeMaker {
 		String group = "create.toolbox.color";
 		ItemStack baseShulkerStack = AllBlocks.TOOLBOXES.get(DyeColor.BROWN)
 			.asStack();
-		Ingredient baseShulkerIngredient = Ingredient.of(baseShulkerStack);
+		Ingredient baseShulkerIngredient = Ingredient.of(baseShulkerStack.getItem().getItem());
 
 		return Arrays.stream(DyeColor.values())
 			.filter(dc -> dc != DyeColor.BROWN)
@@ -43,7 +43,7 @@ public final class ToolboxColoringRecipeMaker {
 					.get();
 				ItemStack output = new ItemStack(coloredShulkerBox);
 				ShapelessRecipe recipe = new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs);
-				return new RecipeHolder<>(Create.asResource(group + "/" + color), recipe);
+				return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, Create.asResource(group + "/" + color)), recipe);
 			});
 	}
 

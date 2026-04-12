@@ -241,7 +241,7 @@ public class CreateSceneBuilder extends PonderSceneBuilder {
 
 		public void setFilterData(Selection selection, Class<? extends BlockEntity> teType, ItemStack filter) {
 			modifyBlockEntityNBT(selection, teType, nbt -> {
-				nbt.put("Filter", filter.save(world().getHolderLookupProvider()));
+				nbt.put("Filter", com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(filter, world().getHolderLookupProvider()));
 			});
 		}
 
@@ -250,7 +250,7 @@ public class CreateSceneBuilder extends PonderSceneBuilder {
 			modifyBlockEntityNBT(scene.getSceneBuildingUtil().select().position(armLocation), ArmBlockEntity.class,
 				compound -> {
 					NBTHelper.writeEnum(compound, "Phase", phase);
-					compound.put("HeldItem", heldItem.save(world().getHolderLookupProvider()));
+					compound.put("HeldItem", com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(heldItem, world().getHolderLookupProvider()));
 					compound.putInt("TargetPointIndex", targetedPoint);
 					compound.putFloat("MovementProgress", 0);
 				});

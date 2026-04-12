@@ -66,7 +66,7 @@ public class LogStrippingFakeRecipes {
 				.output(toItem)
 				.build();
 
-		return new RecipeHolder<>(id, recipe);
+		return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id), recipe);
 	}
 
 }

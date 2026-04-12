@@ -46,7 +46,7 @@ public class RemainingAirOverlay implements GuiLayer {
 		int timeLeft = player.getPersistentData()
 			.getIntOr("VisualBacktankAir", 0);
 
-		PoseStack poseStack = guiGraphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		poseStack.pushPose();
 
 		ItemStack backtank = getDisplayedBacktank(player);

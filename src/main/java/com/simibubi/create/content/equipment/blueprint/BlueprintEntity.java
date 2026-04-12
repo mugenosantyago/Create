@@ -74,6 +74,8 @@ public class BlueprintEntity extends HangingEntity
 
 	protected int size;
 	protected Direction verticalOrientation;
+	// In 1.21.8, HangingEntity.direction is private; we track it locally
+	protected Direction direction = Direction.SOUTH;
 
 	@SuppressWarnings("unchecked")
 	public BlueprintEntity(EntityType<?> p_i50221_1_, Level p_i50221_2_) {
@@ -117,7 +119,7 @@ public class BlueprintEntity extends HangingEntity
 		p_213281_1_.putByte("Facing", (byte) this.direction.get3DDataValue());
 		p_213281_1_.putByte("Orientation", (byte) this.verticalOrientation.get3DDataValue());
 		p_213281_1_.putInt("Size", size);
-		super.addAdditionalSaveData(p_213281_1_);
+		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); net.minecraft.world.level.storage.TagValueOutput __output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(__reporter, registryAccess()); super.addAdditionalSaveData(__output); p_213281_1_.merge(__output.buildResult()); }
 	}
 
 	@Override
@@ -140,7 +142,7 @@ public class BlueprintEntity extends HangingEntity
 			this.verticalOrientation = Direction.DOWN;
 			this.size = 1;
 		}
-		super.readAdditionalSaveData(p_70037_1_);
+		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); super.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(__reporter, registryAccess(), p_70037_1_)); }
 		this.updateFacingWithBoundingBox(this.direction, this.verticalOrientation);
 	}
 
@@ -304,8 +306,8 @@ public class BlueprintEntity extends HangingEntity
 	}
 
 	@Override
-	public void dropItem(@Nullable Entity p_110128_1_) {
-		if (!level().getGameRules()
+	public void dropItem(net.minecraft.server.level.ServerLevel serverLevel, @Nullable Entity p_110128_1_) {
+		if (!serverLevel.getGameRules()
 			.getBooleanOr(GameRules.RULE_DOENTITYDROPS, false))
 			return;
 
@@ -315,7 +317,7 @@ public class BlueprintEntity extends HangingEntity
 				return;
 		}
 
-		spawnAtLocation(AllItems.CRAFTING_BLUEPRINT.asStack());
+		spawnAtLocation(serverLevel, AllItems.CRAFTING_BLUEPRINT.asStack());
 	}
 
 	@Override
@@ -338,8 +340,6 @@ public class BlueprintEntity extends HangingEntity
 		this.setPos(p_70012_1_, p_70012_3_, p_70012_5_);
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void lerpTo(double pX, double pY, double pZ, float pYRot, float pXRot, int pSteps) {
 		BlockPos blockpos =
 				this.pos.offset(BlockPos.containing(pX - this.getX(), pY - this.getY(), pZ - this.getZ()));
@@ -569,7 +569,7 @@ public class BlueprintEntity extends HangingEntity
 		@Override
 		public Component getDisplayName() {
 			return AllItems.CRAFTING_BLUEPRINT.get()
-				.getDescription();
+				.getName();
 		}
 
 		@Override

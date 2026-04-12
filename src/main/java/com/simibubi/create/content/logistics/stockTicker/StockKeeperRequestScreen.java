@@ -461,7 +461,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
 	@Override
 	public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		PoseStack ms = guiGraphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		ms.pushPose();
 		ms.translate(0, 0, -300);
 		super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
@@ -734,8 +734,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 			ms.pushPose();
 			ms.translate(0, (currentScroll * rowHeight) / totalH * (windowH - 2), 0);
 			AllGuiTextures pad = AllGuiTextures.STOCK_KEEPER_REQUEST_SCROLL_PAD;
-			graphics.blit(pad.location, barX, barY, pad.getWidth(), barSize, pad.getStartX(), pad.getStartY(),
-				pad.getWidth(), pad.getHeight(), 256, 256);
+			graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, pad.location, barX, barY, (float)(pad.getStartX()), (float)(pad.getStartY()), pad.getWidth(), barSize, 256, 256);
 			AllGuiTextures.STOCK_KEEPER_REQUEST_SCROLL_TOP.render(graphics, barX, barY);
 			if (barSize > 16)
 				AllGuiTextures.STOCK_KEEPER_REQUEST_SCROLL_MID.render(graphics, barX, barY + barSize / 2 - 4);
@@ -793,9 +792,9 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 				if (lines.size() > 0)
 					lines.set(0, CreateLang.translateDirect("gui.stock_keeper.craft", lines.get(0)
 						.copy()));
-				graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, lines, mouseX, mouseY);
 			} else
-				graphics.renderTooltip(font, entry.stack, mouseX, mouseY);
+				graphics.setTooltipForNextFrame(font, entry.stack, mouseX, mouseY);
 		}
 
 		if (currentScroll < 1 && mouseY > besideSearchButtonY && mouseY <= besideSearchButtonY + 15) {
@@ -803,8 +802,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 			if (Mods.JEI.isLoaded() && mouseX > jeiSyncX && mouseX <= jeiSyncX + 15) {
 				SearchSyncMode mode = AllConfigs.client().syncRecipeViewerSearch.get();
 				String langKey = "gui.stock_keeper.jei_sync." + mode.getSerializedName();
-				graphics.renderComponentTooltip(font,
-					List.of(
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(
 						CreateLang.translate(langKey)
 							.component(),
 						CreateLang.translate(langKey + ".description")
@@ -819,8 +817,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
 			// Render tooltip of lock option
 			if (isAdmin && mouseX > lockX && mouseX <= lockX + 15) {
-				graphics.renderComponentTooltip(font,
-					List.of(
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(
 						CreateLang.translate(isLocked ? "gui.stock_keeper.network_locked" : "gui.stock_keeper.network_open")
 							.component(),
 						CreateLang.translate("gui.stock_keeper.network_lock_tip")
@@ -840,7 +837,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 		// Render tooltip of address input
 		if (addressBox.getValue()
 			.isBlank() && !addressBox.isFocused() && addressBox.isHovered()) {
-			graphics.renderComponentTooltip(font, List.of(CreateLang.translate("gui.factory_panel.restocker_address")
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.restocker_address")
 						.color(ScrollInput.HEADER_RGB)
 						.component(),
 					CreateLang.translate("gui.schedule.lmb_edit")
@@ -935,7 +932,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 					xOffset = 84;
 					break;
 			}
-			graphics.blit(NUMBERS.location, 14 + x, 10, 0, NUMBERS.getStartX() + xOffset, NUMBERS.getStartY(),
+			graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, NUMBERS.location, 14 + x, 10, 0, NUMBERS.getStartX() + xOffset, NUMBERS.getStartY(),
 				spriteWidth, NUMBERS.getHeight(), 256, 256);
 			x += spriteWidth - 1;
 		}

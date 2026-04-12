@@ -208,9 +208,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		return "processing";
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return serializer;
+	public RecipeSerializer<? extends Recipe<I>> getSerializer() {
+		return (RecipeSerializer<? extends Recipe<I>>) serializer;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -18,13 +18,33 @@ import net.minecraft.resources.ResourceLocation;
  * a processing recipe type and want to use Create's helpers.
  * For processing recipes extend {@link StandardProcessingRecipeGen}.
  */
-public abstract class BaseRecipeProvider extends RecipeProvider {
+public abstract class BaseRecipeProvider extends RecipeProvider.Runner {
 	protected final String modid;
 	protected final List<GeneratedRecipe> all = new ArrayList<>();
 
 	public BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, String defaultNamespace) {
 		super(output, registries);
 		this.modid = defaultNamespace;
+	}
+
+	@Override
+	protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput recipeOutput) {
+		return new RecipeProvider(registries, recipeOutput) {
+			@Override
+			protected void buildRecipes() {
+				buildRecipesWithOutput(this.output);
+			}
+		};
+	}
+
+	protected void buildRecipesWithOutput(RecipeOutput recipeOutput) {
+		all.forEach(c -> c.register(recipeOutput));
+		Create.LOGGER.info("{} registered {} recipe{}", getName(), all.size(), all.size() == 1 ? "" : "s");
+	}
+
+	/** Compatibility method for subclasses that override this directly */
+	protected void buildRecipes(RecipeOutput recipeOutput) {
+		buildRecipesWithOutput(recipeOutput);
 	}
 
 	protected ResourceLocation asResource(String path) {
@@ -37,9 +57,8 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	public void buildRecipes(RecipeOutput recipeOutput) {
-		all.forEach(c -> c.register(recipeOutput));
-		Create.LOGGER.info("{} registered {} recipe{}", getName(), all.size(), all.size() == 1 ? "" : "s");
+	public String getName() {
+		return getClass().getSimpleName();
 	}
 
 	@FunctionalInterface

@@ -59,7 +59,7 @@ public class ToolboxMountedStorage extends WrapperMountedItemStorage<ToolboxInve
 
 	public static ToolboxMountedStorage fromLegacy(HolderLookup.Provider registries, CompoundTag nbt) {
 		ToolboxInventory inv = new ToolboxInventory(null);
-		inv.deserializeNBT(registries, nbt);
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inv, registries, nbt);
 		return new ToolboxMountedStorage(inv);
 	}
 }

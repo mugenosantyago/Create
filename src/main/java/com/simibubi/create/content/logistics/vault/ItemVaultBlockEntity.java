@@ -175,7 +175,7 @@ public class ItemVaultBlockEntity extends SmartBlockEntity implements IMultiBloc
 			updatePos.move(direction);
 			blockstate = level.getBlockState(updatePos);
 			if (blockstate.getWeakChanges(level, updatePos)) {
-				level.neighborChanged(blockstate, updatePos, provokingBlock, provokingPos, false);
+				level.neighborChanged(blockstate, updatePos, provokingBlock, null, false);
 			}
 		}
 	}
@@ -284,7 +284,7 @@ public class ItemVaultBlockEntity extends SmartBlockEntity implements IMultiBloc
 		}
 
 		if (!clientPacket) {
-			inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
+			com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inventory, registries, compound.getCompoundOrEmpty("Inventory"));
 			return;
 		}
 
@@ -312,7 +312,7 @@ public class ItemVaultBlockEntity extends SmartBlockEntity implements IMultiBloc
 
 		if (!clientPacket) {
 			compound.putString("StorageType", "CombinedInv");
-			compound.put("Inventory", inventory.serializeNBT(registries));
+			compound.put("Inventory", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(inventory, registries));
 		}
 	}
 

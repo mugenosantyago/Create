@@ -88,7 +88,7 @@ public class GantryShaftBlock extends DirectionalKineticBlock implements IBE<Gan
 
 	@Override
 	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+		return RenderShape.MODEL;
 	}
 
 	@Override
@@ -165,7 +165,7 @@ public class GantryShaftBlock extends DirectionalKineticBlock implements IBE<Gan
 		if (onWrenched.consumesAction()) {
 			BlockPos pos = context.getClickedPos();
 			Level world = context.getLevel();
-			neighborChanged(world.getBlockState(pos), world, pos, state.getBlock(), pos, false);
+			neighborChanged(world.getBlockState(pos), world, pos, state.getBlock(), null, false);
 		}
 		return onWrenched;
 	}

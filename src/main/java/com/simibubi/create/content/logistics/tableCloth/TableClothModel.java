@@ -93,7 +93,7 @@ public class TableClothModel extends BakedModelWrapperWithData {
 									  ModelData blockEntityData) {
 		List<Direction> culledSides = new ArrayList<>();
 		for (Direction side : Iterate.horizontalDirections)
-			if (!Block.shouldRenderFace(state, world, pos, side, pos.relative(side)))
+			if (!Block.shouldRenderFace(world, pos, state, world.getBlockState(pos.relative(side)), side))
 				culledSides.add(side);
 		if (culledSides.isEmpty())
 			return builder;

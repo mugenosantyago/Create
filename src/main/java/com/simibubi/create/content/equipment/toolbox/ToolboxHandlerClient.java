@@ -175,7 +175,7 @@ public class ToolboxHandlerClient {
 		if (compound.isEmpty())
 			return;
 
-		PoseStack poseStack = guiGraphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		poseStack.pushPose();
 		for (int slot = 0; slot < 9; slot++) {
 			String key = String.valueOf(slot);

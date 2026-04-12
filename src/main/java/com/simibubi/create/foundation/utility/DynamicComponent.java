@@ -54,7 +54,7 @@ public class DynamicComponent {
 	public void read(BlockPos pos, CompoundTag nbt, HolderLookup.Provider registries) {
 		rawCustomText = getJsonFromString(nbt.getStringOr("RawCustomText", ""));
 		try {
-			parsedCustomText = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(nbt.getStringOr("CustomText", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			parsedCustomText = ComponentSerialization.CODEC.parse(net.minecraft.core.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(nbt.getStringOr("CustomText", ""))).result().orElse(null);
 		} catch (JsonParseException e) {
 			parsedCustomText = null;
 		}
@@ -81,7 +81,7 @@ public class DynamicComponent {
 			return null;
 		try {
 			return ComponentUtils.updateForEntity(getCommandSource(serverLevel, pos),
-				ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(customText)).result().orElse(net.minecraft.network.chat.Component.empty()), null, 0);
+				ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(customText)).result().orElse(null), null, 0);
 		} catch (JsonParseException | CommandSyntaxException e) {
 			return null;
 		}

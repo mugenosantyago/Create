@@ -314,7 +314,7 @@ public class StationScreen extends AbstractStationScreen {
 		offset += icon.render(TrainIconType.ENGINE, graphics, x + offset, y + 20);
 		ms.popPose();
 
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		// RenderSystem.setShaderColor removed in 1.21.8
 
 		AllGuiTextures.STATION_TEXTBOX_TOP.render(graphics, x + 21, y + 42);
 		UIRenderHelper.drawStretched(graphics, x + 21, y + 60, 150, 26, 0, AllGuiTextures.STATION_TEXTBOX_MIDDLE);
@@ -351,7 +351,7 @@ public class StationScreen extends AbstractStationScreen {
 			int sheetX = col * 16 + colorCol * 128;
 			int sheetY = row * 16 + colorRow * 64;
 
-			graphics.blit(sprite.location, positionX, positionY, sheetX, sheetY, 16, 16, sprite.getWidth(), sprite.getHeight());
+			graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, sprite.location, positionX, positionY, (float)(sheetX), (float)(sheetY), 16, 16, sprite.getWidth(), 256, 256, sprite.getHeight());
 		}
 	}
 

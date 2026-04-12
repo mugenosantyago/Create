@@ -103,7 +103,7 @@ public class AddressEditBox extends EditBox {
 	@Override
 	public void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
 		super.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-		PoseStack matrixStack = pGuiGraphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(pGuiGraphics);
 		matrixStack.pushPose();
 		matrixStack.translate(0, 0, 500);
 		destinationSuggestions.render(pGuiGraphics, pMouseX, pMouseY);

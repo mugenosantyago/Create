@@ -47,7 +47,7 @@ public class SchematicProcessor extends StructureProcessor {
 	@Override
 	public StructureTemplate.StructureEntityInfo processEntity(LevelReader world, BlockPos pos, StructureTemplate.StructureEntityInfo rawInfo,
 			StructureTemplate.StructureEntityInfo info, StructurePlaceSettings settings, StructureTemplate template) {
-		return EntityType.by(info.nbt).flatMap(type -> {
+		return com.simibubi.create.foundation.utility.NbtCompat.entityTypeByTag(info.nbt).flatMap(type -> {
 			if (world instanceof Level) {
 				Entity e = type.create((Level) world);
 				if (e != null && !e.onlyOpCanSetNbt()) {

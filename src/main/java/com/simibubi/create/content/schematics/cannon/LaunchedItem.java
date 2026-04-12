@@ -105,7 +105,7 @@ public abstract class LaunchedItem {
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-			CompoundTag serializeNBT = super.serializeNBT(registries);
+			CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
 			serializeNBT.put("BlockState", NbtUtils.writeBlockState(state));
 			if (data != null) {
 				data.remove("x");
@@ -141,7 +141,7 @@ public abstract class LaunchedItem {
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-			CompoundTag serializeNBT = super.serializeNBT(registries);
+			CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
 			serializeNBT.putInt("Length", length);
 			serializeNBT.putIntArray("Casing", Arrays.stream(casings)
 				.map(CasingType::ordinal)
@@ -221,9 +221,9 @@ public abstract class LaunchedItem {
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-			CompoundTag serializeNBT = super.serializeNBT(registries);
+			CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
 			if (entity != null)
-				serializeNBT.put("Entity", entity.serializeNBT(registries));
+				serializeNBT.put("Entity", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(entity, registries));
 			return serializeNBT;
 		}
 

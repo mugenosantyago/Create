@@ -39,8 +39,6 @@ public class BeltConnectorItem extends BlockItem {
 	public BeltConnectorItem(Properties properties) {
 		super(AllBlocks.BELT.get(), properties);
 	}
-
-	@Override
 	public String getDescriptionId() {
 		return getOrCreateDescriptionId();
 	}
@@ -93,14 +91,14 @@ public class BeltConnectorItem extends BlockItem {
 				.isEmpty()) {
 				heldStack.remove(AllDataComponents.BELT_FIRST_SHAFT);
 				playerEntity.getCooldowns()
-					.addCooldown(this, 5);
+					.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 5);
 			}
 			return InteractionResult.SUCCESS;
 		}
 
 		heldStack.set(AllDataComponents.BELT_FIRST_SHAFT, pos);
 		playerEntity.getCooldowns()
-			.addCooldown(this, 5);
+			.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 5);
 		return InteractionResult.SUCCESS;
 	}
 

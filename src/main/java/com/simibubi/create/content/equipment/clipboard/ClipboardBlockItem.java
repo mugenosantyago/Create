@@ -60,7 +60,7 @@ public class ClipboardBlockItem extends BlockItem implements SupportsItemCopying
 			return InteractionResult.PASS;
 
 		player.getCooldowns()
-			.addCooldown(heldItem.getItem(), 10);
+			.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(heldItem.getItem()), 10);
 		if (world.isClientSide)
 			CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> openScreen(player, heldItem.getComponents()));
 		ClipboardContent content = heldItem.getOrDefault(AllDataComponents.CLIPBOARD_CONTENT, ClipboardContent.EMPTY);

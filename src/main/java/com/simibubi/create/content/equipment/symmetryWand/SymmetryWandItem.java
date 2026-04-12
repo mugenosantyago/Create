@@ -63,7 +63,7 @@ public class SymmetryWandItem extends Item {
 		if (player == null)
 			return InteractionResult.PASS;
 		player.getCooldowns()
-			.addCooldown(this, 5);
+			.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 5);
 		ItemStack wand = player.getItemInHand(context.getHand());
 		checkComponents(wand);
 
@@ -74,7 +74,7 @@ public class SymmetryWandItem extends Item {
 					openWandGUI(wand, context.getHand());
 				});
 				player.getCooldowns()
-					.addCooldown(this, 5);
+					.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 5);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -136,7 +136,7 @@ public class SymmetryWandItem extends Item {
 					openWandGUI(playerIn.getItemInHand(handIn), handIn);
 				});
 				playerIn.getCooldowns()
-					.addCooldown(this, 5);
+					.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 5);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -204,8 +204,8 @@ public class SymmetryWandItem extends Item {
 			if (world.isUnobstructed(block, position, CollisionContext.of(player))) {
 				BlockState blockState = blockSet.get(position);
 				for (Direction face : Iterate.directions)
-					blockState = blockState.updateShape(face, world.getBlockState(position.relative(face)), world,
-						position, position.relative(face));
+				blockState = blockState.updateShape(world, world, position, face, position.relative(face),
+						world.getBlockState(position.relative(face)), world.getRandom());
 
 				if (player.isCreative()) {
 					world.setBlockAndUpdate(position, blockState);

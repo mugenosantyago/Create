@@ -337,7 +337,7 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (hasEntity())
 			compound.put("Entity", new net.minecraft.nbt.IntArrayTag(net.minecraft.core.UUIDUtil.uuidToIntArray(entityUUID)));
-		compound.put("Inventory", inventory.serializeNBT(registries));
+		compound.put("Inventory", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(inventory, registries));
 		compound.putFloat("Speed", crushingspeed);
 		super.write(compound, registries, clientPacket);
 	}
@@ -350,7 +350,7 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 			this.searchForEntity = true;
 		}
 		crushingspeed = compound.getFloatOr("Speed", 0);
-		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inventory, registries, compound.getCompoundOrEmpty("Inventory"));
 	}
 
 	@Override

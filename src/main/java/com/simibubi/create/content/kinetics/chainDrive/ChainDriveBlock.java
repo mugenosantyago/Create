@@ -74,8 +74,8 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock
 				continue;
 			BlockPos pos = context.getClickedPos();
 			BlockPos offset = pos.relative(facing);
-			state = updateShape(state, facing, context.getLevel()
-				.getBlockState(offset), context.getLevel(), pos, offset);
+			state = state.updateShape(context.getLevel(), context.getLevel(), pos, facing, offset, context.getLevel()
+				.getBlockState(offset), context.getLevel().getRandom());
 		}
 		return state;
 	}
@@ -152,8 +152,8 @@ public class ChainDriveBlock extends RotatedPillarKineticBlock
 				continue;
 			BlockPos pos = context.getClickedPos();
 			BlockPos offset = pos.relative(facing);
-			newState = updateShape(newState, facing, context.getLevel()
-				.getBlockState(offset), context.getLevel(), pos, offset);
+			newState = newState.updateShape(context.getLevel(), context.getLevel(), pos, facing, offset, context.getLevel()
+				.getBlockState(offset), context.getLevel().getRandom());
 		}
 //		newState.updateNeighbors(context.getWorld(), context.getPos(), 1 | 2);
 		return newState;

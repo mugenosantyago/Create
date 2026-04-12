@@ -326,7 +326,7 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 			.translateZ(15);
 
 		// TODO: MC 1.21.8 - CoreShaders.POSITION_COLOR and BufferUploader were removed; rendering needs update
-		// RenderSystem.setShader(CoreShaders.POSITION_COLOR);
+		// // RenderSystem.setShader removed in 1.21.8
 
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);

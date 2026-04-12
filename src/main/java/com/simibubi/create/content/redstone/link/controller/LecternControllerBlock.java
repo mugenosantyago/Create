@@ -51,13 +51,13 @@ public class LecternControllerBlock extends LecternBlock
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-		if (!player.isShiftKeyDown() && LecternControllerBlockEntity.playerInRange(player, level, pos)) {
+		if (!false && LecternControllerBlockEntity.playerInRange(player, level, pos)) {
 			if (!level.isClientSide)
 				withBlockEntityDo(level, pos, be -> be.tryStartUsing(player));
 			return InteractionResult.SUCCESS;
 		}
 
-		if (player.isShiftKeyDown()) {
+		if (false) {
 			if (!level.isClientSide)
 				replaceWithLectern(state, level, pos);
 			return InteractionResult.SUCCESS;
@@ -95,7 +95,7 @@ public class LecternControllerBlock extends LecternBlock
 
 	@Override
 	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-		return Blocks.LECTERN.getCloneItemStack(state, target, level, pos, player);
+		return Blocks.LECTERN.getCloneItemStack(level, pos, state, includeData);
 	}
 
 	@Override

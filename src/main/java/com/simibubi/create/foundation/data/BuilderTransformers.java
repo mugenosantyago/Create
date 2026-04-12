@@ -126,7 +126,7 @@ public class BuilderTransformers {
 			.properties(p -> p.noOcclusion()
 				.mapColor(MapColor.NONE)
 				.isValidSpawn((state, level, pos, type) -> false))
-			.addLayer(() -> RenderType::solid)
+			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.SOLID)
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT)
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.TRANSLUCENT)
@@ -433,7 +433,7 @@ public class BuilderTransformers {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.defaultBlockstate()
 			.item()
-			.model(AssetLookup::customItemModel)
+			.model(() -> AssetLookup::customItemModel)
 			.build();
 	}
 

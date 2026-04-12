@@ -78,7 +78,7 @@ public class Label extends AbstractSimiWidget {
 		if (text == null || text.getString().isEmpty())
 			return;
 
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		// RenderSystem.setShaderColor removed in 1.21.8
 		MutableComponent copy = text.plainCopy();
 		if (suffix != null && !suffix.isEmpty())
 			copy.append(suffix);

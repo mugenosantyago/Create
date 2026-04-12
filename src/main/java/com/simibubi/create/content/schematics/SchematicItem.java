@@ -69,13 +69,13 @@ public class SchematicItem extends Item {
 
 	@Override
 	@OnlyIn(value = Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flagIn) {
 		if (stack.has(AllDataComponents.SCHEMATIC_FILE)) {
 			tooltip.add(Component.literal(ChatFormatting.GOLD + stack.get(AllDataComponents.SCHEMATIC_FILE)));
 		} else {
 			tooltip.add(CreateLang.translateDirect("schematic.invalid").withStyle(ChatFormatting.RED));
 		}
-		super.appendHoverText(stack, context, tooltip, flagIn);
+		// super.appendHoverText(stack, context, tooltip, flagIn);;
 	}
 
 	public static void writeSize(Level level, ItemStack blueprint) {

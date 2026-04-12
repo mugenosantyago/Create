@@ -172,7 +172,7 @@ public class GoggleOverlayRenderer {
 			return;
 		}
 
-		PoseStack poseStack = guiGraphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		poseStack.pushPose();
 
 		int tooltipTextWidth = 0;

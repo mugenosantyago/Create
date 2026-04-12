@@ -45,7 +45,7 @@ public class DeployerApplicationRecipe extends ItemApplicationRecipe implements 
 						.output(sandpaperRecipe.value().assemble(null, null))
 						.build();
 
-		return new RecipeHolder<>(id, recipe);
+		return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id), recipe);
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public abstract class FilterItem extends Item implements MenuProvider, SupportsI
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flagIn) {
 		if (AllKeys.shiftDown())
 			return;
 		List<Component> makeSummary = makeSummary(stack);

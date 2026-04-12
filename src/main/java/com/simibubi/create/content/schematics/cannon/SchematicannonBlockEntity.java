@@ -164,7 +164,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (!clientPacket) {
-			inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
+			com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inventory, registries, compound.getCompoundOrEmpty("Inventory"));
 		}
 
 		// Gui information
@@ -238,7 +238,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (!clientPacket) {
-			compound.put("Inventory", inventory.serializeNBT(registries));
+			compound.put("Inventory", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(inventory, registries));
 			if (state == State.RUNNING) {
 				compound.putBoolean("Running", true);
 			}
@@ -267,7 +267,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 
 		ListTag tagFlyingBlocks = new ListTag();
 		for (LaunchedItem b : flyingBlocks)
-			tagFlyingBlocks.add(b.serializeNBT(registries));
+			tagFlyingBlocks.add(com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(b, registries));
 		compound.put("FlyingBlocks", tagFlyingBlocks);
 
 		compound.putFloat("DefaultYaw", defaultYaw);

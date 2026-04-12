@@ -117,7 +117,7 @@ public class CreateTestFunction {
 		return consumer -> {
 			helper.andThen(gameTestHelper -> {
 				// give structure block test info
-				StructureBlockEntity be = gameTestHelper.getBlockEntity(BlockPos.ZERO);
+				StructureBlockEntity be = gameTestHelper.getBlockEntity(BlockPos.ZERO, StructureBlockEntity.class);
 				be.getPersistentData().putString("CreateTestFunction", fullName);
 			}).accept(CreateGameTestHelper.of(consumer));
 		};

@@ -27,7 +27,7 @@ public record MinecartControllerUpdatePacket(int entityId, @Nullable CompoundTag
 	);
 
 	public MinecartControllerUpdatePacket(MinecartController controller, @NotNull HolderLookup.Provider registries) {
-		this(controller.cart().getId(), controller.isEmpty() ? null : controller.serializeNBT(registries));
+		this(controller.cart().getId(), controller.isEmpty() ? null : com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(controller, registries));
 	}
 
 	@Override

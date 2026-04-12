@@ -69,9 +69,9 @@ public class TestFluids {
 			if (storage instanceof HosePulleyFluidHandler hose) {
 				IFluidHandler internalTank = hose.getInternalTank();
 				if (!internalTank.drain(1, FluidAction.SIMULATE).isEmpty())
-					helper.fail("Pulley not empty");
+					helper.fail(net.minecraft.network.chat.Component.literal("Pulley not empty"));
 			} else {
-				helper.fail("Not a pulley");
+				helper.fail(net.minecraft.network.chat.Component.literal("Not a pulley"));
 			}
 		});
 	}
@@ -204,7 +204,7 @@ public class TestFluids {
 				helper.assertStressometerCapacity(stressometer, 0);
 				// success, pull the lever, enter step 2
 				helper.powerLever(leftLever);
-				helper.fail("Entering step 2");
+				helper.fail(net.minecraft.network.chat.Component.literal("Entering step 2"));
 			} else {
 				// lever is pulled, flow should stop
 				helper.assertBlockNotPresent(Blocks.WATER, leftEnd);
@@ -253,7 +253,7 @@ public class TestFluids {
 				}
 			});
 			if (!planks.isEmpty())
-				helper.fail("Not all planks have been consumed");
+				helper.fail(net.minecraft.network.chat.Component.literal("Not all planks have been consumed"));
 		});
 	}
 
@@ -288,13 +288,13 @@ public class TestFluids {
 			if (!helper.getBlockState(leftValve).getValue(FluidValveBlock.ENABLED)) { // step 1
 				helper.getBlockEntity(AllBlockEntityTypes.VALVE_HANDLE.get(), leftHandle)
 						.activate(false); // open the valve, fill 4 buckets
-				helper.fail("Entering step 2");
+				helper.fail(net.minecraft.network.chat.Component.literal("Entering step 2"));
 			} else if (!helper.getBlockState(rightValve).getValue(FluidValveBlock.ENABLED)) { // step 2
 				helper.assertFluidPresent(FluidStack.EMPTY, leftTank); // wait for left tank to drain
 				helper.assertBlockProperty(lamp, RedstoneLampBlock.LIT, false); // should not be on yet
 				helper.getBlockEntity(AllBlockEntityTypes.VALVE_HANDLE.get(), rightHandle)
 						.activate(false); // fill another 4 buckets
-				helper.fail("Entering step 3");
+				helper.fail(net.minecraft.network.chat.Component.literal("Entering step 3"));
 			} else if (!helper.getBlockState(drainValve).getValue(FluidValveBlock.ENABLED)) { // step 3
 				helper.assertFluidPresent(FluidStack.EMPTY, rightTank); // wait for right tank to drain
 				// 16 buckets inserted. tank full, lamp on.
@@ -302,7 +302,7 @@ public class TestFluids {
 				// drain what's filled so far
 				helper.getBlockEntity(AllBlockEntityTypes.VALVE_HANDLE.get(), drainHandle)
 						.activate(false); // drain all 8 buckets
-				helper.fail("Entering step 4");
+				helper.fail(net.minecraft.network.chat.Component.literal("Entering step 4"));
 			} else {
 				helper.assertTankEmpty(tank); // wait for it to empty
 				helper.assertBlockProperty(lamp, RedstoneLampBlock.LIT, false); // should be off now
@@ -327,16 +327,16 @@ public class TestFluids {
 
 		helper.succeedWhen(() -> {
 			if (stage1.booleanValue()) {
-				helper.assertTrue(firstZombie.isOnFire(), "not ignited");
-				helper.assertFalse(secondZombie.getActiveEffects().isEmpty(), "no effects");
+				helper.assertTrue(firstZombie.isOnFire(), net.minecraft.network.chat.Component.literal("not ignited"));
+				helper.assertFalse(secondZombie.getActiveEffects().isEmpty(), net.minecraft.network.chat.Component.literal("no effects"));
 				// success, stage 2 time
 				stage1.setFalse();
 				helper.pullLever(effects);
 				helper.pullLever(removers);
-				helper.fail("switching stages");
+				helper.fail(net.minecraft.network.chat.Component.literal("switching stages"));
 			} else {
-				helper.assertFalse(firstZombie.isOnFire(), "not extinguished");
-				helper.assertTrue(secondZombie.getActiveEffects().isEmpty(), "has effects");
+				helper.assertFalse(firstZombie.isOnFire(), net.minecraft.network.chat.Component.literal("not extinguished"));
+				helper.assertTrue(secondZombie.getActiveEffects().isEmpty(), net.minecraft.network.chat.Component.literal("has effects"));
 				// all done
 			}
 		});

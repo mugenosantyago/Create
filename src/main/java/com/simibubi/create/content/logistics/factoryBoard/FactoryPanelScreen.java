@@ -270,8 +270,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 				int inputX = guiLeft + (restocker ? 88 : 68 + (slot % 3 * 20));
 				int inputY = guiTop + (restocker ? 12 : 28) + (slot / 3 * 20);
 				if (!restocker && mouseY > inputY && mouseY < inputY + 60 && mouseX > inputX && mouseX < inputX + 60)
-					graphics.renderComponentTooltip(font,
-						List.of(CreateLang.translate("gui.factory_panel.unconfigured_input")
+					com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.unconfigured_input")
 							.color(ScrollInput.HEADER_RGB)
 							.component(),
 							CreateLang.translate("gui.factory_panel.unconfigured_input_tip")
@@ -311,7 +310,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 					.style(ChatFormatting.DARK_GRAY)
 					.style(ChatFormatting.ITALIC)
 					.component();
-				graphics.renderComponentTooltip(font, craftingActive ? List.of(c1, c2, c3) : List.of(c1, c2, c3, c4),
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, craftingActive ? List.of(c1, c2, c3) : List.of(c1, c2, c3, c4),
 					mouseX, mouseY);
 			}
 		}
@@ -365,7 +364,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 						.style(ChatFormatting.DARK_GRAY)
 						.style(ChatFormatting.ITALIC)
 						.component());
-				graphics.renderComponentTooltip(font, linkTip, mouseX, mouseY);
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, linkTip, mouseX, mouseY);
 			}
 		}
 
@@ -415,7 +414,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 						.component());
 			}
 
-			graphics.renderComponentTooltip(font, promiseTip, mouseX, mouseY);
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, promiseTip, mouseX, mouseY);
 		}
 
 		ms.popPose();
@@ -435,7 +434,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 			return;
 
 		if (craftingActive) {
-			graphics.renderComponentTooltip(font, List.of(CreateLang.translate("gui.factory_panel.crafting_input")
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.crafting_input")
 				.color(ScrollInput.HEADER_RGB)
 				.component(),
 				CreateLang.translate("gui.factory_panel.crafting_input_tip")
@@ -449,7 +448,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 		}
 
 		if (itemStack.stack.isEmpty()) {
-			graphics.renderComponentTooltip(font, List.of(CreateLang.translate("gui.factory_panel.empty_panel")
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.empty_panel")
 				.color(ScrollInput.HEADER_RGB)
 				.component(),
 				CreateLang.translate("gui.factory_panel.left_click_disconnect")
@@ -461,8 +460,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 		}
 
 		if (restocker) {
-			graphics.renderComponentTooltip(font,
-				List.of(CreateLang.translate("gui.factory_panel.sending_item", CreateLang.itemName(itemStack.stack)
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.sending_item", CreateLang.itemName(itemStack.stack)
 					.string())
 					.color(ScrollInput.HEADER_RGB)
 					.component(),
@@ -476,8 +474,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 			return;
 		}
 
-		graphics.renderComponentTooltip(font,
-			List.of(CreateLang.translate("gui.factory_panel.sending_item", CreateLang.itemName(itemStack.stack)
+		com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.sending_item", CreateLang.itemName(itemStack.stack)
 				.add(CreateLang.text(" x" + itemStack.count))
 				.string())
 				.color(ScrollInput.HEADER_RGB)
@@ -497,8 +494,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 		if (addressBox.getValue()
 			.isBlank()) {
 			if (restocker) {
-				graphics.renderComponentTooltip(font,
-					List.of(CreateLang.translate("gui.factory_panel.restocker_address")
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.restocker_address")
 						.color(ScrollInput.HEADER_RGB)
 						.component(),
 						CreateLang.translate("gui.factory_panel.restocker_address_tip")
@@ -514,7 +510,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 					mouseX, mouseY);
 
 			} else {
-				graphics.renderComponentTooltip(font, List.of(CreateLang.translate("gui.factory_panel.recipe_address")
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.factory_panel.recipe_address")
 					.color(ScrollInput.HEADER_RGB)
 					.component(),
 					CreateLang.translate("gui.factory_panel.recipe_address_tip")
@@ -530,8 +526,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 					mouseX, mouseY);
 			}
 		} else
-			graphics.renderComponentTooltip(font,
-				List.of(
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(
 					CreateLang
 						.translate(restocker ? "gui.factory_panel.restocker_address_given"
 							: "gui.factory_panel.recipe_address_given")

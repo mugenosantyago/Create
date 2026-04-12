@@ -31,7 +31,7 @@ import net.neoforged.neoforge.fluids.FluidType;
  *
  * @see com.simibubi.create.infrastructure.data.CreateDatagen
  */
-public final class CreateRecipeProvider extends RecipeProvider {
+public final class CreateRecipeProvider extends RecipeProvider.Runner {
 
 	static final List<ProcessingRecipeGen<?, ?, ?>> GENERATORS = new ArrayList<>();
 	static final int BUCKET = FluidType.BUCKET_VOLUME;
@@ -42,7 +42,18 @@ public final class CreateRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	protected void buildRecipes(RecipeOutput recipeOutput) {
+	protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput recipeOutput) {
+		return new RecipeProvider(registries, recipeOutput) {
+			@Override
+			protected void buildRecipes() {
+				// Processing recipes are registered separately via registerAllProcessing
+			}
+		};
+	}
+
+	@Override
+	public String getName() {
+		return "Create Recipes";
 	}
 
 	public static void registerAllProcessing(DataGenerator gen, PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -227,7 +238,7 @@ public final class CreateRecipeProvider extends RecipeProvider {
 		}
 
 		static Ingredient netherite() {
-			return Ingredient.of(Tags.Items.INGOTS_NETHERITE);
+			return com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(Tags.Items.INGOTS_NETHERITE);
 		}
 
 	}

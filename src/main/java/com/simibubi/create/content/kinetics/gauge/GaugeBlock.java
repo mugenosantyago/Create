@@ -113,7 +113,7 @@ public class GaugeBlock extends DirectionalAxisKineticBlock implements IBE<Gauge
 			return false;
 		if (getRotationAxis(state) == Axis.Y && face != state.getValue(FACING))
 			return false;
-		if (!Block.shouldRenderFace(state, world, pos, face, pos.relative(face)) && !(world instanceof WrappedLevel))
+		if (!Block.shouldRenderFace(world, pos, state, world.getBlockState(pos.relative(face)), face) && !(world instanceof WrappedLevel))
 			return false;
 		return true;
 	}
@@ -148,7 +148,7 @@ public class GaugeBlock extends DirectionalAxisKineticBlock implements IBE<Gauge
 				Vec3 offset = VecHelper.getCenterOf(pos)
 					.add(faceVec.scale(.55))
 					.add(mul);
-				worldIn.addParticle(new DustParticleOptions(rgb, 1), offset.x, offset.y, offset.z, mul.x, mul.y, mul.z);
+				worldIn.addParticle(new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, rgb.x(), rgb.y(), rgb.z()), 1), offset.x, offset.y, offset.z, mul.x, mul.y, mul.z);
 			}
 
 		}

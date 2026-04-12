@@ -52,11 +52,11 @@ public class BacktankBlockEntity extends KineticBlockEntity implements Nameable 
 	public static Component getDefaultName(BlockState state) {
 		if (AllBlocks.NETHERITE_BACKTANK.has(state)) {
 			AllItems.NETHERITE_BACKTANK.get()
-				.getDescription();
+				.getName();
 		}
 
 		return AllItems.COPPER_BACKTANK.get()
-			.getDescription();
+			.getName();
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class BacktankBlockEntity extends KineticBlockEntity implements Nameable 
 		capacityEnchantLevel = compound.getIntOr("CapacityEnchantment", 0);
 
 		if (compound.contains("CustomName"))
-			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.get("CustomName"), registries).result().orElse(null);
 
 		componentPatch = CatnipCodecUtils.decode(DataComponentPatch.CODEC, registries, compound.getCompoundOrEmpty("Components")).orElse(DataComponentPatch.EMPTY);
 		if (prev != 0 && prev != airLevel && airLevel == BacktankUtil.maxAir(capacityEnchantLevel) && clientPacket)

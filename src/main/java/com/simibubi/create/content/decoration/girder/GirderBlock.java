@@ -121,7 +121,7 @@ public class GirderBlock extends Block implements SimpleWaterloggedBlock, IWrenc
 
 		if (AllItems.WRENCH.isIn(stack) && !player.isShiftKeyDown()) {
 			if (GirderWrenchBehavior.handleClick(level, pos, state, hitResult))
-				return InteractionResult.sidedSuccess(level.isClientSide);
+				return (level.isClientSide ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.SUCCESS_SERVER);
 			return InteractionResult.FAIL;
 		}
 

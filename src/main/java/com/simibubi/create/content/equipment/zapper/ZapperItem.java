@@ -52,7 +52,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flagIn) {
 		if (stack.has(AllDataComponents.SHAPER_BLOCK_USED)) {
 			MutableComponent usedBlock = stack.get(AllDataComponents.SHAPER_BLOCK_USED).getBlock().getName();
 			tooltip.add(CreateLang.translateDirect("terrainzapper.usingBlock", usedBlock.withStyle(ChatFormatting.GRAY))
@@ -104,7 +104,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 					openHandgunGUI(item, hand);
 				});
 				player.getCooldowns()
-					.addCooldown(item.getItem(), 10);
+					.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item.getItem()), 10);
 			}
 			return InteractionResult.SUCCESS;
 		}

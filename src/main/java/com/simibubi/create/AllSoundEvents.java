@@ -41,7 +41,7 @@ public class AllSoundEvents {
 			.build(),
 
 		SCHEMATICANNON_FINISH = create("schematicannon_finish").subtitle("Schematicannon dings")
-			.playExisting(SoundEvents.NOTE_BLOCK_BELL::value, 1, .7f)
+			.playExisting(() -> SoundEvents.NOTE_BLOCK_BELL.value(), 1, .7f)
 			.category(SoundSource.BLOCKS)
 			.build(),
 
@@ -73,14 +73,14 @@ public class AllSoundEvents {
 
 		MECHANICAL_PRESS_ACTIVATION = create("mechanical_press_activation").subtitle("Mechanical Press clangs")
 			.playExisting(SoundEvents.ANVIL_LAND, .125f, 1f)
-			.playExisting(SoundEvents.ITEM_BREAK, .5f, 1f)
+			.playExisting(() -> SoundEvents.ITEM_BREAK.value(), .5f, 1f)
 			.category(SoundSource.BLOCKS)
 			.build(),
 
 		MECHANICAL_PRESS_ACTIVATION_ON_BELT =
 			create("mechanical_press_activation_belt").subtitle("Mechanical Press bonks")
 				.playExisting(SoundEvents.WOOL_HIT, .75f, 1f)
-				.playExisting(SoundEvents.ITEM_BREAK, .15f, .75f)
+				.playExisting(() -> SoundEvents.ITEM_BREAK.value(), .15f, .75f)
 				.category(SoundSource.BLOCKS)
 				.build(),
 
@@ -109,12 +109,12 @@ public class AllSoundEvents {
 			.build(),
 
 		SCROLL_VALUE = create("scroll_value").subtitle("Scroll-input clicks")
-			.playExisting(SoundEvents.NOTE_BLOCK_HAT::value, .124f, 1f)
+			.playExisting(() -> SoundEvents.NOTE_BLOCK_HAT.value(), .124f, 1f)
 			.category(SoundSource.PLAYERS)
 			.build(),
 
 		CONFIRM = create("confirm").subtitle("Affirmative ding")
-			.playExisting(SoundEvents.NOTE_BLOCK_BELL::value, 0.5f, 0.8f)
+			.playExisting(() -> SoundEvents.NOTE_BLOCK_BELL.value(), 0.5f, 0.8f)
 			.category(SoundSource.PLAYERS)
 			.build(),
 
@@ -123,7 +123,7 @@ public class AllSoundEvents {
 			.build(),
 
 		DENY = create("deny").subtitle("Declining boop")
-			.playExisting(SoundEvents.NOTE_BLOCK_BASS::value, 1f, 0.5f)
+			.playExisting(() -> SoundEvents.NOTE_BLOCK_BASS.value(), 1f, 0.5f)
 			.category(SoundSource.PLAYERS)
 			.build(),
 
@@ -205,7 +205,7 @@ public class AllSoundEvents {
 			.build(),
 
 		CRAFTER_CRAFT = create("crafter_craft").subtitle("Crafter crafts")
-			.playExisting(SoundEvents.ITEM_BREAK, .125f, .75f)
+			.playExisting(() -> SoundEvents.ITEM_BREAK.value(), .125f, .75f)
 			.category(SoundSource.BLOCKS)
 			.build(),
 

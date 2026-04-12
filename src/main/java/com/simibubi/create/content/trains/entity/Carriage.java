@@ -484,7 +484,7 @@ public class Carriage {
 			for (Entity passenger : entity.getPassengers())
 				if (mapping.containsKey(passenger.getUUID())) {
 					CompoundTag data = new CompoundTag();
-					if (passenger.saveAsPassenger(data))
+					if (com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, data, registries))
 						passengerMap.put(mapping.get(passenger.getUUID()), data);
 				}
 		}
@@ -508,7 +508,8 @@ public class Carriage {
 
 	private void serialize(Entity entity) {
 		serialisedEntity = new CompoundTag();
-		entity.saveAsPassenger(serialisedEntity);
+		net.minecraft.core.HolderLookup.Provider __registries = entity.level() != null ? entity.level().registryAccess() : net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty());
+		com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(entity, serialisedEntity, __registries);
 		serialisedEntity.remove("Passengers");
 		serialisedEntity.getCompoundOrEmpty("Contraption")
 			.remove("Passengers");
@@ -766,7 +767,7 @@ public class Carriage {
 				}
 
 				CompoundTag passengerData = new CompoundTag();
-				passenger.saveAsPassenger(passengerData);
+				com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, passengerData, registries);
 				serialisedPassengers.put(seat, passengerData);
 				passenger.discard();
 			}
@@ -867,7 +868,7 @@ public class Carriage {
 					}
 
 					CompoundTag passengerData = new CompoundTag();
-					passenger.saveAsPassenger(passengerData);
+					com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, passengerData, registries);
 					serialisedPassengers.put(seat, passengerData);
 				}
 			}

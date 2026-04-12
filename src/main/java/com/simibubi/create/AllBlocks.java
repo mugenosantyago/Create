@@ -1801,7 +1801,7 @@ public class AllBlocks {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.defaultBlockstate()
 			.item(PackagePortItem::new)
-			.model(AssetLookup::customItemModel)
+			.model(() -> AssetLookup::customItemModel)
 			.build()
 			.register();
 
@@ -1824,7 +1824,7 @@ public class AllBlocks {
 					.pattern("B")
 					.pattern("A")
 					.unlockedBy("has_barrel", RegistrateRecipeProvider.has(Items.BARREL))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName()));
+					.save(p, Create.asResource("crafting/logistics/" + c.getName().toString()));
 				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(colour.getTag())
 					.requires(AllItemTags.POSTBOXES.tag)
@@ -1883,7 +1883,7 @@ public class AllBlocks {
 			.onRegister(CreateRegistrate.blockModel(() -> FactoryPanelModel::new))
 			.transform(displaySource(AllDisplaySources.GAUGE_STATUS))
 			.item(FactoryPanelBlockItem::new)
-			.model(AssetLookup::customItemModel)
+			.model(() -> AssetLookup::customItemModel)
 			.build()
 			.register();
 
@@ -1897,7 +1897,7 @@ public class AllBlocks {
 					.requires(DyeHelper.getWoolOfDye(colour))
 					.requires(AllItems.ANDESITE_ALLOY)
 					.unlockedBy("has_wool", RegistrateRecipeProvider.has(ItemTags.WOOL))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName()));
+					.save(p, Create.asResource("crafting/logistics/" + c.getName().toString()));
 				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(colour.getTag())
 					.requires(AllItemTags.DYED_TABLE_CLOTHS.tag)
@@ -2043,7 +2043,7 @@ public class AllBlocks {
 			.defaultBlockstate()
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.item()
-			.model(AbstractDiodeGenerator::diodeItemModel)
+			.model(() -> AbstractDiodeGenerator::diodeItemModel)
 			.build()
 			.register();
 
@@ -2054,7 +2054,7 @@ public class AllBlocks {
 			.defaultBlockstate()
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.item()
-			.model(AbstractDiodeGenerator::diodeItemModel)
+			.model(() -> AbstractDiodeGenerator::diodeItemModel)
 			.build()
 			.register();
 
@@ -2064,7 +2064,7 @@ public class AllBlocks {
 		.defaultBlockstate()
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.item()
-		.model(AbstractDiodeGenerator::diodeItemModel)
+		.model(() -> AbstractDiodeGenerator::diodeItemModel)
 		.build()
 		.register();
 
@@ -2307,7 +2307,7 @@ public class AllBlocks {
 					.requires(DyeHelper.getWoolOfDye(colour))
 					.requires(ItemTags.WOODEN_SLABS)
 					.unlockedBy("has_wool", RegistrateRecipeProvider.has(ItemTags.WOOL))
-					.save(p, Create.asResource("crafting/kinetics/" + c.getName()));
+					.save(p, Create.asResource("crafting/kinetics/" + c.getName().toString()));
 				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(colour.getTag())
 					.requires(AllItemTags.SEATS.tag)

@@ -177,7 +177,7 @@ public abstract class AbstractBogeyBlock<T extends AbstractBogeyBlockEntity> ext
 			if (!(be instanceof AbstractBogeyBlockEntity sbbe))
 				return InteractionResult.FAIL;
 
-			player.getCooldowns().addCooldown(stack.getItem(), 20);
+			player.getCooldowns().addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()), 20);
 			BogeyStyle currentStyle = sbbe.getStyle();
 
 			BogeySizes.BogeySize size = getSize();
@@ -250,7 +250,7 @@ public abstract class AbstractBogeyBlock<T extends AbstractBogeyBlockEntity> ext
 
 		while (index != indexOf) {
 			ResourceLocation id = bogeyCycle.get(index);
-			Block newBlock = BuiltInRegistries.BLOCK.get(id);
+			Block newBlock = BuiltInRegistries.BLOCK.getValue(id);
 			if (newBlock instanceof AbstractBogeyBlock<?> bogey) {
 				BlockState matchingBogey = bogey.getMatchingBogey(bogeyUpDirection, trackAxisAlongFirstCoordinate);
 				if (matchingBogey != null)

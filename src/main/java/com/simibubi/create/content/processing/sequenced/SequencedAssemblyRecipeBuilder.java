@@ -96,7 +96,7 @@ public class SequencedAssemblyRecipeBuilder {
 	}
 
 	public RecipeHolder<SequencedAssemblyRecipe> build() {
-		return new RecipeHolder<>(id, recipe);
+		return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE), id), recipe);
 	}
 
 	public void build(RecipeOutput consumer) {

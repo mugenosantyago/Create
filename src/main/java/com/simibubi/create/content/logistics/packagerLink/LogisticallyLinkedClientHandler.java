@@ -35,7 +35,7 @@ public class LogisticallyLinkedClientHandler {
 			return;
 
 		CompoundTag tag = mainHandItem.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-		if (!tag.getIntArray("Freq").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false))
+		if (!tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
 			return;
 
 		UUID uuid = tag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);

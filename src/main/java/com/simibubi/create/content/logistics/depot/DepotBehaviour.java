@@ -226,10 +226,10 @@ public class DepotBehaviour extends BlockEntityBehaviour implements Clearable {
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (heldItem != null)
-			compound.put("HeldItem", heldItem.serializeNBT(registries));
-		compound.put("OutputBuffer", processingOutputBuffer.serializeNBT(registries));
+			compound.put("HeldItem", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(heldItem, registries));
+		compound.put("OutputBuffer", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(processingOutputBuffer, registries));
 		if (canMergeItems() && !incoming.isEmpty())
-			compound.put("Incoming", NBTHelper.writeCompoundList(incoming, stack -> stack.serializeNBT(registries)));
+			compound.put("Incoming", NBTHelper.writeCompoundList(incoming, stack -> com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(stack, registries)));
 	}
 
 	@Override
@@ -237,7 +237,7 @@ public class DepotBehaviour extends BlockEntityBehaviour implements Clearable {
 		heldItem = null;
 		if (compound.contains("HeldItem"))
 			heldItem = TransportedItemStack.read(compound.getCompoundOrEmpty("HeldItem"), registries);
-		processingOutputBuffer.deserializeNBT(registries, compound.getCompoundOrEmpty("OutputBuffer"));
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(processingOutputBuffer, registries, compound.getCompoundOrEmpty("OutputBuffer"));
 		if (canMergeItems()) {
 			ListTag list = compound.getListOrEmpty("Incoming");
 			incoming = NBTHelper.readCompoundList(list, c -> TransportedItemStack.read(c, registries));

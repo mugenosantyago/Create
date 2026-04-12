@@ -126,7 +126,7 @@ public class TrainHUD {
 		if (localPos == null)
 			return;
 
-		PoseStack poseStack = guiGraphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		poseStack.pushPose();
 		poseStack.translate(guiGraphics.guiWidth() / 2 - 91, guiGraphics.guiHeight() - 29, 0);
 

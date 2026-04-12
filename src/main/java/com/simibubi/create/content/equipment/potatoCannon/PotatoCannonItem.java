@@ -127,7 +127,7 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 		ItemStack ammoStackCopy = ammoStack.copy();
 
 		for (int i = 0; i < projectileType.split(); i++) {
-			PotatoProjectileEntity projectile = AllEntityTypes.POTATO_PROJECTILE.create(level);
+			PotatoProjectileEntity projectile = AllEntityTypes.POTATO_PROJECTILE.create(level, net.minecraft.world.entity.EntitySpawnReason.LOAD);
 			projectile.setItem(ammoStackCopy);
 			projectile.setEnchantmentEffectsFromCannon(heldStack);
 
@@ -164,16 +164,16 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) {
-			super.appendHoverText(stack, context, tooltip, flag);
+			// super.appendHoverText(stack, context, tooltip, flag);;
 			return;
 		}
 
 		Ammo ammo = getAmmo(player, stack);
 		if (ammo == null) {
-			super.appendHoverText(stack, context, tooltip, flag);
+			// super.appendHoverText(stack, context, tooltip, flag);;
 			return;
 		}
 		ItemStack ammoStack = ammo.stack();

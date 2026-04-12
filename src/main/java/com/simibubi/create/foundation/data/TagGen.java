@@ -67,10 +67,15 @@ public class TagGen {
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static <T extends TagAppender<?, ?>> T addOptional(T appender, Mods mod, List<String> ids) {
-		for (String id : ids) {
-			((TagAppender) appender).addOptional(mod.asResource(id));
-		}
+	public static <T> CreateTagAppender<T> addOptional(CreateTagAppender<T> appender, Mods mod, String id) {
+		((TagAppender) appender.delegate).addOptional(mod.asResource(id));
+		return appender;
+	}
+
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static <T> CreateTagAppender<T> addOptional(CreateTagAppender<T> appender, Mods mod, List<String> ids) {
+		for (String id : ids)
+			((TagAppender) appender.delegate).addOptional(mod.asResource(id));
 		return appender;
 	}
 
@@ -89,7 +94,7 @@ public class TagGen {
 		}
 
 		public TagBuilder getOrCreateRawBuilder(TagKey<T> tag) {
-			return provider.addTag(tag).getInternalBuilder();
+			return provider.rawBuilder(tag);
 		}
 	}
 
@@ -113,6 +118,16 @@ public class TagGen {
 			Stream.<T>of(entries)
 				.map(keyExtractor)
 				.forEach(delegate::add);
+			return this;
+		}
+
+		public CreateTagAppender<T> addTag(TagKey<T> tag) {
+			delegate.addTag(tag);
+			return this;
+		}
+
+		public CreateTagAppender<T> addOptionalTag(TagKey<T> tag) {
+			delegate.addOptionalTag(tag);
 			return this;
 		}
 

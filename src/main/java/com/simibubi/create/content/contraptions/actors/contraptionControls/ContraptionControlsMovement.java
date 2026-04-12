@@ -51,7 +51,7 @@ public class ContraptionControlsMovement implements MovementBehaviour {
 		CompoundTag blockEntityData = ctx.blockEntityData;
 		if (blockEntityData == null)
 			return null;
-		return net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, ctx.world.registryAccess(), blockEntityData.getCompoundOrEmpty("Filter").orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		return com.simibubi.create.foundation.utility.NbtCompat.parseOptionalItemStack(ctx.world.registryAccess(), blockEntityData.getCompoundOrEmpty("Filter"));
 	}
 
 	public static boolean isDisabledInitially(MovementContext ctx) {

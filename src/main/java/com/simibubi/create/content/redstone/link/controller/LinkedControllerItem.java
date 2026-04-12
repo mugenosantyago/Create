@@ -63,7 +63,7 @@ public class LinkedControllerItem extends Item implements MenuProvider {
 					if (world.isClientSide)
 						CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> this.toggleBindMode(ctx.getClickedPos()));
 					player.getCooldowns()
-						.addCooldown(this, 2);
+						.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 2);
 					return InteractionResult.SUCCESS;
 				}
 
@@ -99,7 +99,7 @@ public class LinkedControllerItem extends Item implements MenuProvider {
 			if (world.isClientSide)
 				CatnipServices.PLATFORM.executeOnClientOnly(() -> this::toggleActive);
 			player.getCooldowns()
-				.addCooldown(this, 2);
+				.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this), 2);
 		}
 
 		return InteractionResult.PASS;

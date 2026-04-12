@@ -104,9 +104,81 @@ public class NbtCompat {
 	/** Compatibility replacement for removed Ingredient.of(TagKey<Item>) */
 	public static net.minecraft.world.item.crafting.Ingredient ingredientFromTag(net.minecraft.tags.TagKey<net.minecraft.world.item.Item> tag) {
 		net.minecraft.core.HolderSet.Named<net.minecraft.world.item.Item> namedSet =
-			net.minecraft.core.registries.BuiltInRegistries.ITEM.get(tag)
+			net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(tag)
 				.orElseGet(() -> net.minecraft.core.HolderSet.emptyNamed(net.minecraft.core.registries.BuiltInRegistries.ITEM, tag));
 		return net.minecraft.world.item.crafting.Ingredient.of(namedSet);
+	}
+
+	/** Compatibility replacement for ItemStackHandler.serializeNBT(Provider) */
+	public static net.minecraft.nbt.CompoundTag serializeItemStackHandler(net.neoforged.neoforge.items.ItemStackHandler handler, net.minecraft.core.HolderLookup.Provider registries) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, registries);
+		handler.serialize(output);
+		return output.buildResult();
+	}
+
+	/** Compatibility replacement for ItemStackHandler.deserializeNBT(Provider, CompoundTag) */
+	public static void deserializeItemStackHandler(net.neoforged.neoforge.items.ItemStackHandler handler, net.minecraft.core.HolderLookup.Provider registries, net.minecraft.nbt.CompoundTag tag) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
+		handler.deserialize(input);
+	}
+
+	/** Compatibility replacement for Entity.saveAsPassenger(CompoundTag) */
+	public static boolean saveEntityToTag(net.minecraft.world.entity.Entity entity, net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, registries);
+		boolean result = entity.saveAsPassenger(output);
+		if (result) tag.merge(output.buildResult());
+		return result;
+	}
+
+	/** Compatibility: Entity.save() now takes ValueOutput; returns CompoundTag or null if not saved */
+	public static net.minecraft.nbt.CompoundTag saveEntity(net.minecraft.world.entity.Entity entity) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, entity.registryAccess());
+		if (entity.save(output)) {
+			return output.buildResult();
+		}
+		return null;
+	}
+
+	/** Compatibility: Entity.save() now takes ValueOutput; merges result into tag, returns whether successful */
+	public static boolean saveEntityIntoTag(net.minecraft.world.entity.Entity entity, net.minecraft.nbt.CompoundTag tag) {
+		net.minecraft.nbt.CompoundTag result = saveEntity(entity);
+		if (result != null) { tag.merge(result); return true; }
+		return false;
+	}
+
+	/** Compatibility: Entity.saveWithoutId() now takes ValueOutput; returns CompoundTag */
+	public static net.minecraft.nbt.CompoundTag saveEntityWithoutId(net.minecraft.world.entity.Entity entity) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, entity.registryAccess());
+		entity.saveWithoutId(output);
+		return output.buildResult();
+	}
+
+	/** Compatibility: Entity.load() now takes ValueInput */
+	public static void loadEntity(net.minecraft.world.entity.Entity entity, net.minecraft.nbt.CompoundTag tag) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, entity.registryAccess(), tag);
+		entity.load(input);
+	}
+
+	/** Compatibility: BlockEntity.addEntityType() now takes ValueOutput; stores type id directly in tag */
+	public static void addEntityType(net.minecraft.nbt.CompoundTag tag, net.minecraft.world.level.block.entity.BlockEntityType<?> type) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		// Use a temporary ValueOutput to get the serialized form, then merge into tag
+		// Or simply store the id directly since TYPE_CODEC is byNameCodec()
+		net.minecraft.resources.ResourceLocation key = net.minecraft.core.registries.BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type);
+		if (key != null) tag.putString("id", key.toString());
+	}
+
+	/** Compatibility: EntityType.by() now takes ValueInput; use entity id string from tag */
+	public static java.util.Optional<net.minecraft.world.entity.EntityType<?>> entityTypeByTag(net.minecraft.nbt.CompoundTag tag) {
+		String id = tag.getStringOr("id", "");
+		if (id.isEmpty()) return java.util.Optional.empty();
+		return net.minecraft.world.entity.EntityType.byString(id);
 	}
 
 }

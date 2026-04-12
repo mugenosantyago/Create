@@ -166,7 +166,7 @@ public class CreateGameTestHelper extends GameTestHelper {
 	 * Get the block entity of the expected type. If the type does not match, this fails the test.
 	 */
 	public <T extends BlockEntity> T getBlockEntity(BlockEntityType<T> type, BlockPos pos) {
-		BlockEntity be = getBlockEntity(pos);
+		BlockEntity be = getBlockEntity(pos, BlockEntity.class);
 		BlockEntityType<?> actualType = be == null ? null : be.getType();
 		if (actualType != type) {
 			String actualId = actualType == null ? "null" : RegisteredObjectsHelper.getKeyOrThrow(actualType).toString();
@@ -480,6 +480,6 @@ public class CreateGameTestHelper extends GameTestHelper {
 	@Contract("_->fail") // make IDEA happier
 	@Override
 	public void fail(@NotNull String exceptionMessage) {
-		super.fail(exceptionMessage);
+		super.fail(net.minecraft.network.chat.Component.literal(exceptionMessage));
 	}
 }

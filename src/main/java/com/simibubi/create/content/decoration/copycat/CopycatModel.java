@@ -81,7 +81,7 @@ public abstract class CopycatModel extends BakedModelWrapperWithData {
 
 			if (!copycatBlock.canFaceBeOccluded(state, face))
 				continue;
-			if (!Block.shouldRenderFace(material, level, pos, face, neighbourPos))
+			if (!Block.shouldRenderFace(level, pos, material, level.getBlockState(neighbourPos), face))
 				occlusionData.occlude(face);
 		}
 	}

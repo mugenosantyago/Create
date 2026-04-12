@@ -47,7 +47,7 @@ public class ScheduleItemEntityInteraction {
 			InteractionResult result = si.handScheduleTo(itemStack, player, living, event.getHand());
 			if (result.consumesAction()) {
 				player.getCooldowns()
-					.addCooldown(AllItems.SCHEDULE.get(), 5);
+					.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(AllItems.SCHEDULE.get()), 5);
 				event.setCancellationResult(result);
 				event.setCanceled(true);
 				return;
@@ -87,7 +87,7 @@ public class ScheduleItemEntityInteraction {
 			}
 
 			player.getCooldowns()
-				.addCooldown(AllItems.SCHEDULE.get(), 5);
+				.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(AllItems.SCHEDULE.get()), 5);
 			event.setCancellationResult(InteractionResult.SUCCESS);
 			event.setCanceled(true);
 			return;
@@ -116,7 +116,7 @@ public class ScheduleItemEntityInteraction {
 		}
 
 		player.getCooldowns()
-			.addCooldown(AllItems.SCHEDULE.get(), 5);
+			.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(AllItems.SCHEDULE.get()), 5);
 		event.setCancellationResult(InteractionResult.SUCCESS);
 		event.setCanceled(true);
 		return;

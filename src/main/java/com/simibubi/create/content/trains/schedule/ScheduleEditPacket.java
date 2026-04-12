@@ -27,7 +27,7 @@ public record ScheduleEditPacket(Schedule schedule) implements ServerboundPacket
 			mainHandItem.set(AllDataComponents.TRAIN_SCHEDULE, schedule.write(sender.registryAccess()));
 
 		sender.getCooldowns()
-				.addCooldown(mainHandItem.getItem(), 5);
+				.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(mainHandItem.getItem()), 5);
 	}
 
 	@Override

@@ -51,8 +51,8 @@ public class MinecartSim2020 {
 
 	public static boolean canAddMotion(AbstractMinecart c) {
 		if (c instanceof MinecartFurnace furnace)
-			return Mth.equal(furnace.xPush, 0)
-				&& Mth.equal(furnace.zPush, 0);
+			return Mth.equal(furnace.push.x, 0)
+				&& Mth.equal(furnace.push.z, 0);
 
 		MinecartController controller = c.getData(AllAttachmentTypes.MINECART_CONTROLLER);
 		if (controller.isPresent())
@@ -77,26 +77,26 @@ public class MinecartSim2020 {
 		double actualY = y;
 		double actualZ = z;
 
-		Vec3 actualVec = cart.getPos(actualX, actualY, actualZ);
+		Vec3 actualVec = new Vec3(actualX, actualY, actualZ);
 		actualY = cartPos.getY() + 1;
 
 		BaseRailBlock abstractrailblock = (BaseRailBlock) trackState.getBlock();
 		RailShape railshape = abstractrailblock.getRailDirection(trackState, cart.level(), cartPos, cart);
 		switch (railshape) {
 		case ASCENDING_EAST:
-			forcedMovement = forcedMovement.add(-1 * cart.getSlopeAdjustment(), 0.0D, 0.0D);
+			forcedMovement = forcedMovement.add(-1 * cart.getFluidFallDistanceModifier(null), 0.0D, 0.0D);
 			actualY++;
 			break;
 		case ASCENDING_WEST:
-			forcedMovement = forcedMovement.add(cart.getSlopeAdjustment(), 0.0D, 0.0D);
+			forcedMovement = forcedMovement.add(cart.getFluidFallDistanceModifier(null), 0.0D, 0.0D);
 			actualY++;
 			break;
 		case ASCENDING_NORTH:
-			forcedMovement = forcedMovement.add(0.0D, 0.0D, cart.getSlopeAdjustment());
+			forcedMovement = forcedMovement.add(0.0D, 0.0D, cart.getFluidFallDistanceModifier(null));
 			actualY++;
 			break;
 		case ASCENDING_SOUTH:
-			forcedMovement = forcedMovement.add(0.0D, 0.0D, -1 * cart.getSlopeAdjustment());
+			forcedMovement = forcedMovement.add(0.0D, 0.0D, -1 * cart.getFluidFallDistanceModifier(null));
 			actualY++;
 		default:
 			break;
@@ -136,7 +136,7 @@ public class MinecartSim2020 {
 
 		cart.setPos(actualX, actualY, actualZ);
 		cart.setDeltaMovement(forcedMovement);
-		cart.moveMinecartOnRail(cartPos);
+		// cart.moveMinecartOnRail(cartPos); - removed in MC 1.21.8
 
 		x = cart.getX();
 		y = cart.getY();
@@ -154,7 +154,7 @@ public class MinecartSim2020 {
 		y = cart.getY();
 		z = cart.getZ();
 
-		Vec3 Vector3d3 = cart.getPos(x, y, z);
+		Vec3 Vector3d3 = new Vec3(x, y, z);
 		if (Vector3d3 != null && actualVec != null) {
 			double d17 = (actualVec.y - Vector3d3.y) * 0.05D;
 			Vec3 Vector3d4 = cart.getDeltaMovement();

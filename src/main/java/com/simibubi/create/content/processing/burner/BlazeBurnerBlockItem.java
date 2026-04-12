@@ -60,8 +60,6 @@ public class BlazeBurnerBlockItem extends BlockItem {
 		super(block, properties);
 		this.capturedBlaze = capturedBlaze;
 	}
-
-	@Override
 	public String getDescriptionId() {
 		return hasCapturedBlaze() ? super.getDescriptionId() : "item.create." + RegisteredObjectsHelper.getKeyOrThrow(this).getPath();
 	}
@@ -92,7 +90,7 @@ public class BlazeBurnerBlockItem extends BlockItem {
 		}
 
 		for (SpawnData e : possibleSpawns) {
-			Optional<EntityType<?>> optionalEntity = EntityType.by(e.entityToSpawn());
+			Optional<EntityType<?>> optionalEntity = com.simibubi.create.foundation.utility.NbtCompat.entityTypeByTag(e.entityToSpawn());
 			if (optionalEntity.isEmpty() || !AllEntityTags.BLAZE_BURNER_CAPTURABLE.matches(optionalEntity.get()))
 				continue;
 

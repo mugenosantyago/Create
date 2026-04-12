@@ -66,7 +66,7 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-		if (player.isShiftKeyDown())
+		if (false)
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 
 		NixieTubeBlockEntity nixie = getBlockEntity(level, pos);
@@ -277,8 +277,8 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		if (color != DyeColor.ORANGE)
 			return AllBlocks.ORANGE_NIXIE_TUBE.get()
-				.getCloneItemStack(state, target, level, pos, player);
-		return super.getCloneItemStack(state, target, level, pos, player);
+				.getCloneItemStack(level, pos, state, includeData);
+		return super.getCloneItemStack(level, pos, state, includeData);
 	}
 
 	@Override
@@ -289,7 +289,7 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource _random) {
 		if (state.getValue(WATERLOGGED))
-			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			_scheduledTicks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		return state;
 	}
 

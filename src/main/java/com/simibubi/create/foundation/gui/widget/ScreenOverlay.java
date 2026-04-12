@@ -14,9 +14,9 @@ public class ScreenOverlay extends CompositeWidget {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		graphics.pose().pushPose();
-		graphics.pose().translate(0, 0, this.zOffset);
+		com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics).pushPose();
+		com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics).translate(0, 0, this.zOffset);
 		super.render(graphics, mouseX, mouseY, partialTicks);
-		graphics.pose().popPose();
+		com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics).popPose();
 	}
 }

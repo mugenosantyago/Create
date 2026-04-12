@@ -284,12 +284,12 @@ public class ToolboxBlockEntity extends SmartBlockEntity implements MenuProvider
 
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
+		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inventory, registries, compound.getCompoundOrEmpty("Inventory"));
 		super.read(compound, registries, clientPacket);
 		if (compound.contains("UniqueId"))
 			this.uniqueId = compound.getIntArray("UniqueId").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 		if (compound.contains("CustomName"))
-			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.core.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", ""))).result().orElse(null);
 	}
 
 	@Override
@@ -297,7 +297,7 @@ public class ToolboxBlockEntity extends SmartBlockEntity implements MenuProvider
 		if (uniqueId == null)
 			uniqueId = UUID.randomUUID();
 
-		compound.put("Inventory", inventory.serializeNBT(registries));
+		compound.put("Inventory", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(inventory, registries));
 		compound.putIntArray("UniqueId", net.minecraft.core.UUIDUtil.uuidToIntArray(uniqueId));
 
 		if (customName != null)

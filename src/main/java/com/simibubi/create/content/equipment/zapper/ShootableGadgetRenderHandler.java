@@ -133,7 +133,7 @@ public abstract class ShootableGadgetRenderHandler {
 		firstPersonRenderer.renderItem(mc.player, heldItem,
 			rightHand ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
 				: ItemDisplayContext.FIRST_PERSON_LEFT_HAND,
-			!rightHand, ms, buffer, light);
+			ms, buffer, light);
 		ms.popPose();
 
 		event.setCanceled(true);

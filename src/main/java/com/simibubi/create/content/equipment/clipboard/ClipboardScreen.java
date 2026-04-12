@@ -536,7 +536,7 @@ public class ClipboardScreen extends AbstractSimiScreen {
 		if (!pIsEndOfText) {
 			graphics.fill(pCursorPos.x, pCursorPos.y - 1, pCursorPos.x + 1, pCursorPos.y + 9, -16777216);
 		} else {
-			graphics.drawString(font, "_", (float) pCursorPos.x, (float) pCursorPos.y, 0, false);
+			graphics.drawString(font, "_", (int)(pCursorPos.x), (int)(pCursorPos.y), 0, false);
 		}
 	}
 
@@ -546,8 +546,8 @@ public class ClipboardScreen extends AbstractSimiScreen {
 		/*
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		// RenderSystem.setShader(CoreShaders.POSITION);
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
+		// // RenderSystem.setShader removed in 1.21.8
+		// RenderSystem.setShaderColor removed in 1.21.8
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 

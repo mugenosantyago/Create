@@ -66,7 +66,7 @@ public class LecternControllerBlockEntity extends SmartBlockEntity {
 
 		controllerData = CatnipCodecUtils.decode(ItemContainerContents.CODEC, registries, compound.get("ControllerData"))
 			.orElse(ItemContainerContents.EMPTY);
-		user = compound.getIntArray("User").orElse(new int[0]).map(arr -> arr.length == 4).orElse(false) ? compound.getIntArray("User").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
+		user = compound.getIntArray("User").map(arr -> arr.length == 4).orElse(false) ? compound.getIntArray("User").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 	}
 
 	public ItemStack getController() {

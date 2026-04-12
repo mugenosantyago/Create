@@ -108,7 +108,7 @@ public class RedstoneRequesterBlock extends Block implements IBE<RedstoneRequest
 		if (isRequester) {
 			CompoundTag beTag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
 			beTag.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(be.behaviour.freqId));
-			BlockEntity.addEntityType(beTag, AllBlockEntityTypes.REDSTONE_REQUESTER.get());
+			com.simibubi.create.foundation.utility.NbtCompat.addEntityType(beTag, AllBlockEntityTypes.REDSTONE_REQUESTER.get());
 			stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(beTag));
 		}
 

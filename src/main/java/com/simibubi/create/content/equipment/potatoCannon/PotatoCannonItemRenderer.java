@@ -34,7 +34,7 @@ public class PotatoCannonItemRenderer extends CustomRenderedItemModelRenderer {
 			return false;
 		}
 
-		PoseStack poseStack = guiGraphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(guiGraphics);
 		poseStack.pushPose();
 		poseStack.translate(xOffset, yOffset + 8, 100);
 		poseStack.scale(.5f, .5f, .5f);

@@ -209,7 +209,7 @@ public class EjectorTargetHandler {
 		boolean valid = xDiff == validX && zDiff == validZ;
 		int intColor = valid ? 0x9ede73 : 0xff7171;
 		Vector3f color = new Color(intColor).asVectorF();
-		DustParticleOptions data = new DustParticleOptions(color, 1);
+		DustParticleOptions data = new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, color.x(), color.y(), color.z()), 1);
 		ClientLevel world = mc.level;
 
 		AABB bb = new AABB(0, 0, 0, 1, 0, 1).move(currentSelection.offset(-validX, -yDiff, -validZ));

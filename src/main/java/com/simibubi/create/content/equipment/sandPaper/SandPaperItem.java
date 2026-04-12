@@ -188,7 +188,7 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 			level.setBlockAndUpdate(pos, newState);
 			if (player != null)
 				stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return (level.isClientSide ? net.minecraft.world.InteractionResult.SUCCESS : net.minecraft.world.InteractionResult.SUCCESS_SERVER);
 		}
 
 		return InteractionResult.PASS;

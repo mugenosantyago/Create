@@ -143,8 +143,7 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 		if (addressBox.isHovered() && !addressBox.isFocused()) {
 			if (addressBox.getValue()
 				.isBlank())
-				graphics.renderComponentTooltip(font,
-					List.of(CreateLang.translate("gui.redstone_requester.requester_address")
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.redstone_requester.requester_address")
 						.color(ScrollInput.HEADER_RGB)
 						.component(),
 						CreateLang.translate("gui.redstone_requester.requester_address_tip")
@@ -159,8 +158,7 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 							.component()),
 					mouseX, mouseY);
 			else
-				graphics.renderComponentTooltip(font,
-					List.of(CreateLang.translate("gui.redstone_requester.requester_address_given")
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang.translate("gui.redstone_requester.requester_address_given")
 						.color(ScrollInput.HEADER_RGB)
 						.component(),
 						CreateLang.text("'" + addressBox.getValue() + "'")

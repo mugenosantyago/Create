@@ -72,9 +72,9 @@ public class ToolSelectionScreen extends Screen {
 		matrixStack.translate(0, -yOffset, focused ? 100 : 0);
 
 		AllGuiTextures gray = AllGuiTextures.HUD_BACKGROUND;
-		RenderSystem.setShaderColor(1, 1, 1, focused ? 7 / 8f : 1 / 2f);
+		// RenderSystem.setShaderColor removed in 1.21.8
 
-		graphics.blit(gray.location, x - 15, y, gray.getStartX(), gray.getStartY(), w, h, gray.getWidth(), gray.getHeight());
+		graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, gray.location, x - 15, y, (float)(gray.getStartX()), (float)(gray.getStartY()), w, h, gray.getWidth(), 256, 256, gray.getHeight());
 
 		float toolTipAlpha = yOffset / 10;
 		List<Component> toolTip = tools.get(selection)
@@ -82,9 +82,9 @@ public class ToolSelectionScreen extends Screen {
 		int stringAlphaComponent = ((int) (toolTipAlpha * 0xFF)) << 24;
 
 		if (toolTipAlpha > 0.25f) {
-			RenderSystem.setShaderColor(.7f, .7f, .8f, toolTipAlpha);
-			graphics.blit(gray.location, x - 15, y + 33, gray.getStartX(), gray.getStartY(), w, h + 22, gray.getWidth(), gray.getHeight());
-			RenderSystem.setShaderColor(1, 1, 1, 1);
+			// RenderSystem.setShaderColor removed in 1.21.8
+			graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, gray.location, x - 15, y + 33, (float)(gray.getStartX()), (float)(gray.getStartY()), w, h + 22, gray.getWidth(), 256, 256, gray.getHeight());
+			// RenderSystem.setShaderColor removed in 1.21.8
 
 			if (toolTip.size() > 0)
 				graphics.drawString(font, toolTip.get(0), x - 10, y + 38, 0xEEEEEE + stringAlphaComponent, false);
@@ -96,7 +96,7 @@ public class ToolSelectionScreen extends Screen {
 				graphics.drawString(font, toolTip.get(3), x - 10, y + 72, 0xCCCCDD + stringAlphaComponent, false);
 		}
 
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		// RenderSystem.setShaderColor removed in 1.21.8
 		if (tools.size() > 1) {
 			String keyName = AllKeys.TOOL_MENU.getBoundKey();
 			int width = minecraft.getWindow()
@@ -117,17 +117,17 @@ public class ToolSelectionScreen extends Screen {
 			float alpha = focused ? 1 : .2f;
 			if (i == selection) {
 				matrixStack.translate(0, -10, 0);
-				RenderSystem.setShaderColor(1, 1, 1, 1);
+				// RenderSystem.setShaderColor removed in 1.21.8
 				graphics.drawCenteredString(minecraft.font, tools.get(i)
 					.getDisplayName()
 					.getString(), x + i * 50 + 24, y + 28, 0xCCDDFF);
 				alpha = 1;
 			}
-			RenderSystem.setShaderColor(0, 0, 0, alpha);
+			// RenderSystem.setShaderColor removed in 1.21.8
 			tools.get(i)
 				.getIcon()
 				.render(graphics, x + i * 50 + 16, y + 12);
-			RenderSystem.setShaderColor(1, 1, 1, alpha);
+			// RenderSystem.setShaderColor removed in 1.21.8
 			tools.get(i)
 				.getIcon()
 				.render(graphics, x + i * 50 + 16, y + 11);
@@ -135,7 +135,7 @@ public class ToolSelectionScreen extends Screen {
 			matrixStack.popPose();
 		}
 
-		RenderSystem.setShaderColor(1, 1, 1, 1);
+		// RenderSystem.setShaderColor removed in 1.21.8
 		matrixStack.popPose();
 	}
 

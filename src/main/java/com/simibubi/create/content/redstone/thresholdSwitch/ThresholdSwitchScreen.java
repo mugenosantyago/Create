@@ -223,7 +223,7 @@ public class ThresholdSwitchScreen extends AbstractSimiScreen {
 				list.add(CreateLang.translateDirect("gui.threshold_switch.not_attached"));
 				list.add(CreateLang.translateDirect("display_link.view_compatible")
 					.withStyle(ChatFormatting.DARK_GRAY));
-				graphics.renderComponentTooltip(font, list, mouseX, mouseY);
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, list, mouseX, mouseY);
 				return;
 			}
 
@@ -233,7 +233,7 @@ public class ThresholdSwitchScreen extends AbstractSimiScreen {
 					.withStyle(ChatFormatting.GRAY));
 				list.add(CreateLang.translateDirect("display_link.view_compatible")
 					.withStyle(ChatFormatting.DARK_GRAY));
-				graphics.renderComponentTooltip(font, list, mouseX, mouseY);
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, list, mouseX, mouseY);
 				return;
 			}
 
@@ -259,15 +259,14 @@ public class ThresholdSwitchScreen extends AbstractSimiScreen {
 			list.add(CreateLang.translateDirect("display_link.view_compatible")
 				.withStyle(ChatFormatting.DARK_GRAY));
 
-			graphics.renderComponentTooltip(font, list, mouseX, mouseY);
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, list, mouseX, mouseY);
 			return;
 		}
 
 		for (boolean power : Iterate.trueAndFalse) {
 			int thisTorchY = power ? torchY : torchY + 26;
 			if (mouseX >= torchX && mouseX < torchX + 16 && mouseY >= thisTorchY && mouseY < thisTorchY + 16) {
-				graphics.renderComponentTooltip(font,
-					List.of(CreateLang
+				com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, List.of(CreateLang
 						.translate(power ^ blockEntity.isInverted() ? "gui.threshold_switch.power_on_when"
 							: "gui.threshold_switch.power_off_when")
 						.color(AbstractSimiWidget.HEADER_RGB)

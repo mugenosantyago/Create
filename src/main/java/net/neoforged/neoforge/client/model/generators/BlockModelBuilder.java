@@ -21,7 +21,7 @@ public class BlockModelBuilder extends ModelFile {
     public BlockModelBuilder ao(boolean ao) { return this; }
     public BlockModelBuilder guiLight(String light) { return this; }
 
-    public <L extends CustomLoaderBuilder<BlockModelBuilder>> L customLoader(java.util.function.BiFunction<BlockModelBuilder, net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder<BlockModelBuilder>, L> loader) {
+    public <L extends net.neoforged.neoforge.client.model.generators.template.CustomLoaderBuilder> L customLoader(java.util.function.BiFunction<BlockModelBuilder, net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder, L> loader) {
         return null;
     }
 }

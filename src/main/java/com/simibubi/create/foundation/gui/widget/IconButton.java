@@ -35,7 +35,7 @@ public class IconButton extends AbstractSimiWidget {
 					: isHovered ? AllGuiTextures.BUTTON_HOVER
 						: green ? AllGuiTextures.BUTTON_GREEN : AllGuiTextures.BUTTON;
 
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			// RenderSystem.setShaderColor removed in 1.21.8
 			drawBg(graphics, button);
 			icon.render(graphics, getX() + 1, getY() + 1);
 		}

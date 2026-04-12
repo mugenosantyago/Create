@@ -89,7 +89,7 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		for (BlockPos pos : blocks.positions()) {
 			BlockState state = blocks.lookup().apply(pos);
 			if (state.getRenderShape() == RenderShape.MODEL) {
-				BakedModel model = dispatcher.getBlockModel(state);
+				net.minecraft.client.renderer.block.model.BlockStateModel modelRaw_ = dispatcher.getBlockModel(state); BakedModel model = (BakedModel)(Object)modelRaw_;
 				ModelData modelData = renderWorld.getModelData(pos);
 				modelData = model.getModelData(renderWorld, pos, state, modelData);
 				long randomSeed = state.getSeed(pos);

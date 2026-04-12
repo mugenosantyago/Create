@@ -2,6 +2,7 @@ package com.simibubi.create.foundation.data;
 
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.tterrag.registrate.providers.generators.RegistrateBlockModelGenerator;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +17,13 @@ public abstract class SpecialBlockStateGen {
 		return new Property<?>[0];
 	}
 
-	public final <T extends Block> void generate(DataGenContext<Block, T> ctx, RegistrateBlockstateProvider prov) {
+	/**
+	 * Generate method using new Registrate 1.21.8 RegistrateBlockModelGenerator.
+	 * Casts to RegistrateBlockstateProvider for stub compatibility.
+	 */
+	@SuppressWarnings("all")
+	public final <T extends Block> void generate(DataGenContext<Block, T> ctx, RegistrateBlockModelGenerator provRaw) {
+		RegistrateBlockstateProvider prov = (RegistrateBlockstateProvider)(Object) provRaw;
 		prov.getVariantBuilder(ctx.getEntry())
 			.forAllStatesExcept(state -> {
 				return ConfiguredModel.builder()

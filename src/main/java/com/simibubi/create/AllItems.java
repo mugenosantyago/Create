@@ -365,7 +365,7 @@ public class AllItems {
 		.tag(ItemTags.HEAD_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
-		.model(TrimmableArmorModelGenerator::generate)
+		.model(() -> TrimmableArmorModelGenerator::generate)
 		.clientExtension(() -> () -> new CardboardArmorStealthOverlay())
 		.register(),
 
@@ -375,7 +375,7 @@ public class AllItems {
 		.tag(ItemTags.CHEST_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
-		.model(TrimmableArmorModelGenerator::generate)
+		.model(() -> TrimmableArmorModelGenerator::generate)
 		.register(),
 
 	CARDBOARD_LEGGINGS = REGISTRATE
@@ -384,7 +384,7 @@ public class AllItems {
 		.tag(ItemTags.LEG_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
-		.model(TrimmableArmorModelGenerator::generate)
+		.model(() -> TrimmableArmorModelGenerator::generate)
 		.register(),
 
 	CARDBOARD_BOOTS = REGISTRATE
@@ -393,7 +393,7 @@ public class AllItems {
 		.tag(ItemTags.FOOT_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
-		.model(TrimmableArmorModelGenerator::generate)
+		.model(() -> TrimmableArmorModelGenerator::generate)
 		.register();
 
 	public static final ItemEntry<SandPaperItem> SAND_PAPER = REGISTRATE.item("sand_paper", SandPaperItem::new)

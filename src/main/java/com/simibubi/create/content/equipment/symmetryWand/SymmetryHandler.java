@@ -177,7 +177,7 @@ public class SymmetryHandler {
 			Vec3 pos = start.add(step.scale(i));
 			Vec3 speed = new Vec3(0, random.nextDouble() * -40f, 0);
 
-			level.addParticle(new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, 1, 1, 1), 1), pos.x, pos.y,
+			level.addParticle(new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, 1f, 1f, 1f), 1), pos.x, pos.y,
 				pos.z, speed.x, speed.y, speed.z);
 		}
 

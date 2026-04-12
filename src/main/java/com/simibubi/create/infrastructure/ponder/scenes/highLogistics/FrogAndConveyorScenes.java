@@ -328,7 +328,7 @@ public class FrogAndConveyorScenes {
 				.getEntityRenderDispatcher();
 
 			if (entity == null) {
-				entity = pose.create(world);
+				entity = pose.create(world, net.minecraft.world.entity.EntitySpawnReason.LOAD);
 				entity.setYRot(entity.yRotO = 180);
 			}
 
