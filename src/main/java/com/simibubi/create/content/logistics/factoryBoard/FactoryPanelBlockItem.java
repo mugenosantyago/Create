@@ -56,13 +56,13 @@ public class FactoryPanelBlockItem extends LogisticallyLinkedBlockItem {
 			UUID frequency = UUID.randomUUID();
 
 			for (PanelSlot slot : PanelSlot.values()) {
-				CompoundTag panelTag = bet.getCompound(CreateLang.asId(slot.name()));
-				if (panelTag.hasUUID("Freq"))
-					frequency = panelTag.getUUID("Freq");
+				CompoundTag panelTag = bet.getCompoundOrEmpty(CreateLang.asId(slot.name()));
+				if (panelTag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
+					frequency = panelTag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 			}
 
 			bet = new CompoundTag();
-			bet.putUUID("Freq", frequency);
+			bet.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(frequency));
 
 			BlockEntity.addEntityType(bet, ((IBE<?>) ((BlockItem) stack.getItem()).getBlock()).getBlockEntityType());
 			stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(bet));

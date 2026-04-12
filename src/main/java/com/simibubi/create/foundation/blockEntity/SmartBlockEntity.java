@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -91,13 +92,11 @@ public abstract class SmartBlockEntity extends CachedRenderBBBlockEntity
 	 * Hook only these in future subclasses of STE
 	 */
 	protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
-		super.saveAdditional(tag, registries);
 		forEachBehaviour(tb -> tb.write(tag, registries, clientPacket));
 	}
 
 	@Override
 	public void writeSafe(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
 		forEachBehaviour(tb -> {
 			if (tb.isSafeNBT())
 				tb.writeSafe(tag, registries);
@@ -115,11 +114,27 @@ public abstract class SmartBlockEntity extends CachedRenderBBBlockEntity
 			list.forEach(b -> behaviours.put(b.getType(), b));
 			NeoForge.EVENT_BUS.post(new BlockEntityBehaviourEvent(this, behaviours));
 		}
-		super.loadAdditional(tag, registries);
 		forEachBehaviour(tb -> tb.read(tag, registries, clientPacket));
 	}
 
+	// Bridge from MC 1.21.8 ValueInput to old CompoundTag-based loadAdditional
 	@Override
+	protected void loadAdditional(net.minecraft.world.level.storage.ValueInput input) {
+		HolderLookup.Provider registries = input.lookup();
+		CompoundTag tag = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElse(new CompoundTag());
+		loadAdditional(tag, registries);
+	}
+
+	// Bridge from MC 1.21.8 ValueOutput to old CompoundTag-based saveAdditional
+	@Override
+	protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput output) {
+		HolderLookup.Provider registries = getLevel() != null ? getLevel().registryAccess() : net.minecraft.core.HolderLookup.Provider.create(java.util.stream.Stream.empty());
+		CompoundTag tag = new CompoundTag();
+		saveAdditional(tag, registries);
+		output.store(tag);
+	}
+
+	// Old-style API (no longer overrides BlockEntity)
 	protected void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
 		read(tag, registries, false);
 	}
@@ -157,7 +172,7 @@ public abstract class SmartBlockEntity extends CachedRenderBBBlockEntity
 		forEachBehaviour(BlockEntityBehaviour::destroy);
 	}
 
-	@Override
+	// Old-style API for disk save (no longer overrides BlockEntity.saveAdditional)
 	public final void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		write(tag, registries, false);
 	}
@@ -172,7 +187,6 @@ public abstract class SmartBlockEntity extends CachedRenderBBBlockEntity
 		write(tag, registries, true);
 		return tag;
 	}
-
 	@SuppressWarnings("unchecked")
 	public <T extends BlockEntityBehaviour> T getBehaviour(BehaviourType<T> type) {
 		return (T) behaviours.get(type);

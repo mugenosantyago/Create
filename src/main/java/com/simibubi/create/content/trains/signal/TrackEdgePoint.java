@@ -91,9 +91,9 @@ public abstract class TrackEdgePoint {
 		if (migration)
 			return;
 
-		id = nbt.getUUID("Id");
-		position = nbt.getDouble("Position");
-		edgeLocation = Couple.deserializeEach(nbt.getList("Edge", Tag.TAG_COMPOUND),
+		id = nbt.getIntArray("Id").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
+		position = nbt.getDoubleOr("Position", 0);
+		edgeLocation = Couple.deserializeEach(nbt.getListOrEmpty("Edge"),
 			tag -> TrackNodeLocation.read(tag, dimensions));
 	}
 
@@ -104,7 +104,7 @@ public abstract class TrackEdgePoint {
 	}
 
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, DimensionPalette dimensions) {
-		nbt.putUUID("Id", id);
+		nbt.putIntArray("Id", net.minecraft.core.UUIDUtil.uuidToIntArray(id));
 		nbt.putDouble("Position", position);
 		nbt.put("Edge", edgeLocation.serializeEach(loc -> loc.write(dimensions)));
 	}

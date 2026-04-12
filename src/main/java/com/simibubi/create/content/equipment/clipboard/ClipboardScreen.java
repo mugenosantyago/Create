@@ -10,10 +10,9 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -40,7 +39,6 @@ import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -544,12 +542,13 @@ public class ClipboardScreen extends AbstractSimiScreen {
 	}
 
 	private void renderHighlight(Rect2i[] pSelected) {
+		// TODO: MC 1.21.8 - CoreShaders.POSITION and BufferUploader were removed; rendering needs update
+		// Temporarily disabled as rendering pipeline changed
+		/*
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		// In 1.21.2+, GameRenderer.get*Shader() was removed; use CoreShaders constants.
-		RenderSystem.setShader(CoreShaders.POSITION);
+		// RenderSystem.setShader(CoreShaders.POSITION);
 		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-//		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 
@@ -565,10 +564,9 @@ public class ClipboardScreen extends AbstractSimiScreen {
 		}
 
 		@Nullable MeshData meshData = bufferbuilder.build();
-		if (meshData != null)
-			BufferUploader.drawWithShader(meshData);
+		// BufferUploader.drawWithShader(meshData);
 		RenderSystem.disableColorLogicOp();
-//		RenderSystem.enableTexture();
+		*/
 	}
 
 	private Pos2i convertScreenToLocal(Pos2i pScreenPos) {

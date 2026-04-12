@@ -1,29 +1,23 @@
 package com.simibubi.create.foundation.model;
 
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelData.Builder;
 
-public abstract class BakedModelWrapperWithData extends BakedModelWrapper<BakedModel> {
+/**
+ * Stub for BakedModelWrapperWithData.
+ * In MC 1.21.8, BakedModel, BakedModelWrapper, and client.model.data were removed.
+ */
+public abstract class BakedModelWrapperWithData {
 
-	public BakedModelWrapperWithData(BakedModel originalModel) {
-		super(originalModel);
+	protected final Object originalModel;
+
+	public BakedModelWrapperWithData(Object originalModel) {
+		this.originalModel = originalModel;
 	}
 
-	@Override
-	public final ModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData blockEntityData) {
-		Builder builder = ModelData.builder();
-		if (originalModel instanceof BakedModelWrapperWithData)
-			((BakedModelWrapperWithData) originalModel).gatherModelData(builder, world, pos, state, blockEntityData);
-		gatherModelData(builder, world, pos, state, blockEntityData);
-		return builder.build();
+	public Object getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, Object modelData) {
+		return modelData;
 	}
-
-	protected abstract ModelData.Builder gatherModelData(ModelData.Builder builder, BlockAndTintGetter world,
-		BlockPos pos, BlockState state, ModelData blockEntityData);
 
 }

@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.saw;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,17 +124,17 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 
 		if (!clientPacket || playEvent.isEmpty())
 			return;
-		compound.put("PlayEvent", playEvent.saveOptional(registries));
+		compound.put("PlayEvent", NbtCompat.saveItemStack(playEvent, registries));
 		playEvent = ItemStack.EMPTY;
 	}
 
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
-		inventory.deserializeNBT(registries, compound.getCompound("Inventory"));
-		recipeIndex = compound.getInt("RecipeIndex");
+		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
+		recipeIndex = compound.getIntOr("RecipeIndex", 0);
 		if (compound.contains("PlayEvent"))
-			playEvent = ItemStack.parseOptional(registries, compound.getCompound("PlayEvent"));
+			playEvent = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("PlayEvent").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 	}
 
 	@Override

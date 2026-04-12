@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 public class CustomRenderedItems {
 
@@ -31,8 +30,7 @@ public class CustomRenderedItems {
 			Iterator<Item> iterator = ITEMS.iterator();
 			while (iterator.hasNext()) {
 				Item item = iterator.next();
-				if (!BuiltInRegistries.ITEM.containsValue(item) || !(IClientItemExtensions.of(item)
-					.getCustomRenderer() instanceof CustomRenderedItemModelRenderer)) {
+				if (!BuiltInRegistries.ITEM.containsValue(item)) {
 					iterator.remove();
 				}
 			}

@@ -33,7 +33,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -191,7 +191,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 			return;
 		CompoundTag nbt = new CompoundTag();
 		itemEntity.addAdditionalSaveData(nbt);
-		if (nbt.getInt("PickupDelay") != 32767) // See: ItemEntity#makeFakeItem
+		if (nbt.getIntOr("PickupDelay", 0) != 32767) // See: ItemEntity#makeFakeItem
 			return;
 		discard();
 	}
@@ -299,7 +299,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float amount) {
+	public boolean hurtServer(net.minecraft.server.level.ServerLevel level, DamageSource source, float amount) {
 		if (source.getEntity() instanceof Player player && !CommonHooks.onPlayerAttackTarget(player, this))
 			return false;
 
@@ -377,7 +377,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 			if (itemstack.getItem() instanceof SpawnEggItem sei) {
 				EntityType<?> entitytype = sei.getType(itemstack);
 				Entity entity =
-					entitytype.spawn(level, itemstack, null, blockPosition(), MobSpawnType.SPAWN_EGG, false, false);
+					entitytype.spawn(level, itemstack, null, blockPosition(), EntitySpawnReason.SPAWN_EGG, false, false);
 				if (entity != null)
 					itemstack.shrink(1);
 			}
@@ -390,16 +390,36 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	}
 
 	@Override
+
+	public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+
+	    net.minecraft.nbt.CompoundTag compound = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(net.minecraft.nbt.CompoundTag.CODEC)).orElse(new net.minecraft.nbt.CompoundTag());
+
+	    readAdditionalSaveData(compound);
+
+	}
+
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		box = ItemStack.parseOptional(level().registryAccess(), compound.getCompound("Box"));
+		box = net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), compound.getCompoundOrEmpty("Box").orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		refreshDimensions();
 	}
 
 	@Override
+
+	public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+
+	    net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
+
+	    addAdditionalSaveData(compound);
+
+	    output.store(compound);
+
+	}
+
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.put("Box", box.saveOptional(level().registryAccess()));
+		compound.put("Box", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), box).orElse(new net.minecraft.nbt.CompoundTag()));
 	}
 
 	@Override

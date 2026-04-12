@@ -7,7 +7,7 @@ import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.util.FastColor.ARGB32;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ public final class ChromaticCompoundColor {
         @Override
         public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {
             float progress = viewProgress(level);
-            return Color.mixColors(ARGB32.color(110, 87, 115), ARGB32.color(107, 48, 116), (Mth.sin(progress) + 1) / 2);
+            return Color.mixColors(ARGB.color(110, 87, 115), ARGB.color(107, 48, 116), (Mth.sin(progress) + 1) / 2);
         }
 
         @Override
@@ -51,7 +51,7 @@ public final class ChromaticCompoundColor {
         @Override
         public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {
             float progress = viewProgress(level);
-            return Color.mixColors(ARGB32.color(212, 93, 121), ARGB32.color(110, 87, 115), (Mth.sin((float) (progress + Math.PI)) + 1) / 2);
+            return Color.mixColors(ARGB.color(212, 93, 121), ARGB.color(110, 87, 115), (Mth.sin((float) (progress + Math.PI)) + 1) / 2);
         }
 
         @Override
@@ -67,7 +67,7 @@ public final class ChromaticCompoundColor {
         @Override
         public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {
             float progress = viewProgress(level);
-            return Color.mixColors(ARGB32.color(234, 144, 133), ARGB32.color(212, 93, 121), (Mth.sin((float) (progress * 1.5f + Math.PI)) + 1) / 2);
+            return Color.mixColors(ARGB.color(234, 144, 133), ARGB.color(212, 93, 121), (Mth.sin((float) (progress * 1.5f + Math.PI)) + 1) / 2);
         }
 
         @Override

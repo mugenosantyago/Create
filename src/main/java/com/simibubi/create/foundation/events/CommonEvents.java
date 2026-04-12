@@ -83,7 +83,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.gui.map.RegisterMapDecorationRenderersEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -178,7 +178,7 @@ public class CommonEvents {
 	}
 
 	@SubscribeEvent
-	public static void addReloadListeners(AddReloadListenerEvent event) {
+	public static void addReloadListeners(AddServerReloadListenersEvent event) {
 		event.addListener(RecipeFinder.LISTENER);
 		event.addListener(RecipeTrieFinder.LISTENER);
 		event.addListener(BeltHelper.LISTENER);

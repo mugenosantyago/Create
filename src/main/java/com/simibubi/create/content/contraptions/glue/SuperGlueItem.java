@@ -20,7 +20,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 @EventBusSubscriber
@@ -53,7 +53,7 @@ public class SuperGlueItem extends Item {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void spawnParticles(Level world, BlockPos pos, Direction direction, boolean fullBlock) {
-		Vec3 vec = Vec3.atLowerCornerOf(direction.getNormal());
+		Vec3 vec = Vec3.atLowerCornerOf(direction.getUnitVec3i());
 		Vec3 plane = VecHelper.axisAlingedPlaneOf(vec);
 		Vec3 facePos = VecHelper.getCenterOf(pos)
 			.add(vec.scale(.5f));

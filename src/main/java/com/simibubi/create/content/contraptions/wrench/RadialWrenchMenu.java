@@ -14,7 +14,6 @@ import org.joml.Matrix4f;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -44,7 +43,6 @@ import net.createmod.ponder.enums.PonderGuiTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -330,8 +328,8 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 			.translateY(innerRadius + 3)
 			.translateZ(15);
 
-		// In 1.21.2+, GameRenderer.get*Shader() was removed; use CoreShaders constants.
-		RenderSystem.setShader(CoreShaders.POSITION_COLOR);
+		// TODO: MC 1.21.8 - CoreShaders.POSITION_COLOR and BufferUploader were removed; rendering needs update
+		// RenderSystem.setShader(CoreShaders.POSITION_COLOR);
 
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.begin(Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
@@ -346,7 +344,7 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 		bufferbuilder.addVertex(mat, -3, -4.5f, 0).setColor(r, g, b, 0.4f);
 		bufferbuilder.addVertex(mat, -5, -5, 0).setColor(r, g, b, 0.4f);
 
-		BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+		// BufferUploader.drawWithShader(bufferbuilder.buildOrThrow()); // MC 1.21.8: needs update
 
 		poseStack.popPose();
 	}

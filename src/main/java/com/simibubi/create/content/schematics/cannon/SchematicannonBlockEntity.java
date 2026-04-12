@@ -1,5 +1,6 @@
 package com.simibubi.create.content.schematics.cannon;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -41,6 +42,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap.Builder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -162,26 +164,26 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (!clientPacket) {
-			inventory.deserializeNBT(registries, compound.getCompound("Inventory"));
+			inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
 		}
 
 		// Gui information
-		statusMsg = compound.getString("Status");
-		schematicProgress = compound.getFloat("Progress");
-		bookPrintingProgress = compound.getFloat("PaperProgress");
-		remainingFuel = compound.getInt("RemainingFuel");
-		String stateString = compound.getString("State");
-		state = stateString.isEmpty() ? State.STOPPED : State.valueOf(compound.getString("State"));
-		blocksPlaced = compound.getInt("AmountPlaced");
-		blocksToPlace = compound.getInt("AmountToPlace");
+		statusMsg = compound.getStringOr("Status", "");
+		schematicProgress = compound.getFloatOr("Progress", 0);
+		bookPrintingProgress = compound.getFloatOr("PaperProgress", 0);
+		remainingFuel = compound.getIntOr("RemainingFuel", 0);
+		String stateString = compound.getStringOr("State", "");
+		state = stateString.isEmpty() ? State.STOPPED : State.valueOf(compound.getStringOr("State", ""));
+		blocksPlaced = compound.getIntOr("AmountPlaced", 0);
+		blocksToPlace = compound.getIntOr("AmountToPlace", 0);
 
 		missingItem = null;
 		if (compound.contains("MissingItem")) {
-			ItemStack.parse(registries, compound.getCompound("MissingItem")).ifPresent(i -> missingItem = i);
+			ItemStack.parse(registries, compound.getCompoundOrEmpty("MissingItem")).ifPresent(i -> missingItem = i);
 		}
 
 		// Settings
-		SchematicannonOptions options = CatnipCodecUtils.decode(SchematicannonOptions.CODEC, registries, compound.getCompound("Options"))
+		SchematicannonOptions options = CatnipCodecUtils.decode(SchematicannonOptions.CODEC, registries, compound.getCompoundOrEmpty("Options"))
 			.orElse(new SchematicannonOptions(2, false, false));
 		replaceMode = options.replaceMode;
 		skipMissing = options.skipMissing;
@@ -189,24 +191,24 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 
 		// Printer & Flying Blocks
 		if (compound.contains("Printer"))
-			printer.fromTag(compound.getCompound("Printer"), clientPacket);
+			printer.fromTag(compound.getCompoundOrEmpty("Printer"), clientPacket);
 		if (compound.contains("FlyingBlocks"))
 			readFlyingBlocks(compound, registries);
 
-		defaultYaw = compound.getFloat("DefaultYaw");
+		defaultYaw = compound.getFloatOr("DefaultYaw", 0);
 
 		super.read(compound, registries, clientPacket);
 	}
 
 	protected void readFlyingBlocks(CompoundTag compound, HolderLookup.Provider registries) {
-		ListTag tagBlocks = compound.getList("FlyingBlocks", 10);
+		ListTag tagBlocks = compound.getListOrEmpty("FlyingBlocks");
 		if (tagBlocks.isEmpty())
 			flyingBlocks.clear();
 
 		boolean pastDead = false;
 
 		for (int i = 0; i < tagBlocks.size(); i++) {
-			CompoundTag c = tagBlocks.getCompound(i);
+			CompoundTag c = tagBlocks.getCompoundOrEmpty(i);
 			LaunchedItem launched = LaunchedItem.fromNBT(c, registries, blockHolderGetter());
 			BlockPos readBlockPos = launched.target;
 
@@ -252,7 +254,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 		compound.putInt("AmountToPlace", blocksToPlace);
 
 		if (missingItem != null)
-			compound.put("MissingItem", missingItem.saveOptional(registries));
+			compound.put("MissingItem", NbtCompat.saveItemStack(missingItem, registries));
 
 		// Settings
 		Tag options = CatnipCodecUtils.encode(SchematicannonOptions.CODEC, registries, new SchematicannonOptions(replaceMode, skipMissing, replaceBlockEntities)).orElseThrow();
@@ -893,7 +895,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 	}
 
 	@Override
-	protected void applyImplicitComponents(DataComponentInput componentInput) {
+	protected void applyImplicitComponents(DataComponentGetter componentInput) {
 		SchematicannonOptions options = componentInput.getOrDefault(AllDataComponents.SCHEMATICANNON_OPTIONS,
 				new SchematicannonOptions(2, true, false));
 		replaceMode = options.replaceMode;

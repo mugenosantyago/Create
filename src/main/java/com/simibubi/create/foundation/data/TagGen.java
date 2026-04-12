@@ -13,8 +13,7 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 
 import net.minecraft.core.Holder;
-import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.data.tags.TagsProvider.TagAppender;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagBuilder;
@@ -61,14 +60,16 @@ public class TagGen {
 		};
 	}
 
-	public static <T extends TagAppender<?>> T addOptional(T appender, Mods mod, String id) {
-		appender.addOptional(mod.asResource(id));
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static <T extends TagAppender<?, ?>> T addOptional(T appender, Mods mod, String id) {
+		((TagAppender) appender).addOptional(mod.asResource(id));
 		return appender;
 	}
 
-	public static <T extends TagAppender<?>> T addOptional(T appender, Mods mod, List<String> ids) {
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static <T extends TagAppender<?, ?>> T addOptional(T appender, Mods mod, List<String> ids) {
 		for (String id : ids) {
-			appender.addOptional(mod.asResource(id));
+			((TagAppender) appender).addOptional(mod.asResource(id));
 		}
 		return appender;
 	}
@@ -92,25 +93,26 @@ public class TagGen {
 		}
 	}
 
-	public static class CreateTagAppender<T> extends TagsProvider.TagAppender<T> {
+	public static class CreateTagAppender<T> {
 
+		private final TagAppender<ResourceKey<T>, T> delegate;
 		private final Function<T, ResourceKey<T>> keyExtractor;
 
 		public CreateTagAppender(TagBuilder pBuilder, Function<T, ResourceKey<T>> pKeyExtractor) {
-			super(pBuilder);
+			this.delegate = TagAppender.forBuilder(pBuilder);
 			this.keyExtractor = pKeyExtractor;
 		}
 
 		public CreateTagAppender<T> add(T entry) {
-			this.add(this.keyExtractor.apply(entry));
+			delegate.add(keyExtractor.apply(entry));
 			return this;
 		}
 
 		@SafeVarargs
 		public final CreateTagAppender<T> add(T... entries) {
 			Stream.<T>of(entries)
-				.map(this.keyExtractor)
-				.forEach(this::add);
+				.map(keyExtractor)
+				.forEach(delegate::add);
 			return this;
 		}
 

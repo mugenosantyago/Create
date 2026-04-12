@@ -1,4 +1,5 @@
 package com.simibubi.create.content.logistics.depot;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,7 +48,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ElytraItem;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
@@ -185,7 +186,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 				CatnipServices.NETWORK.sendToServer(new EjectorAwardPacket(worldPosition));
 
 			if (!(playerEntity.getItemBySlot(EquipmentSlot.CHEST)
-				.getItem() instanceof ElytraItem))
+				.has(net.minecraft.core.component.DataComponents.GLIDER)))
 				continue;
 
 			playerEntity.setXRot(-35);
@@ -392,7 +393,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 
 		Vec3 vec = rayTraceBlocks.getLocation();
 		earlyTarget = Pair.of(vec.add(Vec3.atLowerCornerOf(rayTraceBlocks.getDirection()
-			.getNormal())
+			.getUnitVec3i())
 			.scale(.25f)), rayTraceBlocks.getBlockPos());
 		earlyTargetTime = (float) (time + (source.distanceTo(vec) / source.distanceTo(target)));
 		sendData();
@@ -526,11 +527,11 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 		NBTHelper.writeEnum(compound, "State", state);
 		compound.put("Lid", lidProgress.writeNBT());
 		compound.put("LaunchedItems",
-			NBTHelper.writeCompoundList(launchedItems, ia -> ia.serializeNBT(s -> (CompoundTag) s.saveOptional(registries))));
+			NBTHelper.writeCompoundList(launchedItems, ia -> ia.serializeNBT(s -> (CompoundTag) NbtCompat.saveItemStack(s, registries))));
 
 		if (earlyTarget != null) {
 			compound.put("EarlyTarget", VecHelper.writeNBT(earlyTarget.getFirst()));
-			compound.put("EarlyTargetPos", NbtUtils.writeBlockPos(earlyTarget.getSecond()));
+			compound.put("EarlyTargetPos", NbtCompat.writeBlockPos(earlyTarget.getSecond()));
 			compound.putFloat("EarlyTargetTime", earlyTargetTime);
 		}
 	}
@@ -545,8 +546,8 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
-		int horizontalDistance = compound.getInt("HorizontalDistance");
-		int verticalDistance = compound.getInt("VerticalDistance");
+		int horizontalDistance = compound.getIntOr("HorizontalDistance", 0);
+		int verticalDistance = compound.getIntOr("VerticalDistance", 0);
 
 		if (launcher.getHorizontalDistance() != horizontalDistance
 			|| launcher.getVerticalDistance() != verticalDistance) {
@@ -554,22 +555,22 @@ public class EjectorBlockEntity extends KineticBlockEntity {
 			launcher.clamp(AllConfigs.server().kinetics.maxEjectorDistance.get());
 		}
 
-		powered = compound.getBoolean("Powered");
+		powered = compound.getBooleanOr("Powered", false);
 		state = NBTHelper.readEnum(compound, "State", State.class);
-		lidProgress.readNBT(compound.getCompound("Lid"), false);
-		launchedItems = NBTHelper.readCompoundList(compound.getList("LaunchedItems", Tag.TAG_COMPOUND),
-			nbt -> IntAttached.read(nbt, t -> ItemStack.parseOptional(registries, t)));
+		lidProgress.readNBT(compound.getCompoundOrEmpty("Lid"), false);
+		launchedItems = NBTHelper.readCompoundList(compound.getListOrEmpty("LaunchedItems"),
+			nbt -> IntAttached.read(nbt, t -> ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, t).result().orElse(ItemStack.EMPTY)));
 
 		earlyTarget = null;
 		earlyTargetTime = 0;
 		if (compound.contains("EarlyTarget")) {
-			earlyTarget = Pair.of(VecHelper.readNBT(compound.getList("EarlyTarget", Tag.TAG_DOUBLE)),
+			earlyTarget = Pair.of(VecHelper.readNBT(compound.getListOrEmpty("EarlyTarget")),
 					NBTHelper.readBlockPos(compound, "EarlyTargetPos"));
-			earlyTargetTime = compound.getFloat("EarlyTargetTime");
+			earlyTargetTime = compound.getFloatOr("EarlyTargetTime", 0);
 		}
 
 		if (compound.contains("ForceAngle"))
-			lidProgress.startWithValue(compound.getFloat("ForceAngle"));
+			lidProgress.startWithValue(compound.getFloatOr("ForceAngle", 0));
 	}
 
 	public void updateSignal() {

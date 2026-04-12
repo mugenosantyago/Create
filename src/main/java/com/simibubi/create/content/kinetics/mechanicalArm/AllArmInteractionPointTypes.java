@@ -33,6 +33,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringB
 import com.simibubi.create.foundation.blockEntity.behaviour.inventory.InvManipulationBehaviour;
 import com.simibubi.create.foundation.item.SmartInventory;
 
+import net.createmod.catnip.data.Pair;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +41,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -361,9 +362,9 @@ public class AllArmInteractionPointTypes {
 		@Override
 		public ItemStack insert(ArmBlockEntity armBlockEntity, ItemStack stack, boolean simulate) {
 			ItemStack input = stack.copy();
-			InteractionResultHolder<ItemStack> res =
+			Pair<InteractionResult, ItemStack> res =
 				BlazeBurnerBlock.tryInsert(cachedState, level, pos, input, false, false, simulate);
-			ItemStack remainder = res.getObject();
+			ItemStack remainder = res.getSecond();
 			if (input.isEmpty()) {
 				return remainder;
 			} else {
@@ -388,7 +389,7 @@ public class AllArmInteractionPointTypes {
 
 		@Override
 		protected Vec3 getInteractionPositionVector() {
-			return super.getInteractionPositionVector().add(Vec3.atLowerCornerOf(getInteractionDirection().getNormal())
+			return super.getInteractionPositionVector().add(Vec3.atLowerCornerOf(getInteractionDirection().getUnitVec3i())
 				.scale(.5f));
 		}
 
@@ -427,7 +428,7 @@ public class AllArmInteractionPointTypes {
 
 		@Override
 		protected Vec3 getInteractionPositionVector() {
-			return super.getInteractionPositionVector().add(Vec3.atLowerCornerOf(getInteractionDirection().getNormal())
+			return super.getInteractionPositionVector().add(Vec3.atLowerCornerOf(getInteractionDirection().getUnitVec3i())
 				.scale(.65f));
 		}
 
@@ -460,7 +461,7 @@ public class AllArmInteractionPointTypes {
 		@Override
 		protected Vec3 getInteractionPositionVector() {
 			Direction funnelFacing = FunnelBlock.getFunnelFacing(cachedState);
-			Vec3i normal = funnelFacing != null ? funnelFacing.getNormal() : Vec3i.ZERO;
+			Vec3i normal = funnelFacing != null ? funnelFacing.getUnitVec3i() : Vec3i.ZERO;
 			return VecHelper.getCenterOf(pos)
 				.add(Vec3.atLowerCornerOf(normal)
 					.scale(-.15f));

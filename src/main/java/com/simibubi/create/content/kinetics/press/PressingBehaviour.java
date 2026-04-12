@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.press;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,15 +72,15 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
 
 	@Override
 	public void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-		running = compound.getBoolean("Running");
-		mode = Mode.values()[compound.getInt("Mode")];
-		finished = compound.getBoolean("Finished");
-		prevRunningTicks = runningTicks = compound.getInt("Ticks");
+		running = compound.getBooleanOr("Running", false);
+		mode = Mode.values()[compound.getIntOr("Mode", 0)];
+		finished = compound.getBooleanOr("Finished", false);
+		prevRunningTicks = runningTicks = compound.getIntOr("Ticks", 0);
 		super.read(compound, registries, clientPacket);
 
 		if (clientPacket) {
-			NBTHelper.iterateCompoundList(compound.getList("ParticleItems", Tag.TAG_COMPOUND),
-				c -> particleItems.add(ItemStack.parseOptional(registries, c)));
+			NBTHelper.iterateCompoundList(compound.getListOrEmpty("ParticleItems"),
+				c -> particleItems.add(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c).result().orElse(ItemStack.EMPTY)));
 			spawnParticles();
 		}
 	}
@@ -93,7 +94,7 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
 		super.write(compound, registries, clientPacket);
 
 		if (clientPacket) {
-			compound.put("ParticleItems", NBTHelper.writeCompoundList(particleItems, s -> (CompoundTag) s.saveOptional(registries)));
+			compound.put("ParticleItems", NBTHelper.writeCompoundList(particleItems, s -> (CompoundTag) NbtCompat.saveItemStack(s, registries)));
 			particleItems.clear();
 		}
 	}

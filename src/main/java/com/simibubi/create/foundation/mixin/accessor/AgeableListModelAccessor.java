@@ -1,16 +1,14 @@
 package com.simibubi.create.foundation.mixin.accessor;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
-
-import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelPart;
 
-@Mixin(AgeableListModel.class)
+// AgeableListModel was removed in MC 1.21.8 - this accessor is a stub
 public interface AgeableListModelAccessor {
-	@Invoker("headParts")
-	Iterable<ModelPart> create$callHeadParts();
+	default Iterable<ModelPart> create$callHeadParts() {
+		return java.util.Collections.emptyList();
+	}
 
-	@Invoker("bodyParts")
-	Iterable<ModelPart> create$callBodyParts();
+	default Iterable<ModelPart> create$callBodyParts() {
+		return java.util.Collections.emptyList();
+	}
 }

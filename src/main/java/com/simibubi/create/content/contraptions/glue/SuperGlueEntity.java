@@ -156,7 +156,7 @@ public class SuperGlueEntity extends Entity implements IEntityWithComplexSpawn, 
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float amount) {
+	public boolean hurtServer(net.minecraft.server.level.ServerLevel level, DamageSource source, float amount) {
 		return false;
 	}
 
@@ -214,12 +214,32 @@ public class SuperGlueEntity extends Entity implements IEntityWithComplexSpawn, 
 	}
 
 	@Override
+
+	public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+
+	    net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
+
+	    addAdditionalSaveData(compound);
+
+	    output.store(compound);
+
+	}
+
 	public void addAdditionalSaveData(CompoundTag compound) {
 		Vec3 position = position();
 		writeBoundingBox(compound, getBoundingBox().move(position.scale(-1)));
 	}
 
 	@Override
+
+	public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+
+	    net.minecraft.nbt.CompoundTag compound = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(net.minecraft.nbt.CompoundTag.CODEC)).orElse(new net.minecraft.nbt.CompoundTag());
+
+	    readAdditionalSaveData(compound);
+
+	}
+
 	public void readAdditionalSaveData(CompoundTag compound) {
 		Vec3 position = position();
 		setBoundingBox(readBoundingBox(compound).move(position));
@@ -231,8 +251,8 @@ public class SuperGlueEntity extends Entity implements IEntityWithComplexSpawn, 
 	}
 
 	public static AABB readBoundingBox(CompoundTag compound) {
-		Vec3 from = VecHelper.readNBT(compound.getList("From", Tag.TAG_DOUBLE));
-		Vec3 to = VecHelper.readNBT(compound.getList("To", Tag.TAG_DOUBLE));
+		Vec3 from = VecHelper.readNBT(compound.getListOrEmpty("From"));
+		Vec3 to = VecHelper.readNBT(compound.getListOrEmpty("To"));
 		return new AABB(from, to);
 	}
 
@@ -309,19 +329,19 @@ public class SuperGlueEntity extends Entity implements IEntityWithComplexSpawn, 
 			AxisDirection positive = AxisDirection.POSITIVE;
 			double max = axis.choose(extents.x, extents.y, extents.z);
 			Vec3 normal = Vec3.atLowerCornerOf(Direction.fromAxisAndDirection(axis, positive)
-				.getNormal());
+				.getUnitVec3i());
 			for (Axis axis2 : Iterate.axes) {
 				if (axis2 == axis)
 					continue;
 				double max2 = axis2.choose(extents.x, extents.y, extents.z);
 				Vec3 normal2 = Vec3.atLowerCornerOf(Direction.fromAxisAndDirection(axis2, positive)
-					.getNormal());
+					.getUnitVec3i());
 				for (Axis axis3 : Iterate.axes) {
 					if (axis3 == axis2 || axis3 == axis)
 						continue;
 					double max3 = axis3.choose(extents.x, extents.y, extents.z);
 					Vec3 normal3 = Vec3.atLowerCornerOf(Direction.fromAxisAndDirection(axis3, positive)
-						.getNormal());
+						.getUnitVec3i());
 
 					for (int i = 0; i <= max * 2; i++) {
 						for (int o1 : Iterate.zeroAndOne) {

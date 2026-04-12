@@ -22,7 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -106,7 +106,7 @@ public class DynamicPack implements PackResources {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public @Nullable <T> T getMetadataSection(@NotNull MetadataSectionSerializer<T> deserializer) throws IOException {
+	public @Nullable <T> T getMetadataSection(@NotNull MetadataSectionType<T> deserializer) throws IOException {
 		return deserializer == PackMetadataSection.TYPE ? (T) metadata : null;
 	}
 

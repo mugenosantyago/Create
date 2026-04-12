@@ -1,4 +1,5 @@
 package com.simibubi.create.content.kinetics.mechanicalArm;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -152,17 +153,17 @@ public class ArmInteractionPoint {
 
 		CompoundTag nbt = new CompoundTag();
 		nbt.putString("Type", key.toString());
-		nbt.put("Pos", NbtUtils.writeBlockPos(pos.subtract(anchor)));
+		nbt.put("Pos", NbtCompat.writeBlockPos(pos.subtract(anchor)));
 		serialize(nbt, anchor);
 		return nbt;
 	}
 
 	@Nullable
 	public static ArmInteractionPoint deserialize(CompoundTag nbt, Level level, BlockPos anchor) {
-		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("Type"));
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getStringOr("Type", ""));
 		if (id == null)
 			return null;
-		ArmInteractionPointType type = CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE.get(id);
+		ArmInteractionPointType type = CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE.getOptional(id).orElse(null);
 		if (type == null)
 			return null;
 		BlockPos pos = NBTHelper.readBlockPos(nbt, "Pos").offset(anchor);
@@ -179,7 +180,7 @@ public class ArmInteractionPoint {
 	public static void transformPos(CompoundTag nbt, StructureTransform transform) {
 		BlockPos pos = NBTHelper.readBlockPos(nbt, "Pos");
 		pos = transform.applyWithoutOffset(pos);
-		nbt.put("Pos", NbtUtils.writeBlockPos(pos));
+		nbt.put("Pos", NbtCompat.writeBlockPos(pos));
 	}
 
 	public static boolean isInteractable(Level level, BlockPos pos, BlockState state) {

@@ -1,4 +1,5 @@
 package com.simibubi.create.content.schematics.cannon;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -69,8 +70,8 @@ public abstract class LaunchedItem {
 		CompoundTag c = new CompoundTag();
 		c.putInt("TotalTicks", totalTicks);
 		c.putInt("TicksLeft", ticksRemaining);
-		c.put("Stack", stack.saveOptional(registries));
-		c.put("Target", NbtUtils.writeBlockPos(target));
+		c.put("Stack", NbtCompat.saveItemStack(stack, registries));
+		c.put("Target", NbtCompat.writeBlockPos(target));
 		return c;
 	}
 
@@ -85,9 +86,9 @@ public abstract class LaunchedItem {
 
 	void readNBT(CompoundTag c, HolderLookup.Provider registries, HolderGetter<Block> holderGetter) {
 		target = NBTHelper.readBlockPos(c, "Target");
-		ticksRemaining = c.getInt("TicksLeft");
-		totalTicks = c.getInt("TotalTicks");
-		stack = ItemStack.parseOptional(registries, c.getCompound("Stack"));
+		ticksRemaining = c.getIntOr("TicksLeft", 0);
+		totalTicks = c.getIntOr("TotalTicks", 0);
+		stack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c.getCompoundOrEmpty("Stack").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 	}
 
 	public static class ForBlockState extends LaunchedItem {
@@ -119,9 +120,9 @@ public abstract class LaunchedItem {
 		@Override
 		void readNBT(CompoundTag nbt, HolderLookup.Provider registries, HolderGetter<Block> holderGetter) {
 			super.readNBT(nbt, registries, holderGetter);
-			state = NbtUtils.readBlockState(holderGetter, nbt.getCompound("BlockState"));
-			if (nbt.contains("Data", Tag.TAG_COMPOUND)) {
-				data = nbt.getCompound("Data");
+			state = NbtUtils.readBlockState(holderGetter, nbt.getCompoundOrEmpty("BlockState"));
+			if (nbt.contains("Data")) {
+				data = nbt.getCompoundOrEmpty("Data");
 			}
 		}
 
@@ -150,7 +151,7 @@ public abstract class LaunchedItem {
 
 		@Override
 		void readNBT(CompoundTag nbt, HolderLookup.Provider registries, HolderGetter<Block> holderGetter) {
-			length = nbt.getInt("Length");
+			length = nbt.getIntOr("Length", 0);
 			int[] intArray = nbt.getIntArray("Casing");
 			casings = new CasingType[length];
 			for (int i = 0; i < casings.length; i++)
@@ -230,7 +231,7 @@ public abstract class LaunchedItem {
 		void readNBT(CompoundTag nbt, HolderLookup.Provider registries, HolderGetter<Block> holderGetter) {
 			super.readNBT(nbt, registries, holderGetter);
 			if (nbt.contains("Entity"))
-				deferredTag = nbt.getCompound("Entity");
+				deferredTag = nbt.getCompoundOrEmpty("Entity");
 		}
 
 		@Override

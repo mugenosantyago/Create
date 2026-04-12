@@ -37,7 +37,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.AbstractMinecart.Type;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -57,7 +56,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 @EventBusSubscriber
 public class MinecartContraptionItem extends Item {
 
-	private final AbstractMinecart.Type minecartType;
+	/** Compatibility enum replacing the removed AbstractMinecart.Type */
+	public enum Type {
+		RIDEABLE, FURNACE, CHEST
+	}
+
+	private final MinecartContraptionItem.Type minecartType;
 
 	public static MinecartContraptionItem rideable(Properties builder) {
 		return new MinecartContraptionItem(Type.RIDEABLE, builder);
@@ -252,7 +256,7 @@ public class MinecartContraptionItem extends Item {
 		ItemStack generatedStack = create(type, oce);
 		generatedStack.set(DataComponents.CUSTOM_NAME, entity.getCustomName());
 
-		if (ContraptionPickupLimiting.isTooLargeForPickup(generatedStack.saveOptional(event.getLevel().registryAccess()))) {
+		if (ContraptionPickupLimiting.isTooLargeForPickup(net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, event.getLevel().registryAccess(), generatedStack).orElse(new net.minecraft.nbt.CompoundTag()))) {
 			MutableComponent message = CreateLang.translateDirect("contraption.minecart_contraption_too_big")
 				.withStyle(ChatFormatting.RED);
 			player.displayClientMessage(message, true);

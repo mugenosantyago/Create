@@ -135,9 +135,9 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
 		super.write(nbt, registries, clientPacket);
 		nbt.put("FrequencyFirst", frequencyFirst.getStack()
-			.saveOptional(registries));
+			.save(registries));
 		nbt.put("FrequencyLast", frequencyLast.getStack()
-			.saveOptional(registries));
+			.save(registries));
 		nbt.putLong("LastKnownPosition", blockEntity.getBlockPos()
 			.asLong());
 	}
@@ -146,12 +146,12 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
 		long positionInTag = blockEntity.getBlockPos()
 			.asLong();
-		long positionKey = nbt.getLong("LastKnownPosition");
+		long positionKey = nbt.getLongOr("LastKnownPosition", 0);
 		newPosition = positionInTag != positionKey;
 
 		super.read(nbt, registries, clientPacket);
-		frequencyFirst = Frequency.of(ItemStack.parseOptional(registries, nbt.getCompound("FrequencyFirst")));
-		frequencyLast = Frequency.of(ItemStack.parseOptional(registries, nbt.getCompound("FrequencyLast")));
+		frequencyFirst = Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("FrequencyFirst").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		frequencyLast = Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("FrequencyLast").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
 	}
 
 	public void setFrequency(boolean first, ItemStack stack) {
@@ -235,9 +235,9 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 	@Override
 	public boolean writeToClipboard(@NotNull HolderLookup.Provider registries, CompoundTag tag, Direction side) {
 		tag.put("First", frequencyFirst.getStack()
-			.saveOptional(registries));
+			.save(registries));
 		tag.put("Last", frequencyLast.getStack()
-			.saveOptional(registries));
+			.save(registries));
 		return true;
 	}
 
@@ -247,8 +247,8 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 			return false;
 		if (simulate)
 			return true;
-		setFrequency(true, ItemStack.parseOptional(registries, tag.getCompound("First")));
-		setFrequency(false, ItemStack.parseOptional(registries, tag.getCompound("Last")));
+		setFrequency(true, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("First").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		setFrequency(false, ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Last").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
 		return true;
 	}
 

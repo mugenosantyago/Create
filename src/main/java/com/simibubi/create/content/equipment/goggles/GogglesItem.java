@@ -7,16 +7,17 @@ import java.util.function.Predicate;
 import com.simibubi.create.AllItems;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 
-public class GogglesItem extends Item implements Equipable {
+// In MC 1.21.8, Equippable is a data component (Record), not an interface.
+// Goggles are equipped via the EQUIPPABLE data component instead.
+public class GogglesItem extends Item {
 	private static final List<Predicate<Player>> IS_WEARING_PREDICATES = new ArrayList<>();
 
 	static {
@@ -25,18 +26,25 @@ public class GogglesItem extends Item implements Equipable {
 
 	public GogglesItem(Properties properties) {
 		super(properties);
-		// In 1.21.5+, ArmorItem.DISPENSE_ITEM_BEHAVIOR is gone. Register the vanilla
-		// EquipmentDispenseItemBehavior which handles equippable items from dispensers.
 		DispenserBlock.registerBehavior(this, new net.minecraft.core.dispenser.EquipmentDispenseItemBehavior());
 	}
 
-	@Override
+	// getEquipmentSlot() removed in MC 1.21.8 - use EQUIPPABLE data component instead
 	public EquipmentSlot getEquipmentSlot() {
 		return EquipmentSlot.HEAD;
 	}
 
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		return swapWithEquipmentSlot(this, worldIn, playerIn, handIn);
+	@Override
+	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
+		// swapWithEquipmentSlot removed in MC 1.21.8 - TODO: implement proper equip behavior
+		ItemStack heldStack = playerIn.getItemInHand(handIn);
+		ItemStack headStack = playerIn.getItemBySlot(EquipmentSlot.HEAD);
+		if (headStack.isEmpty()) {
+			playerIn.setItemSlot(EquipmentSlot.HEAD, heldStack.copyWithCount(1));
+			heldStack.shrink(1);
+			return InteractionResult.SUCCESS;
+		}
+		return InteractionResult.FAIL;
 	}
 
 	public static boolean isWearingGoggles(Player player) {
@@ -48,10 +56,6 @@ public class GogglesItem extends Item implements Equipable {
 		return false;
 	}
 
-	/**
-	 * Use this method to add custom entry points to the goggles overlay, e.g. custom
-	 * armor, handheld alternatives, etc.
-	 */
 	public static synchronized void addIsWearingPredicate(Predicate<Player> predicate) {
 		IS_WEARING_PREDICATES.add(predicate);
 	}

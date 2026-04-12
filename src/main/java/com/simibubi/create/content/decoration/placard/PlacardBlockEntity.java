@@ -1,5 +1,6 @@
 package com.simibubi.create.content.decoration.placard;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.List;
 
 import org.joml.Vector3f;
@@ -59,15 +60,15 @@ public class PlacardBlockEntity extends SmartBlockEntity {
 	@Override
 	protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		tag.putInt("PoweredTicks", poweredTicks);
-		tag.put("Item", heldItem.saveOptional(registries));
+		tag.put("Item", NbtCompat.saveItemStack(heldItem, registries));
 		super.write(tag, registries, clientPacket);
 	}
 
 	@Override
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		int prevTicks = poweredTicks;
-		poweredTicks = tag.getInt("PoweredTicks");
-		heldItem = ItemStack.parseOptional(registries, tag.getCompound("Item"));
+		poweredTicks = tag.getIntOr("PoweredTicks", 0);
+		heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		super.read(tag, registries, clientPacket);
 
 		if (clientPacket && prevTicks < poweredTicks)
@@ -82,7 +83,7 @@ public class PlacardBlockEntity extends SmartBlockEntity {
 		DustParticleOptions pParticleData = new DustParticleOptions(new Vector3f(1, .2f, 0), 1);
 		Vec3 centerOf = VecHelper.getCenterOf(worldPosition);
 		Vec3 normal = Vec3.atLowerCornerOf(PlacardBlock.connectedDirection(blockState)
-			.getNormal());
+			.getUnitVec3i());
 		Vec3 offset = VecHelper.axisAlingedPlaneOf(normal);
 
 		for (int i = 0; i < 10; i++) {

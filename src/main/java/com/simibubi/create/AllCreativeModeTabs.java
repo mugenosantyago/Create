@@ -10,13 +10,10 @@ import java.util.function.Predicate;
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.registry.RegisteredObjectsHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import com.simibubi.create.content.contraptions.actors.seat.SeatBlock;
 import com.simibubi.create.content.decoration.palettes.AllPaletteBlocks;
@@ -86,15 +83,8 @@ public class AllCreativeModeTabs {
 		private static final Predicate<Item> IS_ITEM_3D_PREDICATE;
 
 		static {
-			MutableObject<Predicate<Item>> isItem3d = new MutableObject<>(item -> false);
-			if (CatnipServices.PLATFORM.getEnv().isClient())
-				isItem3d.setValue(item -> {
-					ItemRenderer itemRenderer = Minecraft.getInstance()
-						.getItemRenderer();
-					BakedModel model = itemRenderer.getModel(new ItemStack(item), null, null, 0);
-					return model.isGui3d();
-				});
-			IS_ITEM_3D_PREDICATE = isItem3d.getValue();
+			// BakedModel.isGui3d() no longer accessible in MC 1.21.8 - default to false
+			IS_ITEM_3D_PREDICATE = item -> false;
 		}
 
 		private final boolean addItems;

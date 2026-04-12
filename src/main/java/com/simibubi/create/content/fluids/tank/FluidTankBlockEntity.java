@@ -1,4 +1,5 @@
 package com.simibubi.create.content.fluids.tank;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import static java.lang.Math.abs;
 
@@ -417,7 +418,7 @@ public class FluidTankBlockEntity extends SmartBlockEntity implements IHaveGoggl
 		int prevLum = luminosity;
 
 		updateConnectivity = compound.contains("Uninitialized");
-		luminosity = compound.getInt("Luminosity");
+		luminosity = compound.getIntOr("Luminosity", 0);
 
 		lastKnownPos = null;
 		if (compound.contains("LastKnownPos"))
@@ -428,17 +429,17 @@ public class FluidTankBlockEntity extends SmartBlockEntity implements IHaveGoggl
 			controller = NBTHelper.readBlockPos(compound, "Controller");
 
 		if (isController()) {
-			window = compound.getBoolean("Window");
-			width = compound.getInt("Size");
-			height = compound.getInt("Height");
+			window = compound.getBooleanOr("Window", false);
+			width = compound.getIntOr("Size", 0);
+			height = compound.getIntOr("Height", 0);
 			tankInventory.setCapacity(getTotalTankSize() * getCapacityMultiplier());
 
-			tankInventory.readFromNBT(registries, compound.getCompound("TankContent"));
+			tankInventory.readFromNBT(registries, compound.getCompoundOrEmpty("TankContent"));
 			if (tankInventory.getSpace() < 0)
 				tankInventory.drain(-tankInventory.getSpace(), FluidAction.EXECUTE);
 		}
 
-		boiler.read(compound.getCompound("Boiler"), width * width * height);
+		boiler.read(compound.getCompoundOrEmpty("Boiler"), width * width * height);
 
 		if (compound.contains("ForceFluidLevel") || fluidLevel == null)
 			fluidLevel = LerpedFloat.linear()
@@ -483,9 +484,9 @@ public class FluidTankBlockEntity extends SmartBlockEntity implements IHaveGoggl
 			compound.putBoolean("Uninitialized", true);
 		compound.put("Boiler", boiler.write());
 		if (lastKnownPos != null)
-			compound.put("LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
+			compound.put("LastKnownPos", NbtCompat.writeBlockPos(lastKnownPos));
 		if (!isController())
-			compound.put("Controller", NbtUtils.writeBlockPos(controller));
+			compound.put("Controller", NbtCompat.writeBlockPos(controller));
 		if (isController()) {
 			compound.putBoolean("Window", window);
 			compound.put("TankContent", tankInventory.writeToNBT(registries, new CompoundTag()));

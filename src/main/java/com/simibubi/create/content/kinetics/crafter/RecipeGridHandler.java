@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.crafter;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import static com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING;
 
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class RecipeGridHandler {
 				CompoundTag entry = new CompoundTag();
 				entry.putInt("x", pair.getKey());
 				entry.putInt("y", pair.getValue());
-				entry.put("item", stack.saveOptional(registries));
+				entry.put("item", NbtCompat.saveItemStack(stack, registries));
 				gridNBT.add(entry);
 			});
 			nbt.put("Grid", gridNBT);
@@ -207,12 +208,12 @@ public class RecipeGridHandler {
 
 		public static GroupedItems read(CompoundTag nbt, HolderLookup.Provider registries) {
 			GroupedItems items = new GroupedItems();
-			ListTag gridNBT = nbt.getList("Grid", Tag.TAG_COMPOUND);
+			ListTag gridNBT = nbt.getListOrEmpty("Grid");
 			gridNBT.forEach(inbt -> {
 				CompoundTag entry = (CompoundTag) inbt;
-				int x = entry.getInt("x");
-				int y = entry.getInt("y");
-				ItemStack stack = ItemStack.parseOptional(registries, entry.getCompound("item"));
+				int x = entry.getIntOr("x", 0);
+				int y = entry.getIntOr("y", 0);
+				ItemStack stack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, entry.getCompoundOrEmpty("item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 				items.grid.put(Pair.of(x, y), stack);
 			});
 			return items;

@@ -37,7 +37,8 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.registry.RegisteredObjectsHelper;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -274,14 +275,18 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerCasingConnectivity(entry, consumer));
 	}
 
+	@SuppressWarnings("unused")
 	public static <T extends Block> NonNullConsumer<? super T> blockModel(
-		Supplier<NonNullFunction<BakedModel, ? extends BakedModel>> func) {
-		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerBlockModel(entry, func));
+		Supplier<Object> func) {
+		// Model swapping not supported in MC 1.21.8 (BakedModel removed)
+		return entry -> {};
 	}
 
+	@SuppressWarnings("unused")
 	public static <T extends Item> NonNullConsumer<? super T> itemModel(
-		Supplier<NonNullFunction<BakedModel, ? extends BakedModel>> func) {
-		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerItemModel(entry, func));
+		Supplier<Object> func) {
+		// Model swapping not supported in MC 1.21.8 (BakedModel removed)
+		return entry -> {};
 	}
 
 	public static NonNullConsumer<? super Block> connectedTextures(
@@ -295,24 +300,17 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		consumer.accept(entry, CreateClient.CASING_CONNECTIVITY);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private static void registerBlockModel(Block entry,
-										   Supplier<NonNullFunction<BakedModel, ? extends BakedModel>> func) {
-		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), func.get());
-	}
+	// Model swapping removed in MC 1.21.8 (BakedModel removed)
+	// @OnlyIn(Dist.CLIENT)
+	// private static void registerBlockModel(Block entry, ...) { ... }
 
-	@OnlyIn(Dist.CLIENT)
-	private static void registerItemModel(Item entry,
-										  Supplier<NonNullFunction<BakedModel, ? extends BakedModel>> func) {
-		CreateClient.MODEL_SWAPPER.getCustomItemModels()
-			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), func.get());
-	}
+	// @OnlyIn(Dist.CLIENT)
+	// private static void registerItemModel(Item entry, ...) { ... }
 
 	@OnlyIn(Dist.CLIENT)
 	private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
 		ConnectedTextureBehaviour behavior = behaviorSupplier.get();
 		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
+			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), behavior);
 	}
 }

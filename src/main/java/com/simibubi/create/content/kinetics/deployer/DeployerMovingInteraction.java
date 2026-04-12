@@ -45,11 +45,11 @@ public class DeployerMovingInteraction extends MovingInteractionBehaviour {
 			DeployerFakePlayer fake = null;
 
 			if (!(ctx.temporaryData instanceof DeployerFakePlayer) && ctx.world instanceof ServerLevel) {
-				UUID owner = ctx.blockEntityData.contains("Owner") ? ctx.blockEntityData.getUUID("Owner") : null;
+				UUID owner = ctx.blockEntityData.contains("Owner") ? ctx.blockEntityData.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 				DeployerFakePlayer deployerFakePlayer = new DeployerFakePlayer((ServerLevel) ctx.world, owner);
 				deployerFakePlayer.onMinecartContraption = ctx.contraption instanceof MountedContraption;
 				deployerFakePlayer.getInventory()
-					.load(ctx.blockEntityData.getList("Inventory", Tag.TAG_COMPOUND));
+					.load(ctx.blockEntityData.getListOrEmpty("Inventory"));
 				ctx.temporaryData = fake = deployerFakePlayer;
 				ctx.blockEntityData.remove("Inventory");
 			} else
@@ -61,8 +61,8 @@ public class DeployerMovingInteraction extends MovingInteractionBehaviour {
 			ItemStack deployerItem = fake.getMainHandItem();
 			player.setItemInHand(activeHand, deployerItem.copy());
 			fake.setItemInHand(InteractionHand.MAIN_HAND, heldStack.copy());
-			ctx.blockEntityData.put("HeldItem", heldStack.saveOptional(player.registryAccess()));
-			ctx.data.put("HeldItem", heldStack.saveOptional(player.registryAccess()));
+			ctx.blockEntityData.put("HeldItem", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, player.registryAccess(), heldStack).orElse(new net.minecraft.nbt.CompoundTag()));
+			ctx.data.put("HeldItem", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, player.registryAccess(), heldStack).orElse(new net.minecraft.nbt.CompoundTag()));
 		}
 //		if (index >= 0)
 //			setContraptionActorData(contraptionEntity, index, info, ctx);

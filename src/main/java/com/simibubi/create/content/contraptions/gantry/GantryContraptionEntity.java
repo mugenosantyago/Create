@@ -123,7 +123,7 @@ public class GantryContraptionEntity extends AbstractContraptionEntity {
 
 		if (sequencedOffsetLimit >= 0)
 			pinionMovementSpeed = (float) Mth.clamp(pinionMovementSpeed, -sequencedOffsetLimit, sequencedOffsetLimit);
-		movementVec = Vec3.atLowerCornerOf(direction.getNormal())
+		movementVec = Vec3.atLowerCornerOf(direction.getUnitVec3i())
 			.scale(pinionMovementSpeed);
 
 		Vec3 nextPosition = currentPosition.add(movementVec);
@@ -160,7 +160,7 @@ public class GantryContraptionEntity extends AbstractContraptionEntity {
 	protected void readAdditional(CompoundTag compound, boolean spawnData) {
 		movementAxis = NBTHelper.readEnum(compound, "GantryAxis", Direction.class);
 		sequencedOffsetLimit =
-			compound.contains("SequencedOffsetLimit") ? compound.getDouble("SequencedOffsetLimit") : -1;
+			compound.contains("SequencedOffsetLimit") ? compound.getDoubleOr("SequencedOffsetLimit", 0) : -1;
 		super.readAdditional(compound, spawnData);
 	}
 
@@ -212,7 +212,7 @@ public class GantryContraptionEntity extends AbstractContraptionEntity {
 	public void updateClientMotion() {
 		float modifier = movementAxis.getAxisDirection()
 			.getStep();
-		Vec3 motion = Vec3.atLowerCornerOf(movementAxis.getNormal())
+		Vec3 motion = Vec3.atLowerCornerOf(movementAxis.getUnitVec3i())
 			.scale((axisMotion + clientOffsetDiff * modifier / 2d) * ServerSpeedProvider.get());
 		if (sequencedOffsetLimit >= 0)
 			motion = VecHelper.clampComponentWise(motion, (float) sequencedOffsetLimit);

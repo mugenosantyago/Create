@@ -227,11 +227,11 @@ public class CreateSceneBuilder extends PonderSceneBuilder {
 
 		public void modifyKineticSpeed(Selection selection, UnaryOperator<Float> speedFunc) {
 			modifyBlockEntityNBT(selection, SpeedGaugeBlockEntity.class, nbt -> {
-				float newSpeed = speedFunc.apply(nbt.getFloat("Speed"));
+				float newSpeed = speedFunc.apply(nbt.getFloatOr("Speed", 0));
 				nbt.putFloat("Value", SpeedGaugeBlockEntity.getDialTarget(newSpeed));
 			});
 			modifyBlockEntityNBT(selection, KineticBlockEntity.class, nbt -> {
-				nbt.putFloat("Speed", speedFunc.apply(nbt.getFloat("Speed")));
+				nbt.putFloat("Speed", speedFunc.apply(nbt.getFloatOr("Speed", 0)));
 			});
 		}
 
@@ -241,7 +241,7 @@ public class CreateSceneBuilder extends PonderSceneBuilder {
 
 		public void setFilterData(Selection selection, Class<? extends BlockEntity> teType, ItemStack filter) {
 			modifyBlockEntityNBT(selection, teType, nbt -> {
-				nbt.put("Filter", filter.saveOptional(world().getHolderLookupProvider()));
+				nbt.put("Filter", filter.save(world().getHolderLookupProvider()));
 			});
 		}
 
@@ -250,7 +250,7 @@ public class CreateSceneBuilder extends PonderSceneBuilder {
 			modifyBlockEntityNBT(scene.getSceneBuildingUtil().select().position(armLocation), ArmBlockEntity.class,
 				compound -> {
 					NBTHelper.writeEnum(compound, "Phase", phase);
-					compound.put("HeldItem", heldItem.saveOptional(world().getHolderLookupProvider()));
+					compound.put("HeldItem", heldItem.save(world().getHolderLookupProvider()));
 					compound.putInt("TargetPointIndex", targetedPoint);
 					compound.putFloat("MovementProgress", 0);
 				});

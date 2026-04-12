@@ -6,15 +6,12 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.trains.schedule.hat.TrainHatInfo;
 import com.simibubi.create.content.trains.schedule.hat.TrainHatInfoReloadListener;
-import com.simibubi.create.foundation.mixin.accessor.AgeableListModelAccessor;
 import com.simibubi.create.foundation.mixin.accessor.EntityRenderDispatcherAccessor;
 
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.createmod.catnip.render.CachedBuffers;
-import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelPart.Cube;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +27,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class CreateHatArmorLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class CreateHatArmorLayer<T extends LivingEntity, M extends EntityModel<?>> extends RenderLayer<T, M> {
 
 	public CreateHatArmorLayer(RenderLayerParent<T, M> renderer) {
 		super(renderer);
@@ -49,22 +47,8 @@ public class CreateHatArmorLayer<T extends LivingEntity, M extends EntityModel<T
 		TrainHatInfo info = TrainHatInfoReloadListener.getHatInfoFor(entity);
 		List<ModelPart> partsToHead = new ArrayList<>();
 
-		if (entityModel instanceof AgeableListModel<?> model) {
-			if (model.young) {
-				if (model.scaleHead) {
-					float f = 1.5F / model.babyHeadScale;
-					ms.scale(f, f, f);
-				}
-				ms.translate(0.0D, model.babyYHeadOffset / 16.0F, model.babyZHeadOffset / 16.0F);
-			}
-
-			ModelPart head = getHeadPart(model);
-			if (head != null) {
-				partsToHead.addAll(TrainHatInfo.getAdjustedPart(info, head, ""));
-			}
-		} else if (entityModel instanceof HierarchicalModel<?> model) {
-			partsToHead.addAll(TrainHatInfo.getAdjustedPart(info, model.root(), "head"));
-		}
+		// AgeableListModel and HierarchicalModel were removed in MC 1.21.8
+		// Hat rendering for entities that used these models is temporarily disabled
 
 		if (!partsToHead.isEmpty()) {
 			partsToHead.forEach(part -> part.translateAndRotate(ms));
@@ -91,32 +75,19 @@ public class CreateHatArmorLayer<T extends LivingEntity, M extends EntityModel<T
 	}
 
 	public static void registerOnAll(EntityRenderDispatcher renderManager) {
-		for (EntityRenderer<? extends Player> renderer : renderManager.getSkinMap()
-			.values())
+		for (EntityRenderer<? extends Player> renderer : renderManager.getSkinMap().values())
 			registerOn(renderer);
-		for (EntityRenderer<?> renderer : ((EntityRenderDispatcherAccessor) renderManager).create$getRenderers().values())
+		for (EntityRenderer<?, ?> renderer : ((EntityRenderDispatcherAccessor) renderManager).create$getRenderers().values())
 			registerOn(renderer);
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	public static void registerOn(EntityRenderer<?> entityRenderer) {
+	public static void registerOn(EntityRenderer<?, ?> entityRenderer) {
 		if (!(entityRenderer instanceof LivingEntityRenderer<?, ?> livingRenderer))
 			return;
 
 		EntityModel<?> model = livingRenderer.getModel();
 
-		if (!(model instanceof HierarchicalModel) && !(model instanceof AgeableListModel))
-			return;
-
 		CreateHatArmorLayer<?, ?> layer = new CreateHatArmorLayer<>(livingRenderer);
 		livingRenderer.addLayer((CreateHatArmorLayer) layer);
-	}
-
-	private static ModelPart getHeadPart(AgeableListModel<?> model) {
-		for (ModelPart part : ((AgeableListModelAccessor) model).create$callHeadParts())
-			return part;
-		for (ModelPart part : ((AgeableListModelAccessor) model).create$callBodyParts())
-			return part;
-		return null;
 	}
 }

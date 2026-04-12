@@ -1,4 +1,5 @@
 package com.simibubi.create.content.contraptions;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllEntityTypes;
@@ -84,13 +85,13 @@ public class ControlledContraptionEntity extends AbstractContraptionEntity {
 			controllerPos = NBTHelper.readBlockPos(compound, "ControllerRelative").offset(blockPosition());
 		if (compound.contains("Axis"))
 			rotationAxis = NBTHelper.readEnum(compound, "Axis", Axis.class);
-		angle = compound.getFloat("Angle");
+		angle = compound.getFloatOr("Angle", 0);
 	}
 
 	@Override
 	protected void writeAdditional(CompoundTag compound, HolderLookup.Provider registries, boolean spawnPacket) {
 		super.writeAdditional(compound, registries, spawnPacket);
-		compound.put("ControllerRelative", NbtUtils.writeBlockPos(controllerPos.subtract(blockPosition())));
+		compound.put("ControllerRelative", NbtCompat.writeBlockPos(controllerPos.subtract(blockPosition())));
 		if (rotationAxis != null)
 			NBTHelper.writeEnum(compound, "Axis", rotationAxis);
 		compound.putFloat("Angle", angle);
@@ -183,15 +184,15 @@ public class ControlledContraptionEntity extends AbstractContraptionEntity {
 			return false;
 		Direction facing = bc.getFacing();
 		Vec3 activeAreaOffset = actor.getActiveAreaOffset(context);
-		if (!activeAreaOffset.multiply(VecHelper.axisAlingedPlaneOf(Vec3.atLowerCornerOf(facing.getNormal())))
+		if (!activeAreaOffset.multiply(VecHelper.axisAlingedPlaneOf(Vec3.atLowerCornerOf(facing.getUnitVec3i())))
 			.equals(Vec3.ZERO))
 			return false;
 		if (!VecHelper.onSameAxis(blockInfo.pos(), BlockPos.ZERO, facing.getAxis()))
 			return false;
-		context.motion = Vec3.atLowerCornerOf(facing.getNormal())
+		context.motion = Vec3.atLowerCornerOf(facing.getUnitVec3i())
 			.scale(angleDelta / 360.0);
 		context.relativeMotion = context.motion;
-		int timer = context.data.getInt("StationaryTimer");
+		int timer = context.data.getIntOr("StationaryTimer", 0);
 		if (timer > 0) {
 			context.data.putInt("StationaryTimer", timer - 1);
 			return false;

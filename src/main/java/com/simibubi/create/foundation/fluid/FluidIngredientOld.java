@@ -12,8 +12,8 @@ import net.minecraft.tags.TagKey;
 
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 
 @ScheduledForRemoval(inVersion = "1.21.1+ Port")
 @Deprecated(since = "6.0.7", forRemoval = true)
@@ -30,7 +30,7 @@ public class FluidIngredientOld {
 		validatedType("fluid_tag"),
 		TagKey.codec(Registries.FLUID).fieldOf("fluid_tag").forGetter(s -> null),
 		Codec.INT.fieldOf("amount").forGetter(s -> null)
-	).apply(i, (type, tag, amount) -> new SizedFluidIngredient(TagFluidIngredient.tag(tag), amount)));
+	).apply(i, (type, tag, amount) -> new SizedFluidIngredient(FluidIngredient.of(net.minecraft.core.HolderSet.direct()), amount)));
 
 	public static final Codec<SizedFluidIngredient> CODEC = Codec.withAlternative(FLUID_STACK, FLUID_TAG);
 

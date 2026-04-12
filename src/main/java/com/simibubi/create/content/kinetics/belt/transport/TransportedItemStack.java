@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.belt.transport;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.Random;
 
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
@@ -73,7 +74,7 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 
 	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
 		CompoundTag nbt = new CompoundTag();
-		nbt.put("Item", stack.saveOptional(registries));
+		nbt.put("Item", NbtCompat.saveItemStack(stack, registries));
 		nbt.putFloat("Pos", beltPosition);
 		nbt.putFloat("PrevPos", prevBeltPosition);
 		nbt.putFloat("Offset", sideOffset);
@@ -99,20 +100,20 @@ public class TransportedItemStack implements Comparable<TransportedItemStack> {
 	}
 
 	public static TransportedItemStack read(CompoundTag nbt, HolderLookup.Provider registries) {
-		TransportedItemStack stack = new TransportedItemStack(ItemStack.parseOptional(registries, nbt.getCompound("Item")));
-		stack.beltPosition = nbt.getFloat("Pos");
-		stack.prevBeltPosition = nbt.getFloat("PrevPos");
-		stack.sideOffset = nbt.getFloat("Offset");
-		stack.prevSideOffset = nbt.getFloat("PrevOffset");
-		stack.insertedAt = nbt.getInt("InSegment");
-		stack.angle = nbt.getInt("Angle");
-		stack.insertedFrom = Direction.from3DDataValue(nbt.getInt("InDirection"));
-		stack.locked = nbt.getBoolean("Locked");
-		stack.lockedExternally = nbt.getBoolean("LockedExternally");
+		TransportedItemStack stack = new TransportedItemStack(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, nbt.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		stack.beltPosition = nbt.getFloatOr("Pos", 0);
+		stack.prevBeltPosition = nbt.getFloatOr("PrevPos", 0);
+		stack.sideOffset = nbt.getFloatOr("Offset", 0);
+		stack.prevSideOffset = nbt.getFloatOr("PrevOffset", 0);
+		stack.insertedAt = nbt.getIntOr("InSegment", 0);
+		stack.angle = nbt.getIntOr("Angle", 0);
+		stack.insertedFrom = Direction.from3DDataValue(nbt.getIntOr("InDirection", 0));
+		stack.locked = nbt.getBooleanOr("Locked", false);
+		stack.lockedExternally = nbt.getBooleanOr("LockedExternally", false);
 
 		if (nbt.contains("FanProcessingType")) {
-			stack.processedBy = AllFanProcessingTypes.parseLegacy(nbt.getString("FanProcessingType"));
-			stack.processingTime = nbt.getInt("FanProcessingTime");
+			stack.processedBy = AllFanProcessingTypes.parseLegacy(nbt.getStringOr("FanProcessingType", ""));
+			stack.processingTime = nbt.getIntOr("FanProcessingTime", 0);
 		}
 
 		return stack;

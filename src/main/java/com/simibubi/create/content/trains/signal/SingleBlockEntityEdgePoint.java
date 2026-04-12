@@ -1,4 +1,5 @@
 package com.simibubi.create.content.trains.signal;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import com.simibubi.create.content.trains.graph.DimensionPalette;
 
@@ -53,13 +54,13 @@ public abstract class SingleBlockEntityEdgePoint extends TrackEdgePoint {
 		if (migration)
 			return;
 		blockEntityPos = NBTHelper.readBlockPos(nbt, "BlockEntityPos");
-		blockEntityDimension = dimensions.decode(nbt.contains("BlockEntityDimension") ? nbt.getInt("BlockEntityDimension") : -1);
+		blockEntityDimension = dimensions.decode(nbt.contains("BlockEntityDimension") ? nbt.getIntOr("BlockEntityDimension", 0) : -1);
 	}
 
 	@Override
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, DimensionPalette dimensions) {
 		super.write(nbt, registries, dimensions);
-		nbt.put("BlockEntityPos", NbtUtils.writeBlockPos(blockEntityPos));
+		nbt.put("BlockEntityPos", NbtCompat.writeBlockPos(blockEntityPos));
 		nbt.putInt("BlockEntityDimension", dimensions.encode(blockEntityDimension));
 	}
 

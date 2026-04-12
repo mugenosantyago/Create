@@ -1,5 +1,6 @@
 package com.simibubi.create.content.trains.schedule.condition;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -70,7 +71,7 @@ public class RedstoneLinkCondition extends ScheduleWaitCondition {
 
 	@Override
 	public boolean tickCompletion(Level level, Train train, CompoundTag context) {
-		int lastChecked = context.contains("LastChecked") ? context.getInt("LastChecked") : -1;
+		int lastChecked = context.contains("LastChecked") ? context.getIntOr("LastChecked", 0) : -1;
 		int status = Create.REDSTONE_LINK_NETWORK_HANDLER.globalPowerVersion.get();
 		if (status == lastChecked)
 			return false;
@@ -97,7 +98,7 @@ public class RedstoneLinkCondition extends ScheduleWaitCondition {
 
 	@Override
 	protected void writeAdditional(HolderLookup.Provider registries, CompoundTag tag) {
-		tag.put("Frequency", freq.serializeEach(f -> (CompoundTag) f.getStack().saveOptional(registries)));
+		tag.put("Frequency", freq.serializeEach(f -> (CompoundTag) NbtCompat.saveItemStack(f.getStack(), registries)));
 	}
 
 	public boolean lowActivation() {
@@ -107,7 +108,7 @@ public class RedstoneLinkCondition extends ScheduleWaitCondition {
 	@Override
 	protected void readAdditional(HolderLookup.Provider registries, CompoundTag tag) {
 		if (tag.contains("Frequency"))
-			freq = Couple.deserializeEach(tag.getList("Frequency", Tag.TAG_COMPOUND), c -> Frequency.of(ItemStack.parseOptional(registries, c)));
+			freq = Couple.deserializeEach(tag.getListOrEmpty("Frequency"), c -> Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c).result().orElse(ItemStack.EMPTY)));
 	}
 
 	@Override

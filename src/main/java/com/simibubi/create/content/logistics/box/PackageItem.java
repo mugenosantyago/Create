@@ -33,17 +33,16 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -232,12 +231,12 @@ public class PackageItem extends Item {
 
 		/*
 		 * Debug Fragmentation Data if (tag.contains("Fragment")) { CompoundTag
-		 * fragTag = tag.getCompound("Fragment");
+		 * fragTag = tag.getCompoundOrEmpty("Fragment");
 		 * pTooltipComponents.add(Component.literal("Order Information (Temporary)")
 		 * .withStyle(ChatFormatting.GREEN)); pTooltipComponents.add(Components
-		 * .literal(" Link " + fragTag.getInt("LinkIndex") +
-		 * (fragTag.getBoolean("IsFinalLink") ? " Final" : "") + " | Fragment " +
-		 * fragTag.getInt("Index") + (fragTag.getBoolean("IsFinal") ? " Final" : ""))
+		 * .literal(" Link " + fragTag.getIntOr("LinkIndex", 0) +
+		 * (fragTag.getBooleanOr("IsFinalLink", false) ? " Final" : "") + " | Fragment " +
+		 * fragTag.getIntOr("Index", 0) + (fragTag.getBooleanOr("IsFinal", false) ? " Final" : ""))
 		 * .withStyle(ChatFormatting.DARK_GREEN)); if (fragTag.contains("OrderContext"))
 		 * pTooltipComponents.add(Component.literal("Has Context!")
 		 * .withStyle(ChatFormatting.DARK_GREEN)); }
@@ -282,11 +281,11 @@ public class PackageItem extends Item {
 	}
 
 	@Override
-	public UseAnim getUseAnimation(ItemStack pStack) {
-		return UseAnim.BOW;
+	public ItemUseAnimation getUseAnimation(ItemStack pStack) {
+		return ItemUseAnimation.BOW;
 	}
 
-	public InteractionResultHolder<ItemStack> open(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResult open(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack box = playerIn.getItemInHand(handIn);
 		ItemStackHandler contents = getContents(box);
 		ItemStack particle = box.copy();
@@ -305,7 +304,7 @@ public class PackageItem extends Item {
 							.add(playerIn.getLookAngle()
 								.multiply(1, 0, 1)
 								.normalize())),
-						MobSpawnType.SPAWN_EGG, false, false);
+						EntitySpawnReason.SPAWN_ITEM_USE, false, false);
 					if (entity != null)
 						itemstack.shrink(1);
 				}
@@ -330,13 +329,13 @@ public class PackageItem extends Item {
 			}
 		}
 
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, box);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
 		if (context.getPlayer().isShiftKeyDown()) {
-			return open(context.getLevel(), context.getPlayer(), context.getHand()).getResult();
+			return open(context.getLevel(), context.getPlayer(), context.getHand());
 		}
 
 		Vec3 point = context.getClickLocation();
@@ -349,7 +348,7 @@ public class PackageItem extends Item {
 			.getAxis()
 			.isHorizontal())
 			point = point.add(Vec3.atLowerCornerOf(context.getClickedFace()
-					.getNormal())
+					.getUnitVec3i())
 				.scale(r));
 
 		AABB scanBB = new AABB(point, point).inflate(r, 0, r)
@@ -368,12 +367,12 @@ public class PackageItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		if (player.isShiftKeyDown())
 			return open(world, player, hand);
 		ItemStack itemstack = player.getItemInHand(hand);
 		player.startUsingItem(hand);
-		return InteractionResultHolder.success(itemstack);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -158,22 +158,22 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		if (compound.contains("InitialOrientation"))
 			setInitialOrientation(NBTHelper.readEnum(compound, "InitialOrientation", Direction.class));
 
-		yaw = compound.getFloat("Yaw");
-		pitch = compound.getFloat("Pitch");
-		manuallyPlaced = compound.getBoolean("Placed");
+		yaw = compound.getFloatOr("Yaw", 0);
+		pitch = compound.getFloatOr("Pitch", 0);
+		manuallyPlaced = compound.getBooleanOr("Placed", false);
 
 		if (compound.contains("ForceYaw"))
-			startAtYaw(compound.getFloat("ForceYaw"));
+			startAtYaw(compound.getFloatOr("ForceYaw", 0));
 
-		ListTag vecNBT = compound.getList("CachedMotion", 6);
+		ListTag vecNBT = compound.getListOrEmpty("CachedMotion");
 		if (!vecNBT.isEmpty()) {
-			motionBeforeStall = new Vec3(vecNBT.getDouble(0), vecNBT.getDouble(1), vecNBT.getDouble(2));
+			motionBeforeStall = new Vec3(vecNBT.getDoubleOr(0, 0d), vecNBT.getDoubleOr(1, 0d), vecNBT.getDoubleOr(2, 0d));
 			if (!motionBeforeStall.equals(Vec3.ZERO))
 				targetYaw = prevYaw = yaw += yawFromVector(motionBeforeStall);
 			setDeltaMovement(Vec3.ZERO);
 		}
 
-		setCouplingId(compound.contains("OnCoupling") ? compound.getUUID("OnCoupling") : null);
+		setCouplingId(compound.contains("OnCoupling") ? compound.getIntArray("OnCoupling").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null);
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		compound.putFloat("Pitch", pitch);
 
 		if (getCouplingId() != null)
-			compound.putUUID("OnCoupling", getCouplingId());
+			compound.putIntArray("OnCoupling", net.minecraft.core.UUIDUtil.uuidToIntArray(getCouplingId()));
 	}
 
 	@Override

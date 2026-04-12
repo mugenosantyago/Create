@@ -61,7 +61,7 @@ public class CloneCommand {
 		ServerLevel world = source.getLevel();
 
 		int i = sourceArea.getXSpan() * sourceArea.getYSpan() * sourceArea.getZSpan();
-		int limit = world.getGameRules().getInt(GameRules.RULE_COMMAND_MODIFICATION_BLOCK_LIMIT);
+		int limit = world.getGameRules().getIntOr(GameRules.RULE_COMMAND_MODIFICATION_BLOCK_LIMIT, 0);
 		if (i > limit)
 			throw CLONE_TOO_BIG_EXCEPTION.create(limit, i);
 
@@ -148,7 +148,7 @@ public class CloneCommand {
 				info.nbt().putInt("x", info.pos().getX());
 				info.nbt().putInt("y", info.pos().getY());
 				info.nbt().putInt("z", info.pos().getZ());
-				be.loadWithComponents(info.nbt(), world.registryAccess());
+				be.loadWithComponents(net.minecraft.world.level.storage.TagValueInput.create(new net.minecraft.util.ProblemReporter.Collector(), world.registryAccess(), info.nbt()));
 				be.setChanged();
 			}
 

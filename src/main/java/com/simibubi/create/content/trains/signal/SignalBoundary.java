@@ -1,4 +1,5 @@
 package com.simibubi.create.content.trains.signal;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -272,8 +273,8 @@ public class SignalBoundary extends TrackEdgePoint {
 		for (int i = 1; i <= 2; i++)
 			if (nbt.contains("Tiles" + i)) {
 				boolean first = i == 1;
-				NBTHelper.iterateCompoundList(nbt.getList("Tiles" + i, Tag.TAG_COMPOUND), c -> blockEntities.get(first)
-					.put(NBTHelper.readBlockPos(c, "Pos"), c.getBoolean("Power")));
+				NBTHelper.iterateCompoundList(nbt.getListOrEmpty("Tiles" + i), c -> blockEntities.get(first)
+					.put(NBTHelper.readBlockPos(c, "Pos"), c.getBooleanOr("Power", false)));
 			}
 
 		for (int i = 1; i <= 2; i++)
@@ -305,7 +306,7 @@ public class SignalBoundary extends TrackEdgePoint {
 				nbt.put("Tiles" + i, NBTHelper.writeCompoundList(blockEntities.get(i == 1)
 					.entrySet(), e -> {
 						CompoundTag c = new CompoundTag();
-						c.put("Pos", NbtUtils.writeBlockPos(e.getKey()));
+						c.put("Pos", NbtCompat.writeBlockPos(e.getKey()));
 						c.putBoolean("Power", e.getValue());
 						return c;
 					}));

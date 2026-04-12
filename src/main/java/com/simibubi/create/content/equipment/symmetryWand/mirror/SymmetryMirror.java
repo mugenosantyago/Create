@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
@@ -140,11 +140,13 @@ public abstract class SymmetryMirror {
 			if (property == BlockStateProperties.HALF)
 				return in.cycle(property);
 			// Directional Blocks
-			if (property instanceof DirectionProperty) {
-				if (in.getValue(property) == Direction.DOWN) {
-					return in.setValue((DirectionProperty) property, Direction.UP);
-				} else if (in.getValue(property) == Direction.UP) {
-					return in.setValue((DirectionProperty) property, Direction.DOWN);
+			if (property instanceof EnumProperty<?> ep && ep.getValueClass() == Direction.class) {
+				@SuppressWarnings("unchecked")
+				EnumProperty<Direction> dirProp = (EnumProperty<Direction>) ep;
+				if (in.getValue(dirProp) == Direction.DOWN) {
+					return in.setValue(dirProp, Direction.UP);
+				} else if (in.getValue(dirProp) == Direction.UP) {
+					return in.setValue(dirProp, Direction.DOWN);
 				}
 			}
 		}

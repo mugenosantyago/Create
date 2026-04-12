@@ -132,22 +132,22 @@ public class SignalEdgeGroup {
 	}
 
 	public static SignalEdgeGroup read(CompoundTag tag) {
-		SignalEdgeGroup group = new SignalEdgeGroup(tag.getUUID("Id"));
+		SignalEdgeGroup group = new SignalEdgeGroup(tag.getIntArray("Id").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null));
 		group.color = NBTHelper.readEnum(tag, "Color", EdgeGroupColor.class);
-		NBTHelper.iterateCompoundList(tag.getList("Connected", Tag.TAG_COMPOUND),
-			nbt -> group.intersecting.put(nbt.getUUID("Key"), nbt.getUUID("Value")));
-		group.fallbackGroup = tag.getBoolean("Fallback");
+		NBTHelper.iterateCompoundList(tag.getListOrEmpty("Connected"),
+			nbt -> group.intersecting.put(nbt.getIntArray("Key").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null), nbt.getIntArray("Value").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null)));
+		group.fallbackGroup = tag.getBooleanOr("Fallback", false);
 		return group;
 	}
 
 	public CompoundTag write() {
 		CompoundTag tag = new CompoundTag();
-		tag.putUUID("Id", id);
+		tag.putIntArray("Id", net.minecraft.core.UUIDUtil.uuidToIntArray(id));
 		NBTHelper.writeEnum(tag, "Color", color);
 		tag.put("Connected", NBTHelper.writeCompoundList(intersecting.entrySet(), e -> {
 			CompoundTag nbt = new CompoundTag();
-			nbt.putUUID("Key", e.getKey());
-			nbt.putUUID("Value", e.getValue());
+			nbt.putIntArray("Key", net.minecraft.core.UUIDUtil.uuidToIntArray(e.getKey()));
+			nbt.putIntArray("Value", net.minecraft.core.UUIDUtil.uuidToIntArray(e.getValue()));
 			return nbt;
 		}));
 		tag.putBoolean("Fallback", fallbackGroup);

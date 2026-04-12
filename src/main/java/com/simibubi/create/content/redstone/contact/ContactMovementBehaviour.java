@@ -1,4 +1,5 @@
 package com.simibubi.create.content.redstone.contact;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
@@ -19,7 +20,7 @@ public class ContactMovementBehaviour implements MovementBehaviour {
 	@Override
 	public Vec3 getActiveAreaOffset(MovementContext context) {
 		return Vec3.atLowerCornerOf(context.state.getValue(RedstoneContactBlock.FACING)
-			.getNormal())
+			.getUnitVec3i())
 			.scale(.65f);
 	}
 
@@ -39,7 +40,7 @@ public class ContactMovementBehaviour implements MovementBehaviour {
 			return;
 
 		Vec3 contact = Vec3.atLowerCornerOf(block.getValue(RedstoneContactBlock.FACING)
-			.getNormal());
+			.getUnitVec3i());
 		contact = context.rotation.apply(contact);
 		Direction direction = Direction.getNearest(contact.x, contact.y, contact.z);
 
@@ -51,7 +52,7 @@ public class ContactMovementBehaviour implements MovementBehaviour {
 		if (AllBlocks.ELEVATOR_CONTACT.has(visitedState) && context.contraption instanceof ElevatorContraption ec)
 			ec.broadcastFloorData(world, pos);
 
-		context.data.put("lastContact", NbtUtils.writeBlockPos(pos));
+		context.data.put("lastContact", NbtCompat.writeBlockPos(pos));
 		return;
 	}
 

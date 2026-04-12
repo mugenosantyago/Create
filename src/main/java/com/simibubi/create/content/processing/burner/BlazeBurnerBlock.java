@@ -19,6 +19,7 @@ import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement.ItemUseType;
 import com.simibubi.create.foundation.block.IBE;
 
+import net.createmod.catnip.data.Pair;
 import net.createmod.catnip.lang.Lang;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -29,8 +30,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FlintAndSteelItem;
@@ -118,16 +117,16 @@ public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		HeatLevel heat = state.getValue(HEAT_LEVEL);
 
 		if (AllItems.GOGGLES.isIn(stack) && heat != HeatLevel.NONE)
 			return onBlockEntityUseItemOn(level, pos, bbte -> {
 				if (bbte.goggles)
-					return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+					return InteractionResult.TRY_WITH_EMPTY_HAND;
 				bbte.goggles = true;
 				bbte.notifyUpdate();
-				return ItemInteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			});
 
 		BlazeBurnerBlockEntity be = getBlockEntity(level, pos);
@@ -135,16 +134,16 @@ public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<
 			StockTickerBlockEntity stockTicker = BlazeBurnerBlockEntity.getStockTicker(level, pos);
 			if (stockTicker != null)
 				StockTickerInteractionHandler.interactWithLogisticsManagerAt(player, level, stockTicker.getBlockPos());
-			return ItemInteractionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 
 		if (stack.isEmpty() && heat != HeatLevel.NONE)
 			return onBlockEntityUseItemOn(level, pos, bbte -> {
 				if (!bbte.goggles)
-					return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+					return InteractionResult.TRY_WITH_EMPTY_HAND;
 				bbte.goggles = false;
 				bbte.notifyUpdate();
-				return ItemInteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			});
 
 		if (heat == HeatLevel.NONE) {
@@ -152,20 +151,19 @@ public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<
 				level.playSound(player, pos, SoundEvents.FLINTANDSTEEL_USE, SoundSource.BLOCKS, 1.0F,
 					level.random.nextFloat() * 0.4F + 0.8F);
 				if (level.isClientSide)
-					return ItemInteractionResult.SUCCESS;
+					return InteractionResult.SUCCESS;
 				stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
 				level.setBlockAndUpdate(pos, AllBlocks.LIT_BLAZE_BURNER.getDefaultState());
-				return ItemInteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			}
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
 		boolean doNotConsume = player.isCreative();
 		boolean forceOverflow = !(player instanceof FakePlayer);
 
-		InteractionResultHolder<ItemStack> res =
-			tryInsert(state, level, pos, stack, doNotConsume, forceOverflow, false);
-		ItemStack leftover = res.getObject();
+		Pair<InteractionResult, ItemStack> res =			tryInsert(state, level, pos, stack, doNotConsume, forceOverflow, false);
+		ItemStack leftover = res.getSecond();
 		if (!level.isClientSide && !doNotConsume && !leftover.isEmpty()) {
 			if (stack.isEmpty()) {
 				player.setItemInHand(hand, leftover);
@@ -175,34 +173,34 @@ public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<
 			}
 		}
 
-		return res.getResult() == InteractionResult.SUCCESS ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return res.getFirst() == InteractionResult.SUCCESS ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
-	public static InteractionResultHolder<ItemStack> tryInsert(BlockState state, Level world, BlockPos pos,
+	public static Pair<InteractionResult, ItemStack> tryInsert(BlockState state, Level world, BlockPos pos,
 															   ItemStack stack, boolean doNotConsume, boolean forceOverflow, boolean simulate) {
 		if (!state.hasBlockEntity())
-			return InteractionResultHolder.fail(ItemStack.EMPTY);
+			return Pair.of(InteractionResult.FAIL, ItemStack.EMPTY);
 
 		BlockEntity be = world.getBlockEntity(pos);
 		if (!(be instanceof BlazeBurnerBlockEntity burnerBE))
-			return InteractionResultHolder.fail(ItemStack.EMPTY);
+			return Pair.of(InteractionResult.FAIL, ItemStack.EMPTY);
 
 		if (burnerBE.isCreativeFuel(stack)) {
 			if (!simulate)
 				burnerBE.applyCreativeFuel();
-			return InteractionResultHolder.success(ItemStack.EMPTY);
+			return Pair.of(InteractionResult.SUCCESS, ItemStack.EMPTY);
 		}
 		if (!burnerBE.tryUpdateFuel(stack, forceOverflow, simulate))
-			return InteractionResultHolder.fail(ItemStack.EMPTY);
+			return Pair.of(InteractionResult.FAIL, ItemStack.EMPTY);
 
 		if (!doNotConsume) {
 			ItemStack container = stack.hasCraftingRemainingItem() ? stack.getCraftingRemainingItem() : ItemStack.EMPTY;
 			if (!world.isClientSide) {
 				stack.shrink(1);
 			}
-			return InteractionResultHolder.success(container);
+			return Pair.of(InteractionResult.SUCCESS, container);
 		}
-		return InteractionResultHolder.success(ItemStack.EMPTY);
+		return Pair.of(InteractionResult.SUCCESS, ItemStack.EMPTY);
 	}
 
 	@Override

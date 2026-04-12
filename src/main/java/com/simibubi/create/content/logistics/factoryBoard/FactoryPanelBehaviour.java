@@ -1,5 +1,6 @@
 package com.simibubi.create.content.logistics.factoryBoard;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -809,10 +810,10 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 			return;
 
 		CompoundTag panelTag = new CompoundTag();
-		panelTag.put("Filter", getFilter().saveOptional(registries));
+		NbtCompat.saveItemStack(panelTag.put("Filter", getFilter(), registries));
 		panelTag.putBoolean("UpTo", upTo);
 		panelTag.putInt("FilterAmount", count);
-		panelTag.putUUID("Freq", network);
+		panelTag.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(network));
 		panelTag.putString("RecipeAddress", recipeAddress);
 		panelTag.putInt("PromiseClearingInterval", -1);
 		panelTag.putInt("RecipeOutput", 1);
@@ -845,7 +846,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		panelTag.putString("RecipeAddress", recipeAddress);
 		panelTag.putInt("RecipeOutput", recipeOutput);
 		panelTag.putInt("PromiseClearingInterval", promiseClearingInterval);
-		panelTag.putUUID("Freq", network);
+		panelTag.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(network));
 		panelTag.put("Craft", NBTHelper.writeItemList(activeCraftingArrangement, registries));
 
 		if (panelBE().restocker && !clientPacket)
@@ -856,27 +857,27 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 
 	@Override
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
-		CompoundTag panelTag = nbt.getCompound(CreateLang.asId(slot.name()));
+		CompoundTag panelTag = nbt.getCompoundOrEmpty(CreateLang.asId(slot.name()));
 		if (panelTag.isEmpty()) {
 			active = false;
 			return;
 		}
 
 		active = true;
-		filter = FilterItemStack.of(registries, panelTag.getCompound("Filter"));
-		count = panelTag.getInt("FilterAmount");
-		upTo = panelTag.getBoolean("UpTo");
-		timer = panelTag.getInt("Timer");
-		lastReportedLevelInStorage = panelTag.getInt("LastLevel");
-		lastReportedPromises = panelTag.getInt("LastPromised");
-		lastReportedUnloadedLinks = panelTag.getInt("LastUnloadedLinks");
-		satisfied = panelTag.getBoolean("Satisfied");
-		promisedSatisfied = panelTag.getBoolean("PromisedSatisfied");
-		waitingForNetwork = panelTag.getBoolean("Waiting");
-		redstonePowered = panelTag.getBoolean("RedstonePowered");
-		promiseClearingInterval = panelTag.getInt("PromiseClearingInterval");
-		if (panelTag.hasUUID("Freq"))
-			network = panelTag.getUUID("Freq");
+		filter = FilterItemStack.of(registries, panelTag.getCompoundOrEmpty("Filter"));
+		count = panelTag.getIntOr("FilterAmount", 0);
+		upTo = panelTag.getBooleanOr("UpTo", false);
+		timer = panelTag.getIntOr("Timer", 0);
+		lastReportedLevelInStorage = panelTag.getIntOr("LastLevel", 0);
+		lastReportedPromises = panelTag.getIntOr("LastPromised", 0);
+		lastReportedUnloadedLinks = panelTag.getIntOr("LastUnloadedLinks", 0);
+		satisfied = panelTag.getBooleanOr("Satisfied", false);
+		promisedSatisfied = panelTag.getBooleanOr("PromisedSatisfied", false);
+		waitingForNetwork = panelTag.getBooleanOr("Waiting", false);
+		redstonePowered = panelTag.getBooleanOr("RedstonePowered", false);
+		promiseClearingInterval = panelTag.getIntOr("PromiseClearingInterval", 0);
+		if (panelTag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
+			network = panelTag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 
 		targeting.clear();
 		targeting.addAll(CatnipCodecUtils.decode(CatnipCodecs.set(FactoryPanelPosition.CODEC), registries, panelTag.get("Targeting")).orElse(Set.of()));
@@ -889,12 +890,12 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		CatnipCodecUtils.decode(Codec.list(FactoryPanelConnection.CODEC), registries, panelTag.get("TargetedByLinks")).orElse(List.of())
 			.forEach(c -> targetedByLinks.put(c.from.pos(), c));
 
-		activeCraftingArrangement = NBTHelper.readItemList(panelTag.getList("Craft", Tag.TAG_COMPOUND), registries);
-		recipeAddress = panelTag.getString("RecipeAddress");
-		recipeOutput = panelTag.getInt("RecipeOutput");
+		activeCraftingArrangement = NBTHelper.readItemList(panelTag.getListOrEmpty("Craft"), registries);
+		recipeAddress = panelTag.getStringOr("RecipeAddress", "");
+		recipeOutput = panelTag.getIntOr("RecipeOutput", 0);
 
-		if (nbt.getBoolean("Restocker") && !clientPacket) {
-			restockerPromises = RequestPromiseQueue.read(panelTag.getCompound("Promises"), registries, () -> {
+		if (nbt.getBooleanOr("Restocker", false) && !clientPacket) {
+			restockerPromises = RequestPromiseQueue.read(panelTag.getCompoundOrEmpty("Promises"), registries, () -> {
 			});
 			promisePrimedForMarkDirty = false;
 		}

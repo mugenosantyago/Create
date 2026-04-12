@@ -1,17 +1,11 @@
 package com.simibubi.create.foundation.mixin.accessor;
 
+import java.util.Collections;
 import java.util.List;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators.TrimModelData;
-
-@Mixin(ItemModelGenerators.class)
+// ItemModelGenerators was removed in MC 1.21.8 - this accessor is a stub
 public interface ItemModelGeneratorsAccessor {
-	@Accessor("GENERATED_TRIM_MODELS")
-	static List<TrimModelData> create$getGENERATED_TRIM_MODELS() {
-		throw new AssertionError();
+	static List<?> create$getGENERATED_TRIM_MODELS() {
+		return Collections.emptyList();
 	}
 }

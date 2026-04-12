@@ -90,17 +90,37 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 	}
 
 	@Override
+
+	public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+
+	    net.minecraft.nbt.CompoundTag nbt = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(net.minecraft.nbt.CompoundTag.CODEC)).orElse(new net.minecraft.nbt.CompoundTag());
+
+	    readAdditionalSaveData(nbt);
+
+	}
+
 	public void readAdditionalSaveData(CompoundTag nbt) {
-		setItem(ItemStack.parseOptional(this.registryAccess(), nbt.getCompound("Item")));
-		additionalDamageMult = nbt.getFloat("AdditionalDamage");
-		additionalKnockback = nbt.getFloat("AdditionalKnockback");
-		recoveryChance = nbt.getFloat("Recovery");
+		setItem(net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, this.registryAccess(), nbt.getCompoundOrEmpty("Item").orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		additionalDamageMult = nbt.getFloatOr("AdditionalDamage", 0);
+		additionalKnockback = nbt.getFloatOr("AdditionalKnockback", 0);
+		recoveryChance = nbt.getFloatOr("Recovery", 0);
 		super.readAdditionalSaveData(nbt);
 	}
 
 	@Override
+
+	public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+
+	    net.minecraft.nbt.CompoundTag nbt = new net.minecraft.nbt.CompoundTag();
+
+	    addAdditionalSaveData(nbt);
+
+	    output.store(nbt);
+
+	}
+
 	public void addAdditionalSaveData(CompoundTag nbt) {
-		nbt.put("Item", stack.saveOptional(this.registryAccess()));
+		nbt.put("Item", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, this.registryAccess(), stack).orElse(new net.minecraft.nbt.CompoundTag()));
 		nbt.putFloat("AdditionalDamage", additionalDamageMult);
 		nbt.putFloat("AdditionalKnockback", additionalKnockback);
 		nbt.putFloat("Recovery", recoveryChance);

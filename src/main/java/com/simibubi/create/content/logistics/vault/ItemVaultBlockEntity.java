@@ -1,4 +1,5 @@
 package com.simibubi.create.content.logistics.vault;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.List;
 
@@ -278,12 +279,12 @@ public class ItemVaultBlockEntity extends SmartBlockEntity implements IMultiBloc
 			controller = NBTHelper.readBlockPos(compound, "Controller");
 
 		if (isController()) {
-			radius = compound.getInt("Size");
-			length = compound.getInt("Length");
+			radius = compound.getIntOr("Size", 0);
+			length = compound.getIntOr("Length", 0);
 		}
 
 		if (!clientPacket) {
-			inventory.deserializeNBT(registries, compound.getCompound("Inventory"));
+			inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
 			return;
 		}
 
@@ -299,9 +300,9 @@ public class ItemVaultBlockEntity extends SmartBlockEntity implements IMultiBloc
 			compound.putBoolean("Uninitialized", true);
 
 		if (lastKnownPos != null)
-			compound.put("LastKnownPos", NbtUtils.writeBlockPos(lastKnownPos));
+			compound.put("LastKnownPos", NbtCompat.writeBlockPos(lastKnownPos));
 		if (!isController())
-			compound.put("Controller", NbtUtils.writeBlockPos(controller));
+			compound.put("Controller", NbtCompat.writeBlockPos(controller));
 		if (isController()) {
 			compound.putInt("Size", radius);
 			compound.putInt("Length", length);

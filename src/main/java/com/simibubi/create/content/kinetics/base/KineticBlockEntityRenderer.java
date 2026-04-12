@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -27,19 +26,17 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 public class KineticBlockEntityRenderer<T extends KineticBlockEntity> extends SafeBlockEntityRenderer<T> {
 
 	public static final SuperByteBufferCache.Compartment<BlockState> KINETIC_BLOCK = new SuperByteBufferCache.Compartment<>();
 	public static boolean rainbowMode = false;
 
-	protected static final RenderType[] REVERSED_CHUNK_BUFFER_LAYERS = RenderType.chunkBufferLayers().toArray(RenderType[]::new);
-
-	static {
-		ArrayUtils.reverse(REVERSED_CHUNK_BUFFER_LAYERS);
-	}
+	// In MC 1.21.8, RenderType.chunkBufferLayers() was removed
+	protected static final RenderType[] REVERSED_CHUNK_BUFFER_LAYERS = new RenderType[]{
+		RenderType.translucent(), RenderType.cutoutMipped(), RenderType.cutout(), RenderType.solid()
+	};
 
 	public KineticBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
 	}
@@ -59,14 +56,8 @@ public class KineticBlockEntityRenderer<T extends KineticBlockEntity> extends Sa
 	}
 
 	protected RenderType getRenderType(T be, BlockState state) {
-		// TODO: this is not very clean
-		BakedModel model = Minecraft.getInstance()
-			.getBlockRenderer().getBlockModel(state);
-		ChunkRenderTypeSet typeSet = model.getRenderTypes(state, RandomSource.create(42L), ModelData.EMPTY);
-		for (RenderType type : REVERSED_CHUNK_BUFFER_LAYERS)
-			if (typeSet.contains(type))
-				return type;
-		return RenderType.cutoutMipped();
+		// In MC 1.21.8, BakedModel and ChunkRenderTypeSet were removed.
+		return net.minecraft.client.renderer.ItemBlockRenderTypes.getRenderType(state);
 	}
 
 	protected SuperByteBuffer getRotatedModel(T be, BlockState state) {

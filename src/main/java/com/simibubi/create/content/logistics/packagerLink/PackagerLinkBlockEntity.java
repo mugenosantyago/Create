@@ -69,7 +69,7 @@ public class PackagerLinkBlockEntity extends LinkWithBulbBlockEntity {
 
 		vec3 = vec3.add(Vec3.atLowerCornerOf(state.getOptionalValue(PackagerLinkBlock.FACING)
 				.orElse(Direction.SOUTH)
-				.getNormal())
+				.getUnitVec3i())
 			.scale(f * 0.125));
 
 		pulse();
@@ -98,13 +98,13 @@ public class PackagerLinkBlockEntity extends LinkWithBulbBlockEntity {
 	protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.write(tag, registries, clientPacket);
 		if (placedBy != null)
-			tag.putUUID("PlacedBy", placedBy);
+			tag.putIntArray("PlacedBy", net.minecraft.core.UUIDUtil.uuidToIntArray(placedBy));
 	}
 
 	@Override
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
-		placedBy = tag.contains("PlacedBy") ? tag.getUUID("PlacedBy") : null;
+		placedBy = tag.contains("PlacedBy") ? tag.getIntArray("PlacedBy").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 	}
 
 	@Override

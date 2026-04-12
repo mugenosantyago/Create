@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.deployer;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import static com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING;
 
 import java.util.ArrayList;
@@ -367,31 +368,31 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		if (!AllBlocks.DEPLOYER.has(getBlockState()))
 			return Vec3.ZERO;
 		return Vec3.atLowerCornerOf(getBlockState().getValue(FACING)
-			.getNormal());
+			.getUnitVec3i());
 	}
 
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		state = NBTHelper.readEnum(compound, "State", State.class);
 		mode = NBTHelper.readEnum(compound, "Mode", Mode.class);
-		timer = compound.getInt("Timer");
-		redstoneLocked = compound.getBoolean("Powered");
+		timer = compound.getIntOr("Timer", 0);
+		redstoneLocked = compound.getBooleanOr("Powered", false);
 		if (compound.contains("Owner"))
-			owner = compound.getUUID("Owner");
+			owner = compound.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 
-		deferredInventoryList = compound.getList("Inventory", Tag.TAG_COMPOUND);
-		overflowItems = NBTHelper.readItemList(compound.getList("Overflow", Tag.TAG_COMPOUND), registries);
+		deferredInventoryList = compound.getListOrEmpty("Inventory");
+		overflowItems = NBTHelper.readItemList(compound.getListOrEmpty("Overflow"), registries);
 		if (compound.contains("HeldItem")) {
-			heldItem = ItemStack.parseOptional(registries, compound.getCompound("HeldItem"));
+			heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldItem").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		}
 		super.read(compound, registries, clientPacket);
 
 		if (!clientPacket)
 			return;
-		fistBump = compound.getBoolean("Fistbump");
-		reach = compound.getFloat("Reach");
+		fistBump = compound.getBooleanOr("Fistbump", false);
+		reach = compound.getFloatOr("Reach", 0);
 		if (compound.contains("Particle")) {
-			ItemStack particleStack = ItemStack.parseOptional(registries, compound.getCompound("Particle"));
+			ItemStack particleStack = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("Particle").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 			SandPaperItem.spawnParticles(VecHelper.getCenterOf(worldPosition)
 				.add(getMovementVector().scale(reach + 1)), particleStack, this.level);
 		}
@@ -404,14 +405,14 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		compound.putInt("Timer", timer);
 		compound.putBoolean("Powered", redstoneLocked);
 		if (owner != null)
-			compound.putUUID("Owner", owner);
+			compound.putIntArray("Owner", net.minecraft.core.UUIDUtil.uuidToIntArray(owner));
 
 		if (player != null) {
 			ListTag invNBT = new ListTag();
 			player.getInventory()
 				.save(invNBT);
 			compound.put("Inventory", invNBT);
-			compound.put("HeldItem", player.getMainHandItem().saveOptional(registries));
+			NbtCompat.saveItemStack(compound.put("HeldItem", player.getMainHandItem(), registries));
 			compound.put("Overflow", NBTHelper.writeItemList(overflowItems, registries));
 		} else if (deferredInventoryList != null) {
 			compound.put("Inventory", deferredInventoryList);
@@ -425,9 +426,9 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		compound.putFloat("Reach", reach);
 		if (player == null)
 			return;
-		compound.put("HeldItem", player.getMainHandItem().saveOptional(registries));
+		NbtCompat.saveItemStack(compound.put("HeldItem", player.getMainHandItem(), registries));
 		if (player.spawnedItemEffects != null) {
-			compound.put("Particle", player.spawnedItemEffects.saveOptional(registries));
+			compound.put("Particle", NbtCompat.saveItemStack(player.spawnedItemEffects, registries));
 			player.spawnedItemEffects = null;
 		}
 	}

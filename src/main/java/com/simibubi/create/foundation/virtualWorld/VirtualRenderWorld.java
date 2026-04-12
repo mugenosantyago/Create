@@ -55,7 +55,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.ticks.LevelTickAccess;
 
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	protected final Level level;
@@ -79,7 +79,7 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	private int externalPackedLight = 0;
 
 	public VirtualRenderWorld(Level level, int minBuildHeight, int height, Vec3i biomeOffset, Runnable onBlockUpdated) {
-		super((WritableLevelData) level.getLevelData(), level.dimension(), level.registryAccess(), level.dimensionTypeRegistration(), level.getProfilerSupplier(),
+		super((WritableLevelData) level.getLevelData(), level.dimension(), level.registryAccess(), level.dimensionTypeRegistration(),
 			true, false, 0, 0);
 		this.level = level;
 		this.minBuildHeight = nextMultipleOf16(minBuildHeight);
@@ -272,7 +272,6 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 		}
 	}
 
-	@Override
 	public ModelData getModelData(BlockPos pos) {
 		var blockEntity = getBlockEntity(pos);
 		if (blockEntity != null) {
@@ -292,7 +291,7 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	}
 
 	@Override
-	public int getMinBuildHeight() {
+	public int getMinY() {
 		return minBuildHeight;
 	}
 
@@ -342,8 +341,8 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	}
 
 	@Override
-	public RecipeManager getRecipeManager() {
-		return level.getRecipeManager();
+	public net.minecraft.world.item.crafting.RecipeAccess recipeAccess() {
+		return level.recipeAccess();
 	}
 
 	@Override
@@ -410,12 +409,12 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	// UNIMPORTANT IMPLEMENTATIONS
 
 	@Override
-	public void playSeededSound(Player player, double x, double y, double z, Holder<SoundEvent> soundEvent,
+	public void playSeededSound(Entity player, double x, double y, double z, Holder<SoundEvent> soundEvent,
 								SoundSource soundSource, float volume, float pitch, long seed) {
 	}
 
 	@Override
-	public void playSeededSound(Player player, Entity entity, Holder<SoundEvent> soundEvent, SoundSource soundSource,
+	public void playSeededSound(Entity player, Entity entity, Holder<SoundEvent> soundEvent, SoundSource soundSource,
 								float volume, float pitch, long seed) {
 	}
 
@@ -456,7 +455,7 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	}
 
 	@Override
-	public void levelEvent(@Nullable Player player, int type, BlockPos pos, int data) {
+	public void levelEvent(@Nullable Entity entity, int type, BlockPos pos, int data) {
 	}
 
 	@Override
@@ -481,23 +480,23 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 	// Intentionally copied from LevelHeightAccessor. Lithium overrides these methods so we need to, too.
 
 	@Override
-	public int getMaxBuildHeight() {
-		return this.getMinBuildHeight() + this.getHeight();
+	public int getMaxY() {
+		return this.getMinY() + this.getHeight();
 	}
 
 	@Override
 	public int getSectionsCount() {
-		return this.getMaxSection() - this.getMinSection();
+		return this.getMaxSectionY() - this.getMinSectionY();
 	}
 
 	@Override
-	public int getMinSection() {
-		return SectionPos.blockToSectionCoord(this.getMinBuildHeight());
+	public int getMinSectionY() {
+		return SectionPos.blockToSectionCoord(this.getMinY());
 	}
 
 	@Override
-	public int getMaxSection() {
-		return SectionPos.blockToSectionCoord(this.getMaxBuildHeight() - 1) + 1;
+	public int getMaxSectionY() {
+		return SectionPos.blockToSectionCoord(this.getMaxY() - 1) + 1;
 	}
 
 	@Override
@@ -507,7 +506,17 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 
 	@Override
 	public boolean isOutsideBuildHeight(int y) {
-		return y < this.getMinBuildHeight() || y >= this.getMaxBuildHeight();
+		return y < this.getMinY() || y >= this.getMaxY();
+	}
+
+	@Override
+	public net.minecraft.world.level.block.entity.FuelValues fuelValues() {
+		return level.fuelValues();
+	}
+
+	@Override
+	public java.util.Collection<net.neoforged.neoforge.entity.PartEntity<?>> dragonParts() {
+		return java.util.Collections.emptyList();
 	}
 
 	@Override
@@ -517,11 +526,11 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 
 	@Override
 	public int getSectionIndexFromSectionY(int sectionY) {
-		return sectionY - this.getMinSection();
+		return sectionY - this.getMinSectionY();
 	}
 
 	@Override
 	public int getSectionYFromSectionIndex(int sectionIndex) {
-		return sectionIndex + this.getMinSection();
+		return sectionIndex + this.getMinSectionY();
 	}
 }

@@ -8,23 +8,24 @@ import com.google.common.collect.MultimapBuilder;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+// BakedModel was removed in MC 1.21.8 - this class is stubbed to compile
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class CustomBlockModels {
 
-	private final Multimap<ResourceLocation, NonNullFunction<BakedModel, ? extends BakedModel>> modelFuncs = MultimapBuilder.hashKeys().arrayListValues().build();
-	private final Map<Block, NonNullFunction<BakedModel, ? extends BakedModel>> finalModelFuncs = new IdentityHashMap<>();
+	private final Multimap<ResourceLocation, NonNullFunction<Object, ? extends Object>> modelFuncs = MultimapBuilder.hashKeys().arrayListValues().build();
+	private final Map<Block, NonNullFunction<Object, ? extends Object>> finalModelFuncs = new IdentityHashMap<>();
 	private boolean funcsLoaded = false;
 
-	public void register(ResourceLocation block, NonNullFunction<BakedModel, ? extends BakedModel> func) {
+	public void register(ResourceLocation block, NonNullFunction<Object, ? extends Object> func) {
 		modelFuncs.put(block, func);
 	}
 
-	public void forEach(NonNullBiConsumer<Block, NonNullFunction<BakedModel, ? extends BakedModel>> consumer) {
+	public void forEach(NonNullBiConsumer<Block, NonNullFunction<Object, ? extends Object>> consumer) {
 		loadEntriesIfMissing();
 		finalModelFuncs.forEach(consumer);
 	}
@@ -44,12 +45,14 @@ public class CustomBlockModels {
 				return;
 			}
 
-			NonNullFunction<BakedModel, ? extends BakedModel> finalFunc = null;
-			for (NonNullFunction<BakedModel, ? extends BakedModel> func : funcList) {
+			NonNullFunction<Object, Object> finalFunc = null;
+			for (NonNullFunction<Object, ? extends Object> func : funcList) {
 				if (finalFunc == null) {
-					finalFunc = func;
+					finalFunc = (NonNullFunction<Object, Object>) func;
 				} else {
-					finalFunc = finalFunc.andThen(func);
+					NonNullFunction<Object, Object> prev = finalFunc;
+					NonNullFunction<Object, Object> next = (NonNullFunction<Object, Object>) func;
+					finalFunc = o -> next.apply(prev.apply(o));
 				}
 			}
 

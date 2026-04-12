@@ -10,14 +10,16 @@ import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class SmartInventory extends ItemHandlerContainer
-	implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+	implements IItemHandlerModifiable {
 
 	protected boolean extractionAllowed;
 	protected boolean insertionAllowed;
@@ -129,14 +131,17 @@ public class SmartInventory extends ItemHandlerContainer
 		return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
 	}
 
-	@Override
 	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-		return getInv().serializeNBT(registries);
+		ProblemReporter.Collector reporter = new ProblemReporter.Collector();
+		TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
+		getInv().serialize(output);
+		return output.buildResult();
 	}
 
-	@Override
 	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag nbt) {
-		getInv().deserializeNBT(registries, nbt);
+		ProblemReporter.Collector reporter = new ProblemReporter.Collector();
+		TagValueInput input = TagValueInput.create(reporter, registries, nbt);
+		getInv().deserialize(input);
 	}
 
 	private SyncedStackHandler getInv() {

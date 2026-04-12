@@ -34,7 +34,6 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -72,7 +71,7 @@ import net.minecraft.world.phys.Vec3;
 
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.extensions.IBaseRailBlockExtension;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -349,9 +348,9 @@ public class DeployerHandler {
 		if (item instanceof BucketItem || item instanceof SandPaperItem)
 			itemUseWorld = new ItemUseWorld(level, face, pos);
 
-		InteractionResultHolder<ItemStack> onItemRightClick = item.use(itemUseWorld, player, hand);
+		InteractionResult onItemRightClick = item.use(itemUseWorld, player, hand);
 
-		if (onItemRightClick.getResult().consumesAction() && item instanceof MobBucketItem bucketItem)
+		if (onItemRightClick.consumesAction() && item instanceof MobBucketItem bucketItem)
 			bucketItem.checkExtraContent(player, level, stack, clickedPos);
 
 		ItemStack resultStack = onItemRightClick.getObject();

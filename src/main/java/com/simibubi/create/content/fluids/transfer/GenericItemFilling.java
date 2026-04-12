@@ -9,7 +9,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
@@ -26,7 +25,7 @@ public class GenericItemFilling {
 	/**
 	 * Checks if an ItemStack's IFluidHandlerItem is valid. Ideally, this check would
 	 * not be necessary. Unfortunately, some mods that copy the functionality of the
-	 * MilkBucketItem copy the FluidBucketWrapper capability that is patched in by
+	 * net.minecraft.world.item.BucketItem copy the FluidBucketWrapper capability that is patched in by
 	 * Forge without looking into what it actually does. In all cases this is
 	 * incorrect because having a non-bucket item turn into a bucket item does not
 	 * make sense.
@@ -43,7 +42,7 @@ public class GenericItemFilling {
 		if (fluidHandler.getClass() == FluidBucketWrapper.class) {
 			Item item = stack.getItem();
 			// Forge does not patch the FluidBucketWrapper onto subclasses of BucketItem
-			if (item.getClass() != BucketItem.class && !(item instanceof MilkBucketItem)) {
+			if (item.getClass() != BucketItem.class && !(false /* net.minecraft.world.item.BucketItem removed in 1.21.8 */)) {
 				return false;
 			}
 		}

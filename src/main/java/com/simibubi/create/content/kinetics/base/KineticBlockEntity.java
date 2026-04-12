@@ -1,4 +1,5 @@
 package com.simibubi.create.content.kinetics.base;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import static net.minecraft.ChatFormatting.GOLD;
 import static net.minecraft.ChatFormatting.GRAY;
@@ -216,7 +217,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 			compound.putBoolean("NeedsSpeedUpdate", true);
 
 		if (hasSource())
-			compound.put("Source", NbtUtils.writeBlockPos(source));
+			compound.put("Source", NbtCompat.writeBlockPos(source));
 
 		if (hasNetwork()) {
 			CompoundTag networkTag = new CompoundTag();
@@ -251,21 +252,21 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 			return;
 		}
 
-		speed = compound.getFloat("Speed");
-		sequenceContext = SequenceContext.fromNBT(compound.getCompound("Sequence"));
+		speed = compound.getFloatOr("Speed", 0);
+		sequenceContext = SequenceContext.fromNBT(compound.getCompoundOrEmpty("Sequence"));
 
 		source = null;
 		if (compound.contains("Source"))
 			source = NBTHelper.readBlockPos(compound, "Source");
 
 		if (compound.contains("Network")) {
-			CompoundTag networkTag = compound.getCompound("Network");
-			network = networkTag.getLong("Id");
-			stress = networkTag.getFloat("Stress");
-			capacity = networkTag.getFloat("Capacity");
-			networkSize = networkTag.getInt("Size");
-			lastStressApplied = networkTag.getFloat("AddedStress");
-			lastCapacityProvided = networkTag.getFloat("AddedCapacity");
+			CompoundTag networkTag = compound.getCompoundOrEmpty("Network");
+			network = networkTag.getLongOr("Id", 0);
+			stress = networkTag.getFloatOr("Stress", 0);
+			capacity = networkTag.getFloatOr("Capacity", 0);
+			networkSize = networkTag.getIntOr("Size", 0);
+			lastStressApplied = networkTag.getFloatOr("AddedStress", 0);
+			lastCapacityProvided = networkTag.getFloatOr("AddedCapacity", 0);
 			overStressed = capacity < stress && StressImpact.isEnabled();
 		}
 

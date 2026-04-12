@@ -104,12 +104,11 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -233,10 +232,7 @@ public class ClientEvents {
 	}
 
 	@SubscribeEvent
-	public static void onRenderWorld(RenderLevelStageEvent event) {
-		if (event.getStage() != Stage.AFTER_PARTICLES)
-			return;
-
+	public static void onRenderWorld(RenderLevelStageEvent.AfterParticles event) {
 		PoseStack ms = event.getPoseStack();
 		ms.pushPose();
 		SuperRenderTypeBuffer buffer = DefaultSuperRenderTypeBuffer.getInstance();
@@ -356,7 +352,7 @@ public class ClientEvents {
 	}
 
 	@SubscribeEvent
-	public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
+	public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
 		event.registerReloadListener(CreateClient.RESOURCE_RELOAD_LISTENER);
 		event.registerReloadListener(TrainHatInfoReloadListener.LISTENER);
 	}

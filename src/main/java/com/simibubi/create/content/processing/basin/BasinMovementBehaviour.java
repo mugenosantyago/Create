@@ -19,7 +19,7 @@ public class BasinMovementBehaviour implements MovementBehaviour {
 		Map<String, ItemStackHandler> map = new HashMap<>();
 		map.put("InputItems", new ItemStackHandler(9));
 		map.put("OutputItems", new ItemStackHandler(8));
-		map.forEach((s, h) -> h.deserializeNBT(context.world.registryAccess(), context.blockEntityData.getCompound(s)));
+		map.forEach((s, h) -> h.deserializeNBT(context.world.registryAccess(), context.blockEntityData.getCompoundOrEmpty(s)));
 		return map;
 	}
 
@@ -27,7 +27,7 @@ public class BasinMovementBehaviour implements MovementBehaviour {
 	public void tick(MovementContext context) {
 		MovementBehaviour.super.tick(context);
 		if (context.temporaryData == null || (boolean) context.temporaryData) {
-			Vec3 facingVec = context.rotation.apply(Vec3.atLowerCornerOf(Direction.UP.getNormal()));
+			Vec3 facingVec = context.rotation.apply(Vec3.atLowerCornerOf(Direction.UP.getUnitVec3i()));
 			facingVec.normalize();
 			if (Direction.getNearest(facingVec.x, facingVec.y, facingVec.z) == Direction.DOWN)
 				dump(context, facingVec);

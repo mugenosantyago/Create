@@ -12,10 +12,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -35,24 +39,24 @@ public abstract class SyncedBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+	public void handleUpdateTag(ValueInput input) {
+		HolderLookup.Provider registries = input.lookup();
+		CompoundTag tag = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElse(new CompoundTag());
 		readClient(tag, registries);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries) {
-		CompoundTag tag = pkt.getTag();
-		readClient(tag == null ? new CompoundTag() : tag, registries);
+	public void onDataPacket(Connection net, ValueInput valueInput) {
+		HolderLookup.Provider registries = valueInput.lookup();
+		CompoundTag tag = valueInput.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElse(new CompoundTag());
+		readClient(tag, registries);
 	}
 
-	// Special handling for client update packets
-	public void readClient(CompoundTag tag, HolderLookup.Provider registries) {
-		loadAdditional(tag, registries);
-	}
+	// Called for client-side sync updates
+	public void readClient(CompoundTag tag, HolderLookup.Provider registries) {}
 
-	// Special handling for client update packets
+	// Called for client-side sync updates  
 	public CompoundTag writeClient(CompoundTag tag, HolderLookup.Provider registries) {
-		saveAdditional(tag, registries);
 		return tag;
 	}
 
@@ -67,6 +71,6 @@ public abstract class SyncedBlockEntity extends BlockEntity {
 	}
 
 	public HolderGetter<Block> blockHolderGetter() {
-		return level != null ? level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup();
+		return level != null ? level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK;
 	}
 }

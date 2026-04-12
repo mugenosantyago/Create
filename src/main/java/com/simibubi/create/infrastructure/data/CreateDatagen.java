@@ -26,7 +26,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public class CreateDatagen {
@@ -42,7 +41,7 @@ public class CreateDatagen {
 		DataGenerator generator = event.getGenerator();
 		PackOutput output = generator.getPackOutput();
 		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+		
 
 		generator.addProvider(event.includeClient(), AllSoundEvents.provider(generator));
 
@@ -50,18 +49,18 @@ public class CreateDatagen {
 		lookupProvider = generatedEntriesProvider.getRegistryProvider();
 		generator.addProvider(event.includeServer(), generatedEntriesProvider);
 
-		generator.addProvider(event.includeServer(), new CreateRecipeSerializerTagsProvider(output, lookupProvider, existingFileHelper));
-		generator.addProvider(event.includeServer(), new CreateContraptionTypeTagsProvider(output, lookupProvider, existingFileHelper));
-		generator.addProvider(event.includeServer(), new CreateMountedItemStorageTypeTagsProvider(output, lookupProvider, existingFileHelper));
-		generator.addProvider(event.includeServer(), new DamageTypeTagGen(output, lookupProvider, existingFileHelper));
+		generator.addProvider(event.includeServer(), new CreateRecipeSerializerTagsProvider(output, lookupProvider));
+		generator.addProvider(event.includeServer(), new CreateContraptionTypeTagsProvider(output, lookupProvider));
+		generator.addProvider(event.includeServer(), new CreateMountedItemStorageTypeTagsProvider(output, lookupProvider));
+		generator.addProvider(event.includeServer(), new DamageTypeTagGen(output, lookupProvider));
 		generator.addProvider(event.includeServer(), new AllAdvancements(output, lookupProvider));
 		generator.addProvider(event.includeServer(), new CreateStandardRecipeGen(output, lookupProvider));
 		generator.addProvider(event.includeServer(), new CreateMechanicalCraftingRecipeGen(output, lookupProvider));
 		generator.addProvider(event.includeServer(), new CreateSequencedAssemblyRecipeGen(output, lookupProvider));
 		generator.addProvider(event.includeServer(), new CreateDatamapProvider(output, lookupProvider));
 		generator.addProvider(event.includeServer(), new VanillaHatOffsetGenerator(output, lookupProvider));
-		generator.addProvider(event.includeServer(), new CuriosDataGenerator(output, lookupProvider, existingFileHelper));
-		generator.addProvider(event.includeServer(), new CreateEnchantmentTagsProvider(output, lookupProvider, existingFileHelper));
+		generator.addProvider(event.includeServer(), new CuriosDataGenerator(output, lookupProvider));
+		generator.addProvider(event.includeServer(), new CreateEnchantmentTagsProvider(output, lookupProvider));
 		generator.addProvider(event.includeClient(), new CreateWikiBlockInfoProvider(output));
 
 		if (event.includeServer()) {

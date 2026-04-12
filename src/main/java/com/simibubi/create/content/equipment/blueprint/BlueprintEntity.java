@@ -102,6 +102,17 @@ public class BlueprintEntity extends HangingEntity
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
+
+	public void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+
+	    net.minecraft.nbt.CompoundTag p_213281_1_ = new net.minecraft.nbt.CompoundTag();
+
+	    addAdditionalSaveData(p_213281_1_);
+
+	    output.store(p_213281_1_);
+
+	}
+
 	public void addAdditionalSaveData(CompoundTag p_213281_1_) {
 		p_213281_1_.putByte("Facing", (byte) this.direction.get3DDataValue());
 		p_213281_1_.putByte("Orientation", (byte) this.verticalOrientation.get3DDataValue());
@@ -110,11 +121,20 @@ public class BlueprintEntity extends HangingEntity
 	}
 
 	@Override
+
+	public void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+
+	    net.minecraft.nbt.CompoundTag p_70037_1_ = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(net.minecraft.nbt.CompoundTag.CODEC)).orElse(new net.minecraft.nbt.CompoundTag());
+
+	    readAdditionalSaveData(p_70037_1_);
+
+	}
+
 	public void readAdditionalSaveData(CompoundTag p_70037_1_) {
-		if (p_70037_1_.contains("Facing", Tag.TAG_ANY_NUMERIC)) {
-			this.direction = Direction.from3DDataValue(p_70037_1_.getByte("Facing"));
-			this.verticalOrientation = Direction.from3DDataValue(p_70037_1_.getByte("Orientation"));
-			this.size = p_70037_1_.getInt("Size");
+		if (p_70037_1_.contains("Facing")) {
+			this.direction = Direction.from3DDataValue(p_70037_1_.getByteOr("Facing", (byte)0));
+			this.verticalOrientation = Direction.from3DDataValue(p_70037_1_.getByteOr("Orientation", (byte)0));
+			this.size = p_70037_1_.getIntOr("Size", 0);
 		} else {
 			this.direction = Direction.SOUTH;
 			this.verticalOrientation = Direction.DOWN;
@@ -153,7 +173,7 @@ public class BlueprintEntity extends HangingEntity
 	protected AABB calculateBoundingBox(BlockPos blockPos, Direction direction) {
 		Vec3 pos = Vec3.atLowerCornerOf(getPos())
 				.add(.5, .5, .5)
-				.subtract(Vec3.atLowerCornerOf(direction.getNormal())
+				.subtract(Vec3.atLowerCornerOf(direction.getUnitVec3i())
 						.scale(0.46875));
 		double d1 = pos.x;
 		double d2 = pos.y;
@@ -163,15 +183,15 @@ public class BlueprintEntity extends HangingEntity
 		Axis axis = direction.getAxis();
 		if (size == 2)
 			pos = pos.add(Vec3.atLowerCornerOf(axis.isHorizontal() ? direction.getCounterClockWise()
-									.getNormal()
+									.getUnitVec3i()
 									: verticalOrientation.getClockWise()
-									.getNormal())
+									.getUnitVec3i())
 							.scale(0.5))
 					.add(Vec3
-							.atLowerCornerOf(axis.isHorizontal() ? Direction.UP.getNormal()
-									: direction == Direction.UP ? verticalOrientation.getNormal()
+							.atLowerCornerOf(axis.isHorizontal() ? Direction.UP.getUnitVec3i()
+									: direction == Direction.UP ? verticalOrientation.getUnitVec3i()
 									: verticalOrientation.getOpposite()
-									.getNormal())
+									.getUnitVec3i())
 							.scale(0.5));
 
 		d1 = pos.x;
@@ -286,7 +306,7 @@ public class BlueprintEntity extends HangingEntity
 	@Override
 	public void dropItem(@Nullable Entity p_110128_1_) {
 		if (!level().getGameRules()
-			.getBoolean(GameRules.RULE_DOENTITYDROPS))
+			.getBooleanOr(GameRules.RULE_DOENTITYDROPS, false))
 			return;
 
 		playSound(SoundEvents.PAINTING_BREAK, 1.0F, 1.0F);
@@ -489,7 +509,7 @@ public class BlueprintEntity extends HangingEntity
 		CompoundTag persistentData = getPersistentData();
 		if (!persistentData.contains("Recipes"))
 			persistentData.put("Recipes", new CompoundTag());
-		return persistentData.getCompound("Recipes");
+		return persistentData.getCompoundOrEmpty("Recipes");
 	}
 
 	private Map<Integer, BlueprintSection> sectionCache = new HashMap<>();
@@ -517,8 +537,8 @@ public class BlueprintEntity extends HangingEntity
 		public ItemStackHandler getItems() {
 			ItemStackHandler newInv = new ItemStackHandler(11);
 			CompoundTag list = getOrCreateRecipeCompound();
-			CompoundTag invNBT = list.getCompound(index + "");
-			inferredIcon = list.getBoolean("InferredIcon");
+			CompoundTag invNBT = list.getCompoundOrEmpty(index + "");
+			inferredIcon = list.getBooleanOr("InferredIcon", false);
 			if (!invNBT.isEmpty())
 				newInv.deserializeNBT(registryAccess(), invNBT);
 			return newInv;

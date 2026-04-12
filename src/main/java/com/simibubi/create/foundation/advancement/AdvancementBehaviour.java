@@ -99,14 +99,14 @@ public class AdvancementBehaviour extends BlockEntityBehaviour {
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
 		super.write(nbt, registries, clientPacket);
 		if (playerId != null)
-			nbt.putUUID("Owner", playerId);
+			nbt.putIntArray("Owner", net.minecraft.core.UUIDUtil.uuidToIntArray(playerId));
 	}
 
 	@Override
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(nbt, registries, clientPacket);
 		if (nbt.contains("Owner"))
-			playerId = nbt.getUUID("Owner");
+			playerId = nbt.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 	}
 
 	@Override

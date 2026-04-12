@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.AllTags.AllFluidTags;
 import com.simibubi.create.AllTags.AllItemTags;
@@ -23,7 +22,8 @@ import com.tterrag.registrate.util.entry.FluidEntry;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.FogRenderer.FogMode;
+import net.minecraft.client.renderer.fog.FogData;
+import net.minecraft.client.renderer.fog.environment.FogEnvironment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -220,15 +220,14 @@ public class AllFluids {
 					return customFogColor == null ? fluidFogColor : customFogColor;
 				}
 
-				@Override
-				public void modifyFogRender(Camera camera, FogMode mode, float renderDistance, float partialTick,
-											float nearDistance, float farDistance, FogShape shape) {
+			@Override
+				public void modifyFogRender(Camera camera, FogEnvironment environment, float renderDistance, float partialTick,
+										FogData fogData) {
 					float modifier = TintedFluidType.this.getFogDistanceModifier();
 					float baseWaterFog = 96.0f;
 					if (modifier != 1f) {
-						RenderSystem.setShaderFogShape(FogShape.CYLINDER);
-						RenderSystem.setShaderFogStart(-8);
-						RenderSystem.setShaderFogEnd(baseWaterFog * modifier);
+						fogData.environmentalStart = -8;
+						fogData.environmentalEnd = baseWaterFog * modifier;
 					}
 				}
 

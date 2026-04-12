@@ -468,15 +468,15 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 	@Override
 	protected void writeAdditional(CompoundTag compound, HolderLookup.Provider registries, boolean spawnPacket) {
 		super.writeAdditional(compound, registries, spawnPacket);
-		compound.putUUID("TrainId", trainId);
+		compound.putIntArray("TrainId", net.minecraft.core.UUIDUtil.uuidToIntArray(trainId));
 		compound.putInt("CarriageIndex", carriageIndex);
 	}
 
 	@Override
 	protected void readAdditional(CompoundTag compound, boolean spawnPacket) {
 		super.readAdditional(compound, spawnPacket);
-		trainId = compound.getUUID("TrainId");
-		carriageIndex = compound.getInt("CarriageIndex");
+		trainId = compound.getIntArray("TrainId").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
+		carriageIndex = compound.getIntOr("CarriageIndex", 0);
 		if (spawnPacket) {
 			xOld = getX();
 			yOld = getY();

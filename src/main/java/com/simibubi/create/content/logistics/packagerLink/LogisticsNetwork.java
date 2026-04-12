@@ -1,4 +1,5 @@
 package com.simibubi.create.content.logistics.packagerLink;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,36 +39,36 @@ public class LogisticsNetwork {
 
 	public CompoundTag write(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
-		tag.putUUID("Id", id);
+		tag.putIntArray("Id", net.minecraft.core.UUIDUtil.uuidToIntArray(id));
 		tag.put("Promises", panelPromises.write(registries));
 
 		tag.put("Links", NBTHelper.writeCompoundList(totalLinks, p -> {
 			CompoundTag nbt = new CompoundTag();
-			nbt.put("Pos", NbtUtils.writeBlockPos(p.pos()));
+			nbt.put("Pos", NbtCompat.writeBlockPos(p.pos()));
 			if (p.dimension() != Level.OVERWORLD)
 				NBTHelper.writeResourceLocation(nbt, "Dim", p.dimension().location());
 			return nbt;
 		}));
 
 		if (owner != null)
-			tag.putUUID("Owner", owner);
+			tag.putIntArray("Owner", net.minecraft.core.UUIDUtil.uuidToIntArray(owner));
 
 		tag.putBoolean("Locked", locked);
 		return tag;
 	}
 
 	public static LogisticsNetwork read(CompoundTag tag, HolderLookup.Provider registries) {
-		LogisticsNetwork network = new LogisticsNetwork(tag.getUUID("Id"));
-		network.panelPromises = RequestPromiseQueue.read(tag.getCompound("Promises"), registries, Create.LOGISTICS::markDirty);
+		LogisticsNetwork network = new LogisticsNetwork(tag.getIntArray("Id").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null));
+		network.panelPromises = RequestPromiseQueue.read(tag.getCompoundOrEmpty("Promises"), registries, Create.LOGISTICS::markDirty);
 
-		NBTHelper.iterateCompoundList(tag.getList("Links", Tag.TAG_COMPOUND), nbt -> {
+		NBTHelper.iterateCompoundList(tag.getListOrEmpty("Links"), nbt -> {
 			network.totalLinks.add(GlobalPos.of(nbt.contains("Dim")
 				? ResourceKey.create(Registries.DIMENSION, NBTHelper.readResourceLocation(nbt, "Dim"))
 				: Level.OVERWORLD, NBTHelper.readBlockPos(nbt, "Pos")));
 		});
 
-		network.owner = tag.contains("Owner") ? tag.getUUID("Owner") : null;
-		network.locked = tag.getBoolean("Locked");
+		network.owner = tag.contains("Owner") ? tag.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
+		network.locked = tag.getBooleanOr("Locked", false);
 
 		return network;
 	}

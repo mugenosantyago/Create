@@ -62,7 +62,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 	@Override
 	public Vec3 getActiveAreaOffset(MovementContext context) {
 		return Vec3.atLowerCornerOf(context.state.getValue(DeployerBlock.FACING)
-			.getNormal())
+			.getUnitVec3i())
 			.scale(2);
 	}
 
@@ -95,7 +95,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		}
 
 		Vec3 facingVec = Vec3.atLowerCornerOf(context.state.getValue(DeployerBlock.FACING)
-			.getNormal());
+			.getUnitVec3i());
 		facingVec = context.rotation.apply(facingVec);
 		Vec3 vec = context.position.subtract(facingVec.scale(2));
 
@@ -118,7 +118,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 	protected void checkForTrackPlacementAdvancement(MovementContext context, DeployerFakePlayer player) {
 		if ((context.contraption instanceof MountedContraption || context.contraption instanceof CarriageContraption)
 			&& player.placedTracks && context.blockEntityData != null && context.blockEntityData.contains("Owner"))
-			AllAdvancements.SELF_DEPLOYING.awardTo(context.world.getPlayerByUUID(context.blockEntityData.getUUID("Owner")));
+			AllAdvancements.SELF_DEPLOYING.awardTo(context.world.getPlayerByUUID(context.blockEntityData.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null)));
 	}
 
 	protected void activateAsSchematicPrinter(MovementContext context, BlockPos pos, DeployerFakePlayer player,
@@ -183,7 +183,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 
 		Pair<BlockPos, Float> blockBreakingProgress = player.blockBreakingProgress;
 		if (blockBreakingProgress != null) {
-			int timer = context.data.getInt("Timer");
+			int timer = context.data.getIntOr("Timer", 0);
 			if (timer < 20) {
 				timer++;
 				context.data.putInt("Timer", timer);
@@ -270,19 +270,19 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		DeployerFakePlayer player = getPlayer(context);
 		if (player == null)
 			return;
-		context.data.put("HeldItem", player.getMainHandItem().saveOptional(context.world.registryAccess()));
+		context.data.put("HeldItem", player.getMainHandItem().save(context.world.registryAccess()));
 	}
 
 	private DeployerFakePlayer getPlayer(MovementContext context) {
 		if (!(context.temporaryData instanceof DeployerFakePlayer) && context.world instanceof ServerLevel) {
-			UUID owner = context.blockEntityData.contains("Owner") ? context.blockEntityData.getUUID("Owner") : null;
+			UUID owner = context.blockEntityData.contains("Owner") ? context.blockEntityData.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 			DeployerFakePlayer deployerFakePlayer = new DeployerFakePlayer((ServerLevel) context.world, owner);
 			deployerFakePlayer.onMinecartContraption = context.contraption instanceof MountedContraption;
 			deployerFakePlayer.getInventory()
-				.load(context.blockEntityData.getList("Inventory", Tag.TAG_COMPOUND));
+				.load(context.blockEntityData.getListOrEmpty("Inventory"));
 			if (context.data.contains("HeldItem"))
 				deployerFakePlayer.setItemInHand(InteractionHand.MAIN_HAND,
-					ItemStack.parseOptional(context.world.registryAccess(), context.data.getCompound("HeldItem")));
+					net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), context.data.getCompoundOrEmpty("HeldItem").orElse(net.minecraft.world.item.ItemStack.EMPTY)));
 			context.blockEntityData.remove("Inventory");
 			context.temporaryData = deployerFakePlayer;
 		}

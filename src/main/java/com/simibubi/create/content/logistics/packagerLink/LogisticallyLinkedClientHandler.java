@@ -35,10 +35,10 @@ public class LogisticallyLinkedClientHandler {
 			return;
 
 		CompoundTag tag = mainHandItem.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
-		if (!tag.hasUUID("Freq"))
+		if (!tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
 			return;
 
-		UUID uuid = tag.getUUID("Freq");
+		UUID uuid = tag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 		previouslyHeldFrequency = uuid;
 
 		for (LogisticallyLinkedBehaviour behaviour : LogisticallyLinkedBehaviour.getAllPresent(uuid, false, true)) {

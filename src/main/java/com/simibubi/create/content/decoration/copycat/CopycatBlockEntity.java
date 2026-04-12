@@ -1,5 +1,6 @@
 package com.simibubi.create.content.decoration.copycat;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.List;
 
 import com.simibubi.create.AllBlocks;
@@ -28,7 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 
 public class CopycatBlockEntity extends SmartBlockEntity
@@ -152,7 +153,7 @@ public class CopycatBlockEntity extends SmartBlockEntity
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
 
-		consumedItem = ItemStack.parseOptional(registries, tag.getCompound("Item"));
+		consumedItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 
 		BlockState prevMaterial = material;
 		if (!tag.contains("Material")) {
@@ -160,7 +161,7 @@ public class CopycatBlockEntity extends SmartBlockEntity
 			return;
 		}
 
-		material = NbtUtils.readBlockState(blockHolderGetter(), tag.getCompound("Material"));
+		material = NbtUtils.readBlockState(blockHolderGetter(), tag.getCompoundOrEmpty("Material"));
 
 		// Validate Material
 		if (material != null && !clientPacket) {
@@ -196,7 +197,7 @@ public class CopycatBlockEntity extends SmartBlockEntity
 	}
 
 	protected void write(CompoundTag tag, HolderLookup.Provider registries, ItemStack stack, BlockState material) {
-		tag.put("Item", stack.saveOptional(registries));
+		tag.put("Item", NbtCompat.saveItemStack(stack, registries));
 		tag.put("Material", NbtUtils.writeBlockState(material));
 	}
 

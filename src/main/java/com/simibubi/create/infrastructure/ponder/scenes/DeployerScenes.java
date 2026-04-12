@@ -22,7 +22,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.WalkAnimationState;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -112,7 +112,7 @@ public class DeployerScenes {
 			.withItem(pot);
 		scene.idle(7);
 		Class<DeployerBlockEntity> teType = DeployerBlockEntity.class;
-		scene.world().modifyBlockEntityNBT(deployerSelection, teType, nbt -> nbt.put("HeldItem", pot.saveOptional(scene.world().getHolderLookupProvider())));
+		scene.world().modifyBlockEntityNBT(deployerSelection, teType, nbt -> nbt.put("HeldItem", pot.save(scene.world().getHolderLookupProvider())));
 		scene.idle(10);
 
 		scene.overlay().showText(40)
@@ -125,7 +125,7 @@ public class DeployerScenes {
 		scene.idle(26);
 		scene.world().restoreBlocks(util.select().position(potPosition));
 		scene.world().modifyBlockEntityNBT(deployerSelection, teType,
-			nbt -> nbt.put("HeldItem", ItemStack.EMPTY.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("HeldItem", ItemStack.EMPTY.save(scene.world().getHolderLookupProvider())));
 		scene.world().moveDeployer(deployerPos, -1, 25);
 		scene.idle(20);
 
@@ -138,7 +138,7 @@ public class DeployerScenes {
 			scene.world().createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), tulip);
 		scene.idle(17);
 		scene.world().modifyEntity(entity1, Entity::discard);
-		scene.world().modifyBlockEntityNBT(deployerSelection, teType, nbt -> nbt.put("HeldItem", tulip.saveOptional(scene.world().getHolderLookupProvider())));
+		scene.world().modifyBlockEntityNBT(deployerSelection, teType, nbt -> nbt.put("HeldItem", tulip.save(scene.world().getHolderLookupProvider())));
 		scene.idle(10);
 		scene.overlay().showText(40)
 			.placeNearTarget()
@@ -149,7 +149,7 @@ public class DeployerScenes {
 		scene.idle(26);
 		scene.world().setBlock(potPosition, Blocks.POTTED_RED_TULIP.defaultBlockState(), false);
 		scene.world().modifyBlockEntityNBT(deployerSelection, teType,
-			nbt -> nbt.put("HeldItem", ItemStack.EMPTY.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("HeldItem", ItemStack.EMPTY.save(scene.world().getHolderLookupProvider())));
 		scene.world().moveDeployer(deployerPos, -1, 25);
 		scene.idle(25);
 		scene.world().hideSection(util.select().position(potPosition), Direction.UP);
@@ -200,7 +200,7 @@ public class DeployerScenes {
 		entity1 = scene.world().createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), shears);
 		scene.idle(17);
 		scene.world().modifyEntity(entity1, Entity::discard);
-		scene.world().modifyBlockEntityNBT(deployerSelection, teType, nbt -> nbt.put("HeldItem", shears.saveOptional(scene.world().getHolderLookupProvider())));
+		scene.world().modifyBlockEntityNBT(deployerSelection, teType, nbt -> nbt.put("HeldItem", shears.save(scene.world().getHolderLookupProvider())));
 		scene.idle(10);
 
 		scene.overlay().showText(60)
@@ -263,7 +263,7 @@ public class DeployerScenes {
 		scene.overlay().showControls(util.vector().topOf(deployerPos), Pointing.DOWN, 30).withItem(tool);
 		scene.idle(7);
 		scene.world().modifyBlockEntityNBT(deployerSelection, DeployerBlockEntity.class,
-			nbt -> nbt.put("HeldItem", tool.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("HeldItem", tool.save(scene.world().getHolderLookupProvider())));
 		scene.idle(45);
 
 		scene.world().setKineticSpeed(util.select().position(2, 0, 5), 16);
@@ -346,7 +346,7 @@ public class DeployerScenes {
 				.withItem(tool);
 		scene.idle(7);
 		scene.world().modifyBlockEntityNBT(pressS, DeployerBlockEntity.class,
-			nbt -> nbt.put("HeldItem", tool.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("HeldItem", tool.save(scene.world().getHolderLookupProvider())));
 		scene.idle(25);
 
 		Vec3 pressSide = util.vector().blockSurface(pressPos, Direction.WEST);

@@ -177,10 +177,10 @@ public class ItemDrainBlockEntity extends SmartBlockEntity implements IHaveGoggl
 					side.getOpposite())) {
 					ItemStack ejected = heldItem.stack;
 					Vec3 outPos = VecHelper.getCenterOf(worldPosition)
-						.add(Vec3.atLowerCornerOf(side.getNormal())
+						.add(Vec3.atLowerCornerOf(side.getUnitVec3i())
 							.scale(.75));
 					float movementSpeed = itemMovementPerTick();
-					Vec3 outMotion = Vec3.atLowerCornerOf(side.getNormal())
+					Vec3 outMotion = Vec3.atLowerCornerOf(side.getUnitVec3i())
 						.scale(movementSpeed)
 						.add(0, 1 / 8f, 0);
 					outPos.add(outMotion.normalize());
@@ -296,9 +296,9 @@ public class ItemDrainBlockEntity extends SmartBlockEntity implements IHaveGoggl
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		heldItem = null;
-		processingTicks = compound.getInt("ProcessingTicks");
+		processingTicks = compound.getIntOr("ProcessingTicks", 0);
 		if (compound.contains("HeldItem"))
-			heldItem = TransportedItemStack.read(compound.getCompound("HeldItem"), registries);
+			heldItem = TransportedItemStack.read(compound.getCompoundOrEmpty("HeldItem"), registries);
 		super.read(compound, registries, clientPacket);
 	}
 

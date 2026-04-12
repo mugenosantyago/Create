@@ -1,4 +1,5 @@
 package com.simibubi.create.content.fluids.transfer;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -229,12 +230,12 @@ public abstract class FluidManipulationBehaviour extends BlockEntityBehaviour {
 		if (infinite)
 			NBTHelper.putMarker(nbt, "Infinite");
 		if (rootPos != null)
-			nbt.put("LastPos", NbtUtils.writeBlockPos(rootPos));
+			nbt.put("LastPos", NbtCompat.writeBlockPos(rootPos));
 		if (affectedArea != null) {
 			nbt.put("AffectedAreaFrom",
-				NbtUtils.writeBlockPos(new BlockPos(affectedArea.minX(), affectedArea.minY(), affectedArea.minZ())));
+				NbtCompat.writeBlockPos(new BlockPos(affectedArea.minX(), affectedArea.minY(), affectedArea.minZ())));
 			nbt.put("AffectedAreaTo",
-				NbtUtils.writeBlockPos(new BlockPos(affectedArea.maxX(), affectedArea.maxY(), affectedArea.maxZ())));
+				NbtCompat.writeBlockPos(new BlockPos(affectedArea.maxX(), affectedArea.maxY(), affectedArea.maxZ())));
 		}
 		super.write(nbt, registries, clientPacket);
 	}

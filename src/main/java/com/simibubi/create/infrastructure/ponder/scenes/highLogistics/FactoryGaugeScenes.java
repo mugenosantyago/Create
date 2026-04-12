@@ -735,7 +735,7 @@ public class FactoryGaugeScenes {
 			.modifyBlockEntityNBT(basin, BasinBlockEntity.class, nbt -> {
 				nbt.put("VisualizedItems",
 					NBTHelper.writeCompoundList(
-						ImmutableList.of(IntAttached.with(1, AllItems.ANDESITE_ALLOY.asStack())), ia -> (CompoundTag) ia.getValue().saveOptional(builder.world().getHolderLookupProvider())));
+						ImmutableList.of(IntAttached.with(1, AllItems.ANDESITE_ALLOY.asStack())), ia -> (CompoundTag) ia.getValue().save(builder.world().getHolderLookupProvider())));
 			});
 		scene.idle(4);
 		scene.rotateCameraY(90);

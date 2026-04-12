@@ -111,7 +111,7 @@ public class TrackEdge {
 			if (normalSmoothed != null)
 				return normalSmoothed;
 		}
-		return node1.getNormal();
+		return node1.getUnitVec3i();
 	}
 
 	@Nullable
@@ -245,8 +245,8 @@ public class TrackEdge {
 		DimensionPalette dimensions) {
 		TrackEdge trackEdge =
 			new TrackEdge(node1, node2, tag.contains("Positions") ? new BezierConnection(tag, BlockPos.ZERO) : null,
-					TrackMaterial.deserialize(tag.getString("Material")));
-		trackEdge.edgeData = EdgeData.read(tag.getCompound("Signals"), trackEdge, graph, dimensions);
+					TrackMaterial.deserialize(tag.getStringOr("Material", "")));
+		trackEdge.edgeData = EdgeData.read(tag.getCompoundOrEmpty("Signals"), trackEdge, graph, dimensions);
 		return trackEdge;
 	}
 

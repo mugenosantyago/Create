@@ -20,14 +20,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -52,13 +51,13 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
-		InteractionResultHolder<ItemStack> FAIL = new InteractionResultHolder<>(InteractionResult.FAIL, itemstack);
+		InteractionResult FAIL = InteractionResult.FAIL;
 
 		if (itemstack.has(AllDataComponents.SAND_PAPER_POLISHING)) {
 			playerIn.startUsingItem(handIn);
-			return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+			return InteractionResult.PASS;
 		}
 
 		InteractionHand otherHand =
@@ -70,7 +69,7 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 			playerIn.startUsingItem(handIn);
 			itemstack.set(AllDataComponents.SAND_PAPER_POLISHING, new SandPaperItemComponent(toPolish));
 			playerIn.setItemInHand(otherHand, item);
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
+			return InteractionResult.SUCCESS;
 		}
 
 		BlockHitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.NONE);
@@ -108,7 +107,7 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 				pickUp.setItem(item);
 		}
 
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -228,8 +227,8 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 	}
 
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.EAT;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.EAT;
 	}
 
 	@Override

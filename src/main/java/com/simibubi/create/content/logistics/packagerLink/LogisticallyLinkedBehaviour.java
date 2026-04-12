@@ -233,13 +233,13 @@ public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 
 	@Override
 	public void writeSafe(CompoundTag tag, HolderLookup.Provider registries) {
-		tag.putUUID("Freq", freqId);
+		tag.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(freqId));
 	}
 
 	@Override
 	public void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.write(tag, registries, clientPacket);
-		tag.putUUID("Freq", freqId);
+		tag.putIntArray("Freq", net.minecraft.core.UUIDUtil.uuidToIntArray(freqId));
 		tag.putInt("Power", redstonePower);
 		tag.putBoolean("Added", addedGlobally);
 	}
@@ -247,10 +247,10 @@ public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 	@Override
 	public void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
-		if (tag.hasUUID("Freq"))
-			freqId = tag.getUUID("Freq");
-		redstonePower = tag.getInt("Power");
-		addedGlobally = tag.getBoolean("Added");
+		if (tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
+			freqId = tag.getIntArray("Freq").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
+		redstonePower = tag.getIntOr("Power", 0);
+		addedGlobally = tag.getBooleanOr("Added", false);
 	}
 
 	@Override

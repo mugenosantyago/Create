@@ -19,7 +19,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 public class TrainHUD {
 
-	public static final LayeredDraw.Layer OVERLAY = TrainHUD::renderOverlay;
+	public static final GuiLayer OVERLAY = TrainHUD::renderOverlay;
 
 	static LerpedFloat displayedSpeed = LerpedFloat.linear();
 	static LerpedFloat displayedThrottle = LerpedFloat.linear();

@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -198,7 +199,7 @@ public class VirtualChunk extends LevelChunk {
 	}
 
 	@Override
-	public TicksToSave getTicksForSerialization() {
+	public ChunkAccess.PackedTicks getTicksForSerialization(long gameTime) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -27,7 +27,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -126,7 +125,7 @@ public class SymmetryWandItem extends Item {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack wand = playerIn.getItemInHand(handIn);
 		checkComponents(wand);
 
@@ -139,12 +138,12 @@ public class SymmetryWandItem extends Item {
 				playerIn.getCooldowns()
 					.addCooldown(this, 5);
 			}
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, wand);
+			return InteractionResult.SUCCESS;
 		}
 
 		// No Shift -> Clear Mirror
 		wand.set(AllDataComponents.SYMMETRY_WAND_ENABLE, false);
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, wand);
+		return InteractionResult.SUCCESS;
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -1,4 +1,5 @@
 package com.simibubi.create.content.kinetics.crusher;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +191,7 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 				ItemEntity entityIn = new ItemEntity(level, outPos.x, outPos.y, outPos.z, stack);
 				entityIn.setDeltaMovement(outSpeed);
 				entityIn.getPersistentData()
-					.put("BypassCrushingWheel", NbtUtils.writeBlockPos(worldPosition));
+					.put("BypassCrushingWheel", NbtCompat.writeBlockPos(worldPosition));
 				level.addFreshEntity(entityIn);
 			}
 			inventory.clear();
@@ -335,7 +336,7 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (hasEntity())
-			compound.put("Entity", NbtUtils.createUUID(entityUUID));
+			compound.put("Entity", new net.minecraft.nbt.IntArrayTag(net.minecraft.core.UUIDUtil.uuidToIntArray(entityUUID)));
 		compound.put("Inventory", inventory.serializeNBT(registries));
 		compound.putFloat("Speed", crushingspeed);
 		super.write(compound, registries, clientPacket);
@@ -345,11 +346,11 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
 		if (compound.contains("Entity") && !isOccupied()) {
-			entityUUID = NbtUtils.loadUUID(NBTHelper.getINBT(compound, "Entity"));
+			entityUUID = NbtCompat.loadUUID(NBTHelper.getINBT(compound, "Entity"));
 			this.searchForEntity = true;
 		}
-		crushingspeed = compound.getFloat("Speed");
-		inventory.deserializeNBT(registries, compound.getCompound("Inventory"));
+		crushingspeed = compound.getFloatOr("Speed", 0);
+		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
 	}
 
 	@Override

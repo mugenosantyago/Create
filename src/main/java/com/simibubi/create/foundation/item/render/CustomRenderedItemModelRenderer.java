@@ -1,33 +1,46 @@
 package com.simibubi.create.foundation.item.render;
 
+import java.util.Set;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import org.joml.Vector3f;
+
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class CustomRenderedItemModelRenderer extends BlockEntityWithoutLevelRenderer {
-
-	public CustomRenderedItemModelRenderer() {
-		super(null, null);
-	}
+/**
+ * Base class for custom rendered item model renderers.
+ * In MC 1.21.8, BlockEntityWithoutLevelRenderer was replaced by SpecialModelRenderer.
+ */
+public abstract class CustomRenderedItemModelRenderer implements SpecialModelRenderer<ItemStack> {
 
 	@Override
-	public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-		CustomRenderedItemModel mainModel = (CustomRenderedItemModel) Minecraft.getInstance()
-			.getItemRenderer()
-			.getModel(stack, null, null, 0);
+	public void render(ItemStack stack, ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer,
+		int light, int overlay, boolean hasFoilApplied) {
+		if (stack.isEmpty())
+			return;
 		PartialItemModelRenderer renderer = PartialItemModelRenderer.of(stack, transformType, ms, buffer, overlay);
 
 		ms.pushPose();
 		ms.translate(0.5F, 0.5F, 0.5F);
-		render(stack, mainModel, renderer, transformType, ms, buffer, light, overlay);
+		render(stack, null, renderer, transformType, ms, buffer, light, overlay);
 		ms.popPose();
 	}
 
-	protected abstract void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer, ItemDisplayContext transformType,
+	@Override
+	public void getExtents(Set<Vector3f> extents) {
+	}
+
+	@Override
+	public ItemStack extractArgument(ItemStack stack) {
+		return stack;
+	}
+
+	protected abstract void render(ItemStack stack, CustomRenderedItemModel model,
+		PartialItemModelRenderer renderer, ItemDisplayContext transformType,
 		PoseStack ms, MultiBufferSource buffer, int light, int overlay);
 
 }

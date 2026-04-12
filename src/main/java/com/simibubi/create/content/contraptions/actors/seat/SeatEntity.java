@@ -16,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Parrot;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Slime;
@@ -124,17 +124,42 @@ public class SeatEntity extends Entity implements IEntityWithComplexSpawn {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
+
+	protected void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+
+	    net.minecraft.nbt.CompoundTag tag = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(net.minecraft.nbt.CompoundTag.CODEC)).orElse(new net.minecraft.nbt.CompoundTag());
+
+	    readAdditionalSaveData(tag);
+
+	}
+
 	protected void readAdditionalSaveData(CompoundTag tag) {
 	}
 
 	@Override
+
+	protected void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+
+	    net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+
+	    addAdditionalSaveData(tag);
+
+	    output.store(tag);
+
+	}
+
 	protected void addAdditionalSaveData(CompoundTag tag) {
 	}
 
-	public static class Render extends EntityRenderer<SeatEntity> {
+	public static class Render extends EntityRenderer<SeatEntity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
 
 		public Render(EntityRendererProvider.Context context) {
 			super(context);
+		}
+
+		@Override
+		public net.minecraft.client.renderer.entity.state.EntityRenderState createRenderState() {
+			return new net.minecraft.client.renderer.entity.state.EntityRenderState();
 		}
 
 		@Override
@@ -143,10 +168,6 @@ public class SeatEntity extends Entity implements IEntityWithComplexSpawn {
 			return false;
 		}
 
-		@Override
-		public ResourceLocation getTextureLocation(SeatEntity seatEntity) {
-			return null;
-		}
 	}
 
 	@Override

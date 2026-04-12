@@ -1,4 +1,5 @@
 package com.simibubi.create.content.trains.track;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -100,18 +101,18 @@ public class BezierConnection implements Iterable<BezierConnection.Segment> {
 	}
 
 	public BezierConnection(CompoundTag compound, BlockPos localTo) {
-		this(Couple.deserializeEach(compound.getList("Positions", Tag.TAG_COMPOUND), t -> NBTHelper.readBlockPos(t, "Pos"))
+		this(Couple.deserializeEach(compound.getListOrEmpty("Positions"), t -> NBTHelper.readBlockPos(t, "Pos"))
 			.map(b -> b.offset(localTo)),
-			Couple.deserializeEach(compound.getList("Starts", Tag.TAG_COMPOUND), VecHelper::readNBTCompound)
+			Couple.deserializeEach(compound.getListOrEmpty("Starts"), VecHelper::readNBTCompound)
 				.map(v -> v.add(Vec3.atLowerCornerOf(localTo))),
-			Couple.deserializeEach(compound.getList("Axes", Tag.TAG_COMPOUND), VecHelper::readNBTCompound),
-			Couple.deserializeEach(compound.getList("Normals", Tag.TAG_COMPOUND), VecHelper::readNBTCompound),
-			compound.getBoolean("Primary"), compound.getBoolean("Girder"),
-			TrackMaterial.deserialize(compound.getString("Material")));
+			Couple.deserializeEach(compound.getListOrEmpty("Axes"), VecHelper::readNBTCompound),
+			Couple.deserializeEach(compound.getListOrEmpty("Normals"), VecHelper::readNBTCompound),
+			compound.getBooleanOr("Primary", false), compound.getBooleanOr("Girder", false),
+			TrackMaterial.deserialize(compound.getStringOr("Material", "")));
 
 		if (compound.contains("Smoothing"))
 			smoothing =
-				Couple.deserializeEach(compound.getList("Smoothing", Tag.TAG_COMPOUND), NBTHelper::intFromCompound);
+				Couple.deserializeEach(compound.getListOrEmpty("Smoothing"), NBTHelper::intFromCompound);
 	}
 
 	public CompoundTag write(BlockPos localTo) {
@@ -123,7 +124,7 @@ public class BezierConnection implements Iterable<BezierConnection.Segment> {
 		compound.putBoolean("Primary", primary);
 		compound.put("Positions", tePositions.serializeEach(t -> {
 			CompoundTag tag = new CompoundTag();
-			tag.put("Pos", NbtUtils.writeBlockPos(t));
+			tag.put("Pos", NbtCompat.writeBlockPos(t));
 			return tag;
 		}));
 		compound.put("Starts", starts.serializeEach(VecHelper::writeNBTCompound));
@@ -281,7 +282,7 @@ public class BezierConnection implements Iterable<BezierConnection.Segment> {
 
 	public void spawnItems(Level level) {
 		if (!level.getGameRules()
-			.getBoolean(GameRules.RULE_DOBLOCKDROPS))
+			.getBooleanOr(GameRules.RULE_DOBLOCKDROPS, false))
 			return;
 		Vec3 origin = Vec3.atLowerCornerOf(bePositions.getFirst());
 		for (Segment segment : this) {

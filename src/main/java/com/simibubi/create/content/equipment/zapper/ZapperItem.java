@@ -24,13 +24,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
@@ -94,7 +93,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack item = player.getItemInHand(hand);
 		boolean mainHand = hand == InteractionHand.MAIN_HAND;
 
@@ -107,11 +106,11 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 				player.getCooldowns()
 					.addCooldown(item.getItem(), 10);
 			}
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, item);
+			return InteractionResult.SUCCESS;
 		}
 
 		if (ShootableGadgetItemMethods.shouldSwap(player, item, hand, this::isZapper))
-			return new InteractionResultHolder<>(InteractionResult.FAIL, item);
+			return InteractionResult.FAIL;
 
 		// Check if can be used
 		Component msg = validateUsage(item);
@@ -119,7 +118,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 			AllSoundEvents.DENY.play(world, player, player.blockPosition());
 			player.displayClientMessage(msg.plainCopy()
 				.withStyle(ChatFormatting.RED), true);
-			return new InteractionResultHolder<>(InteractionResult.FAIL, item);
+			return InteractionResult.FAIL;
 		}
 
 		BlockState stateToUse = Blocks.AIR.defaultBlockState();
@@ -144,7 +143,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 		// No target
 		if (pos == null || stateReplaced.getBlock() == Blocks.AIR) {
 			ShootableGadgetItemMethods.applyCooldown(player, item, hand, this::isZapper, getCooldownDelay(item));
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, item);
+			return InteractionResult.SUCCESS;
 		}
 
 		// Find exact position of gun barrel for VFX
@@ -153,7 +152,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 		// Client side
 		if (world.isClientSide) {
 			CreateClient.ZAPPER_RENDER_HANDLER.dontAnimateItem(hand);
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, item);
+			return InteractionResult.SUCCESS;
 		}
 
 		// Server side
@@ -163,7 +162,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 				b -> new ZapperBeamPacket(barrelPos, hand, b, raytrace.getLocation()));
 		}
 
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, item);
+		return InteractionResult.SUCCESS;
 	}
 
 	public Component validateUsage(ItemStack item) {
@@ -197,8 +196,8 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 	}
 
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.NONE;
+	public ItemUseAnimation getUseAnimation(ItemStack stack) {
+		return ItemUseAnimation.NONE;
 	}
 
 	@Override
@@ -220,7 +219,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 				data.putInt("x", pos.getX());
 				data.putInt("y", pos.getY());
 				data.putInt("z", pos.getZ());
-				blockEntity.loadWithComponents(data, world.registryAccess());
+				blockEntity.loadWithComponents(net.minecraft.world.level.storage.TagValueInput.create(new net.minecraft.util.ProblemReporter.Collector(), world.registryAccess(), data));
 			}
 		}
 	}

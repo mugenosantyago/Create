@@ -85,10 +85,10 @@ public class TrackObserver extends SingleBlockEntityEdgePoint {
 	@Override
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean migration, DimensionPalette dimensions) {
 		super.read(nbt, registries, migration, dimensions);
-		activated = nbt.getInt("Activated");
-		filter = FilterItemStack.of(registries, nbt.getCompound("Filter"));
+		activated = nbt.getIntOr("Activated", 0);
+		filter = FilterItemStack.of(registries, nbt.getCompoundOrEmpty("Filter"));
 		if (nbt.contains("TrainId"))
-			currentTrain = nbt.getUUID("TrainId");
+			currentTrain = nbt.getIntArray("TrainId").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class TrackObserver extends SingleBlockEntityEdgePoint {
 		nbt.putInt("Activated", activated);
 		nbt.put("Filter", filter.serializeNBT(registries));
 		if (currentTrain != null)
-			nbt.putUUID("TrainId", currentTrain);
+			nbt.putIntArray("TrainId", net.minecraft.core.UUIDUtil.uuidToIntArray(currentTrain));
 	}
 
 	@Override

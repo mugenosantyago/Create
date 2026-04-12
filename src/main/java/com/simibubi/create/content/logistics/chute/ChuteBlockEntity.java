@@ -1,5 +1,6 @@
 package com.simibubi.create.content.logistics.chute;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -550,7 +551,7 @@ public class ChuteBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
 
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-		compound.put("Item", item.saveOptional(registries));
+		compound.put("Item", NbtCompat.saveItemStack(item, registries));
 		compound.putFloat("ItemPosition", itemPosition.getValue());
 		compound.putFloat("Pull", pull);
 		compound.putFloat("Push", push);
@@ -561,11 +562,11 @@ public class ChuteBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		ItemStack previousItem = item;
-		item = ItemStack.parseOptional(registries, compound.getCompound("Item"));
-		itemPosition.startWithValue(compound.getFloat("ItemPosition"));
-		pull = compound.getFloat("Pull");
-		push = compound.getFloat("Push");
-		bottomPullDistance = compound.getFloat("BottomAirFlowDistance");
+		item = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("Item").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		itemPosition.startWithValue(compound.getFloatOr("ItemPosition", 0));
+		pull = compound.getFloatOr("Pull", 0);
+		push = compound.getFloatOr("Push", 0);
+		bottomPullDistance = compound.getFloatOr("BottomAirFlowDistance", 0);
 		super.read(compound, registries, clientPacket);
 //		if (clientPacket)
 //			airCurrent.rebuild();

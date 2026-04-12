@@ -1,5 +1,6 @@
 package com.simibubi.create.content.logistics.packagePort.frogport;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.List;
 
 import com.simibubi.create.AllBlockEntityTypes;
@@ -35,7 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -337,7 +338,7 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 		super.write(tag, registries, clientPacket);
 		tag.putFloat("PlacedYaw", passiveYaw);
 		if (animatedPackage != null && isAnimationInProgress()) {
-			tag.put("AnimatedPackage", animatedPackage.saveOptional(registries));
+			tag.put("AnimatedPackage", NbtCompat.saveItemStack(animatedPackage, registries));
 			tag.putBoolean("Deposit", currentlyDepositing);
 		}
 		if (sendAnticipate) {
@@ -353,14 +354,14 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 	@Override
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
-		passiveYaw = tag.getFloat("PlacedYaw");
-		failedLastExport = tag.getBoolean("FailedLastExport");
-		goggles = tag.getBoolean("Goggles");
+		passiveYaw = tag.getFloatOr("PlacedYaw", 0);
+		failedLastExport = tag.getBooleanOr("FailedLastExport", false);
+		goggles = tag.getBooleanOr("Goggles", false);
 		if (!clientPacket)
 			animatedPackage = null;
 		if (tag.contains("AnimatedPackage")) {
-			deferAnimationInward = tag.getBoolean("Deposit");
-			deferAnimationStart = ItemStack.parseOptional(registries, tag.getCompound("AnimatedPackage"));
+			deferAnimationInward = tag.getBooleanOr("Deposit", false);
+			deferAnimationStart = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("AnimatedPackage").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		}
 		if (clientPacket && tag.contains("Anticipate"))
 			anticipate();
@@ -390,9 +391,9 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 	}
 
 	@Override
-	public ItemInteractionResult use(Player player) {
+	public InteractionResult use(Player player) {
 		if (player == null)
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
 
 		ItemStack mainHandItem = player.getMainHandItem();
 		if (!goggles && AllItems.GOGGLES.isIn(mainHandItem)) {
@@ -401,7 +402,7 @@ public class FrogportBlockEntity extends PackagePortBlockEntity implements IHave
 				notifyUpdate();
 				level.playSound(null, worldPosition, SoundEvents.ARMOR_EQUIP_GOLD.value(), SoundSource.BLOCKS, 0.5f, 1.0f);
 			}
-			return ItemInteractionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
 
 		return super.use(player);

@@ -1,5 +1,6 @@
 package com.simibubi.create.foundation.blockEntity.behaviour.filtering;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -88,7 +89,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 
 	@Override
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
-		nbt.put("Filter", getFilter().saveOptional(registries));
+		NbtCompat.saveItemStack(nbt.put("Filter", getFilter(), registries));
 		nbt.putInt("FilterAmount", count);
 		nbt.putBoolean("UpTo", upTo);
 		super.write(nbt, registries, clientPacket);
@@ -96,9 +97,9 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 
 	@Override
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
-		filter = FilterItemStack.of(registries, nbt.getCompound("Filter"));
-		count = nbt.getInt("FilterAmount");
-		upTo = nbt.getBoolean("UpTo");
+		filter = FilterItemStack.of(registries, nbt.getCompoundOrEmpty("Filter"));
+		count = nbt.getIntOr("FilterAmount", 0);
+		upTo = nbt.getBooleanOr("UpTo", false);
 
 		// Migrate from previous behaviour
 		if (count == 0) {
@@ -362,7 +363,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 	public boolean writeToClipboard(HolderLookup.@NotNull Provider registries, CompoundTag tag, Direction side) {
 		ValueSettingsBehaviour.super.writeToClipboard(registries, tag, side);
 		ItemStack filter = getFilter(side);
-		tag.put("Filter", filter.saveOptional(registries));
+		tag.put("Filter", NbtCompat.saveItemStack(filter, registries));
 		return true;
 	}
 
@@ -382,7 +383,7 @@ public class FilteringBehaviour extends BlockEntityBehaviour implements ValueSet
 		if (getFilter(side).getItem() instanceof FilterItem && !player.isCreative())
 			refund = getFilter(side).copy();
 
-		ItemStack copied = ItemStack.parseOptional(registries, tag.getCompound("Filter"));
+		ItemStack copied = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("Filter").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 
 		if (copied.getItem() instanceof FilterItem filterType && !player.isCreative()) {
 			InvWrapper inv = new InvWrapper(player.getInventory());

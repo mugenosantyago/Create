@@ -12,17 +12,22 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 public class LogisticsNetworkSavedData extends SavedData {
 
+	public static final SavedDataType<LogisticsNetworkSavedData> TYPE = new SavedDataType<>(
+		"create_logistics",
+		ctx -> new LogisticsNetworkSavedData(),
+		ctx -> CompoundTag.CODEC.xmap(
+			tag -> LogisticsNetworkSavedData.load(tag, ctx.levelOrThrow().registryAccess()),
+			data -> data.writeToNbt(new CompoundTag(), ctx.levelOrThrow().registryAccess())
+		)
+	);
+
 	private Map<UUID, LogisticsNetwork> logisticsNetworks = new HashMap<>();
 
-	public static SavedData.Factory<LogisticsNetworkSavedData> factory() {
-		return new SavedData.Factory<>(LogisticsNetworkSavedData::new, LogisticsNetworkSavedData::load);
-	}
-
-	@Override
-	public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
+	private CompoundTag writeToNbt(CompoundTag nbt, HolderLookup.Provider registries) {
 		GlobalLogisticsManager logistics = Create.LOGISTICS;
 		nbt.put("LogisticsNetworks",
 			NBTHelper.writeCompoundList(logistics.logisticsNetworks.values(), network -> network.write(registries)));
@@ -32,7 +37,7 @@ public class LogisticsNetworkSavedData extends SavedData {
 	private static LogisticsNetworkSavedData load(CompoundTag nbt, HolderLookup.Provider registries) {
 		LogisticsNetworkSavedData sd = new LogisticsNetworkSavedData();
 		sd.logisticsNetworks = new HashMap<>();
-		NBTHelper.iterateCompoundList(nbt.getList("LogisticsNetworks", Tag.TAG_COMPOUND), c -> {
+		NBTHelper.iterateCompoundList(nbt.getListOrEmpty("LogisticsNetworks"), c -> {
 			LogisticsNetwork network = LogisticsNetwork.read(c, registries);
 			sd.logisticsNetworks.put(network.id, network);
 		});
@@ -48,7 +53,7 @@ public class LogisticsNetworkSavedData extends SavedData {
 	public static LogisticsNetworkSavedData load(MinecraftServer server) {
 		return server.overworld()
 			.getDataStorage()
-			.computeIfAbsent(factory(), "create_logistics");
+			.computeIfAbsent(TYPE);
 	}
 
 }

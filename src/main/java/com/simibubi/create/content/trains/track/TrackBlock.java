@@ -68,7 +68,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -353,7 +353,7 @@ public class TrackBlock extends Block
 					ITrackBlock.addToListIfConnected(connectedTo, list,
 						(d, b) -> axis.scale(b ? 0 : fromCenter ? -d : d)
 							.add(center),
-						b -> shape.getNormal(), b -> world instanceof Level l ? l.dimension() : Level.OVERWORLD, v -> 0,
+						b -> shape.getUnitVec3i(), b -> world instanceof Level l ? l.dimension() : Level.OVERWORLD, v -> 0,
 						axis, null, (b, v) -> ITrackBlock.getMaterialSimple(world, v));
 		} else
 			list = ITrackBlock.super.getConnected(world, pos, state, linear, connectedTo);
@@ -396,7 +396,7 @@ public class TrackBlock extends Block
 
 		getTrackAxes(world, pos, state).forEach(axis -> {
 			ITrackBlock.addToListIfConnected(connectedTo, list, (d, b) -> (b ? axis : boundAxis).scale(d)
-					.add(b ? center : boundCenter), b -> (b ? shape : boundShape).getNormal(),
+					.add(b ? center : boundCenter), b -> (b ? shape : boundShape).getUnitVec3i(),
 				b -> b ? level.dimension() : otherLevel.dimension(), v -> 0, axis, null,
 				(b, v) -> ITrackBlock.getMaterialSimple(b ? level : otherLevel, v));
 		});
@@ -437,9 +437,9 @@ public class TrackBlock extends Block
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.isClientSide)
-			return ItemInteractionResult.SUCCESS;
+			return InteractionResult.SUCCESS;
 		for (Entry<BlockPos, BoundingBox> entry : StationBlockEntity.assemblyAreas.get(level)
 			.entrySet()) {
 			if (!entry.getValue()
@@ -447,10 +447,10 @@ public class TrackBlock extends Block
 				continue;
 			if (level.getBlockEntity(entry.getKey()) instanceof StationBlockEntity station)
 				if (station.trackClicked(player, hand, this, state, pos))
-					return ItemInteractionResult.SUCCESS;
+					return InteractionResult.SUCCESS;
 		}
 
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	private void updateGirders(BlockState pState, Level pLevel, BlockPos pPos, LevelTickAccess<Block> blockTicks) {
@@ -559,7 +559,7 @@ public class TrackBlock extends Block
 	@Override
 	public Vec3 getUpNormal(BlockGetter world, BlockPos pos, BlockState state) {
 		return state.getValue(SHAPE)
-			.getNormal();
+			.getUnitVec3i();
 	}
 
 	@Override

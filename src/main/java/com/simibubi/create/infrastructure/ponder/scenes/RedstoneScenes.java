@@ -786,30 +786,30 @@ public class RedstoneScenes {
 		scene.idle(7);
 		scene.overlay().showControls(backSlot, Pointing.DOWN, 30).withItem(sapling);
 		scene.world().modifyBlockEntityNBT(link1Select, RedstoneLinkBlockEntity.class,
-			nbt -> nbt.put("FrequencyLast", iron.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("FrequencyLast", iron.save(scene.world().getHolderLookupProvider())));
 		scene.idle(7);
 		scene.world().modifyBlockEntityNBT(link1Select, RedstoneLinkBlockEntity.class,
-			nbt -> nbt.put("FrequencyFirst", sapling.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("FrequencyFirst", sapling.save(scene.world().getHolderLookupProvider())));
 		scene.idle(20);
 
 		scene.overlay().showControls(bottom2Slot, Pointing.UP, 30).withItem(iron);
 		scene.idle(7);
 		scene.overlay().showControls(top2Slot, Pointing.DOWN, 30).withItem(sapling);
 		scene.world().modifyBlockEntityNBT(link2Select, RedstoneLinkBlockEntity.class,
-			nbt -> nbt.put("FrequencyLast", iron.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("FrequencyLast", iron.save(scene.world().getHolderLookupProvider())));
 		scene.idle(7);
 		scene.world().modifyBlockEntityNBT(link2Select, RedstoneLinkBlockEntity.class,
-			nbt -> nbt.put("FrequencyFirst", sapling.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("FrequencyFirst", sapling.save(scene.world().getHolderLookupProvider())));
 		scene.idle(20);
 
 		scene.overlay().showControls(bottom3Slot, Pointing.UP, 30).withItem(gold);
 		scene.idle(7);
 		scene.overlay().showControls(top3Slot, Pointing.DOWN, 30).withItem(sapling);
 		scene.world().modifyBlockEntityNBT(link3Select, RedstoneLinkBlockEntity.class,
-			nbt -> nbt.put("FrequencyLast", gold.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("FrequencyLast", gold.save(scene.world().getHolderLookupProvider())));
 		scene.idle(7);
 		scene.world().modifyBlockEntityNBT(link3Select, RedstoneLinkBlockEntity.class,
-			nbt -> nbt.put("FrequencyFirst", sapling.saveOptional(scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("FrequencyFirst", sapling.save(scene.world().getHolderLookupProvider())));
 		scene.idle(20);
 
 		scene.world().toggleRedstonePower(redstone);

@@ -1,5 +1,6 @@
 package com.simibubi.create.content.kinetics.mechanicalArm;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -441,7 +442,7 @@ public class ArmBlockEntity extends KineticBlockEntity implements TransformableB
 		if (level.isClientSide) {
 			int minY = center.getY() - range;
 			int maxY = center.getY() + range;
-			if (maxY < level.getMinBuildHeight() || minY >= level.getMaxBuildHeight()) {
+			if (maxY < level.getMinY() || minY >= level.getMaxBuildHeight()) {
 				return false;
 			}
 
@@ -523,7 +524,7 @@ public class ArmBlockEntity extends KineticBlockEntity implements TransformableB
 		NBTHelper.writeEnum(compound, "Phase", phase);
 		compound.putBoolean("Powered", redstoneLocked);
 		compound.putBoolean("Goggles", goggles);
-		compound.put("HeldItem", heldItem.saveOptional(registries));
+		compound.put("HeldItem", NbtCompat.saveItemStack(heldItem, registries));
 		compound.putInt("TargetPointIndex", chasedPointIndex);
 		compound.putFloat("MovementProgress", chasedPointProgress);
 	}
@@ -542,15 +543,15 @@ public class ArmBlockEntity extends KineticBlockEntity implements TransformableB
 		ListTag interactionPointTagBefore = interactionPointTag;
 
 		super.read(tag, registries, clientPacket);
-		heldItem = ItemStack.parseOptional(registries, tag.getCompound("HeldItem"));
+		heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.getCompoundOrEmpty("HeldItem").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		phase = NBTHelper.readEnum(tag, "Phase", Phase.class);
-		chasedPointIndex = tag.getInt("TargetPointIndex");
-		chasedPointProgress = tag.getFloat("MovementProgress");
-		interactionPointTag = tag.getList("InteractionPoints", Tag.TAG_COMPOUND);
-		redstoneLocked = tag.getBoolean("Powered");
+		chasedPointIndex = tag.getIntOr("TargetPointIndex", 0);
+		chasedPointProgress = tag.getFloatOr("MovementProgress", 0);
+		interactionPointTag = tag.getListOrEmpty("InteractionPoints");
+		redstoneLocked = tag.getBooleanOr("Powered", false);
 
 		boolean hadGoggles = goggles;
-		goggles = tag.getBoolean("Goggles");
+		goggles = tag.getBooleanOr("Goggles", false);
 
 		if (!clientPacket)
 			return;

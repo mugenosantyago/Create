@@ -60,7 +60,7 @@ public class BacktankArmorLayer<S extends LivingEntityRenderState, M extends Ent
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static void registerOn(EntityRenderer<?> entityRenderer) {
+    public static void registerOn(EntityRenderer<?, ?> entityRenderer) {
         if (!(entityRenderer instanceof LivingEntityRenderer<?, ?, ?> livingRenderer))
             return;
         if (!(livingRenderer.getModel() instanceof HumanoidModel))

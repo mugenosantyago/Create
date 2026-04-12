@@ -1,5 +1,6 @@
 package com.simibubi.create.content.logistics.packager;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -576,21 +577,21 @@ public class PackagerBlockEntity extends SmartBlockEntity implements Clearable {
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(compound, registries, clientPacket);
-		redstonePowered = compound.getBoolean("Active");
-		animationInward = compound.getBoolean("AnimationInward");
-		animationTicks = compound.getInt("AnimationTicks");
-		signBasedAddress = compound.getString("SignAddress");
-		customComputerAddress = compound.getString("ComputerAddress");
-		hasCustomComputerAddress = compound.getBoolean("HasComputerAddress");
-		heldBox = ItemStack.parseOptional(registries, compound.getCompound("HeldBox"));
-		previouslyUnwrapped = ItemStack.parseOptional(registries, compound.getCompound("InsertedBox"));
+		redstonePowered = compound.getBooleanOr("Active", false);
+		animationInward = compound.getBooleanOr("AnimationInward", false);
+		animationTicks = compound.getIntOr("AnimationTicks", 0);
+		signBasedAddress = compound.getStringOr("SignAddress", "");
+		customComputerAddress = compound.getStringOr("ComputerAddress", "");
+		hasCustomComputerAddress = compound.getBooleanOr("HasComputerAddress", false);
+		heldBox = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldBox").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		previouslyUnwrapped = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("InsertedBox").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		if (clientPacket)
 			return;
-		queuedExitingPackages = NBTHelper.readCompoundList(compound.getList("QueuedExitingPackages", Tag.TAG_COMPOUND),
+		queuedExitingPackages = NBTHelper.readCompoundList(compound.getListOrEmpty("QueuedExitingPackages"),
 			c -> CatnipCodecUtils.decode(BigItemStack.CODEC, registries, c)
 				.orElseThrow());
 		if (compound.contains("LastSummary"))
-			availableItems = CatnipCodecUtils.decodeOrNull(InventorySummary.CODEC, registries, compound.getCompound("LastSummary"));
+			availableItems = CatnipCodecUtils.decodeOrNull(InventorySummary.CODEC, registries, compound.getCompoundOrEmpty("LastSummary"));
 	}
 
 	@Override
@@ -602,8 +603,8 @@ public class PackagerBlockEntity extends SmartBlockEntity implements Clearable {
 		compound.putString("SignAddress", signBasedAddress);
 		compound.putString("ComputerAddress", customComputerAddress);
 		compound.putBoolean("HasComputerAddress", hasCustomComputerAddress);
-		compound.put("HeldBox", heldBox.saveOptional(registries));
-		compound.put("InsertedBox", previouslyUnwrapped.saveOptional(registries));
+		compound.put("HeldBox", NbtCompat.saveItemStack(heldBox, registries));
+		compound.put("InsertedBox", NbtCompat.saveItemStack(previouslyUnwrapped, registries));
 		if (clientPacket)
 			return;
 		compound.put("QueuedExitingPackages", NBTHelper.writeCompoundList(queuedExitingPackages, bis -> {

@@ -1,4 +1,5 @@
 package com.simibubi.create.content.trains.track;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -136,12 +137,12 @@ public class TrackTargetingBlockItem extends BlockItem {
 				stack.get(AllDataComponents.TRACK_TARGETING_ITEM_BEZIER);
 			CompoundTag bezierNbt = new CompoundTag();
 			bezierNbt.putInt("Segment", bezierTrackPointLocation.segment());
-			bezierNbt.put("Key", NbtUtils.writeBlockPos(bezierTrackPointLocation.curveTarget()
+			bezierNbt.put("Key", NbtCompat.writeBlockPos(bezierTrackPointLocation.curveTarget()
 				.subtract(placedPos)));
 			blockEntityData.put("Bezier", bezierNbt);
 		}
 
-		blockEntityData.put("TargetTrack", NbtUtils.writeBlockPos(selectedPos.subtract(placedPos)));
+		blockEntityData.put("TargetTrack", NbtCompat.writeBlockPos(selectedPos.subtract(placedPos)));
 		blockEntityData.putString("id", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
 		BlockEntity.addEntityType(blockEntityData, ((IBE<?>) this.getBlock()).getBlockEntityType());
 

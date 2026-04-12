@@ -1,4 +1,5 @@
 package com.simibubi.create.content.kinetics.base;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -61,14 +62,14 @@ public abstract class BlockBreakingKineticBlockEntity extends KineticBlockEntity
 		compound.putInt("Progress", destroyProgress);
 		compound.putInt("NextTick", ticksUntilNextProgress);
 		if (breakingPos != null)
-			compound.put("Breaking", NbtUtils.writeBlockPos(breakingPos));
+			compound.put("Breaking", NbtCompat.writeBlockPos(breakingPos));
 		super.write(compound, registries, clientPacket);
 	}
 
 	@Override
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-		destroyProgress = compound.getInt("Progress");
-		ticksUntilNextProgress = compound.getInt("NextTick");
+		destroyProgress = compound.getIntOr("Progress", 0);
+		ticksUntilNextProgress = compound.getIntOr("NextTick", 0);
 		breakingPos = null;
 		if (compound.contains("Breaking"))
 			breakingPos = NBTHelper.readBlockPos(compound, "Breaking");
@@ -142,7 +143,7 @@ public abstract class BlockBreakingKineticBlockEntity extends KineticBlockEntity
 			if (stack.isEmpty())
 				return;
 			if (!level.getGameRules()
-				.getBoolean(GameRules.RULE_DOBLOCKDROPS))
+				.getBooleanOr(GameRules.RULE_DOBLOCKDROPS, false))
 				return;
 			if (level.restoringBlockSnapshots)
 				return;

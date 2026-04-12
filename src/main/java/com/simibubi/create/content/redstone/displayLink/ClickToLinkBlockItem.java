@@ -1,4 +1,5 @@
 package com.simibubi.create.content.redstone.displayLink;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -36,7 +37,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.TriState;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 @EventBusSubscriber
@@ -124,7 +125,7 @@ public abstract class ClickToLinkBlockItem extends BlockItem {
 		}
 
 		CompoundTag beTag = new CompoundTag();
-		beTag.put("TargetOffset", NbtUtils.writeBlockPos(selectedPos.subtract(placedPos)));
+		beTag.put("TargetOffset", NbtCompat.writeBlockPos(selectedPos.subtract(placedPos)));
 		NBTHelper.writeResourceLocation(beTag, "TargetDimension", selectedDim);
 		BlockEntity.addEntityType(beTag, ((IBE<?>) this.getBlock()).getBlockEntityType());
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(beTag));

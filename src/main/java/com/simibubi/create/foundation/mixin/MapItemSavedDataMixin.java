@@ -1,5 +1,6 @@
 package com.simibubi.create.foundation.mixin;
 
+import com.simibubi.create.foundation.utility.NbtCompat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -65,9 +66,9 @@ public class MapItemSavedDataMixin implements StationMapData {
 		MapItemSavedData mapData = cir.getReturnValue();
 		StationMapData stationMapData = (StationMapData) mapData;
 
-		ListTag listTag = tag.getList(STATION_MARKERS_KEY, Tag.TAG_COMPOUND);
+		ListTag listTag = tag.getListOrEmpty(STATION_MARKERS_KEY);
 		for (int i = 0; i < listTag.size(); ++i) {
-			StationMarker stationMarker = StationMarker.load(listTag.getCompound(i), levelRegistry);
+			StationMarker stationMarker = StationMarker.load(listTag.getCompoundOrEmpty(i), levelRegistry);
 			stationMapData.addStationMarker(stationMarker);
 		}
 	}
@@ -79,7 +80,7 @@ public class MapItemSavedDataMixin implements StationMapData {
 	private void create$onSave(CompoundTag tag, HolderLookup.Provider registries, CallbackInfoReturnable<CompoundTag> cir) {
 		ListTag listTag = new ListTag();
 		for (StationMarker stationMarker : create$stationMarkers.values()) {
-			listTag.add(stationMarker.save(registries));
+			listTag.add(NbtCompat.saveItemStack(stationMarker, registries));
 		}
 		tag.put(STATION_MARKERS_KEY, listTag);
 	}

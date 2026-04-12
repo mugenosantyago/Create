@@ -190,14 +190,14 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 		if (!data.contains("ContraptionDismountLocation"))
 			return position;
 
-		position = VecHelper.readNBT(data.getList("ContraptionDismountLocation", Tag.TAG_DOUBLE));
+		position = VecHelper.readNBT(data.getListOrEmpty("ContraptionDismountLocation"));
 		data.remove("ContraptionDismountLocation");
 		entityLiving.setOnGround(false);
 
 		if (!data.contains("ContraptionMountLocation"))
 			return position;
 
-		Vec3 prevPosition = VecHelper.readNBT(data.getList("ContraptionMountLocation", Tag.TAG_DOUBLE));
+		Vec3 prevPosition = VecHelper.readNBT(data.getListOrEmpty("ContraptionMountLocation"));
 		data.remove("ContraptionMountLocation");
 		if (entityLiving instanceof Player player && !prevPosition.closerThan(position, 5000))
 			AllAdvancements.LONG_TRAVEL.awardTo(player);
@@ -600,6 +600,17 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 	}
 
 	@Override
+
+	protected final void addAdditionalSaveData(net.minecraft.world.level.storage.ValueOutput output) {
+
+	    net.minecraft.nbt.CompoundTag compound = new net.minecraft.nbt.CompoundTag();
+
+	    addAdditionalSaveData(compound);
+
+	    output.store(compound);
+
+	}
+
 	protected final void addAdditionalSaveData(CompoundTag compound) {
 		writeAdditional(compound, registryAccess(), false);
 	}
@@ -620,6 +631,15 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 	}
 
 	@Override
+
+	protected final void readAdditionalSaveData(net.minecraft.world.level.storage.ValueInput input) {
+
+	    net.minecraft.nbt.CompoundTag compound = input.read(com.mojang.serialization.MapCodec.assumeMapUnsafe(net.minecraft.nbt.CompoundTag.CODEC)).orElse(new net.minecraft.nbt.CompoundTag());
+
+	    readAdditionalSaveData(compound);
+
+	}
+
 	protected final void readAdditionalSaveData(CompoundTag compound) {
 		readAdditional(compound, false);
 	}
@@ -638,10 +658,10 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 		if (compound.isEmpty())
 			return;
 
-		initialized = compound.getBoolean("Initialized");
-		contraption = Contraption.fromNBT(level(), compound.getCompound("Contraption"), spawnData);
+		initialized = compound.getBooleanOr("Initialized", false);
+		contraption = Contraption.fromNBT(level(), compound.getCompoundOrEmpty("Contraption"), spawnData);
 		contraption.entity = this;
-		entityData.set(STALLED, compound.getBoolean("Stalled"));
+		entityData.set(STALLED, compound.getBooleanOr("Stalled", false));
 	}
 
 	public void disassemble() {
@@ -699,9 +719,9 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 	protected abstract StructureTransform makeStructureTransform();
 
 	@Override
-	public void kill() {
+	public void kill(net.minecraft.server.level.ServerLevel level) {
 		ejectPassengers();
-		super.kill();
+		super.kill(level);
 	}
 
 	@Override
@@ -761,7 +781,7 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 	}
 
 	@Override
-	public CompoundTag saveWithoutId(CompoundTag nbt) {
+	public void saveWithoutId(net.minecraft.world.level.storage.ValueOutput output) {
 		Vec3 vec = position();
 		List<Entity> passengers = getPassengers();
 
@@ -778,8 +798,7 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 			entity.removalReason = null;
 		}
 
-		CompoundTag tag = super.saveWithoutId(nbt);
-		return tag;
+		super.saveWithoutId(output);
 	}
 
 	@Override
@@ -802,7 +821,7 @@ public abstract class AbstractContraptionEntity extends Entity implements IEntit
 	}
 
 	@Override
-	public boolean hurt(DamageSource source, float amount) {
+	public boolean hurtServer(net.minecraft.server.level.ServerLevel level, DamageSource source, float amount) {
 		return false;
 	}
 

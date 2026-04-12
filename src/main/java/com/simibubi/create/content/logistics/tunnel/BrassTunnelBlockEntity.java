@@ -1,4 +1,5 @@
 package com.simibubi.create.content.logistics.tunnel;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -417,7 +418,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements IHa
 					float movementSpeed = Math.max(Math.abs(beltMovementSpeed), 1 / 8f);
 					int additionalOffset = beltMovementSpeed > 0 ? 1 : 0;
 					Vec3 outPos = BeltHelper.getVectorForOffset(controllerBE, below.index + additionalOffset);
-					Vec3 outMotion = Vec3.atLowerCornerOf(side.getNormal())
+					Vec3 outMotion = Vec3.atLowerCornerOf(side.getUnitVec3i())
 						.scale(movementSpeed)
 						.add(0, 1 / 8f, 0);
 					outPos.add(outMotion.normalize());
@@ -595,7 +596,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements IHa
 		compound.putBoolean("ConnectedLeft", connectedLeft);
 		compound.putBoolean("ConnectedRight", connectedRight);
 
-		compound.put("StackToDistribute", stackToDistribute.saveOptional(registries));
+		compound.put("StackToDistribute", NbtCompat.saveItemStack(stackToDistribute, registries));
 		if (stackEnteredFrom != null)
 			NBTHelper.writeEnum(compound, "StackEnteredFrom", stackEnteredFrom);
 
@@ -608,7 +609,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements IHa
 			compound.put(filtered ? "FilteredTargets" : "Targets",
 				NBTHelper.writeCompoundList(distributionTargets.get(filtered), pair -> {
 					CompoundTag nbt = new CompoundTag();
-					nbt.put("Pos", NbtUtils.writeBlockPos(pair.getKey()));
+					nbt.put("Pos", NbtCompat.writeBlockPos(pair.getKey()));
 					nbt.putInt("Face", pair.getValue()
 						.get3DDataValue());
 					return nbt;
@@ -623,25 +624,25 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements IHa
 		boolean wasConnectedLeft = connectedLeft;
 		boolean wasConnectedRight = connectedRight;
 
-		syncedOutputActive = compound.getBoolean("SyncedOutput");
-		connectedLeft = compound.getBoolean("ConnectedLeft");
-		connectedRight = compound.getBoolean("ConnectedRight");
+		syncedOutputActive = compound.getBooleanOr("SyncedOutput", false);
+		connectedLeft = compound.getBooleanOr("ConnectedLeft", false);
+		connectedRight = compound.getBooleanOr("ConnectedRight", false);
 
-		stackToDistribute = ItemStack.parseOptional(registries, compound.getCompound("StackToDistribute"));
+		stackToDistribute = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("StackToDistribute").result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
 		stackEnteredFrom =
 			compound.contains("StackEnteredFrom") ? NBTHelper.readEnum(compound, "StackEnteredFrom", Direction.class)
 				: null;
 
-		distributionProgress = compound.getFloat("DistributionProgress");
-		previousOutputIndex = compound.getInt("PreviousIndex");
-		distributionDistanceLeft = compound.getInt("DistanceLeft");
-		distributionDistanceRight = compound.getInt("DistanceRight");
+		distributionProgress = compound.getFloatOr("DistributionProgress", 0);
+		previousOutputIndex = compound.getIntOr("PreviousIndex", 0);
+		distributionDistanceLeft = compound.getIntOr("DistanceLeft", 0);
+		distributionDistanceRight = compound.getIntOr("DistanceRight", 0);
 
 		for (boolean filtered : Iterate.trueAndFalse) {
 			distributionTargets.set(filtered, NBTHelper
-				.readCompoundList(compound.getList(filtered ? "FilteredTargets" : "Targets", Tag.TAG_COMPOUND), nbt -> {
+				.readCompoundList(compound.getListOrEmpty(filtered ? "FilteredTargets" : "Targets"), nbt -> {
 					BlockPos pos = NBTHelper.readBlockPos(nbt, "Pos");
-					Direction face = Direction.from3DDataValue(nbt.getInt("Face"));
+					Direction face = Direction.from3DDataValue(nbt.getIntOr("Face", 0));
 					return Pair.of(pos, face);
 				}));
 		}

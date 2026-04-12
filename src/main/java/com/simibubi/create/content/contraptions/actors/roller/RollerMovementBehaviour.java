@@ -1,4 +1,5 @@
 package com.simibubi.create.content.contraptions.actors.roller;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -92,7 +93,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 	@Override
 	public Vec3 getActiveAreaOffset(MovementContext context) {
 		return Vec3.atLowerCornerOf(context.state.getValue(RollerBlock.FACING)
-			.getNormal())
+			.getUnitVec3i())
 			.scale(.45)
 			.subtract(0, 2, 0);
 	}
@@ -149,8 +150,8 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 			return;
 		}
 
-		context.data.put("ReferencePos", NbtUtils.writeBlockPos(pos));
-		context.data.put("BreakingPos", NbtUtils.writeBlockPos(argMax));
+		context.data.put("ReferencePos", NbtCompat.writeBlockPos(pos));
+		context.data.put("BreakingPos", NbtCompat.writeBlockPos(argMax));
 		context.stall = true;
 	}
 
@@ -313,7 +314,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 
 		Vec3 directionVec = Vec3.atLowerCornerOf(context.state.getValue(RollerBlock.FACING)
 			.getClockWise()
-			.getNormal());
+			.getUnitVec3i());
 		directionVec = context.rotation.apply(directionVec);
 		PaveResult paveResult = PaveResult.PASS;
 		int yOffset = 0;
@@ -385,7 +386,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 
 		if (paveResult == PaveResult.SUCCESS) {
 			context.data.putInt("WaitingTicks", 2);
-			context.data.put("LastPos", NbtUtils.writeBlockPos(pos));
+			context.data.put("LastPos", NbtCompat.writeBlockPos(pos));
 			context.stall = true;
 		}
 	}
@@ -402,7 +403,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 	}
 
 	protected BlockState getStateToPaveWith(MovementContext context) {
-		return getStateToPaveWith(ItemStack.parseOptional(context.world.registryAccess(), context.blockEntityData.getCompound("Filter")));
+		return getStateToPaveWith(net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), context.blockEntityData.getCompoundOrEmpty("Filter").orElse(net.minecraft.world.item.ItemStack.EMPTY)));
 	}
 
 	protected BlockState getStateToPaveWithAsSlab(MovementContext context) {
@@ -439,7 +440,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 	}
 
 	protected RollingMode getMode(MovementContext context) {
-		return RollingMode.values()[context.blockEntityData.getInt("ScrollValue")];
+		return RollingMode.values()[context.blockEntityData.getIntOr("ScrollValue", 0)];
 	}
 
 	private final class RollerTravellingPoint extends TravellingPoint {

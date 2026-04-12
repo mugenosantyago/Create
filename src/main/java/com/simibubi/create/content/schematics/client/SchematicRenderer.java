@@ -18,16 +18,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-
-import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class SchematicRenderer {
 
@@ -76,12 +75,10 @@ public class SchematicRenderer {
 
 	protected void redraw() {
 		bufferCache.clear();
-
-		for (RenderType layer : RenderType.chunkBufferLayers()) {
-			SuperByteBuffer buffer = drawLayer(layer);
-			if (!buffer.isEmpty())
-				bufferCache.put(layer, buffer);
-		}
+		// Render all blocks into a single solid buffer (MC 1.21.8 layer separation is handled via ChunkSectionLayer)
+		SuperByteBuffer buffer = drawLayer(RenderType.solid());
+		if (!buffer.isEmpty())
+			bufferCache.put(RenderType.solid(), buffer);
 	}
 
 	protected SuperByteBuffer drawLayer(RenderType layer) {
@@ -105,18 +102,16 @@ public class SchematicRenderer {
 			BlockState state = renderWorld.getBlockState(pos);
 
 			if (state.getRenderShape() == RenderShape.MODEL) {
-				BakedModel model = dispatcher.getBlockModel(state);
-				BlockEntity blockEntity = renderWorld.getBlockEntity(localPos);
-				ModelData modelData = blockEntity != null ? blockEntity.getModelData() : ModelData.EMPTY;
-				modelData = model.getModelData(renderWorld, pos, state, modelData);
+				BlockStateModel model = dispatcher.getBlockModel(state);
+				List<BlockModelPart> parts = model.collectParts(renderWorld, pos, state, random);
 				long seed = state.getSeed(pos);
 				random.setSeed(seed);
-				if (model.getRenderTypes(state, random, modelData).contains(layer)) {
+				if (!parts.isEmpty()) {
 					poseStack.pushPose();
 					poseStack.translate(localPos.getX(), localPos.getY(), localPos.getZ());
 
-					renderer.tesselateBlock(renderWorld, model, state, pos, poseStack, sbbBuilder, true,
-						random, seed, OverlayTexture.NO_OVERLAY, modelData, layer);
+					renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbbBuilder, true,
+						OverlayTexture.NO_OVERLAY);
 
 					poseStack.popPose();
 				}
@@ -129,8 +124,7 @@ public class SchematicRenderer {
 	}
 
 	private static int getLayerCount() {
-		return RenderType.chunkBufferLayers()
-			.size();
+		return 1;
 	}
 
 	private static class ThreadLocalObjects {
