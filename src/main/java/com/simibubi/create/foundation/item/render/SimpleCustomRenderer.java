@@ -16,8 +16,7 @@ public class SimpleCustomRenderer implements IClientItemExtensions {
 		return new SimpleCustomRenderer(renderer);
 	}
 
-	@Override
-	public CustomRenderedItemModelRenderer getCustomRenderer() {
+	public CustomRenderedItemModelRenderer getRenderer() {
 		return renderer;
 	}
 

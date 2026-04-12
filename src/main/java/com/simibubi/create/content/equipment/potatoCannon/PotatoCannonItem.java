@@ -1,5 +1,6 @@
 package com.simibubi.create.content.equipment.potatoCannon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -24,7 +25,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -43,11 +43,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import net.neoforged.api.distmarker.Dist;
@@ -165,7 +165,14 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipConsumer, TooltipFlag flag) {
+		List<Component> tooltip = new ArrayList<>();
+		appendHoverText_compat(stack, context, tooltip, flag);
+		tooltip.forEach(tooltipConsumer);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null) {
 			// super.appendHoverText(stack, context, tooltip, flag);;
@@ -185,8 +192,8 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 			return;
 
 		HolderLookup<Enchantment> lookup = registries.lookupOrThrow(Registries.ENCHANTMENT);
-		int power = stack.getEnchantmentLevel(lookup.getOrThrow(Enchantments.POWER));
-		int punch = stack.getEnchantmentLevel(lookup.getOrThrow(Enchantments.PUNCH));
+		int power = stack.getEnchantments().getLevel(lookup.getOrThrow(Enchantments.POWER));
+		int punch = stack.getEnchantments().getLevel(lookup.getOrThrow(Enchantments.PUNCH));
 		final float additionalDamageMult = 1 + power * .2f;
 		final float additionalKnockback = punch * .5f;
 
@@ -220,11 +227,6 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 		tooltip.add(spacing.plainCopy()
 			.append(CreateLang.translateDirect(_knockback, knockback)
 				.withStyle(darkGreen)));
-	}
-
-	@Override
-	public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
-		return false;
 	}
 
 	@Override
@@ -280,7 +282,6 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 		return ItemUseAnimation.NONE;
 	}
 
-	@Override
 	@Nullable
 	public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
 		if (!player.swinging) {
@@ -289,7 +290,6 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 		return null;
 	}
 
-	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 		consumer.accept(SimpleCustomRenderer.create(this, new PotatoCannonItemRenderer()));

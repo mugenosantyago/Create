@@ -1,6 +1,8 @@
 package com.simibubi.create.content.equipment.zapper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
@@ -52,7 +55,14 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltip, TooltipFlag flagIn) {
+		List<Component> lines = new ArrayList<>();
+		appendHoverText_compat(stack, context, lines, flagIn);
+		lines.forEach(tooltip);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
 		if (stack.has(AllDataComponents.SHAPER_BLOCK_USED)) {
 			MutableComponent usedBlock = stack.get(AllDataComponents.SHAPER_BLOCK_USED).getBlock().getName();
 			tooltip.add(CreateLang.translateDirect("terrainzapper.usingBlock", usedBlock.withStyle(ChatFormatting.GRAY))
@@ -84,8 +94,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 				});
 				context.getPlayer()
 					.getCooldowns()
-					.addCooldown(context.getItemInHand()
-						.getItem(), 10);
+					.addCooldown(context.getItemInHand(), 10);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -186,13 +195,8 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 	}
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+	public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
 		return true;
-	}
-
-	@Override
-	public boolean canAttackBlock(BlockState state, Level worldIn, BlockPos pos, Player player) {
-		return false;
 	}
 
 	@Override
@@ -200,7 +204,6 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 		return ItemUseAnimation.NONE;
 	}
 
-	@Override
 	@Nullable
 	public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
 		if (!player.swinging) {

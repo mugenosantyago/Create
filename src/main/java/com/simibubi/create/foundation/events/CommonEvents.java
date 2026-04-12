@@ -179,9 +179,9 @@ public class CommonEvents {
 
 	@SubscribeEvent
 	public static void addReloadListeners(AddServerReloadListenersEvent event) {
-		event.addListener(RecipeFinder.LISTENER);
-		event.addListener(RecipeTrieFinder.LISTENER);
-		event.addListener(BeltHelper.LISTENER);
+		event.addListener(Create.asResource("recipe_finder"), RecipeFinder.LISTENER);
+		event.addListener(Create.asResource("recipe_trie_finder"), RecipeTrieFinder.LISTENER);
+		event.addListener(Create.asResource("belt_helper"), BeltHelper.LISTENER);
 	}
 
 	@SubscribeEvent

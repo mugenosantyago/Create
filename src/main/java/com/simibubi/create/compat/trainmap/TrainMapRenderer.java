@@ -63,7 +63,7 @@ public class TrainMapRenderer implements AutoCloseable {
 		xCoord = Mth.positiveModulo(xCoord, WIDTH);
 		zCoord = Mth.positiveModulo(zCoord, HEIGHT);
 		instance.getImage()
-			.setPixelRGBA(xCoord, zCoord, color);
+			.setPixelABGR(xCoord, zCoord, ARGB.toABGR(color));
 	}
 
 	public int getPixel(int xCoord, int zCoord) {
@@ -74,8 +74,8 @@ public class TrainMapRenderer implements AutoCloseable {
 		TrainMapInstance instance = getOrCreateAt(xCoord, zCoord);
 		xCoord = Mth.positiveModulo(xCoord, WIDTH);
 		zCoord = Mth.positiveModulo(zCoord, HEIGHT);
-		return instance.getImage()
-			.getPixelRGBA(xCoord, zCoord);
+		return ARGB.fromABGR(instance.getImage()
+			.getPixel(xCoord, zCoord));
 	}
 
 	public void setPixels(int xCoordFrom, int zCoordFrom, int xCoordTo, int zCoordTo, int color) {
@@ -88,8 +88,25 @@ public class TrainMapRenderer implements AutoCloseable {
 		TrainMapInstance instance = getOrCreateAt(xCoord, zCoord);
 		xCoord = Mth.positiveModulo(xCoord, WIDTH);
 		zCoord = Mth.positiveModulo(zCoord, HEIGHT);
-		instance.getImage()
-			.blendPixel(xCoord, zCoord, (((alpha) << 24) | ((color)) & 0x00FFFFFF));
+		com.mojang.blaze3d.platform.NativeImage img = instance.getImage();
+		int dst = ARGB.fromABGR(img.getPixel(xCoord, zCoord));
+		int src = (alpha << 24) | (color & 0x00FFFFFF);
+		int blended = blendArgbOver(dst, src);
+		img.setPixelABGR(xCoord, zCoord, ARGB.toABGR(blended));
+	}
+
+	private static int blendArgbOver(int dst, int src) {
+		int sa = ARGB.alpha(src);
+		if (sa <= 0)
+			return dst;
+		if (sa >= 255)
+			return src;
+		int inv = 255 - sa;
+		int r = (ARGB.red(src) * sa + ARGB.red(dst) * inv) / 255;
+		int g = (ARGB.green(src) * sa + ARGB.green(dst) * inv) / 255;
+		int b = (ARGB.blue(src) * sa + ARGB.blue(dst) * inv) / 255;
+		int a = Math.min(255, sa + (ARGB.alpha(dst) * inv) / 255);
+		return ARGB.color(a, r, g, b);
 	}
 
 	public void blendPixels(int xCoordFrom, int zCoordFrom, int xCoordTo, int zCoordTo, int color, int alpha) {
@@ -132,7 +149,7 @@ public class TrainMapRenderer implements AutoCloseable {
 	//
 
 	public void render(GuiGraphics graphics, boolean linearFiltering, Rect2i bounds) {
-		BufferSource bufferSource = graphics.bufferSource();
+		BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		maps.forEach((key, tmi) -> {
 			if (tmi.canBeSkipped(bounds))
@@ -187,7 +204,7 @@ public class TrainMapRenderer implements AutoCloseable {
 			this.sectionKey = sectionKey;
 			untouched = false;
 			requiresUpload = true;
-			texture = new DynamicTexture(128, 128, true);
+			texture = new DynamicTexture("create_trainmap", 128, 128, true);
 			linearFiltering = false;
 			location = Create.asResource("trainmap/" + sectionKey.getFirst() + "_" + sectionKey.getSecond());
 			textureManager.register(location, texture);

@@ -86,7 +86,7 @@ public class AnimatedSpout extends AnimatedKinetics {
 		from = -width / 2 + 0.5f;
 		to = width / 2 + 0.5f;
 		NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(fluidStack, from, 0, from, to, 2, to, bufferSource, matrixStack, LightTexture.FULL_BRIGHT, false, true);
-		graphics.flush();
+		bufferSource.endBatch();
 		try (Lighting lighting = new Lighting()) {
 			lighting.setupFor(Lighting.Entry.ITEMS_3D);
 		}

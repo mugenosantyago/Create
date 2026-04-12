@@ -532,18 +532,20 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 			boolean drawGoggles = keeperBE.goggles;
 			PartialModel drawHat = AllPartialModels.LOGISTICS_HAT;
 			int hashCode = keeperBE.hashCode();
-			Lighting.setupForEntityInInventory();
+			try (Lighting lighting = new Lighting()) {
+				lighting.setupFor(Lighting.Entry.ENTITY_IN_UI);
+				MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
+				VertexConsumer cutout = bufferSource.getBuffer(RenderType.cutoutMipped());
+				CachedBuffers.partial(AllPartialModels.BLAZE_CAGE, keeperBE.getBlockState())
+					.rotateCentered(horizontalAngle + Mth.PI, Direction.UP)
+					.light(LightTexture.FULL_BRIGHT)
+					.renderInto(ms, cutout);
 
-			VertexConsumer cutout = graphics.bufferSource().getBuffer(RenderType.cutoutMipped());
-			CachedBuffers.partial(AllPartialModels.BLAZE_CAGE, keeperBE.getBlockState())
-				.rotateCentered(horizontalAngle + Mth.PI, Direction.UP)
-				.light(LightTexture.FULL_BRIGHT)
-				.renderInto(ms, cutout);
-
-			BlazeBurnerRenderer.renderShared(ms, null, graphics.bufferSource(), minecraft.level,
-				keeperBE.getBlockState(), heatLevel, animation, horizontalAngle, canDrawFlame, drawGoggles, drawHat,
-				hashCode);
-			Lighting.setupFor3DItems();
+				BlazeBurnerRenderer.renderShared(ms, null, bufferSource, minecraft.level,
+					keeperBE.getBlockState(), heatLevel, animation, horizontalAngle, canDrawFlame, drawGoggles, drawHat,
+					hashCode);
+				lighting.setupFor(Lighting.Entry.ITEMS_3D);
+			}
 			ms.popPose();
 		}
 

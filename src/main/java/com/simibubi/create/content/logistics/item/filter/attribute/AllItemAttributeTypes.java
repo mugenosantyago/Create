@@ -20,7 +20,6 @@ import com.simibubi.create.content.logistics.item.filter.attribute.attributes.Sh
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
@@ -47,10 +46,10 @@ public class AllItemAttributeTypes {
 		RENAMED = singleton("renamed", s -> s.has(DataComponents.CUSTOM_NAME)),
 		DAMAGED = singleton("damaged", ItemStack::isDamaged),
 		BADLY_DAMAGED = singleton("badly_damaged", s -> s.isDamaged() && (float) s.getDamageValue() / s.getMaxDamage() > 3 / 4f),
-		NOT_STACKABLE = singleton("not_stackable", ((Predicate<ItemStack>) ItemStack::isStackable).negate()),
+		NOT_STACKABLE = singleton("not_stackable", s -> !s.isStackable()),
 		EQUIPABLE = singleton("equipable", s -> {
-			Equipable equipable = Equipable.get(s);
-			EquipmentSlot.Type type = equipable != null ? equipable.getEquipmentSlot().getType() : EquipmentSlot.MAINHAND.getType();
+			Equippable equippable = s.get(DataComponents.EQUIPPABLE);
+			EquipmentSlot.Type type = equippable != null ? equippable.slot().getType() : EquipmentSlot.MAINHAND.getType();
 			return type != EquipmentSlot.Type.HAND;
 		}),
 		FURNACE_FUEL = singleton("furnace_fuel", AbstractFurnaceBlockEntity::isFuel),
@@ -81,7 +80,7 @@ public class AllItemAttributeTypes {
 	}
 
 	private static boolean maxEnchanted(ItemStack s) {
-		for (Object2IntMap.Entry<Holder<Enchantment>> entry : s.getTagEnchantments().entrySet()) {
+		for (Object2IntMap.Entry<Holder<Enchantment>> entry : s.getEnchantments().entrySet()) {
 			if (entry.getKey().value().getMaxLevel() <= entry.getIntValue())
 				return true;
 		}

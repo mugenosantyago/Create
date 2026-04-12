@@ -11,11 +11,15 @@ import com.simibubi.create.compat.jei.category.sequencedAssembly.SequencedAssemb
 import com.simibubi.create.content.processing.sequenced.IAssemblyRecipe;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
+import com.simibubi.create.foundation.utility.GlobalRegistryAccess;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
@@ -35,18 +39,19 @@ public class DeployerApplicationRecipe extends ItemApplicationRecipe implements 
 	}
 
 	public static RecipeHolder<DeployerApplicationRecipe> convert(RecipeHolder<?> sandpaperRecipe) {
+		ResourceLocation baseLoc = sandpaperRecipe.id().location();
 		ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
-				sandpaperRecipe.id().getNamespace(),
-				sandpaperRecipe.id().getPath() + "_using_deployer"
+				baseLoc.getNamespace(),
+				baseLoc.getPath() + "_using_deployer"
 		);
 		DeployerApplicationRecipe recipe = new ItemApplicationRecipe.Builder<>(DeployerApplicationRecipe::new, id)
 				.require(sandpaperRecipe.value().placementInfo().ingredients()
 						.get(0))
 						.require(AllItemTags.SANDPAPER.tag)
-						.output(sandpaperRecipe.value().assemble(null, null))
+						.output(sandpaperRecipe.value().assemble(new SingleRecipeInput(ItemStack.EMPTY), GlobalRegistryAccess.getOrThrow()))
 						.build();
 
-		return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id), recipe);
+		return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
 	}
 
 	@Override
@@ -58,7 +63,9 @@ public class DeployerApplicationRecipe extends ItemApplicationRecipe implements 
 	@OnlyIn(Dist.CLIENT)
 	public Component getDescriptionForAssembly() {
 		ItemStack[] matchingStacks = ingredients.get(1)
-			.getItems();
+			.items()
+			.map(ItemStack::new)
+			.toArray(ItemStack[]::new);
 		if (matchingStacks.length == 0) {
             return Component.literal("Invalid");
         }

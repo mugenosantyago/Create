@@ -321,11 +321,11 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+	protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		BlockState material = getMaterial(level, pos);
-		if (AllBlocks.COPYCAT_BASE.has(material) || false)
+		if (AllBlocks.COPYCAT_BASE.has(material))
 			return new ItemStack(this);
-		return material.getCloneItemStack(target, level, pos, player);
+		return material.getBlock().getCloneItemStack(level, pos, material, includeData);
 	}
 
 	@Override
@@ -350,10 +350,10 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 	}
 
 	@Override
-	public void fallOn(Level pLevel, BlockState pState, BlockPos pPos, Entity pEntity, float p_152430_) {
+	public void fallOn(Level pLevel, BlockState pState, BlockPos pPos, Entity pEntity, double fallDistance) {
 		BlockState material = getMaterial(pLevel, pPos);
 		material.getBlock()
-			.fallOn(pLevel, material, pPos, pEntity, p_152430_);
+			.fallOn(pLevel, material, pPos, pEntity, fallDistance);
 	}
 
 	@Override
