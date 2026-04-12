@@ -81,8 +81,7 @@ public class TrainMapManager {
 		hoveredElement = drawTrains(graphics, mouseX, mouseY, hoveredElement, bounds);
 		hoveredElement = drawPoints(graphics, mouseX, mouseY, hoveredElement, bounds);
 
-		graphics.bufferSource()
-			.endBatch();
+		Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
 
 		if (hoveredElement instanceof GlobalStation station) {
             return List.of(Component.literal(station.name));

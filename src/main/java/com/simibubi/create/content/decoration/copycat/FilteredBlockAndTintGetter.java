@@ -45,11 +45,6 @@ public class FilteredBlockAndTintGetter implements BlockAndTintGetter {
 	}
 
 	@Override
-	public int getMinBuildHeight() {
-		return wrapped.getMinY();
-	}
-
-	@Override
 	public int getMinY() {
 		return wrapped.getMinY();
 	}

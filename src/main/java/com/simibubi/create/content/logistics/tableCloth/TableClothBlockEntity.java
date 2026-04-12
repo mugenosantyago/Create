@@ -124,7 +124,7 @@ public class TableClothBlockEntity extends SmartBlockEntity implements Transform
 		BlockPos relativePos = worldPosition.relative(facing);
 		sideOccluded = AllBlockTags.TABLE_CLOTHS.matches(level.getBlockState(relativePos))
 			|| Block.isFaceFull(level.getBlockState(relativePos.below())
-			.getOcclusionShape(level, relativePos.below()), facing.getOpposite());
+			.getOcclusionShape(), facing.getOpposite());
 	}
 
 	@Override
