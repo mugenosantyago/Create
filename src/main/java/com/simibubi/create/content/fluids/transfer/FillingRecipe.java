@@ -1,6 +1,5 @@
 package com.simibubi.create.content.fluids.transfer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -11,6 +10,7 @@ import com.simibubi.create.compat.jei.category.sequencedAssembly.SequencedAssemb
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeParams;
 import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 import com.simibubi.create.content.processing.sequenced.IAssemblyRecipe;
+import com.simibubi.create.foundation.fluid.FluidHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import net.minecraft.network.chat.Component;
@@ -68,8 +68,7 @@ public class FillingRecipe extends StandardProcessingRecipe<SingleRecipeInput> i
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Component getDescriptionForAssembly() {
-		List<FluidStack> matchingFluidStacks = Arrays.asList(fluidIngredients.get(0)
-			.getFluids());
+		List<FluidStack> matchingFluidStacks = FluidHelper.sizedIngredientToFluidStacks(fluidIngredients.get(0));
 		if (matchingFluidStacks.size() == 0) {
             return Component.literal("Invalid");
         }

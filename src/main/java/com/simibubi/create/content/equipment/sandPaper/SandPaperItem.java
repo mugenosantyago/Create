@@ -1,13 +1,10 @@
 package com.simibubi.create.content.equipment.sandPaper;
 
-import java.util.function.Consumer;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.item.CustomUseEffectsItem;
-import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import com.simibubi.create.foundation.mixin.accessor.LivingEntityAccessor;
 
 import net.createmod.catnip.data.TriState;
@@ -35,9 +32,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 
@@ -46,7 +40,7 @@ import net.neoforged.neoforge.common.ItemAbility;
 public class SandPaperItem extends Item implements CustomUseEffectsItem {
 
 	public SandPaperItem(Properties properties) {
-		super(properties.durability(8));
+		super(properties);
 	}
 
 	@Override
@@ -232,14 +226,4 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 		return 32;
 	}
 
-	@Override
-	public int getEnchantmentValue() {
-		return 1;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(SimpleCustomRenderer.create(this, new SandPaperItemRenderer()));
-	}
 }

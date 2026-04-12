@@ -8,6 +8,7 @@ import com.simibubi.create.compat.jei.category.animations.AnimatedSaw;
 import com.simibubi.create.compat.jei.category.animations.AnimatedSpout;
 import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedRecipe;
+import com.simibubi.create.foundation.fluid.FluidHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;

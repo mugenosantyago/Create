@@ -411,12 +411,18 @@ public class AllItems {
 		.register();
 
 	public static final ItemEntry<SandPaperItem> SAND_PAPER = REGISTRATE.item("sand_paper", SandPaperItem::new)
+		.properties(p -> p.durability(8).enchantable(1))
 		.tag(AllTags.AllItemTags.SANDPAPER.tag)
+		.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+			new com.simibubi.create.content.equipment.sandPaper.SandPaperItemRenderer()))
 		.register();
 
 	public static final ItemEntry<SandPaperItem> RED_SAND_PAPER = REGISTRATE.item("red_sand_paper", SandPaperItem::new)
+		.properties(p -> p.durability(8).enchantable(1))
 		.tag(AllTags.AllItemTags.SANDPAPER.tag)
 		.onRegister(s -> ItemDescription.referKey(s, SAND_PAPER))
+		.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+			new com.simibubi.create.content.equipment.sandPaper.SandPaperItemRenderer()))
 		.register();
 
 	public static final ItemEntry<WrenchItem> WRENCH = REGISTRATE.item("wrench", WrenchItem::new)

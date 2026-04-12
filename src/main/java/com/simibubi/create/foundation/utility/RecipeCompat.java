@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
@@ -27,6 +28,12 @@ public class RecipeCompat {
         if (level instanceof ServerLevel serverLevel) {
             return serverLevel.getServer().getRecipeManager();
         }
+        if (level.isClientSide) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.hasSingleplayerServer()) {
+                return mc.getSingleplayerServer().getRecipeManager();
+            }
+        }
         return null;
     }
 
@@ -49,5 +56,14 @@ public class RecipeCompat {
 			return Collections.emptyList();
 		return new ArrayList<>(manager.recipeMap()
 			.byType(type));
+	}
+
+	/** Replacement for removed {@link RecipeManager#getRecipesFor(RecipeType, RecipeInput, Level)}. */
+	public static <I extends RecipeInput, T extends Recipe<I>> List<RecipeHolder<T>> getRecipesFor(Level level, RecipeType<T> type,
+		I input) {
+		RecipeManager manager = getRecipeManager(level);
+		if (manager == null)
+			return Collections.emptyList();
+		return manager.recipeMap().getRecipesFor(type, input, level).toList();
 	}
 }

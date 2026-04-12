@@ -6,6 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeParams;
+import com.simibubi.create.foundation.utility.RecipeCompat;
 import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +53,6 @@ public class SandPaperPolishingRecipe extends StandardProcessingRecipe<SingleRec
 	}
 
 	public static List<RecipeHolder<Recipe<SingleRecipeInput>>> getMatchingRecipes(Level world, ItemStack stack) {
-		return com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(world)
-			.getRecipesFor(AllRecipeTypes.SANDPAPER_POLISHING.getType(), new SingleRecipeInput(stack), world);
+		return RecipeCompat.getRecipesFor(world, AllRecipeTypes.SANDPAPER_POLISHING.getType(), new SingleRecipeInput(stack));
 	}
 }

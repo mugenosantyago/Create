@@ -249,7 +249,7 @@ public class AllSoundEvents {
 			.build(),
 
 		BLAZE_MUNCH = create("blaze_munch").subtitle("Blaze Burner munches")
-			.playExisting(SoundEvents.GENERIC_EAT, .5f, 1f)
+			.playExisting(SoundEvents.GENERIC_EAT.value(), .5f, 1f)
 			.category(SoundSource.BLOCKS)
 			.build(),
 			
@@ -663,7 +663,7 @@ public class AllSoundEvents {
 				JsonObject s = new JsonObject();
 				s.addProperty("name", event.event()
 					.get()
-					.getLocation()
+					.location()
 					.toString());
 				s.addProperty("type", "event");
 				if (attenuationDistance != 0)
