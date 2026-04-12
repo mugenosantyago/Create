@@ -68,7 +68,7 @@ public class SequencedAssemblyRecipeBuilder {
 	}
 
 	public SequencedAssemblyRecipeBuilder require(TagKey<Item> tag) {
-		return require(Ingredient.of(tag));
+		return require(com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(tag));
 	}
 
 	public SequencedAssemblyRecipeBuilder require(Ingredient ingredient) {

@@ -82,7 +82,7 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 		for (int i = 1; i < recipe.getLoops(); i++) {
 			for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence()) {
 				NonNullList<Ingredient> sequencedIngredients = sequencedRecipe.getRecipe()
-					.getIngredients();
+					.placementInfo().ingredients();
 				for (Ingredient ingredient : sequencedIngredients.subList(1, sequencedIngredients.size()))
 					builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
 						.addIngredients(ingredient);
@@ -110,7 +110,7 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 	public void draw(SequencedAssemblyRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
 		Font font = Minecraft.getInstance().font;
 
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 
 		matrixStack.pushPose();

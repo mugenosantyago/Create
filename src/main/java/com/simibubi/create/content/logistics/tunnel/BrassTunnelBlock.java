@@ -51,7 +51,7 @@ public class BrassTunnelBlock extends BeltTunnelBlock {
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
-		return super.updateShape(state, facing, facingState, worldIn, currentPos, facingPos);
+		return super.updateShape(state, worldIn, _scheduledTicks, currentPos, facing, facingPos, facingState, _random);
 	}
 
 		public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {

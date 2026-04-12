@@ -72,18 +72,18 @@ public class CTModel extends BakedModelWrapperWithData {
 		for (int i = 0; i < quads.size(); i++) {
 			BakedQuad quad = quads.get(i);
 
-			int index = data.get(quad.getDirection());
+			int index = data.get(quad.direction());
 			if (index == -1)
 				continue;
 
-			CTSpriteShiftEntry spriteShift = behaviour.getShift(state, rand, quad.getDirection(), quad.getSprite());
+			CTSpriteShiftEntry spriteShift = behaviour.getShift(state, rand, quad.direction(), quad.sprite());
 			if (spriteShift == null)
 				continue;
-			if (quad.getSprite() != spriteShift.getOriginal())
+			if (quad.sprite() != spriteShift.getOriginal())
 				continue;
 
 			BakedQuad newQuad = BakedQuadHelper.clone(quad);
-			int[] vertexData = newQuad.getVertices();
+			int[] vertexData = newQuad.vertices();
 
 			for (int vertex = 0; vertex < 4; vertex++) {
 				float u = BakedQuadHelper.getU(vertexData, vertex);

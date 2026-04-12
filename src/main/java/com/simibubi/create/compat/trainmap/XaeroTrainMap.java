@@ -81,7 +81,7 @@ public class XaeroTrainMap {
 		double interfaceScale = (double) window.getWidth() / window.getScreenWidth();
 		double scale = mapScale / guiScale / interfaceScale;
 
-		PoseStack pose = graphics.pose();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		pose.pushPose();
 
 		pose.translate(screen.width / 2.0f, screen.height / 2.0f, 0);

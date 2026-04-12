@@ -319,7 +319,7 @@ public class SchematicHandler implements GuiLayer {
 			return null;
 
 		activeSchematicItem = stack;
-		activeHotbarSlot = player.getInventory().selected;
+		activeHotbarSlot = player.getInventory().getSelectedSlot();
 		return stack;
 	}
 

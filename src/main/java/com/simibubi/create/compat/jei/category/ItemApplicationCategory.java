@@ -79,7 +79,7 @@ public class ItemApplicationCategory extends CreateRecipeCategory<ItemApplicatio
 		BlockState state = blockItem.getBlock()
 			.defaultBlockState();
 
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 		matrixStack.translate(74, 51, 100);
 		matrixStack.mulPose(Axis.XP.rotationDegrees(-15.5f));

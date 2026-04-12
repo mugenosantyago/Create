@@ -28,6 +28,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap.Builder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -288,7 +289,7 @@ public class ToolboxBlockEntity extends SmartBlockEntity implements MenuProvider
 		if (compound.contains("UniqueId"))
 			this.uniqueId = compound.getIntArray("UniqueId").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 		if (compound.contains("CustomName"))
-			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 	}
 
 	@Override

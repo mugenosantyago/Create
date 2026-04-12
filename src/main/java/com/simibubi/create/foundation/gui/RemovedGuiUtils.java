@@ -69,7 +69,7 @@ public class RemovedGuiUtils {
 		if (NeoForge.EVENT_BUS.post(event).isCanceled())
 			return;
 
-		PoseStack pStack = graphics.pose();
+		PoseStack pStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		mouseX = event.getX();
 		mouseY = event.getY();
@@ -78,7 +78,6 @@ public class RemovedGuiUtils {
 		font = event.getFont();
 
 		// RenderSystem.disableRescaleNormal();
-		RenderSystem.disableDepthTest();
 		int tooltipTextWidth = 0;
 
 		for (FormattedText textLine : textLines) {
@@ -160,23 +159,18 @@ public class RemovedGuiUtils {
 		Matrix4f mat = pStack.last()
 			.pose();
 		graphics.fillGradient(tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3,
-			tooltipY - 3, zLevel, backgroundColor, backgroundColor);
-		graphics.fillGradient(tooltipX - 3, tooltipY + tooltipHeight + 3,
-			tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, zLevel, backgroundColor, backgroundColor);
+			tooltipY - 3, backgroundColor, backgroundColor);
+		graphics.fillGradient(tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor);
 		graphics.fillGradient(tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3,
-			tooltipY + tooltipHeight + 3, zLevel, backgroundColor, backgroundColor);
-		graphics.fillGradient(tooltipX - 4, tooltipY - 3, tooltipX - 3, tooltipY + tooltipHeight + 3,
-			zLevel, backgroundColor, backgroundColor);
-		graphics.fillGradient(tooltipX + tooltipTextWidth + 3, tooltipY - 3,
-			tooltipX + tooltipTextWidth + 4, tooltipY + tooltipHeight + 3, zLevel, backgroundColor, backgroundColor);
+			tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
+		graphics.fillGradient(tooltipX - 4, tooltipY - 3, tooltipX - 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
+		graphics.fillGradient(tooltipX + tooltipTextWidth + 3, tooltipY - 3, tooltipX + tooltipTextWidth + 4, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
 		graphics.fillGradient(tooltipX - 3, tooltipY - 3 + 1, tooltipX - 3 + 1,
-			tooltipY + tooltipHeight + 3 - 1, zLevel, borderColorStart, borderColorEnd);
-		graphics.fillGradient(tooltipX + tooltipTextWidth + 2, tooltipY - 3 + 1,
-			tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3 - 1, zLevel, borderColorStart, borderColorEnd);
+			tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd);
+		graphics.fillGradient(tooltipX + tooltipTextWidth + 2, tooltipY - 3 + 1, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd);
 		graphics.fillGradient(tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3,
-			tooltipY - 3 + 1, zLevel, borderColorStart, borderColorStart);
-		graphics.fillGradient(tooltipX - 3, tooltipY + tooltipHeight + 2,
-			tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, zLevel, borderColorEnd, borderColorEnd);
+			tooltipY - 3 + 1, borderColorStart, borderColorStart);
+		graphics.fillGradient(tooltipX - 3, tooltipY + tooltipHeight + 2, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd);
 
 		MultiBufferSource.BufferSource renderType = graphics.bufferSource();
 		pStack.translate(0.0D, 0.0D, zLevel);
@@ -195,7 +189,5 @@ public class RemovedGuiUtils {
 
 		renderType.endBatch();
 		pStack.popPose();
-
-		RenderSystem.enableDepthTest();
 	}
 }

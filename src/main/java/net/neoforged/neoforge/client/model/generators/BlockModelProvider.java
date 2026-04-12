@@ -13,7 +13,7 @@ public class BlockModelProvider {
         this.modId = modId;
     }
 
-    public ModelFile getExistingFile(ResourceLocation loc) {
+    public ModelFile.ExistingModelFile getExistingFile(ResourceLocation loc) {
         return new ModelFile.ExistingModelFile(loc, null);
     }
 
@@ -29,12 +29,12 @@ public class BlockModelProvider {
         return new ModelFile(ResourceLocation.parse(name));
     }
 
-    public ModelFile withExistingParent(String name, ResourceLocation parent) {
-        return new ModelFile(ResourceLocation.parse(name));
+    public BlockModelBuilder withExistingParent(String name, ResourceLocation parent) {
+        return new BlockModelBuilder(ResourceLocation.parse(name));
     }
 
-    public ModelFile withExistingParent(String name, String parent) {
-        return new ModelFile(ResourceLocation.parse(name));
+    public BlockModelBuilder withExistingParent(String name, String parent) {
+        return new BlockModelBuilder(ResourceLocation.parse(name));
     }
 
     public ResourceLocation mcLoc(String path) {

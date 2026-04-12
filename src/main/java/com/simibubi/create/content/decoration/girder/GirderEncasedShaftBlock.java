@@ -105,7 +105,7 @@ public class GirderEncasedShaftBlock extends HorizontalAxisKineticBlock
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource _random) {
 		if (state.getValue(WATERLOGGED))
-			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+			_scheduledTicks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 
 		Property<Boolean> updateProperty = direction == Direction.UP ? TOP : BOTTOM;
 		if (direction.getAxis()

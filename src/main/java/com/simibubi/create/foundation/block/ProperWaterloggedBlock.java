@@ -3,6 +3,8 @@ package com.simibubi.create.foundation.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -31,11 +33,16 @@ public interface ProperWaterloggedBlock extends SimpleWaterloggedBlock {
 			level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 	}
 
+	default void updateWater(LevelReader level, ScheduledTickAccess tickAccess, BlockState state, BlockPos pos) {
+		if (state.getValue(BlockStateProperties.WATERLOGGED))
+			tickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+	}
+
 	default BlockState withWater(BlockState placementState, BlockPlaceContext ctx) {
 		return withWater(ctx.getLevel(), placementState, ctx.getClickedPos());
 	}
 
-	static BlockState withWater(LevelAccessor level, BlockState placementState, BlockPos pos) {
+	static BlockState withWater(net.minecraft.world.level.LevelReader level, BlockState placementState, BlockPos pos) {
 		if (placementState == null)
 			return null;
 		FluidState ifluidstate = level.getFluidState(pos);

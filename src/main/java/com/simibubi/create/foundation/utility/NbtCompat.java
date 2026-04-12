@@ -78,4 +78,35 @@ public class NbtCompat {
 			.orElse(net.minecraft.world.item.ItemStack.EMPTY);
 	}
 
+	/** Save an entity as passenger using the new ValueOutput API, returns CompoundTag */
+	public static CompoundTag saveEntityAsPassenger(net.minecraft.world.entity.Entity entity, net.minecraft.core.HolderLookup.Provider registries) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, registries);
+		entity.saveAsPassenger(output);
+		return output.buildResult();
+	}
+
+	/** Save an entity using the new ValueOutput API, returns CompoundTag */
+	public static CompoundTag saveEntity(net.minecraft.world.entity.Entity entity, net.minecraft.core.HolderLookup.Provider registries) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, registries);
+		entity.save(output);
+		return output.buildResult();
+	}
+
+	/** Load an entity from a CompoundTag using the new ValueInput API */
+	public static void loadEntity(net.minecraft.world.entity.Entity entity, CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
+		entity.load(input);
+	}
+
+	/** Compatibility replacement for removed Ingredient.of(TagKey<Item>) */
+	public static net.minecraft.world.item.crafting.Ingredient ingredientFromTag(net.minecraft.tags.TagKey<net.minecraft.world.item.Item> tag) {
+		net.minecraft.core.HolderSet.Named<net.minecraft.world.item.Item> namedSet =
+			net.minecraft.core.registries.BuiltInRegistries.ITEM.get(tag)
+				.orElseGet(() -> net.minecraft.core.HolderSet.emptyNamed(net.minecraft.core.registries.BuiltInRegistries.ITEM, tag));
+		return net.minecraft.world.item.crafting.Ingredient.of(namedSet);
+	}
+
 }

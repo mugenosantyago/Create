@@ -129,7 +129,7 @@ public class CopperBlockSet {
 		BlockBuilder<T, ?> builder = registrate.block(name, variant.getFactory(this, state, waxed))
 			.initialProperties(() -> baseBlock.get())
 			.loot((lt, block) -> variant.generateLootTable(lt, block, this, state, waxed))
-			.blockstate((ctx, prov) -> variant.generateBlockState(ctx, prov, this, state, waxed))
+			.defaultBlockstate()
 			.transform(TagGen.pickaxeOnly())
 			.onRegister(block -> onRegister.accept(state, block))
 			.tag(BlockTags.NEEDS_STONE_TOOL)

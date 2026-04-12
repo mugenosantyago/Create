@@ -184,13 +184,10 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 		int x = this.width / 2;
 		int y = this.height / 2;
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		ms.pushPose();
 		ms.translate(x, y, 0);
-
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
 
 		int mouseOffsetX = mouseX - this.width / 2;
 		int mouseOffsetY = mouseY - this.height / 2;
@@ -238,7 +235,7 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 		if (sectors < 2)
 			return;
 
-		PoseStack poseStack = graphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player == null)
 			return;
@@ -316,7 +313,7 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 	}
 
 	private void renderDirectionIndicator(GuiGraphics graphics, double theta) {
-		PoseStack poseStack = graphics.pose();
+		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		float r = 0.8f;
 		float g = 0.8f;

@@ -51,11 +51,11 @@ public class PeculiarBellBlock extends AbstractBellBlock<PeculiarBellBlockEntity
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
-		BlockState newState = super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+		BlockState newState = super.updateShape(state, world, _scheduledTicks, currentPos, facing, facingPos, facingState, _random);
 		if (facing != Direction.DOWN)
 			return newState;
 
-		return tryConvert(world, currentPos, newState, facingState);
+		return tryConvert((net.minecraft.world.level.LevelAccessor) world, currentPos, newState, facingState);
 	}
 
 	protected BlockState tryConvert(LevelAccessor world, BlockPos pos, BlockState state, BlockState underState) {

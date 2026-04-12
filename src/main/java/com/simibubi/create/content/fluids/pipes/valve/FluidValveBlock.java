@@ -153,7 +153,7 @@ public class FluidValveBlock extends DirectionalAxisKineticBlock
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos neighbourPos, BlockState neighbourState, net.minecraft.util.RandomSource _random) {
-		updateWater(world, state, pos);
+		updateWater(world, _scheduledTicks, state, pos);
 		return state;
 	}
 

@@ -60,7 +60,7 @@ public class ToolSelectionScreen extends Screen {
 	}
 
 	private void draw(GuiGraphics graphics, float partialTicks) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		Window mainWindow = minecraft.getWindow();
 		if (!initialized)
 			init(minecraft, mainWindow.getGuiScaledWidth(), mainWindow.getGuiScaledHeight());
@@ -72,7 +72,6 @@ public class ToolSelectionScreen extends Screen {
 		matrixStack.translate(0, -yOffset, focused ? 100 : 0);
 
 		AllGuiTextures gray = AllGuiTextures.HUD_BACKGROUND;
-		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1, 1, 1, focused ? 7 / 8f : 1 / 2f);
 
 		graphics.blit(gray.location, x - 15, y, gray.getStartX(), gray.getStartY(), w, h, gray.getWidth(), gray.getHeight());
@@ -113,7 +112,6 @@ public class ToolSelectionScreen extends Screen {
 
 
 		for (int i = 0; i < tools.size(); i++) {
-			RenderSystem.enableBlend();
 			matrixStack.pushPose();
 
 			float alpha = focused ? 1 : .2f;
@@ -138,7 +136,6 @@ public class ToolSelectionScreen extends Screen {
 		}
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);
-		RenderSystem.disableBlend();
 		matrixStack.popPose();
 	}
 

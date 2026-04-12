@@ -234,7 +234,7 @@ public class DeployerHandler {
 		BlockState clickedState = level.getBlockState(clickedPos);
 		Direction face = result.getDirection();
 		if (face == null)
-			face = Direction.getNearest(extensionVector.x, extensionVector.y, extensionVector.z)
+			face = Direction.getNearest((int)(extensionVector.x), (int)(extensionVector.y), (int)(extensionVector.z), Direction.NORTH)
 				.getOpposite();
 
 		// Left click

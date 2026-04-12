@@ -52,7 +52,7 @@ public class SandPaperPolishingRecipe extends StandardProcessingRecipe<SingleRec
 	}
 
 	public static List<RecipeHolder<Recipe<SingleRecipeInput>>> getMatchingRecipes(Level world, ItemStack stack) {
-		return world.getRecipeManager()
+		return com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(world)
 			.getRecipesFor(AllRecipeTypes.SANDPAPER_POLISHING.getType(), new SingleRecipeInput(stack), world);
 	}
 }

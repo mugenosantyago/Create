@@ -103,7 +103,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 	public static List<BigItemStack> convertRecipeToPackageOrderContext(CraftingRecipe availableCraftingRecipe, List<BigItemStack> inputs, boolean respectAmounts) {
 		List<BigItemStack> craftingIngredients = new ArrayList<>();
 		BigItemStack emptyIngredient = new BigItemStack(ItemStack.EMPTY, 1);
-		NonNullList<Ingredient> ingredients = availableCraftingRecipe.getIngredients();
+		java.util.List<Ingredient> ingredients = availableCraftingRecipe.placementInfo().ingredients();
 		List<BigItemStack> mutableInputs = BigItemStack.duplicateWrappers(inputs);
 
 		int width = Math.min(3, ingredients.size());
@@ -219,7 +219,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 				craftingActive = !craftingActive;
 				init();
 				if (craftingActive) {
-					outputConfig.count = availableCraftingRecipe.getResultItem(minecraft.level.registryAccess())
+					outputConfig.count = availableCraftingRecipe.assemble(null, null)
 						.getCount();
 				}
 			});
@@ -316,7 +316,7 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 			}
 		}
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		ms.translate(0, 0, 10);
 
@@ -677,17 +677,17 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 
 		ClientLevel level = Minecraft.getInstance().level;
 
-		availableCraftingRecipe = level.getRecipeManager()
+		availableCraftingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 			.getAllRecipesFor(RecipeType.CRAFTING)
 			.parallelStream()
-			.filter(r -> output.getItem() == r.value().getResultItem(level.registryAccess())
+			.filter(r -> output.getItem() == r.value().assemble(null, null)
 				.getItem())
 			.filter(r -> {
 				if (AllRecipeTypes.shouldIgnoreInAutomation(r))
 					return false;
 
 				Set<Item> itemsUsed = new HashSet<>();
-				for (Ingredient ingredient : r.value().getIngredients()) {
+				for (Ingredient ingredient : r.value().placementInfo().ingredients()) {
 					if (ingredient.isEmpty())
 						continue;
 					boolean available = false;

@@ -48,7 +48,7 @@ public abstract class SequencedAssemblySubCategory {
 
 		@Override
 		public void draw(SequencedRecipe<?> recipe, GuiGraphics graphics, double mouseX, double mouseY, int index) {
-			PoseStack ms = graphics.pose();
+			PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 			press.offset = index;
 			ms.pushPose();
 			ms.translate(-5, 50, 0);
@@ -79,7 +79,7 @@ public abstract class SequencedAssemblySubCategory {
 
 		@Override
 		public void draw(SequencedRecipe<?> recipe, GuiGraphics graphics, double mouseX, double mouseY, int index) {
-			PoseStack ms = graphics.pose();
+			PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 			spout.offset = index;
 			ms.pushPose();
 			ms.translate(-7, 50, 0);
@@ -108,7 +108,7 @@ public abstract class SequencedAssemblySubCategory {
 			IRecipeSlotBuilder slot = builder
 					.addSlot(RecipeIngredientRole.INPUT, x + 4, 15)
 					.setBackground(CreateRecipeCategory.getRenderedSlot(), -1, -1)
-					.addIngredients(recipe.getRecipe().getIngredients().get(1));
+					.addIngredients(recipe.getRecipe().placementInfo().ingredients().get(1));
 
 			if (recipe.getAsAssemblyRecipe() instanceof DeployerApplicationRecipe deployerRecipe && deployerRecipe.shouldKeepHeldItem()) {
 				slot.addTooltipCallback(
@@ -119,7 +119,7 @@ public abstract class SequencedAssemblySubCategory {
 
 		@Override
 		public void draw(SequencedRecipe<?> recipe, GuiGraphics graphics, double mouseX, double mouseY, int index) {
-			PoseStack ms = graphics.pose();
+			PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 			deployer.offset = index;
 			ms.pushPose();
 			ms.translate(-7, 50, 0);
@@ -141,7 +141,7 @@ public abstract class SequencedAssemblySubCategory {
 
 		@Override
 		public void draw(SequencedRecipe<?> recipe, GuiGraphics graphics, double mouseX, double mouseY, int index) {
-			PoseStack ms = graphics.pose();
+			PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 			ms.pushPose();
 			ms.translate(0, 51.5f, 0);
 			ms.scale(.6f, .6f, .6f);

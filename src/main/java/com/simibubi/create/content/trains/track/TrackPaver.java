@@ -40,7 +40,7 @@ public class TrackPaver {
 
 		if (defaultBlockState.getBlock() instanceof GirderBlock)
 			for (Direction d : Iterate.horizontalDirections)
-				if (Vec3.atLowerCornerOf(d.getUnitVec3i())
+				if (Vec3.atLowerCornerOf(d.getNormal())
 					.equals(direction))
 					defaultBlockState = defaultBlockState.setValue(GirderBlock.TOP, false)
 						.setValue(GirderBlock.BOTTOM, false)

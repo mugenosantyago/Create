@@ -70,7 +70,7 @@ public class SeatBlock extends Block implements ProperWaterloggedBlock {
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
-		updateWater(pLevel, pState, pCurrentPos);
+		updateWater(pLevel, _scheduledTicks, pState, pCurrentPos);
 		return pState;
 	}
 
@@ -85,12 +85,12 @@ public class SeatBlock extends Block implements ProperWaterloggedBlock {
 	}
 
 	@Override
-	public void updateEntityAfterFallOn(BlockGetter reader, Entity entity) {
+	public void updateEntityMovementAfterFallOn(BlockGetter reader, Entity entity) {
 		BlockPos pos = entity.blockPosition();
 		if (entity instanceof Player || !(entity instanceof LivingEntity) || !canBePickedUp(entity)
 			|| isSeatOccupied(entity.level(), pos)) {
 			if (entity.isSuppressingBounce()) {
-				super.updateEntityAfterFallOn(reader, entity);
+				super.updateEntityMovementAfterFallOn(reader, entity);
 				return;
 			}
 

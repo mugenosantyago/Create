@@ -181,9 +181,9 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 	public BlockState updateShape(BlockState stateIn, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
 		if (facing != stateIn.getValue(FACING))
 			return stateIn;
-		boolean hasValidContact = RedstoneContactBlock.hasValidContact(worldIn, currentPos, facing);
+		boolean hasValidContact = RedstoneContactBlock.hasValidContact((net.minecraft.world.level.LevelAccessor) worldIn, currentPos, facing);
 		if (stateIn.getValue(POWERING) != hasValidContact)
-			scheduleActivation(worldIn, currentPos);
+			scheduleActivation((net.minecraft.world.level.LevelAccessor) worldIn, currentPos);
 		return stateIn;
 	}
 

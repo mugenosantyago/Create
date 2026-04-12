@@ -107,7 +107,7 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 	@OnlyIn(Dist.CLIENT)
 	private void openScreen(Player player, DataComponentMap components, BlockPos pos) {
 		if (Minecraft.getInstance().player == player)
-			ScreenOpener.open(new ClipboardScreen(player.getInventory().selected, components, pos));
+			ScreenOpener.open(new ClipboardScreen(player.getInventory().getSelectedSlot(), components, pos));
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 			Inventory inv = pPlayer.getInventory();
 			ItemStack selected = inv.getSelected();
 			if (selected.isEmpty()) {
-				inv.setItem(inv.selected, cloneItemStack);
+				inv.setItem(inv.getSelectedSlot(), cloneItemStack);
 			} else {
 				inv.placeItemBackInInventory(cloneItemStack);
 			}
@@ -174,8 +174,8 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
-		updateWater(pLevel, pState, pCurrentPos);
-		return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+		updateWater(pLevel, _scheduledTicks, pState, pCurrentPos);
+		return super.updateShape(pState, pLevel, _scheduledTicks, pCurrentPos, pFacing, pFacingPos, pFacingState, _random);
 	}
 
 	@Override

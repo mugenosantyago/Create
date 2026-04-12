@@ -132,7 +132,7 @@ public class TrainMapRenderer implements AutoCloseable {
 
 	public void render(GuiGraphics graphics, boolean linearFiltering, Rect2i bounds) {
 		BufferSource bufferSource = graphics.bufferSource();
-		PoseStack pose = graphics.pose();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		maps.forEach((key, tmi) -> {
 			if (tmi.canBeSkipped(bounds))
 				return;

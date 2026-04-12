@@ -64,4 +64,21 @@ public class BakedModelWrapper<T extends BakedModel> implements BakedModel {
 		return this;
 	}
 
+	// NeoForge 21.1.x extension methods (stubbed for MC 1.21.8 port)
+	public TextureAtlasSprite getParticleIcon(net.neoforged.neoforge.model.data.ModelData data) {
+		return getParticleIcon();
+	}
+
+	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data, net.minecraft.client.renderer.RenderType renderType) {
+		return getQuads(state, side, rand);
+	}
+
+	protected net.neoforged.neoforge.model.data.ModelData.Builder gatherModelData(net.neoforged.neoforge.model.data.ModelData.Builder builder, net.minecraft.world.level.BlockAndTintGetter world, net.minecraft.core.BlockPos pos, BlockState state, net.neoforged.neoforge.model.data.ModelData existing) {
+		return builder;
+	}
+
+	public net.neoforged.neoforge.model.data.ModelData getModelData(net.minecraft.world.level.BlockAndTintGetter world, net.minecraft.core.BlockPos pos, BlockState state, net.neoforged.neoforge.model.data.ModelData data) {
+		return data != null ? data : net.neoforged.neoforge.model.data.ModelData.EMPTY;
+	}
+
 }

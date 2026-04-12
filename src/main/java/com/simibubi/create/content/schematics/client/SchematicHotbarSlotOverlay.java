@@ -14,8 +14,7 @@ public class SchematicHotbarSlotOverlay  {
 		Window mainWindow = Minecraft.getInstance().getWindow();
 		int x = mainWindow.getGuiScaledWidth() / 2 - 88;
 		int y = mainWindow.getGuiScaledHeight() - 19;
-		RenderSystem.enableDepthTest();
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		ms.translate(0, 0, -300);
 		AllGuiTextures.SCHEMATIC_SLOT.render(graphics, x + 20 * slot, y);

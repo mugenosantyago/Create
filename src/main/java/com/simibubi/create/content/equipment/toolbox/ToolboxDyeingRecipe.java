@@ -76,8 +76,7 @@ public class ToolboxDyeingRecipe extends CustomRecipe {
 		return dyedToolbox;
 	}
 
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
+		public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 2;
 	}
 

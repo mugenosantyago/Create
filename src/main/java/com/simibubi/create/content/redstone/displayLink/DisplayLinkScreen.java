@@ -268,7 +268,7 @@ public class DisplayLinkScreen extends AbstractSimiScreen {
 		if (target == null)
 			graphics.drawString(font, CreateLang.translateDirect("display_link.no_target"), x + 65, y + 109, 0xD3D3D3);
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		ms.translate(0, guiTop + 46, 0);
 		configWidgets.getFirst()

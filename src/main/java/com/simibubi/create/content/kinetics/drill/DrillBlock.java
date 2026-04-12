@@ -59,7 +59,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
+	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, net.minecraft.world.entity.InsideBlockEffectApplier _applier) {
 		if (entityIn instanceof ItemEntity)
 			return;
 		if (!new AABB(pos).deflate(.1f)

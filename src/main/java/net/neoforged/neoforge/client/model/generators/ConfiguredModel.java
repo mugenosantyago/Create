@@ -50,12 +50,12 @@ public class ConfiguredModel {
         public Builder<T> uvLock(boolean uvLock) { this.uvLock = uvLock; return this; }
         public Builder<T> weight(int weight) { this.weight = weight; return this; }
 
-        public ConfiguredModel build() {
-            return new ConfiguredModel(model, rotationX, rotationY, uvLock, weight);
+        public ConfiguredModel[] build() {
+            return new ConfiguredModel[]{ new ConfiguredModel(model, rotationX, rotationY, uvLock, weight) };
         }
 
-        public ConfiguredModel[] buildLast() {
-            return new ConfiguredModel[]{ build() };
+        public ConfiguredModel buildLast() {
+            return new ConfiguredModel(model, rotationX, rotationY, uvLock, weight);
         }
     }
 }

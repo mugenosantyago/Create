@@ -201,7 +201,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 		}
 
 		Vec3 itemMovement = getItemMovementVec();
-		Direction itemMovementFacing = Direction.getNearest(itemMovement.x, itemMovement.y, itemMovement.z);
+		Direction itemMovementFacing = Direction.getNearest((int)(itemMovement.x), (int)(itemMovement.y), (int)(itemMovement.z), Direction.NORTH);
 		if (inventory.remainingTime > 0)
 			return;
 		inventory.remainingTime = 0;
@@ -370,14 +370,14 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 			if (recipe instanceof CuttingRecipe)
 				results = ((CuttingRecipe) recipe).rollResults(level.random);
 			else if (recipe instanceof StonecutterRecipe || recipe.getType() == woodcuttingRecipeType.get())
-				results.add(recipe.getResultItem(level.registryAccess())
+				results.add(recipe.assemble(null, null)
 					.copy());
 
 			for (ItemStack stack : results) {
 				ItemHelper.addToList(stack, list);
 			}
-			if (input.hasCraftingRemainingItem())
-				ItemHelper.addToList(input.getCraftingRemainingItem(), list);
+			if (input.has(net.minecraft.core.component.DataComponents.USE_REMAINDER))
+				ItemHelper.addToList(input.getCraftingRemainder(), list);
 		}
 
 		for (int slot = 0; slot < list.size() && slot + 1 < inventory.getSlots(); slot++)
@@ -390,7 +390,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 		Optional<RecipeHolder<CuttingRecipe>> assemblyRecipe = SequencedAssemblyRecipe.getRecipe(level, inventory.getStackInSlot(0),
 			AllRecipeTypes.CUTTING.getType(), CuttingRecipe.class);
 		if (assemblyRecipe.isPresent() && filtering.test(assemblyRecipe.get().value()
-			.getResultItem(level.registryAccess())))
+			.assemble(null, null)))
 			return ImmutableList.of(assemblyRecipe.get());
 
 		Predicate<RecipeHolder<? extends Recipe<?>>> types = RecipeConditions.isOfType(AllRecipeTypes.CUTTING.getType(),

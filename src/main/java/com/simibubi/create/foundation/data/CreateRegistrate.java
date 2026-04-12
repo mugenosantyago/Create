@@ -187,11 +187,7 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 																				 boolean hasNaturalVariants) {
 		BlockBuilder<T, CreateRegistrate> builder = super.block(name, factory).initialProperties(propertiesFrom)
 			.transform(pickaxeOnly())
-			.blockstate(hasNaturalVariants ? BlockStateGen.naturalStoneTypeBlock(name) : (c, p) -> {
-				final String location = "block/palettes/stone_types/" + c.getName();
-				p.simpleBlock(c.get(), p.models()
-					.cubeAll(c.getName(), p.modLoc(location)));
-			})
+			.defaultBlockstate()
 			.tag(BlockTags.DRIPSTONE_REPLACEABLE)
 			.tag(BlockTags.AZALEA_ROOT_REPLACEABLE)
 			.tag(BlockTags.MOSS_REPLACEABLE)

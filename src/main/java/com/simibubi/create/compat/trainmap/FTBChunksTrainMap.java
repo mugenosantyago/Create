@@ -92,7 +92,7 @@ public class FTBChunksTrainMap {
 			.getWindow()
 			.getGuiScale() < 512D;
 
-		PoseStack pose = graphics.pose();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		pose.pushPose();
 
 		pose.translate(-minX, -minY, 0);

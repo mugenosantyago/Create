@@ -33,13 +33,11 @@ public class DoubleItemIcon implements IDrawable {
 
 	@Override
 	public void draw(GuiGraphics graphics, int xOffset, int yOffset) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		if (primaryStack == null) {
 			primaryStack = primarySupplier.get();
 			secondaryStack = secondarySupplier.get();
 		}
-
-		RenderSystem.enableDepthTest();
 		matrixStack.pushPose();
 		matrixStack.translate(xOffset, yOffset, 0);
 

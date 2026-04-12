@@ -135,7 +135,7 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 		double yCoord = hitResult.getLocation()
 			.add(Vec3.atLowerCornerOf(hitResult.getDirection()
 					.getOpposite()
-					.getUnitVec3i())
+					.getNormal())
 				.scale(.125f)).y;
 
 		int lineIndex = flapBE.getLineIndexAt(yCoord);
@@ -274,13 +274,13 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
-		return updatedShapeInner(state, pDirection, pNeighborState, pLevel, pCurrentPos);
+		return updatedShapeInner(state, pDirection, pNeighborState, pLevel, _scheduledTicks, pCurrentPos);
 	}
 
 	private BlockState updatedShapeInner(BlockState state, Direction pDirection, BlockState pNeighborState,
-										 LevelAccessor pLevel, BlockPos pCurrentPos) {
+										 net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos pCurrentPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED))
-			pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+			tickAccess.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
 		if (!canConnect(state, pNeighborState))
 			return setConnection(state, pDirection, false);
 		if (pDirection.getAxis() == getConnectionAxis(state))

@@ -134,10 +134,8 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 	@Override
 	public void write(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
 		super.write(nbt, registries, clientPacket);
-		nbt.put("FrequencyFirst", frequencyFirst.getStack()
-			.save(registries));
-		nbt.put("FrequencyLast", frequencyLast.getStack()
-			.save(registries));
+		nbt.put("FrequencyFirst", com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(frequencyFirst.getStack(), registries));
+		nbt.put("FrequencyLast", com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(frequencyLast.getStack(), registries));
 		nbt.putLong("LastKnownPosition", blockEntity.getBlockPos()
 			.asLong());
 	}
@@ -234,10 +232,8 @@ public class LinkBehaviour extends BlockEntityBehaviour implements IRedstoneLink
 
 	@Override
 	public boolean writeToClipboard(@NotNull HolderLookup.Provider registries, CompoundTag tag, Direction side) {
-		tag.put("First", frequencyFirst.getStack()
-			.save(registries));
-		tag.put("Last", frequencyLast.getStack()
-			.save(registries));
+		tag.put("First", com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(frequencyFirst.getStack(), registries));
+		tag.put("Last", com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(frequencyLast.getStack(), registries));
 		return true;
 	}
 

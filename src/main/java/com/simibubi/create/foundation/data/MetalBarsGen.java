@@ -125,14 +125,14 @@ public class MetalBarsGen {
 	public static BlockEntry<IronBarsBlock> createBars(String name, boolean specialEdge,
 													   Supplier<DataIngredient> ingredient, MapColor color) {
 		return Create.registrate().block(name + "_bars", IronBarsBlock::new)
-			.addLayer(() -> RenderType::cutoutMipped)
+			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.initialProperties(() -> Blocks.IRON_BARS)
 			.properties(p -> p.sound(SoundType.COPPER)
 				.mapColor(color))
 			.tag(AllBlockTags.WRENCH_PICKUP.tag)
 			.tag(AllBlockTags.FAN_TRANSPARENT.tag)
 			.transform(TagGen.pickaxeOnly())
-			.blockstate(barsBlockState(name, specialEdge))
+			.defaultBlockstate()
 			.item()
 			.model((c, p) -> {
 				ResourceLocation barsTexture = p.modLoc("block/bars/" + name + "_bars");

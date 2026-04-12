@@ -177,7 +177,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 	}
 
 	protected void renderCategories(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		int yOffset = 25;
 		List<ItemStack> entries = schedule;
@@ -215,7 +215,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 		int cardHeader = CARD_HEADER;
 		int cardHeight = cardHeader;
 
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 		matrixStack.translate(leftPos + 7, topPos + yOffset, 0);
 
@@ -477,7 +477,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 			return;
 		}
 
-		graphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+		graphics.fillGradient(0, 0, this.width, this.height, -804253680);
 
 		y = topPos - 5;
 		AllGuiTextures.STOCK_KEEPER_CATEGORY_HEADER.render(graphics, leftPos, y);

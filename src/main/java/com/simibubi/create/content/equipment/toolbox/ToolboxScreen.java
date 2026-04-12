@@ -91,7 +91,7 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 
 		renderToolbox(graphics, x + BG.getWidth() + 50, y + BG.getHeight() + 12, partialTicks);
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		hoveredToolboxSlot = null;
 		for (int compartment = 0; compartment < 8; compartment++) {
@@ -109,7 +109,6 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 				String s = String.valueOf(count);
 				ms.pushPose();
 				ms.translate(0, 0, 100);
-				RenderSystem.enableDepthTest();
 				graphics.renderItem(minecraft.player, itemstack, i, j, 0);
 				graphics.renderItemDecorations(font, itemstack, i, j, s);
 				ms.popPose();
@@ -117,18 +116,16 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 
 			if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
 				hoveredToolboxSlot = slot;
-				RenderSystem.disableDepthTest();
 				RenderSystem.colorMask(true, true, true, false);
 				int slotColor = this.getSlotColor(baseIndex);
 				graphics.fillGradient(i, j, i + 16, j + 16, slotColor, slotColor);
 				RenderSystem.colorMask(true, true, true, true);
-				RenderSystem.enableDepthTest();
 			}
 		}
 	}
 
 	private void renderToolbox(GuiGraphics graphics, int x, int y, float partialTicks) {
-        PoseStack ms = graphics.pose();
+        PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		TransformStack.of(ms)
 			.pushPose()
 			.translate(x, y, 100)

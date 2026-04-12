@@ -194,7 +194,7 @@ public class BlazeBurnerBlock extends HorizontalDirectionalBlock implements IBE<
 			return Pair.of(InteractionResult.FAIL, ItemStack.EMPTY);
 
 		if (!doNotConsume) {
-			ItemStack container = stack.hasCraftingRemainingItem() ? stack.getCraftingRemainingItem() : ItemStack.EMPTY;
+			ItemStack container = stack.has(net.minecraft.core.component.DataComponents.USE_REMAINDER) ? stack.getCraftingRemainder() : ItemStack.EMPTY;
 			if (!world.isClientSide) {
 				stack.shrink(1);
 			}

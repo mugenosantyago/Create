@@ -23,6 +23,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -139,7 +140,7 @@ public class BacktankBlockEntity extends KineticBlockEntity implements Nameable 
 		capacityEnchantLevel = compound.getIntOr("CapacityEnchantment", 0);
 
 		if (compound.contains("CustomName"))
-			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 
 		componentPatch = CatnipCodecUtils.decode(DataComponentPatch.CODEC, registries, compound.getCompoundOrEmpty("Components")).orElse(DataComponentPatch.EMPTY);
 		if (prev != 0 && prev != airLevel && airLevel == BacktankUtil.maxAir(capacityEnchantLevel) && clientPacket)

@@ -131,7 +131,7 @@ public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock implements Sp
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState neighbour, net.minecraft.util.RandomSource _random) {
-		updateWater(world, state, pos);
+		updateWater(world, _scheduledTicks, state, pos);
 		if (!isOnValidBelt(state, world, pos)) {
 			BlockState parentState = ProperWaterloggedBlock.withWater(world, parent.getDefaultState(), pos);
 			if (state.getOptionalValue(POWERED)

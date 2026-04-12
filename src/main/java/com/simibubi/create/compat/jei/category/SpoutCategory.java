@@ -114,7 +114,7 @@ public class SpoutCategory extends CreateRecipeCategory<FillingRecipe> {
 		builder
 				.addSlot(RecipeIngredientRole.INPUT, 27, 51)
 				.setBackground(getRenderedSlot(), -1, -1)
-				.addIngredients(recipe.getIngredients().get(0));
+				.addIngredients(recipe.placementInfo().ingredients().get(0));
 
 		addFluidSlot(builder, 27, 32, recipe.getRequiredFluid());
 

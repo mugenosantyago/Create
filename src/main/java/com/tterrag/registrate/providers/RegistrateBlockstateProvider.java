@@ -8,33 +8,20 @@ import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 
-import com.tterrag.registrate.providers.generators.RegistrateBlockModelGenerator;
-
-import java.util.Collections;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.BiConsumer;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Compatibility stub for old RegistrateBlockstateProvider API.
- * Now extends RegistrateBlockModelGenerator for MC 1.21.8 compatibility.
- * Data gen methods are stubbed.
+ * Compatibility stub for old RegistrateBlockstateProvider API (MC 1.21.8 port).
+ * Data gen model generation needs to be fully ported to the new system.
  */
 @SuppressWarnings("all")
-public class RegistrateBlockstateProvider extends RegistrateBlockModelGenerator {
+public class RegistrateBlockstateProvider {
 
     private final String modId;
     private final BlockModelProvider models;
 
-    @SuppressWarnings("unchecked")
     public RegistrateBlockstateProvider(String modId) {
-        super(null, definitionGenerator -> {}, 
-              new net.minecraft.client.data.models.ItemModelOutput() {
-                  @Override public void accept(net.minecraft.world.item.Item item, net.minecraft.client.renderer.item.ItemModel.Unbaked model) {}
-                  @Override public void copy(net.minecraft.world.item.Item from, net.minecraft.world.item.Item to) {}
-              },
-              (location, model) -> {});
         this.modId = modId;
         this.models = new BlockModelProvider(ResourceLocation.parse(modId + ":"));
     }
@@ -69,7 +56,7 @@ public class RegistrateBlockstateProvider extends RegistrateBlockModelGenerator 
     public void axisBlock(Block block, Function<BlockState, ModelFile> modelFunc) {}
     public void axisBlock(Block block, ModelFile model) {}
 
-    public ModelFile getExistingFile(ResourceLocation loc) {
+    public ModelFile.ExistingModelFile getExistingFile(ResourceLocation loc) {
         return new ModelFile.ExistingModelFile(loc, null);
     }
 

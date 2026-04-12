@@ -162,8 +162,8 @@ public class BeltBlock extends HorizontalKineticBlock
 	}
 
 	@Override
-	public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
-		super.updateEntityAfterFallOn(worldIn, entityIn);
+	public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
+		super.updateEntityMovementAfterFallOn(worldIn, entityIn);
 		BlockPos entityPosition = entityIn.blockPosition();
 		BlockPos beltPos = null;
 
@@ -180,7 +180,7 @@ public class BeltBlock extends HorizontalKineticBlock
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
+	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, net.minecraft.world.entity.InsideBlockEffectApplier _applier) {
 		if (!canTransportObjects(state))
 			return;
 		if (entityIn instanceof Player player) {
@@ -508,7 +508,7 @@ public class BeltBlock extends HorizontalKineticBlock
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction side, BlockPos p_196271_6_, BlockState p_196271_3_, net.minecraft.util.RandomSource _random) {
-		updateWater(world, state, pos);
+		updateWater(world, _scheduledTicks, state, pos);
 		if (side.getAxis()
 			.isHorizontal())
 			updateTunnelConnections(world, pos.above());

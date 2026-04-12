@@ -77,6 +77,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -171,7 +172,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		if (tag.contains("ForceFlag"))
 			trainPresent = tag.getBooleanOr("ForceFlag", false);
 		if (tag.contains("PrevTrainName"))
-			lastDisassembledTrainName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("PrevTrainName")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			lastDisassembledTrainName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("PrevTrainName", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 		lastDisassembledMapColorIndex = tag.getIntOr("PrevTrainColor", 0);
 
 		if (!clientPacket)
@@ -655,7 +656,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 			.get(0)
 			.normalize()
 			.scale(axisDirection.getStep());
-		return assemblyDirection = Direction.getNearest(axis.x, axis.y, axis.z);
+		return assemblyDirection = Direction.getNearest((int)(axis.x), (int)(axis.y), (int)(axis.z), Direction.NORTH);
 	}
 
 	@Override
@@ -689,7 +690,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		Vec3 center = Vec3.atBottomCenterOf(trackPosition)
 			.add(0, track.getElevationAtCenter(level, trackPosition, trackState), 0);
 		Collection<DiscoveredLocation> ends = track.getConnected(level, trackPosition, trackState, true, null);
-		Vec3 targetOffset = Vec3.atLowerCornerOf(assemblyDirection.getUnitVec3i());
+		Vec3 targetOffset = Vec3.atLowerCornerOf(assemblyDirection.getNormal());
 		for (DiscoveredLocation end : ends)
 			if (Mth.equal(0, targetOffset.distanceToSqr(end.getLocation()
 				.subtract(center)
@@ -718,7 +719,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		}
 
 		List<TravellingPoint> points = new ArrayList<>();
-		Vec3 directionVec = Vec3.atLowerCornerOf(assemblyDirection.getUnitVec3i());
+		Vec3 directionVec = Vec3.atLowerCornerOf(assemblyDirection.getNormal());
 		TrackGraph graph = null;
 		TrackNode secondNode = null;
 
@@ -981,7 +982,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		if (axis == null)
 			return false;
 
-		Direction nearest = Direction.getNearest(axis.x, 0, axis.z);
+		Direction nearest = Direction.getNearest((int)(axis.x), (int)(0), (int)(axis.z), Direction.NORTH);
 		flagYRot = (int) (-nearest.toYRot() - 90);
 
 		Vec3 diff = Vec3.atLowerCornerOf(trackPos.subtract(worldPosition))
@@ -990,7 +991,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 			return true;
 
 		flagFlipped = diff.dot(Vec3.atLowerCornerOf(nearest.getClockWise()
-			.getUnitVec3i())) > 0;
+			.getNormal())) > 0;
 
 		return true;
 	}

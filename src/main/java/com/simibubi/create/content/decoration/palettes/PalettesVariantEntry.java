@@ -36,9 +36,7 @@ public class PalettesVariantEntry {
 				REGISTRATE.block(pattern.createName(name), pattern.getBlockFactory())
 					.initialProperties(baseBlock)
 					.transform(pickaxeOnly())
-					.blockstate(pattern.getBlockStateGenerator()
-						.apply(pattern)
-						.apply(name)::accept);
+					.defaultBlockstate();
 
 			ItemBuilder<BlockItem, ? extends BlockBuilder<? extends Block, CreateRegistrate>> itemBuilder =
 				builder.item();
@@ -53,12 +51,12 @@ public class PalettesVariantEntry {
 			itemBuilder.tag(paletteStoneVariants.materialTag);
 
 			if (pattern.isTranslucent())
-				builder.addLayer(() -> RenderType::translucent);
+				builder.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.TRANSLUCENT);
 			pattern.createCTBehaviour(name)
 				.ifPresent(b -> builder.onRegister(connectedTextures(b)));
 
 			builder.recipe((c, p) -> {
-				p.stonecutting(DataIngredient.tag(paletteStoneVariants.materialTag), RecipeCategory.BUILDING_BLOCKS, c);
+				p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(paletteStoneVariants.materialTag), RecipeCategory.BUILDING_BLOCKS, c);
 				pattern.addRecipes(baseBlock, c, p);
 			});
 
@@ -72,7 +70,7 @@ public class PalettesVariantEntry {
 		}
 
 		REGISTRATE.addDataGenerator(ProviderType.RECIPE,
-			p -> p.stonecutting(DataIngredient.tag(paletteStoneVariants.materialTag), RecipeCategory.BUILDING_BLOCKS,
+			p -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(paletteStoneVariants.materialTag), RecipeCategory.BUILDING_BLOCKS,
 				baseBlock));
 		REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, p -> p.addTag(paletteStoneVariants.materialTag)
 			.add(baseBlock.get()

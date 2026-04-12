@@ -30,12 +30,10 @@ public class ItemIcon implements IDrawable {
 
 	@Override
 	public void draw(GuiGraphics graphics, int xOffset, int yOffset) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		if (stack == null) {
 			stack = supplier.get();
 		}
-
-		RenderSystem.enableDepthTest();
 		matrixStack.pushPose();
 		matrixStack.translate(xOffset + 1, yOffset + 1, 0);
 

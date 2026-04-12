@@ -80,10 +80,10 @@ public class TestProcessing {
 		BlockPos output = new BlockPos(11, 3, 1);
 		helper.pullLever(lever);
 
-		SequencedAssemblyRecipe recipe = (SequencedAssemblyRecipe) helper.getLevel().getRecipeManager()
+		SequencedAssemblyRecipe recipe = (SequencedAssemblyRecipe) com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(helper.getLevel())
 				.byKey(Create.asResource("sequenced_assembly/precision_mechanism"))
 				.orElseThrow(() -> new GameTestAssertException("Precision Mechanism recipe not found")).value();
-		Item result = recipe.getResultItem(helper.getLevel().registryAccess()).getItem();
+		Item result = recipe.assemble(null, null).getItem();
 		Item[] possibleResults = recipe.resultPool.stream()
 				.map(ProcessingOutput::getStack)
 				.map(ItemStack::getItem)

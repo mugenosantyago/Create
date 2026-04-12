@@ -295,9 +295,8 @@ public class StationScreen extends AbstractStationScreen {
 
 		float position = trainPosition.getValue(partialTicks);
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
-		RenderSystem.enableBlend();
 		ms.translate(position, 0, 0);
 		TrainIconType icon = train.icon;
 		int offset = 0;
@@ -313,7 +312,6 @@ public class StationScreen extends AbstractStationScreen {
 		RenderSystem.setShaderColor(1, 1, 1,
 			Math.min(1f, Math.min((position + offset - 10) / 30f, (background.getWidth() - 40 - position - offset) / 30f)));
 		offset += icon.render(TrainIconType.ENGINE, graphics, x + offset, y + 20);
-		RenderSystem.disableBlend();
 		ms.popPose();
 
 		RenderSystem.setShaderColor(1, 1, 1, 1);

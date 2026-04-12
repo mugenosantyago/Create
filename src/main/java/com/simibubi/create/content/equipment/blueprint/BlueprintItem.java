@@ -69,11 +69,11 @@ public class BlueprintItem extends Item {
 	}
 
 	public static void assignCompleteRecipe(Level level, ItemStackHandler inv, Recipe<?> recipe) {
-		NonNullList<Ingredient> ingredients = recipe.getIngredients();
+		java.util.List<Ingredient> ingredients = recipe.placementInfo().ingredients();
 
 		for (int i = 0; i < 9; i++)
 			inv.setStackInSlot(i, ItemStack.EMPTY);
-		inv.setStackInSlot(9, recipe.getResultItem(level.registryAccess()));
+		inv.setStackInSlot(9, recipe.assemble(null, null));
 
 		if (recipe instanceof ShapedRecipe shapedRecipe) {
 			for (int row = 0; row < shapedRecipe.getHeight(); row++)

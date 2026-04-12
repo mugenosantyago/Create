@@ -19,11 +19,11 @@ public class CraftableBigItemStack extends BigItemStack {
 	}
 
 	public List<Ingredient> getIngredients() {
-		return recipe.getIngredients();
+		return recipe.placementInfo().ingredients();
 	}
 
 	public int getOutputCount(Level level) {
-		return recipe.getResultItem(level.registryAccess())
+		return recipe.assemble(null, null)
 			.getCount();
 	}
 

@@ -83,7 +83,7 @@ public class StockKeeperTransferHandler implements IUniversalRecipeTransferHandl
 
 		Recipe<?> recipe = recipeHolder.value();
 
-		if (recipe.getIngredients().size() > 9)
+		if (recipe.placementInfo().ingredients().size() > 9)
 			return RecipeTransferErrorInternal.INSTANCE;
 
 		for (CraftableBigItemStack cbis : screen.recipesToOrder)
@@ -124,7 +124,7 @@ public class StockKeeperTransferHandler implements IUniversalRecipeTransferHandl
 		if (!doTransfer)
 			return null;
 
-		ItemStack result = recipe.getResultItem(player.level().registryAccess());
+		ItemStack result = recipe.assemble(null, null);
 		if (result.isEmpty())
 			return new RecipeTransferErrorTooltip(CreateLang.translate("gui.stock_keeper.recipe_result_empty").component());
 

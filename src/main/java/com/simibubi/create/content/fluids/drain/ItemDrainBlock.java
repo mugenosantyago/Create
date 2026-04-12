@@ -68,8 +68,8 @@ public class ItemDrainBlock extends Block implements IWrenchable, IBE<ItemDrainB
 	}
 
 	@Override
-	public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
-		super.updateEntityAfterFallOn(worldIn, entityIn);
+	public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
+		super.updateEntityMovementAfterFallOn(worldIn, entityIn);
 		if (!(entityIn instanceof ItemEntity itemEntity))
 			return;
 		if (!entityIn.isAlive())
@@ -84,7 +84,7 @@ public class ItemDrainBlock extends Block implements IWrenchable, IBE<ItemDrainB
 		Vec3 deltaMovement = entityIn.getDeltaMovement()
 			.multiply(1, 0, 1)
 			.normalize();
-		Direction nearest = Direction.getNearest(deltaMovement.x, deltaMovement.y, deltaMovement.z);
+		Direction nearest = Direction.getNearest((int)(deltaMovement.x), (int)(deltaMovement.y), (int)(deltaMovement.z), Direction.NORTH);
 		ItemStack remainder = inputBehaviour.handleInsertion(itemEntity.getItem(), nearest, false);
 		itemEntity.setItem(remainder);
 		if (remainder.isEmpty())

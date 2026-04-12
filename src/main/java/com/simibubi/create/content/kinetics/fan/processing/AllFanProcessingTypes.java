@@ -119,14 +119,14 @@ public class AllFanProcessingTypes {
 
 		@Override
 		public boolean canProcess(ItemStack stack, Level level) {
-			Optional<RecipeHolder<SmeltingRecipe>> smeltingRecipe = level.getRecipeManager()
+			Optional<RecipeHolder<SmeltingRecipe>> smeltingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 				.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level)
 				.filter(AllRecipeTypes.CAN_BE_AUTOMATED);
 
 			if (smeltingRecipe.isPresent())
 				return true;
 
-			Optional<RecipeHolder<BlastingRecipe>> blastingRecipe = level.getRecipeManager()
+			Optional<RecipeHolder<BlastingRecipe>> blastingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 				.getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(stack), level)
 				.filter(AllRecipeTypes.CAN_BE_AUTOMATED);
 
@@ -139,16 +139,16 @@ public class AllFanProcessingTypes {
 		@Override
 		@Nullable
 		public List<ItemStack> process(ItemStack stack, Level level) {
-			Optional<RecipeHolder<SmokingRecipe>> smokingRecipe = level.getRecipeManager()
+			Optional<RecipeHolder<SmokingRecipe>> smokingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 				.getRecipeFor(RecipeType.SMOKING, new SingleRecipeInput(stack), level)
 				.filter(AllRecipeTypes.CAN_BE_AUTOMATED);
 
-			Optional<? extends RecipeHolder<? extends AbstractCookingRecipe>> smeltingRecipe = level.getRecipeManager()
+			Optional<? extends RecipeHolder<? extends AbstractCookingRecipe>> smeltingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 				.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level)
 				.filter(AllRecipeTypes.CAN_BE_AUTOMATED);
 
 			if (smeltingRecipe.isEmpty()) {
-				smeltingRecipe = level.getRecipeManager()
+				smeltingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 					.getRecipeFor(RecipeType.BLASTING, new SingleRecipeInput(stack), level)
 					.filter(AllRecipeTypes.CAN_BE_AUTOMATED);
 			}
@@ -156,9 +156,9 @@ public class AllFanProcessingTypes {
 			if (smeltingRecipe.isPresent()) {
 				RegistryAccess registryAccess = level.registryAccess();
 				if (smokingRecipe.isEmpty() || !ItemStack.isSameItem(smokingRecipe.get().value()
-						.getResultItem(registryAccess),
+						.assemble(null, null),
 					smeltingRecipe.get().value()
-						.getResultItem(registryAccess))) {
+						.assemble(null, null))) {
 					return RecipeApplier.applyRecipeOn(level, stack, smeltingRecipe.get().value(), false);
 				}
 			}
@@ -335,7 +335,7 @@ public class AllFanProcessingTypes {
 
 		@Override
 		public boolean canProcess(ItemStack stack, Level level) {
-			return level.getRecipeManager()
+			return com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 				.getRecipeFor(RecipeType.SMOKING, new SingleRecipeInput(stack), level)
 				.filter(AllRecipeTypes.CAN_BE_AUTOMATED)
 				.isPresent();
@@ -344,7 +344,7 @@ public class AllFanProcessingTypes {
 		@Override
 		@Nullable
 		public List<ItemStack> process(ItemStack stack, Level level) {
-			return level.getRecipeManager()
+			return com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 				.getRecipeFor(RecipeType.SMOKING, new SingleRecipeInput(stack), level)
 				.filter(AllRecipeTypes.CAN_BE_AUTOMATED)
 				.map(RecipeHolder::value)

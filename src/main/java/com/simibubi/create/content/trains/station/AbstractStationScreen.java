@@ -99,7 +99,7 @@ public abstract class AbstractStationScreen extends AbstractSimiScreen {
 	}
 
 	private void renderAdditional(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks, int guiLeft, int guiTop, AllGuiTextures background) {
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		var msr = TransformStack.of(ms);
 		msr.pushPose()

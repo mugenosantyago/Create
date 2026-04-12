@@ -57,7 +57,7 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
-		updateWater(pLevel, pState, pCurrentPos);
+		updateWater(pLevel, _scheduledTicks, pState, pCurrentPos);
 		return pState;
 	}
 
@@ -97,8 +97,8 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
 	}
 
 	@Override
-	public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
-		super.updateEntityAfterFallOn(worldIn, entityIn);
+	public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
+		super.updateEntityMovementAfterFallOn(worldIn, entityIn);
 		BlockPos position = entityIn.blockPosition();
 		if (!AllBlocks.WEIGHTED_EJECTOR.has(worldIn.getBlockState(position)))
 			return;

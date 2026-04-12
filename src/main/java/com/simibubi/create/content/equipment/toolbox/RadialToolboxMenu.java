@@ -77,7 +77,7 @@ public class RadialToolboxMenu extends AbstractSimiScreen {
 		if (renderCenterSlot && distance <= 150)
 			hoveredSlot = UNEQUIP;
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		ms.translate(width / 2, height / 2, 0);
 		Component tip = null;
@@ -199,13 +199,10 @@ public class RadialToolboxMenu extends AbstractSimiScreen {
 			if (i1 > 8) {
 				ms.pushPose();
 				ms.translate((float) (width / 2), (float) (height - 68), 0.0F);
-				RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
 				int k1 = 16777215;
 				int k = i1 << 24 & -16777216;
 				int l = font.width(tip);
 				graphics.drawString(font, tip, Math.round(-l / 2f), -4, k1 | k, false);
-				RenderSystem.disableBlend();
 				ms.popPose();
 			}
 		}
@@ -248,13 +245,13 @@ public class RadialToolboxMenu extends AbstractSimiScreen {
 		if (state == State.DETACH) {
 			if (selected == UNEQUIP)
 				CatnipServices.NETWORK.sendToServer(
-					new ToolboxEquipPacket(null, selected, minecraft.player.getInventory().selected));
+					new ToolboxEquipPacket(null, selected, minecraft.player.getInventory().getSelectedSlot()));
 			return;
 		}
 
 		if (selected == UNEQUIP)
 			CatnipServices.NETWORK.sendToServer(new ToolboxEquipPacket(selectedBox.getBlockPos(), selected,
-				minecraft.player.getInventory().selected));
+				minecraft.player.getInventory().getSelectedSlot()));
 
 		if (selected < 0)
 			return;
@@ -267,7 +264,7 @@ public class RadialToolboxMenu extends AbstractSimiScreen {
 			return;
 
 		CatnipServices.NETWORK.sendToServer(new ToolboxEquipPacket(selectedBox.getBlockPos(), selected,
-			minecraft.player.getInventory().selected));
+			minecraft.player.getInventory().getSelectedSlot()));
 	}
 
 	@Override
@@ -340,7 +337,7 @@ public class RadialToolboxMenu extends AbstractSimiScreen {
 			if (state == State.SELECT_ITEM_UNEQUIP && selected == UNEQUIP) {
 				if (toolboxes.size() > 1) {
 					CatnipServices.NETWORK.sendToServer(new ToolboxEquipPacket(selectedBox.getBlockPos(), selected,
-						minecraft.player.getInventory().selected));
+						minecraft.player.getInventory().getSelectedSlot()));
 					state = State.SELECT_BOX;
 					return true;
 				}

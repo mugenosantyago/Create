@@ -1735,13 +1735,11 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 			throw new AssertionError("Only for datagen output");
 		}
 
-		@Override
-		public boolean canCraftInDimensions(int pWidth, int pHeight) {
+				public boolean canCraftInDimensions(int pWidth, int pHeight) {
 			throw new AssertionError("Only for datagen output");
 		}
 
-		@Override
-		public ItemStack getResultItem(HolderLookup.Provider registries) {
+				public ItemStack getResultItem(HolderLookup.Provider registries) {
 			throw new AssertionError("Only for datagen output");
 		}
 

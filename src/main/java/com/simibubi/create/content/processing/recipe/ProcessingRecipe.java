@@ -123,6 +123,18 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		return ingredients;
 	}
 
+	// Implement Recipe.placementInfo() for 1.21.8 compatibility
+	@Override
+	public net.minecraft.world.item.crafting.PlacementInfo placementInfo() {
+		return net.minecraft.world.item.crafting.PlacementInfo.create(ingredients);
+	}
+
+	// Implement Recipe.recipeBookCategory() for 1.21.8 compatibility
+	@Override
+	public net.minecraft.world.item.crafting.RecipeBookCategory recipeBookCategory() {
+		return net.minecraft.world.item.crafting.RecipeBookCategories.CRAFTING_OTHER;
+	}
+
 	public NonNullList<SizedFluidIngredient> getFluidIngredients() {
 		return fluidIngredients;
 	}
@@ -175,12 +187,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		return getResultItem(provider);
 	}
 
-	@Override
 	public boolean canCraftInDimensions(int width, int height) {
 		return true;
 	}
 
-	@Override
 	public ItemStack getResultItem(HolderLookup.Provider provider) {
 		return getRollableResults().isEmpty() ? ItemStack.EMPTY
 				: getRollableResults().getFirst()
@@ -194,7 +204,7 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 
 	// Processing recipes do not show up in the recipe book
 	@Override
-	public String getGroup() {
+	public String group() {
 		return "processing";
 	}
 
@@ -203,9 +213,10 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		return serializer;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public RecipeType<?> getType() {
-		return type;
+	public RecipeType<? extends Recipe<I>> getType() {
+		return (RecipeType<? extends Recipe<I>>) type;
 	}
 
 	public IRecipeTypeInfo getTypeInfo() {

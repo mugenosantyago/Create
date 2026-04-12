@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -53,7 +54,7 @@ public class DynamicComponent {
 	public void read(BlockPos pos, CompoundTag nbt, HolderLookup.Provider registries) {
 		rawCustomText = getJsonFromString(nbt.getStringOr("RawCustomText", ""));
 		try {
-			parsedCustomText = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(nbt.getStringOr("CustomText")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+			parsedCustomText = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(nbt.getStringOr("CustomText", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 		} catch (JsonParseException e) {
 			parsedCustomText = null;
 		}

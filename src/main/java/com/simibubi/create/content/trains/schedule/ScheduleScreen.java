@@ -386,7 +386,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 	}
 
 	protected void renderSchedule(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		UIRenderHelper.drawStretched(graphics, leftPos + 33, topPos + 16, 3, 173, 200,
 			AllGuiTextures.SCHEDULE_STRIP_DARK);
@@ -478,10 +478,8 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		graphics.disableScissor();
 
 		int zLevel = 200;
-		graphics.fillGradient(leftPos + 16, topPos + 16, leftPos + 16 + 220, topPos + 16 + 10, zLevel, 0x77000000,
-			0x00000000);
-		graphics.fillGradient(leftPos + 16, topPos + 179, leftPos + 16 + 220, topPos + 179 + 10, zLevel, 0x00000000,
-			0x77000000);
+		graphics.fillGradient(leftPos + 16, topPos + 16, leftPos + 16 + 220, topPos + 16 + 10, 0x77000000, 0x00000000);
+		graphics.fillGradient(leftPos + 16, topPos + 179, leftPos + 16 + 220, topPos + 179 + 10, 0x00000000, 0x77000000);
 	}
 
 	public int renderScheduleEntry(GuiGraphics graphics, ScheduleEntry entry, int yOffset, int mouseX, int mouseY,
@@ -500,15 +498,15 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		boolean supportsConditions = entry.instruction.supportsConditions();
 		int cardHeight = cardHeader + (supportsConditions ? 24 + maxRows * 18 : 4);
 
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 		matrixStack.translate(leftPos + 25, topPos + yOffset, 0);
 
-		UIRenderHelper.drawStretched(graphics, 0, 1, cardWidth, cardHeight - 2, zLevel, light);
-		UIRenderHelper.drawStretched(graphics, 1, 0, cardWidth - 2, cardHeight, zLevel, light);
-		UIRenderHelper.drawStretched(graphics, 1, 1, cardWidth - 2, cardHeight - 2, zLevel, dark);
-		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeight - 4, zLevel, medium);
-		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeader, zLevel,
+		UIRenderHelper.drawStretched(graphics, 0, 1, cardWidth, cardHeight - 2, light);
+		UIRenderHelper.drawStretched(graphics, 1, 0, cardWidth - 2, cardHeight, light);
+		UIRenderHelper.drawStretched(graphics, 1, 1, cardWidth - 2, cardHeight - 2, dark);
+		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeight - 4, medium);
+		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeader,
 			supportsConditions ? light : medium);
 
 		AllGuiTextures.SCHEDULE_CARD_REMOVE.render(graphics, cardWidth - 14, 2);
@@ -520,7 +518,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		if (i < schedule.entries.size() - 1)
 			AllGuiTextures.SCHEDULE_CARD_MOVE_DOWN.render(graphics, cardWidth, cardHeader);
 
-		UIRenderHelper.drawStretched(graphics, 8, 0, 3, cardHeight + 10, zLevel, AllGuiTextures.SCHEDULE_STRIP_LIGHT);
+		UIRenderHelper.drawStretched(graphics, 8, 0, 3, cardHeight + 10, AllGuiTextures.SCHEDULE_STRIP_LIGHT);
 		(supportsConditions ? AllGuiTextures.SCHEDULE_STRIP_TRAVEL : AllGuiTextures.SCHEDULE_STRIP_ACTION)
 			.render(graphics, 4, 6);
 
@@ -541,7 +539,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		int cardWidth = CARD_WIDTH;
 		int cardHeader = CARD_HEADER;
 
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 		matrixStack.translate(leftPos + 25, topPos + yOffset, 0);
 		int xOffset = 26;
@@ -571,9 +569,8 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 			TransformStack.of(matrixStack)
 				.rotateZDegrees(-90);
 			int zLevel = 200;
-			graphics.fillGradient(-cardHeight + 2, 18, -2 - cardHeader, 28, zLevel, 0x44000000, 0x00000000);
-			graphics.fillGradient(-cardHeight + 2, cardWidth - 26, -2 - cardHeader, cardWidth - 16, zLevel, 0x00000000,
-				0x44000000);
+			graphics.fillGradient(-cardHeight + 2, 18, -2 - cardHeader, 28, 0x44000000, 0x00000000);
+			graphics.fillGradient(-cardHeight + 2, cardWidth - 26, -2 - cardHeader, cardWidth - 16, 0x00000000, 0x44000000);
 		}
 
 		matrixStack.popPose();
@@ -612,7 +609,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		Component text = pair.getSecond();
 		boolean hasItem = !stack.isEmpty();
 		int fieldSize = Math.min(getFieldSize(minSize, pair), 150);
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 
 		AllGuiTextures left =
@@ -974,7 +971,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 
 	@Override
 	protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		if (destinationSuggestions != null) {
 			matrixStack.pushPose();
 			matrixStack.translate(0, 0, 500);
@@ -1029,11 +1026,11 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		if (editingCondition == null && editingDestination == null)
 			return;
 
-		PoseStack matrices = graphics.pose();
+		PoseStack matrices = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrices.pushPose();
 		matrices.translate(0, 0, 200);
 
-		graphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+		graphics.fillGradient(0, 0, this.width, this.height, -804253680);
 		AllGuiTextures.SCHEDULE_EDITOR.render(graphics, leftPos - 2, topPos + 40);
 		AllGuiTextures.PLAYER_INVENTORY.render(graphics, leftPos + 38, topPos + 122);
 		graphics.drawString(font, playerInventoryTitle, leftPos + 46, topPos + 128, 0x505050, false);

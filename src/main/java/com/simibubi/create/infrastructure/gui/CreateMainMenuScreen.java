@@ -93,16 +93,12 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 			if (alpha < 1)
 				vanillaPanorama.render(graphics, this.width, this.height, 1, elapsedPartials);
 			PANORAMA.render(graphics, this.width, this.height, 1, elapsedPartials);
-
-			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
 				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 			graphics.blit(PANORAMA_OVERLAY_TEXTURES, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
 		}
 
-		RenderSystem.enableDepthTest();
-
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		for (int side : Iterate.positiveAndNegative) {
 			ms.pushPose();
@@ -120,8 +116,6 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 				.render(graphics);
 			ms.popPose();
 		}
-
-		RenderSystem.enableBlend();
 
 		ms.pushPose();
 		ms.translate(width / 2 - 32, 32, -10);
@@ -143,8 +137,6 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 					Component.literal(" v" + CreateBuildInfo.VERSION).withStyle(ChatFormatting.BOLD, ChatFormatting.WHITE)),
 			width / 2, 89, 0xFF_E4BB67);
 		ms.popPose();
-
-		RenderSystem.disableDepthTest();
 	}
 
 	protected void init() {
@@ -240,7 +232,7 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 		@Override
 		protected void renderWidget(GuiGraphics graphics, int pMouseX, int pMouseY, float pt) {
 			super.renderWidget(graphics, pMouseX, pMouseY, pt);
-			PoseStack pPoseStack = graphics.pose();
+			PoseStack pPoseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 			pPoseStack.pushPose();
 			pPoseStack.translate(getX() + width / 2 - (icon.getWidth() * scale) / 2, getY() + height / 2 - (icon.getHeight() * scale) / 2, 0);
 			pPoseStack.scale(scale, scale, 1);

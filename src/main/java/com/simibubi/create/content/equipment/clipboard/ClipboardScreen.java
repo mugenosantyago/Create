@@ -294,7 +294,6 @@ public class ClipboardScreen extends AbstractSimiScreen {
 				.isBlank();
 
 			if (isAddress) {
-				RenderSystem.enableBlend();
 				(checked ? AllGuiTextures.CLIPBOARD_ADDRESS_INACTIVE : AllGuiTextures.CLIPBOARD_ADDRESS)
 					.render(graphics, x + 44, y + 50);
 				text = Component.literal(string.substring(1)

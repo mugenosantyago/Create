@@ -250,18 +250,37 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		Inventory inv = player.getInventory();
 		FilterItemStack filter = context.getFilterFromBE();
 
-		for (List<ItemStack> list : Arrays.asList(inv.armor, inv.offhand, inv.items)) {
-			for (int i = 0; i < list.size(); ++i) {
-				ItemStack itemstack = list.get(i);
-				if (itemstack.isEmpty())
-					continue;
-
-				if (list == inv.items && i == inv.selected && filter.test(context.world, itemstack))
-					continue;
-
-				collectOrDropItem(context, itemstack);
-				list.set(i, ItemStack.EMPTY);
+		// In MC 1.21.8, armor and offhand are in EntityEquipment; iterate slots manually
+		java.util.List<net.minecraft.world.item.ItemStack> mainItems = inv.getNonEquipmentItems();
+		// Handle offhand
+		{
+			net.minecraft.world.item.ItemStack offhandItem = player.getOffhandItem();
+			if (!offhandItem.isEmpty()) {
+				collectOrDropItem(context, offhandItem);
+				player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, ItemStack.EMPTY);
 			}
+		}
+		// Handle armor
+		for (net.minecraft.world.entity.EquipmentSlot slot : new net.minecraft.world.entity.EquipmentSlot[]{
+			net.minecraft.world.entity.EquipmentSlot.HEAD, net.minecraft.world.entity.EquipmentSlot.CHEST,
+			net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET}) {
+			net.minecraft.world.item.ItemStack armorItem = player.getItemBySlot(slot);
+			if (!armorItem.isEmpty()) {
+				collectOrDropItem(context, armorItem);
+				player.setItemSlot(slot, ItemStack.EMPTY);
+			}
+		}
+		// Handle main inventory
+		for (int i = 0; i < mainItems.size(); ++i) {
+			ItemStack itemstack = mainItems.get(i);
+			if (itemstack.isEmpty())
+				continue;
+
+			if (i == inv.getSelectedSlot() && filter.test(context.world, itemstack))
+				continue;
+
+			collectOrDropItem(context, itemstack);
+			mainItems.set(i, ItemStack.EMPTY);
 		}
 	}
 

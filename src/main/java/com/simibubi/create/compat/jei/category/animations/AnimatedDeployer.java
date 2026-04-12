@@ -14,7 +14,7 @@ public class AnimatedDeployer extends AnimatedKinetics {
 
 	@Override
 	public void draw(GuiGraphics graphics, int xOffset, int yOffset) {
-		PoseStack matrixStack = graphics.pose();
+		PoseStack matrixStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		matrixStack.pushPose();
 		matrixStack.translate(xOffset, yOffset, 100);
 		matrixStack.mulPose(Axis.XP.rotationDegrees(-15.5f));

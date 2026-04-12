@@ -126,7 +126,7 @@ public class CrushingWheelBlock extends RotatedPillarKineticBlock implements IBE
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
+	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, net.minecraft.world.entity.InsideBlockEffectApplier _applier) {
 		if (entityIn.getY() < pos.getY() + 1.25f || !entityIn.onGround())
 			return;
 

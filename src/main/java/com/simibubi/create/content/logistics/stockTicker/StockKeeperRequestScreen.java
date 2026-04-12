@@ -473,7 +473,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 		if (this != minecraft.screen)
 			return; // stencil buffer does not cooperate with ponders gui fade out
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		float currentScroll = itemScroll.getValue(partialTicks);
 		Couple<Integer> hoveredSlot = getHoveredSlot(mouseX, mouseY);
 
@@ -870,7 +870,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 		}
 
 		boolean craftable = entry instanceof CraftableBigItemStack;
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 
 		float scaleFromHover = 1;
@@ -935,8 +935,6 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 					xOffset = 84;
 					break;
 			}
-
-			RenderSystem.enableBlend();
 			graphics.blit(NUMBERS.location, 14 + x, 10, 0, NUMBERS.getStartX() + xOffset, NUMBERS.getStartY(),
 				spriteWidth, NUMBERS.getHeight(), 256, 256);
 			x += spriteWidth - 1;
@@ -1637,7 +1635,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
 	private Pair<Integer, List<List<BigItemStack>>> maxCraftable(CraftableBigItemStack cbis, InventorySummary summary,
 																 Function<ItemStack, Integer> countModifier, int newTypeLimit) {
-		List<Ingredient> ingredients = cbis.getIngredients();
+		List<Ingredient> ingredients = cbis.placementInfo().ingredients();
 		List<List<BigItemStack>> validEntriesByIngredient = new ArrayList<>();
 		List<BigItemStack> alreadyCreated = new ArrayList<>();
 

@@ -153,7 +153,7 @@ public enum AllRecipeTypes implements IRecipeTypeInfo, StringRepresentable {
 	}
 
 	public <I extends RecipeInput, R extends Recipe<I>> Optional<RecipeHolder<R>> find(I inv, Level world) {
-		return world.getRecipeManager()
+		return com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(world)
 			.getRecipeFor(getType(), inv, world);
 	}
 

@@ -149,14 +149,14 @@ public class WaterWheelRenderer<T extends WaterWheelBlockEntity> extends Kinetic
 		List<BakedQuad> quads = model.getQuads(state, side, random, ModelData.EMPTY, null);
 		if (!quads.isEmpty()) {
 			return quads.get(0)
-				.getSprite();
+				.sprite();
 		}
 		random.setSeed(42L);
 		quads = model.getQuads(state, null, random, ModelData.EMPTY, null);
 		if (!quads.isEmpty()) {
 			for (BakedQuad quad : quads) {
-				if (quad.getDirection() == side) {
-					return quad.getSprite();
+				if (quad.direction() == side) {
+					return quad.sprite();
 				}
 			}
 		}

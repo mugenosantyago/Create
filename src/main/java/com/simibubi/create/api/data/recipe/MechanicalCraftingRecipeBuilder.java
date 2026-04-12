@@ -63,7 +63,7 @@ public class MechanicalCraftingRecipeBuilder {
 	 * Adds a new unique key to the recipe key for use in the pattern
 	 */
 	public MechanicalCraftingRecipeBuilder key(Character c, TagKey<Item> tag) {
-		return this.key(c, Ingredient.of(tag));
+		return this.key(c, com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(tag));
 	}
 
 	/**

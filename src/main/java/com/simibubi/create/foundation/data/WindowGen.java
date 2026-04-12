@@ -77,19 +77,7 @@ public class WindowGen {
 		ResourceLocation side_texture = Create.asResource(palettesDir() + name);
 		Function<Integer, ResourceLocation> ends = i -> Create.asResource(palettesDir() + name + "_" + i + "_end");
 		return windowBlock(name, ingredient, null, renderType, translucent, n -> end_texture, n -> side_texture, color)
-			.blockstate((c, p) -> p.simpleBlock(c.get(), ConfiguredModel.builder()
-				.modelFile(p.models()
-					.cubeColumn(c.getName() + "_1", side_texture, ends.apply(1)))
-				.nextModel()
-				.modelFile(p.models()
-					.cubeColumn(c.getName() + "_2", side_texture, ends.apply(2)))
-				.nextModel()
-				.modelFile(p.models()
-					.cubeColumn(c.getName() + "_3", side_texture, ends.apply(3)))
-				.nextModel()
-				.modelFile(p.models()
-					.cubeColumn(c.getName() + "_4", side_texture, ends.apply(4)))
-				.build()))
+			.defaultBlockstate()
 			.item()
 			.model((c, p) -> p.cubeColumn(c.getName(), side_texture, ends.apply(1)))
 			.build();
@@ -127,15 +115,14 @@ public class WindowGen {
 				.pattern(" # ")
 				.pattern("#X#")
 				.define('#', ingredient.get())
-					.define('X', DataIngredient.tag(Tags.Items.GLASS_BLOCKS_COLORLESS).toVanilla())
+					.define('X', com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(Tags.Items.GLASS_BLOCKS_COLORLESS).toVanilla())
 				.unlockedBy("has_ingredient", RegistrateRecipeProvider.has(ingredient.get()))
 				.save(p))
 			.initialProperties(() -> Blocks.GLASS)
 			.properties(WindowGen::glassProperties)
 			.properties(p -> p.mapColor(color.get()))
 			.loot((t, g) -> t.dropWhenSilkTouch(g))
-			.blockstate((c, p) -> p.simpleBlock(c.get(), p.models()
-				.cubeColumn(c.getName(), sideTexture.apply(c.getName()), endTexture.apply(c.getName()))))
+			.defaultBlockstate()
 			.tag(BlockTags.IMPERMEABLE)
 			.simpleItem();
 	}
@@ -144,13 +131,13 @@ public class WindowGen {
 															  Supplier<ConnectedTextureBehaviour> behaviour) {
 		return REGISTRATE.block(name, ConnectedGlassBlock::new)
 			.onRegister(connectedTextures(behaviour))
-			.addLayer(() -> RenderType::cutout)
+			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT)
 			.initialProperties(() -> Blocks.GLASS)
 			.properties(WindowGen::glassProperties)
 			.loot((t, g) -> t.dropWhenSilkTouch(g))
-				.recipe((c, p) -> p.stonecutting(DataIngredient.tag(Tags.Items.GLASS_BLOCKS_COLORLESS),
+				.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(Tags.Items.GLASS_BLOCKS_COLORLESS),
 				RecipeCategory.BUILDING_BLOCKS, c::get))
-			.blockstate((c, p) -> BlockStateGen.cubeAll(c, p, "palettes/", "framed_glass"))
+			.defaultBlockstate()
 				.tag(Tags.Blocks.GLASS_BLOCKS_COLORLESS, BlockTags.IMPERMEABLE)
 			.item()
 				.tag(Tags.Items.GLASS_BLOCKS_COLORLESS)
@@ -246,7 +233,7 @@ public class WindowGen {
 			.initialProperties(() -> Blocks.GLASS_PANE)
 			.properties(p -> p.mapColor(parent.get()
 				.defaultMapColor()))
-			.blockstate(stateProvider)
+			.defaultBlockstate()
 			.recipe((c, p) -> {
 				ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get(), 16)
 					.pattern("###")
@@ -255,7 +242,7 @@ public class WindowGen {
 					.unlockedBy("has_ingredient", RegistrateRecipeProvider.has(parent.get()))
 					.save(p);
 				if (colorless)
-					p.stonecutting(DataIngredient.tag(Tags.Items.GLASS_PANES_COLORLESS), RecipeCategory.BUILDING_BLOCKS,
+					p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(Tags.Items.GLASS_PANES_COLORLESS), RecipeCategory.BUILDING_BLOCKS,
 						c::get);
 			})
 			.loot((t, g) -> t.dropWhenSilkTouch(g))

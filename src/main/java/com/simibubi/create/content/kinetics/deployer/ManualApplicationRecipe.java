@@ -53,7 +53,7 @@ public class ManualApplicationRecipe extends ItemApplicationRecipe {
 			return;
 
 		RecipeType<Recipe<RecipeWrapper>> type = AllRecipeTypes.ITEM_APPLICATION.getType();
-		Optional<RecipeHolder<Recipe<RecipeWrapper>>> foundRecipe = level.getRecipeManager()
+		Optional<RecipeHolder<Recipe<RecipeWrapper>>> foundRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 			.getAllRecipesFor(type)
 			.stream()
 			.filter(r -> {
@@ -92,7 +92,7 @@ public class ManualApplicationRecipe extends ItemApplicationRecipe {
 			} else {
 				Player player = event.getEntity();
 				InteractionHand hand = event.getHand();
-				ItemStack leftover = heldItem.getCraftingRemainingItem();
+				ItemStack leftover = heldItem.getCraftingRemainder();
 				heldItem.shrink(1);
 				if (heldItem.isEmpty()) {
 					player.setItemInHand(hand, leftover);

@@ -41,9 +41,9 @@ public class CopycatBarsModel extends CopycatModel {
 		if (side != null && (vertical || side.getAxis() == Axis.Y)) {
 			List<BakedQuad> templateQuads = model.getQuads(material, null, rand, wrappedData, renderType);
 			for (BakedQuad quad : templateQuads) {
-				if (quad.getDirection() != Direction.UP)
+				if (quad.direction() != Direction.UP)
 					continue;
-				targetSprite = quad.getSprite();
+				targetSprite = quad.sprite();
 				break;
 			}
 		}
@@ -54,9 +54,9 @@ public class CopycatBarsModel extends CopycatModel {
 		List<BakedQuad> quads = new ArrayList<>();
 
 		for (BakedQuad quad : superQuads) {
-			TextureAtlasSprite original = quad.getSprite();
+			TextureAtlasSprite original = quad.sprite();
 			BakedQuad newQuad = BakedQuadHelper.clone(quad);
-			int[] vertexData = newQuad.getVertices();
+			int[] vertexData = newQuad.vertices();
 			for (int vertex = 0; vertex < 4; vertex++) {
 				BakedQuadHelper.setU(vertexData, vertex, targetSprite
 					.getU(SpriteShiftEntry.getUnInterpolatedU(original, BakedQuadHelper.getU(vertexData, vertex))));

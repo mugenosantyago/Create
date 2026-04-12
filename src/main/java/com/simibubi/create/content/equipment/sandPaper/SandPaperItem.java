@@ -131,8 +131,8 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 				playerInv.placeItemBackInInventory(polished);
 			}
 
-			if (toPolish.hasCraftingRemainingItem()) {
-				playerInv.placeItemBackInInventory(toPolish.getCraftingRemainingItem());
+			if (toPolish.has(net.minecraft.core.component.DataComponents.USE_REMAINDER)) {
+				playerInv.placeItemBackInInventory(toPolish.getCraftingRemainder());
 			}
 
 			stack.remove(AllDataComponents.SAND_PAPER_POLISHING);

@@ -290,8 +290,8 @@ public class MechanicalCrafterBlockEntity extends KineticBlockEntity implements 
 					List<ItemStack> containers = new ArrayList<>();
 					groupedItems.grid.values()
 						.forEach(stack -> {
-							if (stack.hasCraftingRemainingItem())
-								containers.add(stack.getCraftingRemainingItem()
+							if (stack.has(net.minecraft.core.component.DataComponents.USE_REMAINDER))
+								containers.add(stack.getCraftingRemainder()
 									.copy());
 						});
 

@@ -129,7 +129,7 @@ public class SlidingDoorBlock extends DoorBlock implements IWrenchable, IBE<Slid
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
-		BlockState blockState = super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+		BlockState blockState = super.updateShape(pState, pLevel, _scheduledTicks, pCurrentPos, pFacing, pFacingPos, pFacingState, _random);
 		if (blockState.isAir())
 			return blockState;
 		DoubleBlockHalf doubleblockhalf = blockState.getValue(HALF);

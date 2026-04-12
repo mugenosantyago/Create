@@ -32,7 +32,7 @@ public class MechanicalCraftingRecipe extends ShapedRecipe {
 	}
 
 	private static MechanicalCraftingRecipe fromShaped(ShapedRecipe recipe, boolean acceptMirrored) {
-		return new MechanicalCraftingRecipe(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).create$getPattern(), recipe.getResultItem(null), acceptMirrored);
+		return new MechanicalCraftingRecipe(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).create$getPattern(), recipe.assemble(null, null), acceptMirrored);
 	}
 
 	@Override

@@ -75,7 +75,7 @@ public class AllItemAttributeTypes {
 		BOOK_COPY = register("book_copy", new BookCopyAttribute.Type());
 
 	private static <T extends Recipe<SingleRecipeInput>> boolean testRecipe(ItemStack s, Level w, RecipeType<T> type) {
-		return w.getRecipeManager()
+		return com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(w)
 				.getRecipeFor(type, new SingleRecipeInput(s.copy()), w)
 				.isPresent();
 	}

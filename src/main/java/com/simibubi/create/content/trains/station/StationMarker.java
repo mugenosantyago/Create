@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 
@@ -35,7 +36,7 @@ public class StationMarker {
 	public static StationMarker load(CompoundTag tag, HolderLookup.Provider registries) {
 		BlockPos source = NBTHelper.readBlockPos(tag, "source");
 		BlockPos target = NBTHelper.readBlockPos(tag, "target");
-		Component name = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("name")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+		Component name = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("name", "")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
 		if (name == null) name = CommonComponents.EMPTY;
 
 		return new StationMarker(source, target, name);

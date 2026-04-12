@@ -323,7 +323,7 @@ public class FrogAndConveyorScenes {
 		@Override
 		protected void renderLast(PonderLevel world, MultiBufferSource buffer, GuiGraphics graphics, float fade,
 								  float pt) {
-			PoseStack poseStack = graphics.pose();
+			PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 			EntityRenderDispatcher entityrenderermanager = Minecraft.getInstance()
 				.getEntityRenderDispatcher();
 

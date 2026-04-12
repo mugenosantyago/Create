@@ -1132,7 +1132,7 @@ public class Train {
 
 				stack = fuelItems.extractItem(slot, 1, false);
 				fuelTicks += burnTime * stack.getCount();
-				ItemStack containerItem = stack.getCraftingRemainingItem();
+				ItemStack containerItem = stack.getCraftingRemainder();
 				if (!containerItem.isEmpty())
 					ItemHandlerHelper.insertItemStacked(fuelItems, containerItem, false);
 				return;
@@ -1226,7 +1226,7 @@ public class Train {
 			train.speedBeforeStall = tag.getDoubleOr("SpeedBeforeStall", 0);
 		train.targetSpeed = tag.getDoubleOr("TargetSpeed", 0);
 		train.icon = TrainIconType.byId(ResourceLocation.parse(tag.getStringOr("IconType", "")));
-		train.name = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("Name")).result().orElse(net.minecraft.network.chat.Component.empty()), registries);
+		train.name = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("Name", "Train"))).result().orElse(net.minecraft.network.chat.Component.literal("Train"));
 		train.currentStation = tag.contains("Station") ? tag.getIntArray("Station").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 		train.currentlyBackwards = tag.getBooleanOr("Backwards", false);
 		train.derailed = tag.getBooleanOr("Derailed", false);

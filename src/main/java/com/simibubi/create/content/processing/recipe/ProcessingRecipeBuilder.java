@@ -115,13 +115,13 @@ public abstract class ProcessingRecipeBuilder<P extends ProcessingRecipeParams, 
 			errors.add(recipe.getClass().getSimpleName() + "with id " + id + " failed validation:");
 			Create.LOGGER.warn(Joiner.on('\n').join(errors));
 		}
-		consumer.accept(id, recipe, null, recipeConditions.toArray(new ICondition[0]));
+		consumer.accept(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id), recipe, null, recipeConditions.toArray(new ICondition[0]));
 	}
 
 	// Datagen shortcuts
 
 	public S require(TagKey<Item> tag) {
-		return require(Ingredient.of(tag));
+		return require(com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(tag));
 	}
 
 	public S require(ItemLike item) {

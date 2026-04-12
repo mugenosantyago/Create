@@ -99,7 +99,7 @@ public class JourneyTrainMap implements IClientPlugin {
 		double guiScale = (double) window.getScreenWidth() / window.getGuiScaledWidth();
 		double scale = state.blockSize / guiScale;
 
-		PoseStack pose = graphics.pose();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		pose.pushPose();
 
 		pose.translate(screen.width / 2.0f, screen.height / 2.0f, 0);

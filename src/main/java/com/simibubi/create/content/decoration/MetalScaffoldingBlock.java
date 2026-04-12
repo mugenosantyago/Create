@@ -62,7 +62,7 @@ public class MetalScaffoldingBlock extends ScaffoldingBlock implements IWrenchab
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
-		super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+		super.updateShape(pState, pLevel, _scheduledTicks, pCurrentPos, pFacing, pFacingPos, pFacingState, _random);
 		BlockState stateBelow = pLevel.getBlockState(pCurrentPos.below());
 		return pFacing == Direction.DOWN ? pState.setValue(BOTTOM,
 			!stateBelow.is(this) && !stateBelow.isFaceSturdy(pLevel, pCurrentPos.below(), Direction.UP)) : pState;

@@ -51,12 +51,11 @@ public class CubeParticle extends Particle {
 
 			// transparent, additive blending
 			RenderSystem.depthMask(false);
-			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
 
 			// opaque
 //			RenderSystem.depthMask(true);
-//			RenderSystem.disableBlend();
+//
 //			RenderSystem.enableLighting();
 
 			BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);

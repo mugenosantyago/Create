@@ -71,12 +71,12 @@ public class BeltModel extends BakedModelWrapper<BakedModel> {
 
 		for (int i = 0; i < quads.size(); i++) {
 			BakedQuad quad = quads.get(i);
-			TextureAtlasSprite original = quad.getSprite();
+			TextureAtlasSprite original = quad.sprite();
 			if (original != SPRITE_SHIFT.getOriginal())
 				continue;
 
 			BakedQuad newQuad = BakedQuadHelper.clone(quad);
-			int[] vertexData = newQuad.getVertices();
+			int[] vertexData = newQuad.vertices();
 
 			for (int vertex = 0; vertex < 4; vertex++) {
 				float u = BakedQuadHelper.getU(vertexData, vertex);

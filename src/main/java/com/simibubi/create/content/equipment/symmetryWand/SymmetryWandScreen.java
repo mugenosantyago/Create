@@ -138,7 +138,7 @@ public class SymmetryWandScreen extends AbstractSimiScreen {
 	}
 
 	protected void renderBlock(GuiGraphics graphics, int x, int y) {
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		ms.pushPose();
 		ms.translate(x + 26, y + 39, 20);

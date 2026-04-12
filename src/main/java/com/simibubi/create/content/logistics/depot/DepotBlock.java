@@ -52,7 +52,7 @@ public class DepotBlock extends Block implements IBE<DepotBlockEntity>, IWrencha
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
-		updateWater(pLevel, pState, pCurrentPos);
+		updateWater(pLevel, _scheduledTicks, pState, pCurrentPos);
 		return pState;
 	}
 
@@ -87,8 +87,8 @@ public class DepotBlock extends Block implements IBE<DepotBlockEntity>, IWrencha
 	}
 
 	@Override
-	public void updateEntityAfterFallOn(BlockGetter worldIn, Entity entityIn) {
-		super.updateEntityAfterFallOn(worldIn, entityIn);
+	public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
+		super.updateEntityMovementAfterFallOn(worldIn, entityIn);
 		SharedDepotBlockMethods.onLanded(worldIn, entityIn);
 	}
 

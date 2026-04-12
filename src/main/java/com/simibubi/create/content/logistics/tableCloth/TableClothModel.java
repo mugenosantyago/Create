@@ -73,9 +73,9 @@ public class TableClothModel extends BakedModelWrapperWithData {
 
 		for (BakedQuad quad : pm.get()
 			.getQuads(null, null, rand, ModelData.EMPTY, renderType)) {
-			TextureAtlasSprite original = quad.getSprite();
+			TextureAtlasSprite original = quad.sprite();
 			BakedQuad newQuad = BakedQuadHelper.clone(quad);
-			int[] vertexData = newQuad.getVertices();
+			int[] vertexData = newQuad.vertices();
 			for (int vertex = 0; vertex < 4; vertex++) {
 				BakedQuadHelper.setU(vertexData, vertex, targetSprite
 					.getU(SpriteShiftEntry.getUnInterpolatedU(original, BakedQuadHelper.getU(vertexData, vertex))));

@@ -72,7 +72,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	public static <R extends ProcessingRecipe<?, ?>> Optional<RecipeHolder<R>> getRecipe(Level level, ItemStack item,
 																						 RecipeType<R> type, Class<R> recipeClass) {
-		List<RecipeHolder<SequencedAssemblyRecipe>> all = level.getRecipeManager()
+		List<RecipeHolder<SequencedAssemblyRecipe>> all = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 			.getAllRecipesFor(AllRecipeTypes.SEQUENCED_ASSEMBLY.getType());
 		for (RecipeHolder<SequencedAssemblyRecipe> sequencedAssemblyRecipe : all) {
 			if (!sequencedAssemblyRecipe.value().appliesTo(sequencedAssemblyRecipe.id(), item))
@@ -88,7 +88,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	}
 
 	public static <R extends ProcessingRecipe<?, ?>> List<RecipeHolder<R>> getRecipes(Level level, ItemStack item, RecipeType<R> type, Class<R> recipeClass, Predicate<? super RecipeHolder<R>> recipeFilter) {
-		List<RecipeHolder<SequencedAssemblyRecipe>> all = level.getRecipeManager()
+		List<RecipeHolder<SequencedAssemblyRecipe>> all = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
 			.getAllRecipesFor(AllRecipeTypes.SEQUENCED_ASSEMBLY.getType());
 
 		List<RecipeHolder<R>> result = new ArrayList<>();
@@ -176,12 +176,10 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		return ItemStack.EMPTY;
 	}
 
-	@Override
 	public boolean canCraftInDimensions(int width, int height) {
 		return false;
 	}
 
-	@Override
 	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return resultPool.getFirst().getStack();
 	}
@@ -216,8 +214,8 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		SequencedAssembly sequencedAssembly = stack.get(AllDataComponents.SEQUENCED_ASSEMBLY);
 		@SuppressWarnings({"RedundantCast", "DataFlowIssue"}) // The java compiler thinks `byKey` returns an Optional<RecipeHolder<?>>
 		Optional<RecipeHolder<? extends Recipe<?>>> optionalRecipe =
-			(Optional<RecipeHolder<?>>) Minecraft.getInstance().level.getRecipeManager()
-				.byKey(sequencedAssembly.id());
+			(Optional<RecipeHolder<?>>) com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(Minecraft.getInstance().level)
+				.byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, sequencedAssembly.id()));
 		if (optionalRecipe.isEmpty())
 			return;
 		Recipe<?> recipe = optionalRecipe.get().value();

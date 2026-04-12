@@ -98,8 +98,7 @@ public class TrainMapManager {
 		boolean enabled = AllConfigs.client().showTrainMapOverlay.get();
 		if (CreateClient.RAILWAYS.trackNetworks.isEmpty())
 			return;
-		RenderSystem.enableBlend();
-		PoseStack pose = graphics.pose();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		pose.pushPose();
 		pose.translate(0, 0, 300);
 		AllGuiTextures.TRAINMAP_TOGGLE_PANEL.render(graphics, x, y);
@@ -243,8 +242,7 @@ public class TrainMapManager {
 
 	private static Object drawPoints(GuiGraphics graphics, int mouseX, int mouseY, Object hoveredElement,
 		Rect2i bounds) {
-		PoseStack pose = graphics.pose();
-		RenderSystem.enableDepthTest();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		for (TrackGraph graph : CreateClient.RAILWAYS.trackNetworks.values()) {
 			for (GlobalStation station : graph.getPoints(EdgePointType.STATION)) {
@@ -311,9 +309,7 @@ public class TrainMapManager {
 
 	private static Object drawTrains(GuiGraphics graphics, int mouseX, int mouseY, Object hoveredElement,
 		Rect2i bounds) {
-		PoseStack pose = graphics.pose();
-		RenderSystem.enableDepthTest();
-		RenderSystem.enableBlend();
+		PoseStack pose = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 
 		int spriteYOffset = -3;
 

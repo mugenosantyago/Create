@@ -200,7 +200,7 @@ public class ThresholdSwitchScreen extends AbstractSimiScreen {
 		AllGuiTextures.THRESHOLD_SWITCH_CURRENT_STATE.render(graphics, torchX - 3,
 			torchY - 4 + (highlightTopRow ? 0 : 24));
 
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		ms.translate(torchX - 5, torchY + 14, 200);
 		TransformStack.of(ms)

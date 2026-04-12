@@ -173,7 +173,7 @@ public class BlueprintOverlayRenderer {
 
 	private static boolean canAfford(Player player, BigItemStack entry) {
 		int itemsPresent = 0;
-		for (int i = 0; i < player.getInventory().items.size(); i++) {
+		for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
 			ItemStack item = player.getInventory()
 				.getItem(i);
 			if (item.isEmpty() || !ItemStack.isSameItemSameComponents(item, entry.stack))
@@ -259,7 +259,7 @@ public class BlueprintOverlayRenderer {
 			if (success) {
 				CraftingContainer craftingInventory = new BlueprintCraftingInventory(craftingGrid);
 				if (!recipe.isPresent())
-					recipe = mc.level.getRecipeManager()
+					recipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(mc.level)
 						.getRecipeFor(RecipeType.CRAFTING, craftingInventory.asCraftInput(), mc.level);
 				ItemStack resultFromRecipe = recipe.filter(r -> r.value().matches(craftingInventory.asCraftInput(), mc.level))
 					.map(r -> r.value().assemble(craftingInventory.asCraftInput(), mc.level.registryAccess()))
@@ -353,7 +353,6 @@ public class BlueprintOverlayRenderer {
 
 		// Ingredients
 		for (Pair<ItemStack, Boolean> pair : ingredients) {
-			RenderSystem.enableBlend();
 			(pair.getSecond() ? AllGuiTextures.HOTSLOT_ACTIVE : AllGuiTextures.HOTSLOT).render(guiGraphics, x, y);
 			ItemStack itemStack = pair.getFirst();
 			String count = shopContext != null && !shopContext.checkout() || pair.getSecond() ? null
@@ -367,7 +366,6 @@ public class BlueprintOverlayRenderer {
 
 		// Arrow
 		x += 5;
-		RenderSystem.enableBlend();
 		if (invalidShop)
 			AllGuiTextures.HOTSLOT_ARROW_BAD.render(guiGraphics, x, y + 4);
 		else
@@ -411,8 +409,6 @@ public class BlueprintOverlayRenderer {
 							.getGuiScaledHeight());
 				}
 		}
-
-		RenderSystem.disableBlend();
 	}
 
 	public static void drawItemStack(GuiGraphics graphics, Minecraft mc, int x, int y, ItemStack itemStack,

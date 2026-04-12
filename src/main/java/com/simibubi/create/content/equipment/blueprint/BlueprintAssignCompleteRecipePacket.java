@@ -16,8 +16,7 @@ public record BlueprintAssignCompleteRecipePacket(ResourceLocation recipeId) imp
 	@Override
 	public void handle(ServerPlayer player) {
 		if (player.containerMenu instanceof BlueprintMenu c) {
-			player.level()
-					.getRecipeManager()
+			com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(player.level())
 					.byKey(recipeId)
 					.ifPresent(r -> BlueprintItem.assignCompleteRecipe(c.player.level(), c.ghostInventory, r.value()));
 		}

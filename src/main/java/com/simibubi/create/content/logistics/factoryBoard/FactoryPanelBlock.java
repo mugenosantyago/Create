@@ -323,8 +323,8 @@ public class FactoryPanelBlock extends FaceAttachedHorizontalDirectionalBlock
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
-		updateWater(pLevel, pState, pCurrentPos);
-		return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+		updateWater(pLevel, _scheduledTicks, pState, pCurrentPos);
+		return super.updateShape(pState, pLevel, _scheduledTicks, pCurrentPos, pFacing, pFacingPos, pFacingState, _random);
 	}
 
 	@Override

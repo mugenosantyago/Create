@@ -112,7 +112,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn) {
+	public void entityInside(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, net.minecraft.world.entity.InsideBlockEffectApplier _applier) {
 		if (worldIn.isClientSide)
 			return;
 		ItemStack stack = ItemHelper.fromItemEntity(entityIn);
@@ -165,7 +165,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 
 	@Override
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction direction, BlockPos p_196271_6_, BlockState p_196271_3_, net.minecraft.util.RandomSource _random) {
-		updateWater(world, state, pos);
+		updateWater(world, _scheduledTicks, state, pos);
 		if (getFacing(state).getAxis()
 			.isVertical() || direction != Direction.DOWN)
 			return state;

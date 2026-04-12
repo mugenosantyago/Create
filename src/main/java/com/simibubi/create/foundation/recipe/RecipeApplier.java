@@ -53,13 +53,13 @@ public class RecipeApplier {
 
 					stacks.add(stack);
 				}
-				if (returnProcessingRemainder && stackIn.hasCraftingRemainingItem()) {
-					ItemHelper.addToList(stackIn.getCraftingRemainingItem(), stacks);
+				if (returnProcessingRemainder && stackIn.has(net.minecraft.core.component.DataComponents.USE_REMAINDER)) {
+					ItemHelper.addToList(stackIn.getCraftingRemainder(), stacks);
 				}
 
 			}
 		} else {
-			ItemStack out = recipe.getResultItem(level.registryAccess())
+			ItemStack out = recipe.assemble(null, null)
 				.copy();
 			stacks = ItemHelper.multipliedOutput(stackIn, out);
 		}

@@ -445,12 +445,10 @@ public class VirtualRenderWorld extends Level implements VisualizationLevel {
 		return null;
 	}
 
-	@Override
 	public void setMapData(MapId mapId, MapItemSavedData mapItemSavedData) {
 	}
 
 	@NotNull
-	@Override
 	public MapId getFreeMapId() {
 		return new MapId(0);
 	}

@@ -81,10 +81,10 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 		float yRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getYRot(state);
 
 		for (BakedQuad bakedQuad : quadsToAdd) {
-			int[] vertices = bakedQuad.getVertices();
+			int[] vertices = bakedQuad.vertices();
 			int[] transformedVertices = Arrays.copyOf(vertices, vertices.length);
 
-			Vec3 quadNormal = Vec3.atLowerCornerOf(bakedQuad.getDirection()
+			Vec3 quadNormal = Vec3.atLowerCornerOf(bakedQuad.direction()
 				.getUnitVec3i());
 			quadNormal = VecHelper.rotate(quadNormal, 180, Axis.Y);
 			quadNormal = VecHelper.rotate(quadNormal, xRot + 90, Axis.X);
@@ -109,8 +109,8 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 
 			Direction newNormal = Direction.fromDelta((int) Math.round(quadNormal.x), (int) Math.round(quadNormal.y),
 				(int) Math.round(quadNormal.z));
-			quads.add(new BakedQuad(transformedVertices, bakedQuad.getTintIndex(), newNormal, bakedQuad.getSprite(),
-				!ponder && bakedQuad.isShade()));
+			quads.add(new BakedQuad(transformedVertices, bakedQuad.tintIndex(), newNormal, bakedQuad.sprite(),
+				!ponder && bakedQuad.shade()));
 		}
 
 	}

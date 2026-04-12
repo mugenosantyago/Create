@@ -125,7 +125,7 @@ public abstract class ZapperScreen extends AbstractSimiScreen {
 	}
 
 	protected void renderBlock(GuiGraphics graphics, int x, int y) {
-		PoseStack ms = graphics.pose();
+		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();
 		ms.translate(x + 32, y + 42, 120);
 		ms.mulPose(Axis.XP.rotationDegrees(-25f));
