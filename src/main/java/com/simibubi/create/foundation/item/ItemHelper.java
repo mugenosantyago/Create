@@ -46,6 +46,11 @@ public class ItemHelper {
 		return Util.makeDescriptionId("block", BuiltInRegistries.BLOCK.getKey(block));
 	}
 
+	/** MC 1.21+: {@link Ingredient#getItems()} removed; use {@link Ingredient#items()} instead. */
+	public static List<ItemStack> ingredientItems(Ingredient ingredient) {
+		return ingredient.items().map(ItemStack::new).toList();
+	}
+
 	public static boolean sameItem(ItemStack stack, ItemStack otherStack) {
 		return !otherStack.isEmpty() && stack.is(otherStack.getItem());
 	}

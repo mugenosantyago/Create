@@ -22,6 +22,7 @@ import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -279,7 +280,7 @@ public class SignalBoundary extends TrackEdgePoint {
 
 		for (int i = 1; i <= 2; i++)
 			if (nbt.contains("Group" + i))
-				groups.set(i == 1, nbt.getUUID("Group" + i));
+				groups.set(i == 1, nbt.getIntArray("Group" + i).map(UUIDUtil::uuidFromIntArray).orElse(null));
 		for (int i = 1; i <= 2; i++)
 			sidesToUpdate.set(i == 1, nbt.contains("Update" + i));
 		for (int i = 1; i <= 2; i++)
@@ -312,7 +313,7 @@ public class SignalBoundary extends TrackEdgePoint {
 					}));
 		for (int i = 1; i <= 2; i++)
 			if (groups.get(i == 1) != null)
-				nbt.putUUID("Group" + i, groups.get(i == 1));
+				nbt.putIntArray("Group" + i, UUIDUtil.uuidToIntArray(groups.get(i == 1)));
 		for (int i = 1; i <= 2; i++)
 			if (sidesToUpdate.get(i == 1))
 				nbt.putBoolean("Update" + i, true);

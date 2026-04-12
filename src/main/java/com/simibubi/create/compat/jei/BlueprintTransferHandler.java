@@ -12,7 +12,7 @@ import net.createmod.catnip.platform.CatnipServices;
 
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.types.IRecipeType;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -36,7 +36,7 @@ public class BlueprintTransferHandler implements IRecipeTransferHandler<Blueprin
 	}
 
 	@Override
-	public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+	public IRecipeHolderType<CraftingRecipe> getRecipeType() {
 		return RecipeTypes.CRAFTING;
 	}
 

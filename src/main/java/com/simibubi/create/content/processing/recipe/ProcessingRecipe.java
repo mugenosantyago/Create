@@ -118,7 +118,6 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 		return params;
 	}
 
-	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		return ingredients;
 	}
@@ -132,7 +131,7 @@ public abstract class ProcessingRecipe<I extends RecipeInput, P extends Processi
 	// Implement Recipe.recipeBookCategory() for 1.21.8 compatibility
 	@Override
 	public net.minecraft.world.item.crafting.RecipeBookCategory recipeBookCategory() {
-		return net.minecraft.world.item.crafting.RecipeBookCategories.CRAFTING_OTHER;
+		return net.minecraft.world.item.crafting.RecipeBookCategories.CRAFTING_MISC;
 	}
 
 	public NonNullList<SizedFluidIngredient> getFluidIngredients() {

@@ -1,5 +1,7 @@
 package com.simibubi.create.foundation.fluid;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.content.fluids.tank.CreativeFluidTankBlockEntity;
@@ -21,6 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -264,6 +268,13 @@ public class FluidHelper {
 		}
 
 		return null;
+	}
+
+	/** MC 1.21+: {@link SizedFluidIngredient#getFluids()} removed; use {@link SizedFluidIngredient#ingredient()} and {@link net.neoforged.neoforge.fluids.crafting.FluidIngredient#fluids()}. */
+	public static List<FluidStack> sizedIngredientToFluidStacks(SizedFluidIngredient ingredient) {
+		return ingredient.ingredient().fluids().stream()
+			.map(holder -> new FluidStack(holder, ingredient.amount()))
+			.toList();
 	}
 
 }

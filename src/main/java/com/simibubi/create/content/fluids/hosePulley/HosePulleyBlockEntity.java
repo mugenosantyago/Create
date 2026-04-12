@@ -10,6 +10,7 @@ import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import com.simibubi.create.foundation.item.TooltipHelper;
+import com.simibubi.create.foundation.utility.NbtCompat;
 import com.simibubi.create.foundation.utility.ServerSpeedProvider;
 
 import net.createmod.catnip.animation.LerpedFloat;
@@ -159,7 +160,7 @@ public class HosePulleyBlockEntity extends KineticBlockEntity {
 		if (clientPacket)
 			offset.forceNextSync();
 		compound.put("Offset", offset.writeNBT());
-		compound.put("Tank", internalTank.writeToNBT(registries, new CompoundTag()));
+		compound.put("Tank", com.simibubi.create.foundation.utility.NbtCompat.serializeFluidTank(internalTank, registries));
 		super.write(compound, registries, clientPacket);
 		if (clientPacket)
 			compound.putBoolean("Infinite", infinite);
@@ -169,7 +170,7 @@ public class HosePulleyBlockEntity extends KineticBlockEntity {
 	protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		offset.readNBT(compound.getCompoundOrEmpty("Offset"), clientPacket);
 
-		internalTank.readFromNBT(registries, compound.getCompoundOrEmpty("Tank"));
+		NbtCompat.deserializeFluidTank(internalTank, registries, compound.getCompoundOrEmpty("Tank"));
 		super.read(compound, registries, clientPacket);
 		if (clientPacket)
 			infinite = compound.getBooleanOr("Infinite", false);

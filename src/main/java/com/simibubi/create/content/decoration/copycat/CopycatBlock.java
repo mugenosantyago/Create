@@ -325,7 +325,7 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 		BlockState material = getMaterial(level, pos);
 		if (AllBlocks.COPYCAT_BASE.has(material))
 			return new ItemStack(this);
-		return material.getBlock().getCloneItemStack(level, pos, material, includeData);
+		return material.getCloneItemStack(level, pos, includeData);
 	}
 
 	@Override

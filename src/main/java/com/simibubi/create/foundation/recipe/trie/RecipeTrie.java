@@ -15,6 +15,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
+import com.simibubi.create.foundation.fluid.FluidHelper;
+import com.simibubi.create.foundation.item.ItemHelper;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -194,7 +196,7 @@ public class RecipeTrie<R extends Recipe<?>> {
 				}
 
 				Set<AbstractVariant> variants = new HashSet<>();
-				for (ItemStack stack : ingredient.getItems()) {
+				for (ItemStack stack : ItemHelper.ingredientItems(ingredient)) {
 					variants.add(getOrAssignVariant(stack.getItem()));
 				}
 
@@ -209,7 +211,7 @@ public class RecipeTrie<R extends Recipe<?>> {
 					}
 
 					Set<AbstractVariant> variants = new HashSet<>();
-					for (FluidStack stack : ingredient.getFluids()) {
+					for (FluidStack stack : FluidHelper.sizedIngredientToFluidStacks(ingredient)) {
 						variants.add(getOrAssignVariant(stack.getFluid()));
 					}
 

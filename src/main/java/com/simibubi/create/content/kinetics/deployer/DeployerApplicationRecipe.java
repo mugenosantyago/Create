@@ -8,6 +8,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.compat.jei.category.sequencedAssembly.SequencedAssemblySubCategory;
+import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.sequenced.IAssemblyRecipe;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -44,11 +45,12 @@ public class DeployerApplicationRecipe extends ItemApplicationRecipe implements 
 				baseLoc.getNamespace(),
 				baseLoc.getPath() + "_using_deployer"
 		);
+		ProcessingRecipe<?, ?> polish = (ProcessingRecipe<?, ?>) sandpaperRecipe.value();
 		DeployerApplicationRecipe recipe = new ItemApplicationRecipe.Builder<>(DeployerApplicationRecipe::new, id)
-				.require(sandpaperRecipe.value().placementInfo().ingredients()
+				.require(polish.placementInfo().ingredients()
 						.get(0))
 						.require(AllItemTags.SANDPAPER.tag)
-						.output(sandpaperRecipe.value().assemble(new SingleRecipeInput(ItemStack.EMPTY), GlobalRegistryAccess.getOrThrow()))
+						.output(polish.getResultItem(GlobalRegistryAccess.getOrThrow()))
 						.build();
 
 		return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);

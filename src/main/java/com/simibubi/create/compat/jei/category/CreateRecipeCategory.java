@@ -25,7 +25,9 @@ import com.simibubi.create.compat.jei.DoubleItemIcon;
 import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.ItemIcon;
 import com.simibubi.create.content.fluids.potion.PotionFluidHandler;
+import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
+import com.simibubi.create.foundation.fluid.FluidHelper;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -55,6 +57,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ItemLike;
 
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -154,7 +157,12 @@ public abstract class CreateRecipeCategory<T extends Recipe<?>> implements IReci
 		ClientLevel level = Minecraft.getInstance().level;
 		if (level == null)
 			return ItemStack.EMPTY;
-		return recipe.assemble(null, null);
+		if (recipe instanceof ProcessingRecipe<?, ?> processing)
+			return processing.getResultItem(level.registryAccess());
+		SingleRecipeInput input = new SingleRecipeInput(ItemStack.EMPTY);
+		@SuppressWarnings("unchecked")
+		ItemStack result = ((Recipe<RecipeInput>) recipe).assemble(input, level.registryAccess());
+		return result;
 	}
 
 	public static IRecipeSlotRichTooltipCallback addStochasticTooltip(ProcessingOutput output) {
@@ -171,7 +179,7 @@ public abstract class CreateRecipeCategory<T extends Recipe<?>> implements IReci
 		int amount = ingredient.amount();
 		return builder.addSlot(RecipeIngredientRole.INPUT, x, y)
 			.setBackground(getRenderedSlot(), -1, -1)
-			.addIngredients(NeoForgeTypes.FLUID_STACK, Arrays.asList(ingredient.getFluids()))
+			.addIngredients(NeoForgeTypes.FLUID_STACK, FluidHelper.sizedIngredientToFluidStacks(ingredient))
 			.setFluidRenderer(amount, false, 16, 16) // make fluid take up the full slot
 			.addTooltipCallback(CreateRecipeCategory::addPotionTooltip);
 	}

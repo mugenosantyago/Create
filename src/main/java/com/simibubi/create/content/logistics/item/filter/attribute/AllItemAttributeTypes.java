@@ -20,6 +20,7 @@ import com.simibubi.create.content.logistics.item.filter.attribute.attributes.Sh
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
@@ -52,7 +53,7 @@ public class AllItemAttributeTypes {
 			EquipmentSlot.Type type = equippable != null ? equippable.slot().getType() : EquipmentSlot.MAINHAND.getType();
 			return type != EquipmentSlot.Type.HAND;
 		}),
-		FURNACE_FUEL = singleton("furnace_fuel", AbstractFurnaceBlockEntity::isFuel),
+		FURNACE_FUEL = singleton("furnace_fuel", (s, w) -> s.getBurnTime(RecipeType.SMELTING, w.fuelValues()) > 0),
 		WASHABLE = singleton("washable", AllFanProcessingTypes.SPLASHING::canProcess),
 		HAUNTABLE = singleton("hauntable", AllFanProcessingTypes.HAUNTING::canProcess),
 		CRUSHABLE = singleton("crushable", (s, w) -> testRecipe(s, w, AllRecipeTypes.CRUSHING.getType())

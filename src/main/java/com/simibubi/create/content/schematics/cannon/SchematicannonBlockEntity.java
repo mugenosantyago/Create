@@ -179,7 +179,8 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 
 		missingItem = null;
 		if (compound.contains("MissingItem")) {
-			ItemStack.parse(registries, compound.getCompoundOrEmpty("MissingItem")).ifPresent(i -> missingItem = i);
+			ItemStack parsed = NbtCompat.parseOptionalItemStack(registries, compound.get("MissingItem"));
+			missingItem = parsed.isEmpty() ? null : parsed;
 		}
 
 		// Settings

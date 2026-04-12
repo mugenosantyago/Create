@@ -1,7 +1,5 @@
 package com.simibubi.create.compat.jei.category.sequencedAssembly;
 
-import java.util.Arrays;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.compat.jei.category.animations.AnimatedDeployer;
@@ -84,10 +82,9 @@ public abstract class SequencedAssemblySubCategory {
 			ms.pushPose();
 			ms.translate(-7, 50, 0);
 			ms.scale(.75f, .75f, .75f);
-			spout.withFluids(Arrays.asList(recipe.getRecipe()
+			spout.withFluids(FluidHelper.sizedIngredientToFluidStacks(recipe.getRecipe()
 					.getFluidIngredients()
-					.get(0)
-					.getFluids()))
+					.get(0)))
 				.draw(graphics, getWidth() / 2, 0);
 			ms.popPose();
 		}

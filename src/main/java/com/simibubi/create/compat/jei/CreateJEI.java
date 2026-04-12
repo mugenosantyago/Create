@@ -102,6 +102,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.block.Blocks;
@@ -387,7 +388,7 @@ public class CreateJEI implements IModPlugin {
 
 			if (potionContents.hasEffects()) {
 				Set<Holder<MobEffect>> effectSet = new HashSet<>();
-				potionContents.forEachEffect(mei -> effectSet.add(mei.getEffect()));
+				potionContents.forEachEffect(mei -> effectSet.add(mei.getEffect()), 1.0f);
 				if (!visitedEffects.add(effectSet))
 					continue;
 }
@@ -462,20 +463,23 @@ public class CreateJEI implements IModPlugin {
 			.isEmpty()) {
 			return false;
 		}
-		ItemStack[] matchingStacks = recipe1.placementInfo().ingredients()
-			.getFirst()
-			.getItems();
-		if (matchingStacks.length == 0) {
+		List<ItemStack> matchingStacks = ItemHelper.ingredientItems(recipe1.placementInfo().ingredients()
+			.getFirst());
+		if (matchingStacks.isEmpty()) {
 			return false;
 		}
 		return recipe2.placementInfo().ingredients()
 			.getFirst()
-			.test(matchingStacks[0]);
+			.test(matchingStacks.getFirst());
 	}
 
+	@SuppressWarnings("unchecked")
 	public static boolean doOutputsMatch(Recipe<?> recipe1, Recipe<?> recipe2) {
 		RegistryAccess registryAccess = Minecraft.getInstance().level.registryAccess();
-		return ItemHelper.sameItem(recipe1.assemble(null, null), recipe2.assemble(null, null));
+		SingleRecipeInput input = new SingleRecipeInput(ItemStack.EMPTY);
+		return ItemHelper.sameItem(
+			((Recipe<RecipeInput>) recipe1).assemble(input, registryAccess),
+			((Recipe<RecipeInput>) recipe2).assemble(input, registryAccess));
 	}
 
 	@Override

@@ -142,8 +142,8 @@ public abstract class BlockBreakingKineticBlockEntity extends KineticBlockEntity
 		BlockHelper.destroyBlock(level, breakingPos, 1f, (stack) -> {
 			if (stack.isEmpty())
 				return;
-			if (!level.getGameRules()
-				.getBooleanOr(GameRules.RULE_DOBLOCKDROPS, false))
+			if (level.getServer() == null || !level.getServer().getGameRules()
+				.getBoolean(GameRules.RULE_DOBLOCKDROPS))
 				return;
 			if (level.restoringBlockSnapshots)
 				return;
