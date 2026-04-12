@@ -54,6 +54,7 @@
     "accessor.AgeableListModelAccessor",
     "accessor.EntityRenderDispatcherAccessor",
     "accessor.FontAccessor",
+    "accessor.GameRendererAccessor",
     "accessor.GuiAccessor",
     "accessor.HumanoidArmorLayerAccessor",
     "accessor.LevelRendererAccessor",

@@ -21,6 +21,8 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class BaseRecipeProvider extends RecipeProvider.Runner {
 	protected final String modid;
 	protected final List<GeneratedRecipe> all = new ArrayList<>();
+	/** Set for each datagen run before {@link #buildRecipesWithOutput} so inner builders can resolve item holders. */
+	protected HolderLookup.Provider registryLookup;
 
 	public BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, String defaultNamespace) {
 		super(output, registries);
@@ -29,6 +31,7 @@ public abstract class BaseRecipeProvider extends RecipeProvider.Runner {
 
 	@Override
 	protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput recipeOutput) {
+		this.registryLookup = registries;
 		return new RecipeProvider(registries, recipeOutput) {
 			@Override
 			protected void buildRecipes() {

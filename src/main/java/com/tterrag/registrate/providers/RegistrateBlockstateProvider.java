@@ -2,6 +2,9 @@ package com.tterrag.registrate.providers;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -56,6 +59,22 @@ public class RegistrateBlockstateProvider {
     public void axisBlock(Block block, Function<BlockState, ModelFile> modelFunc) {}
     public void axisBlock(Block block, ModelFile model) {}
 
+    public void paneBlock(Block block, ResourceLocation sideTexture, ResourceLocation topTexture) {}
+
+    public void paneBlock(Block block, ModelFile post, ModelFile side, ModelFile sideAlt, ModelFile noSide,
+        ModelFile noSideAlt) {}
+
+    public void slabBlock(SlabBlock block, ResourceLocation fullModel, ResourceLocation texture, ResourceLocation end1,
+        ResourceLocation end2) {}
+
+    public void slabBlock(SlabBlock block, ModelFile bottom, ModelFile top, ModelFile doubleSlab) {}
+
+    public void stairsBlock(StairBlock block, ResourceLocation texture, ResourceLocation end1, ResourceLocation end2) {}
+
+    public void stairsBlock(StairBlock block, ResourceLocation texture) {}
+
+    public void wallBlock(WallBlock block, String name, ResourceLocation texture) {}
+
     public ModelFile.ExistingModelFile getExistingFile(ResourceLocation loc) {
         return new ModelFile.ExistingModelFile(loc, null);
     }
@@ -95,6 +114,7 @@ public class RegistrateBlockstateProvider {
         public PartialVariantBuilder with(net.minecraft.world.level.block.state.properties.Property<?> prop, Comparable<?> value) { return this; }
         public ConfiguredModel.Builder<?> modelForState() { return ConfiguredModel.builder(); }
         public VariantBlockStateBuilder addModels(ConfiguredModel... models) { return parent; }
+        public VariantBlockStateBuilder setModels(ConfiguredModel... models) { return parent; }
     }
 
     public static class ForAllVariantBuilder {

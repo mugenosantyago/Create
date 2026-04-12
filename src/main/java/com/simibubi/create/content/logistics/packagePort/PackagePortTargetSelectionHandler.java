@@ -13,6 +13,8 @@ import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import com.mojang.math.Vector3f;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.item.ItemStack;
@@ -152,7 +154,8 @@ public class PackagePortTargetSelectionHandler {
 	}
 
 	public static void animateConnection(Minecraft mc, Vec3 source, Vec3 target, Color color) {
-		DustParticleOptions data = new DustParticleOptions(color.asVectorF(), 1);
+		Vector3f rgb = color.asVectorF();
+		DustParticleOptions data = new DustParticleOptions(ARGB.colorFromFloat(1.0f, rgb.x(), rgb.y(), rgb.z()), 1);
 		ClientLevel world = mc.level;
 		double totalFlyingTicks = 10;
 		int segments = (((int) totalFlyingTicks) / 3) + 1;

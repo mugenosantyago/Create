@@ -9,9 +9,11 @@ import com.simibubi.create.api.data.recipe.DatagenMod;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe.Factory;
 import com.simibubi.create.foundation.data.SimpleDatagenIngredient;
 import com.simibubi.create.foundation.fluid.FluidHelper;
+import com.simibubi.create.foundation.utility.IngredientCompat;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -48,7 +50,7 @@ public abstract class ProcessingRecipeBuilder<P extends ProcessingRecipeParams, 
 	public abstract S self();
 
 	public S withItemIngredients(Ingredient... ingredients) {
-		return withItemIngredients(NonNullList.of(Ingredient.EMPTY, ingredients));
+		return withItemIngredients(NonNullList.of(IngredientCompat.EMPTY, ingredients));
 	}
 
 	public S withItemIngredients(NonNullList<Ingredient> ingredients) {
@@ -149,7 +151,8 @@ public abstract class ProcessingRecipeBuilder<P extends ProcessingRecipeParams, 
 	}
 
 	public S require(TagKey<Fluid> fluidTag, int amount) {
-		return require(SizedFluidIngredient.of(fluidTag, amount));
+		return require(new SizedFluidIngredient(FluidIngredient.of(BuiltInRegistries.FLUID.get(fluidTag)
+			.orElseThrow(() -> new IllegalArgumentException("Unknown fluid tag: " + fluidTag))), amount));
 	}
 
 	public S require(SizedFluidIngredient ingredient) {

@@ -13,7 +13,6 @@ import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 public class EdgePointStorage {
 
@@ -85,8 +84,8 @@ public class EdgePointStorage {
 
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, DimensionPalette dimensions) {
 		for (EdgePointType<?> type : EdgePointType.TYPES.values()) {
-			ListTag list = nbt.getList(type.getId()
-				.toString(), Tag.TAG_COMPOUND);
+			ListTag list = nbt.getListOrEmpty(type.getId()
+				.toString());
 			Map<UUID, TrackEdgePoint> map = getMap(type);
 			NBTHelper.iterateCompoundList(list, tag -> {
 				TrackEdgePoint edgePoint = type.create();

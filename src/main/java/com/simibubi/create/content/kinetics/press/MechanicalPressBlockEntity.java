@@ -190,7 +190,7 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
 		if (!(recipe instanceof CraftingRecipe) || !AllConfigs.server().recipes.allowShapedSquareInPress.get())
 			return false;
 		java.util.List<Ingredient> ingredients = recipe.placementInfo().ingredients();
-		return (ingredients.size() == 4 || ingredients.size() == 9) && ItemHelper.matchAllIngredients(ingredients);
+		return (ingredients.size() == 4 || ingredients.size() == 9) && ItemHelper.matchAllIngredients(NonNullList.copyOf(ingredients));
 	}
 
 	@Override

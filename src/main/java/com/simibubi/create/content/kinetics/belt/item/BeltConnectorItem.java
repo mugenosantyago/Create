@@ -39,9 +39,6 @@ public class BeltConnectorItem extends BlockItem {
 	public BeltConnectorItem(Properties properties) {
 		super(AllBlocks.BELT.get(), properties);
 	}
-	public String getDescriptionId() {
-		return getOrCreateDescriptionId();
-	}
 
 	@NotNull
 	@Override

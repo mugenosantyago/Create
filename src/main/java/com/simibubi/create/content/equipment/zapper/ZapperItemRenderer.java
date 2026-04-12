@@ -9,13 +9,10 @@ import com.simibubi.create.foundation.item.render.PartialItemModelRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class ZapperItemRenderer extends CustomRenderedItemModelRenderer {
@@ -35,19 +32,12 @@ public abstract class ZapperItemRenderer extends CustomRenderedItemModelRenderer
 		ms.pushPose();
 		ms.translate(-0.3F, -0.45F, -0.0F);
 		ms.scale(0.25F, 0.25F, 0.25F);
-		BakedModel modelForState = Minecraft.getInstance()
-			.getBlockRenderer()
-			.getBlockModel(state);
-
-		if (state.getBlock() instanceof CrossCollisionBlock)
-			modelForState = Minecraft.getInstance()
-				.getItemRenderer()
-				.getModel(new ItemStack(state.getBlock()), null, null, 0);
-
+		ItemStack blockStack = new ItemStack(state.getBlock());
+		ItemStackRenderState blockState = new ItemStackRenderState();
 		Minecraft.getInstance()
-			.getItemRenderer()
-			.render(new ItemStack(state.getBlock()), ItemDisplayContext.NONE, false, ms, buffer, light, overlay,
-				modelForState);
+			.getItemModelResolver()
+			.updateForTopItem(blockState, blockStack, ItemDisplayContext.NONE, null, null, 0);
+		blockState.render(ms, buffer, light, overlay);
 		ms.popPose();
 	}
 

@@ -12,12 +12,14 @@ import com.simibubi.create.content.fluids.transfer.FillingRecipe;
 import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.simibubi.create.content.kinetics.press.PressingRecipe;
 import com.simibubi.create.foundation.data.recipe.CreateRecipeProvider.I;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluids;
+
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
 /**
  * Create's own Data Generation for Sequenced Assembly recipes
@@ -57,11 +59,11 @@ public final class CreateSequencedAssemblyRecipeGen extends SequencedAssemblyRec
 		.addOutput(AllBlocks.TRACK.get(), 1)
 		.loops(1)
 		.addStep(DeployerApplicationRecipe::new,
-			rb -> rb.require(Ingredient.fromValues(
-				Stream.of(new Ingredient.TagValue(I.ironNugget()), new Ingredient.TagValue(I.zincNugget())))))
+			rb -> rb.require(CompoundIngredient.of(NbtCompat.ingredientFromTag(I.ironNugget()),
+				NbtCompat.ingredientFromTag(I.zincNugget()))))
 		.addStep(DeployerApplicationRecipe::new,
-			rb -> rb.require(Ingredient.fromValues(
-				Stream.of(new Ingredient.TagValue(I.ironNugget()), new Ingredient.TagValue(I.zincNugget())))))
+			rb -> rb.require(CompoundIngredient.of(NbtCompat.ingredientFromTag(I.ironNugget()),
+				NbtCompat.ingredientFromTag(I.zincNugget()))))
 		.addStep(PressingRecipe::new, rb -> rb))
 
 		;

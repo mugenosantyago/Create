@@ -169,7 +169,7 @@ public class NixieTubeRenderer extends SafeBlockEntityRenderer<NixieTubeBlockEnt
 						.light(0xf000f0)
 						.disableDiffuse()
 						.scale(vert ? longSide : 1, vert ? 1 : longSide, 1)
-						.renderInto(ms, buffer.getBuffer(RenderType.translucent()));
+						.renderInto(ms, buffer.getBuffer(RenderTypes.entityTranslucentBlockMipped()));
 
 					CachedBuffers
 						.partial(
@@ -213,7 +213,7 @@ public class NixieTubeRenderer extends SafeBlockEntityRenderer<NixieTubeBlockEnt
 						.light(0xf000f0)
 						.disableDiffuse()
 						.scale(width, height,  1)
-						.renderInto(ms, buffer.getBuffer(RenderType.translucent()));
+						.renderInto(ms, buffer.getBuffer(RenderTypes.entityTranslucentBlockMipped()));
 
 					CachedBuffers
 						.partial(AllPartialModels.SIGNAL_COMPUTER_WHITE_GLOW, blockState)

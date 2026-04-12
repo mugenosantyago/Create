@@ -17,8 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -43,11 +42,9 @@ public class ArmRenderer extends KineticBlockEntityRenderer<ArmBlockEntity> {
 		if (usingFlywheel && !hasItem)
 			return;
 
-		ItemRenderer itemRenderer = Minecraft.getInstance()
-			.getItemRenderer();
+		Minecraft mc = Minecraft.getInstance();
 
-		BakedModel bakedModel = itemRenderer.getModel(item, be.getLevel(), null, 0);
-		boolean isBlockItem = hasItem && (item.getItem() instanceof BlockItem) && bakedModel.isGui3d();
+		boolean isBlockItem = hasItem && item.getItem() instanceof BlockItem;
 
 		VertexConsumer builder = buffer.getBuffer(be.goggles ? RenderType.cutout() : RenderType.solid());
 		BlockState blockState = be.getBlockState();
@@ -102,7 +99,10 @@ public class ArmRenderer extends KineticBlockEntityRenderer<ArmBlockEntity> {
 				.mul(msLocal.last()
 					.pose());
 
-			itemRenderer.render(item, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, bakedModel);
+			ItemStackRenderState itemState = new ItemStackRenderState();
+			mc.getItemModelResolver()
+				.updateForTopItem(itemState, item, ItemDisplayContext.FIXED, be.getLevel(), null, 0);
+			itemState.render(ms, buffer, light, overlay);
 			ms.popPose();
 		}
 

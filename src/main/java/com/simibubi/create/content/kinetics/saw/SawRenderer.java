@@ -26,8 +26,8 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -140,10 +140,8 @@ public class SawRenderer extends SafeBlockEntityRenderer<SawBlockEntity> {
 			if (stack.isEmpty())
 				continue;
 
-			ItemRenderer itemRenderer = Minecraft.getInstance()
-				.getItemRenderer();
-			BakedModel modelWithOverrides = itemRenderer.getModel(stack, be.getLevel(), null, 0);
-			boolean blockItem = modelWithOverrides.isGui3d();
+			Minecraft mc = Minecraft.getInstance();
+			boolean blockItem = stack.getItem() instanceof BlockItem;
 
 			ms.pushPose();
 			ms.translate(0, blockItem ? .925f : 13f / 16f, 0);
@@ -164,7 +162,10 @@ public class SawRenderer extends SafeBlockEntityRenderer<SawBlockEntity> {
 			if (!box)
 				ms.mulPose(Axis.XP.rotationDegrees(90));
 
-			itemRenderer.render(stack, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, modelWithOverrides);
+			ItemStackRenderState itemState = new ItemStackRenderState();
+			mc.getItemModelResolver()
+				.updateForTopItem(itemState, stack, ItemDisplayContext.FIXED, be.getLevel(), null, 0);
+			itemState.render(ms, buffer, light, overlay);
 			renderedI++;
 
 			ms.popPose();

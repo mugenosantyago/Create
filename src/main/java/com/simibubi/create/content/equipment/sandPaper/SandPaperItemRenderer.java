@@ -11,7 +11,7 @@ import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +22,6 @@ public class SandPaperItemRenderer extends CustomRenderedItemModelRenderer {
 	protected void render(ItemStack stack, CustomRenderedItemModel model, PartialItemModelRenderer renderer,
 		ItemDisplayContext transformType, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
 		Minecraft mc = Minecraft.getInstance();
-		ItemRenderer itemRenderer = mc.getItemRenderer();
 		LocalPlayer player = mc.player;
 		float partialTicks = AnimationTickHolder.getPartialTicks();
 
@@ -58,7 +57,8 @@ public class SandPaperItemRenderer extends CustomRenderedItemModelRenderer {
 
 			ItemStack toPolish = stack.get(AllDataComponents.SAND_PAPER_POLISHING).item();
 			//noinspection DataFlowIssue - We call .has, toPolish won't be null
-			itemRenderer.renderStatic(toPolish, ItemDisplayContext.GUI, light, overlay, ms, buffer, player.level(), 0);
+			mc.getItemRenderer()
+				.renderStatic(toPolish, ItemDisplayContext.GUI, light, overlay, ms, buffer, player.level(), 0);
 
 			ms.popPose();
 		}
@@ -74,7 +74,10 @@ public class SandPaperItemRenderer extends CustomRenderedItemModelRenderer {
 			}
 		}
 
-		itemRenderer.render(stack, ItemDisplayContext.NONE, false, ms, buffer, light, overlay, model.getOriginalModel());
+		ItemStackRenderState selfState = new ItemStackRenderState();
+		mc.getItemModelResolver()
+			.updateForTopItem(selfState, stack, ItemDisplayContext.NONE, mc.level, player, 0);
+		selfState.render(ms, buffer, light, overlay);
 
 		ms.popPose();
 	}

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllPartialModels;
@@ -303,18 +302,13 @@ public class StationScreen extends AbstractStationScreen {
 
 		List<Carriage> carriages = train.carriages;
 		for (int i = carriages.size() - 1; i > 0; i--) {
-			RenderSystem.setShaderColor(1, 1, 1, Math.min(1f,
-				Math.min((position + offset - 10) / 30f, (background.getWidth() - 40 - position - offset) / 30f)));
+			// Fade-at-edges used RenderSystem.setShaderColor; that API is gone in 1.21.8+.
 			Carriage carriage = carriages.get(blockEntity.trainBackwards ? carriages.size() - i - 1 : i);
 			offset += icon.render(carriage.bogeySpacing, graphics, x + offset, y + 20) + 1;
 		}
 
-		RenderSystem.setShaderColor(1, 1, 1,
-			Math.min(1f, Math.min((position + offset - 10) / 30f, (background.getWidth() - 40 - position - offset) / 30f)));
 		offset += icon.render(TrainIconType.ENGINE, graphics, x + offset, y + 20);
 		ms.popPose();
-
-		// RenderSystem.setShaderColor removed in 1.21.8
 
 		AllGuiTextures.STATION_TEXTBOX_TOP.render(graphics, x + 21, y + 42);
 		UIRenderHelper.drawStretched(graphics, x + 21, y + 60, 150, 26, 0, AllGuiTextures.STATION_TEXTBOX_MIDDLE);

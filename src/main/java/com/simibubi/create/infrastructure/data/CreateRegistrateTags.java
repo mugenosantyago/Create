@@ -16,6 +16,7 @@ import com.simibubi.create.foundation.data.recipe.Mods;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
@@ -208,12 +209,12 @@ public class CreateRegistrateTags {
 
 		prov.tag(ItemTags.TRIMMABLE_ARMOR)
 			.remove(
-				AllItems.COPPER_DIVING_BOOTS.getId(),
-				AllItems.COPPER_BACKTANK.getId(),
-				AllItems.COPPER_DIVING_HELMET.getId(),
-				AllItems.NETHERITE_DIVING_BOOTS.getId(),
-				AllItems.NETHERITE_BACKTANK.getId(),
-				AllItems.NETHERITE_DIVING_HELMET.getId()
+				BuiltInRegistries.ITEM.getResourceKey(AllItems.COPPER_DIVING_BOOTS.get()).orElseThrow(),
+				BuiltInRegistries.ITEM.getResourceKey(AllItems.COPPER_BACKTANK.get()).orElseThrow(),
+				BuiltInRegistries.ITEM.getResourceKey(AllItems.COPPER_DIVING_HELMET.get()).orElseThrow(),
+				BuiltInRegistries.ITEM.getResourceKey(AllItems.NETHERITE_DIVING_BOOTS.get()).orElseThrow(),
+				BuiltInRegistries.ITEM.getResourceKey(AllItems.NETHERITE_BACKTANK.get()).orElseThrow(),
+				BuiltInRegistries.ITEM.getResourceKey(AllItems.NETHERITE_DIVING_HELMET.get()).orElseThrow()
 			);
 
 		prov.tag(ItemTags.DURABILITY_ENCHANTABLE)

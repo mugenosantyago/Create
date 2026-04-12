@@ -33,8 +33,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -357,13 +357,11 @@ public class FrogAndConveyorScenes {
 			poseStack.mulPose(Axis.ZP.rotationDegrees(90));
 			poseStack.scale(1.5f, 1.5f, 1.5f);
 			poseStack.translate(-0.1, 0.2, -0.6);
-			BakedModel bakedmodel = Minecraft.getInstance()
-				.getItemRenderer()
-				.getModel(wrench.getItem(), world, null, 0);
+			ItemStackRenderState wrenchState = new ItemStackRenderState();
 			Minecraft.getInstance()
-				.getItemRenderer()
-				.render(wrench.getItem(), ItemDisplayContext.GROUND, false, poseStack, buffer,
-					lightCoordsFromFade(fade), OverlayTexture.NO_OVERLAY, bakedmodel);
+				.getItemModelResolver()
+				.updateForTopItem(wrenchState, wrench.getItem(), ItemDisplayContext.GROUND, world, null, 0);
+			wrenchState.render(poseStack, buffer, lightCoordsFromFade(fade), OverlayTexture.NO_OVERLAY);
 			poseStack.popPose();
 
 			entity.flapSpeed = 2;

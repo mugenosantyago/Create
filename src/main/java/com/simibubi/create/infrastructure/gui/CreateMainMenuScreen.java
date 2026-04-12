@@ -1,7 +1,5 @@
 package com.simibubi.create.infrastructure.gui;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
@@ -22,6 +20,7 @@ import net.createmod.catnip.theme.Color;
 import net.createmod.ponder.foundation.ui.PonderTagIndexScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -30,6 +29,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.renderer.CubeMap;
 import net.minecraft.client.renderer.PanoramaRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -71,9 +71,10 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 		this.parent = parent;
 		returnOnClose = true;
 		if (parent instanceof TitleScreen)
-			vanillaPanorama = Screen.PANORAMA;
+			vanillaPanorama = Minecraft.getInstance().gameRenderer.getPanorama();
 		else
-			vanillaPanorama = new PanoramaRenderer(TitleScreen.CUBE_MAP);
+			vanillaPanorama = new PanoramaRenderer(
+				new CubeMap(ResourceLocation.withDefaultNamespace("textures/gui/title/background/panorama")));
 	}
 
 	@Override
@@ -87,15 +88,13 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 	protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		float f = (float) (Util.getMillis() - this.firstRenderTime) / 1000.0F;
 		float alpha = Mth.clamp(f, 0.0F, 1.0F);
-		float elapsedPartials = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
 
 		if (parent instanceof TitleScreen) {
 			if (alpha < 1)
-				vanillaPanorama.render(graphics, this.width, this.height, 1, elapsedPartials);
-			PANORAMA.render(graphics, this.width, this.height, 1, elapsedPartials);
-			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
-				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-			graphics.blit(PANORAMA_OVERLAY_TEXTURES, 0, 0, this.width, this.height, 0.0F, 0.0F, 16, 128, 16, 128);
+				vanillaPanorama.render(graphics, this.width, this.height, true);
+			PANORAMA.render(graphics, this.width, this.height, true);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, PANORAMA_OVERLAY_TEXTURES, 0, 0, 0.0F, 0.0F, this.width,
+				this.height, 16, 128, 16, 128);
 		}
 
 		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);

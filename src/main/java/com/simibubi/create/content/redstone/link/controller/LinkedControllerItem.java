@@ -139,7 +139,7 @@ public class LinkedControllerItem extends Item implements MenuProvider {
 
 	@Override
 	public Component getDisplayName() {
-		return getDescription();
+		return Component.translatable(getDescriptionId());
 	}
 
 	@Override

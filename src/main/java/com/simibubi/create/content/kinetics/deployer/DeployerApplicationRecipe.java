@@ -9,6 +9,7 @@ import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.compat.jei.category.sequencedAssembly.SequencedAssemblySubCategory;
 import com.simibubi.create.content.processing.sequenced.IAssemblyRecipe;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import net.minecraft.client.Minecraft;
@@ -62,7 +63,7 @@ public class DeployerApplicationRecipe extends ItemApplicationRecipe implements 
             return Component.literal("Invalid");
         }
 		return CreateLang.translateDirect("recipe.assembly.deploying_item",
-			Component.translatable(matchingStacks[0].getDescriptionId()).getString());
+			Component.translatable(ItemHelper.descriptionId(matchingStacks[0])).getString());
 	}
 
 	@Override

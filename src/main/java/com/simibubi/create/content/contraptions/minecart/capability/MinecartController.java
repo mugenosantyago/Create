@@ -134,7 +134,7 @@ public class MinecartController {
 		}
 		BlockPos blockpos = new BlockPos(i, j, k);
 		BlockState blockstate = world.getBlockState(blockpos);
-		if (cart.canUseRail() && blockstate.is(BlockTags.RAILS)
+		if (blockstate.is(BlockTags.RAILS)
 			&& blockstate.getBlock() instanceof PoweredRailBlock
 			&& ((PoweredRailBlock) blockstate.getBlock())
 			.isActivatorRail()) {

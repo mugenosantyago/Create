@@ -108,7 +108,8 @@ public class RedstoneLinkCondition extends ScheduleWaitCondition {
 	@Override
 	protected void readAdditional(HolderLookup.Provider registries, CompoundTag tag) {
 		if (tag.contains("Frequency"))
-			freq = Couple.deserializeEach(tag.getListOrEmpty("Frequency"), c -> Frequency.of(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c)).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+			freq = Couple.deserializeEach(tag.getListOrEmpty("Frequency"),
+				c -> Frequency.of(NbtCompat.parseOptionalItemStack(registries, c)));
 	}
 
 	@Override

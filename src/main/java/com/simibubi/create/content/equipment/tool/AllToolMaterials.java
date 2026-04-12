@@ -24,7 +24,7 @@ public final class AllToolMaterials {
             1f,  // speed
             0f,  // attack damage bonus
             1,   // enchantment value
-            Create.asResource("cardboard_repair_materials") // item tag for repairs
+            ItemTags.create(Create.asResource("cardboard_repair_materials")) // item tag for repairs
     );
 
     private AllToolMaterials() {}

@@ -1,9 +1,10 @@
 package com.simibubi.create.content.equipment.symmetryWand;
 
+import java.util.List;
+
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.symmetryWand.mirror.EmptyMirror;
 import com.simibubi.create.content.equipment.symmetryWand.mirror.SymmetryMirror;
@@ -15,8 +16,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,6 +28,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import net.neoforged.api.distmarker.Dist;
@@ -35,7 +38,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.event.level.BlockEvent.BreakEvent;
 import net.neoforged.neoforge.event.level.BlockEvent.EntityPlaceEvent;
 
@@ -76,7 +78,6 @@ public class SymmetryHandler {
 	public static void onRenderWorld(RenderLevelStageEvent.AfterParticles event) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
-		RandomSource random = RandomSource.create();
 
 		for (int i = 0; i < Inventory.getSelectionSize(); i++) {
 			ItemStack stackInSlot = player.getInventory()
@@ -105,14 +106,17 @@ public class SymmetryHandler {
 			ms.translate(pos.getX() - view.x(), pos.getY() - view.y(), pos.getZ() - view.z());
 			ms.translate(0, yShift + .2f, 0);
 			mirror.applyModelTransform(ms);
-			BakedModel model = mirror.getModel()
+			BlockStateModel blockModel = mirror.getModel()
 				.get();
-			VertexConsumer builder = buffer.getBuffer(RenderType.solid());
+			BlockState airState = Blocks.AIR.defaultBlockState();
+			RandomSource partRandom = RandomSource.create(Mth.getSeed(pos));
+			List<BlockModelPart> parts = blockModel.collectParts(player.level(), pos, airState, partRandom);
 
 			mc.getBlockRenderer()
 				.getModelRenderer()
-				.tesselateBlock(player.level(), model, Blocks.AIR.defaultBlockState(), pos, ms, builder, true,
-					random, Mth.getSeed(pos), OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+				.tesselateBlock(player.level(), parts, airState, pos, ms,
+					layer -> buffer.getBuffer(RenderType.solid()),
+					true, OverlayTexture.NO_OVERLAY);
 
 			ms.popPose();
 			buffer.endBatch();

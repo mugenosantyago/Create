@@ -4,9 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllRecipeTypes;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -81,7 +79,7 @@ public class ToolboxDyeingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return AllRecipeTypes.TOOLBOX_DYEING.getSerializer();
 	}
 

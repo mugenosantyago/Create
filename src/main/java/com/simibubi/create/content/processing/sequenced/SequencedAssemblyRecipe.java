@@ -72,8 +72,9 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	public static <R extends ProcessingRecipe<?, ?>> Optional<RecipeHolder<R>> getRecipe(Level level, ItemStack item,
 																						 RecipeType<R> type, Class<R> recipeClass) {
-		List<RecipeHolder<SequencedAssemblyRecipe>> all = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
-			.getAllRecipesFor(AllRecipeTypes.SEQUENCED_ASSEMBLY.getType());
+		List<RecipeHolder<SequencedAssemblyRecipe>> all = com.simibubi.create.foundation.utility.RecipeCompat.getAllRecipesFor(
+			com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level),
+			AllRecipeTypes.SEQUENCED_ASSEMBLY.getType());
 		for (RecipeHolder<SequencedAssemblyRecipe> sequencedAssemblyRecipe : all) {
 			if (!sequencedAssemblyRecipe.value().appliesTo(sequencedAssemblyRecipe.id().location(), item))
 				continue;
@@ -88,8 +89,9 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	}
 
 	public static <R extends ProcessingRecipe<?, ?>> List<RecipeHolder<R>> getRecipes(Level level, ItemStack item, RecipeType<R> type, Class<R> recipeClass, Predicate<? super RecipeHolder<R>> recipeFilter) {
-		List<RecipeHolder<SequencedAssemblyRecipe>> all = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
-			.getAllRecipesFor(AllRecipeTypes.SEQUENCED_ASSEMBLY.getType());
+		List<RecipeHolder<SequencedAssemblyRecipe>> all = com.simibubi.create.foundation.utility.RecipeCompat.getAllRecipesFor(
+			com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level),
+			AllRecipeTypes.SEQUENCED_ASSEMBLY.getType());
 
 		List<RecipeHolder<R>> result = new ArrayList<>();
 
@@ -204,7 +206,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	@Override
 	public net.minecraft.world.item.crafting.RecipeBookCategory recipeBookCategory() {
-		return net.minecraft.world.item.crafting.RecipeBookCategories.CRAFTING_OTHER;
+		return net.minecraft.world.item.crafting.RecipeBookCategories.CRAFTING_MISC;
 	}
 
 	@Override

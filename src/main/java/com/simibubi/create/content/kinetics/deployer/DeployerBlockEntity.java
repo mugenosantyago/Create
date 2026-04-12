@@ -24,6 +24,7 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
@@ -36,8 +37,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.ItemStackWithSlot;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -85,7 +90,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 	protected boolean redstoneLocked;
 	protected UUID owner;
 	private IItemHandlerModifiable invHandler;
-	private ListTag deferredInventoryList;
+	private @Nullable CompoundTag deferredInventoryData;
 
 	private LerpedFloat animatedOffset;
 
@@ -147,10 +152,12 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 			return;
 		if (level instanceof ServerLevel sLevel) {
 			player = new DeployerFakePlayer(sLevel, owner);
-			if (deferredInventoryList != null) {
+			if (deferredInventoryData != null) {
+				ProblemReporter.Collector loadReporter = new ProblemReporter.Collector();
+				ValueInput invInput = TagValueInput.create(loadReporter, sLevel.registryAccess(), deferredInventoryData);
 				player.getInventory()
-					.load(deferredInventoryList);
-				deferredInventoryList = null;
+					.load(invInput.listOrEmpty("Inventory", ItemStackWithSlot.CODEC));
+				deferredInventoryData = null;
 				heldItem = player.getMainHandItem();
 				sendData();
 			}
@@ -380,7 +387,14 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 		if (compound.contains("Owner"))
 			owner = compound.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 
-		deferredInventoryList = compound.getListOrEmpty("Inventory");
+		deferredInventoryData = null;
+		if (compound.contains("Inventory")) {
+			Tag inv = compound.get("Inventory");
+			if (inv != null) {
+				deferredInventoryData = new CompoundTag();
+				deferredInventoryData.put("Inventory", inv);
+			}
+		}
 		overflowItems = NBTHelper.readItemList(compound.getListOrEmpty("Overflow"), registries);
 		if (compound.contains("HeldItem")) {
 			heldItem = ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.getCompoundOrEmpty("HeldItem")).result().orElse(net.minecraft.world.item.ItemStack.EMPTY);
@@ -408,14 +422,17 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 			compound.putIntArray("Owner", net.minecraft.core.UUIDUtil.uuidToIntArray(owner));
 
 		if (player != null) {
-			ListTag invNBT = new ListTag();
+			ProblemReporter.Collector reporter = new ProblemReporter.Collector();
+			TagValueOutput invOut = TagValueOutput.createWithContext(reporter, registries);
 			player.getInventory()
-				.save(invNBT);
-			compound.put("Inventory", invNBT);
+				.save(invOut.list("Inventory", ItemStackWithSlot.CODEC));
+			compound.merge(invOut.buildResult());
 			compound.put("HeldItem", NbtCompat.saveItemStack(player.getMainHandItem(), registries));
 			compound.put("Overflow", NBTHelper.writeItemList(overflowItems, registries));
-		} else if (deferredInventoryList != null) {
-			compound.put("Inventory", deferredInventoryList);
+		} else if (deferredInventoryData != null) {
+			Tag inv = deferredInventoryData.get("Inventory");
+			if (inv != null)
+				compound.put("Inventory", inv);
 		}
 
 		super.write(compound, registries, clientPacket);
@@ -514,7 +531,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
 			.forGoggles(tooltip);
 
 		if (!heldItem.isEmpty())
-			CreateLang.translate("tooltip.deployer.contains", Component.translatable(heldItem.getDescriptionId())
+			CreateLang.translate("tooltip.deployer.contains", Component.translatable(ItemHelper.descriptionId(heldItem))
 					.getString(), heldItem.getCount())
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip);

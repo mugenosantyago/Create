@@ -19,7 +19,7 @@ import com.simibubi.create.foundation.data.WindowGen;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -61,7 +61,7 @@ public class AllPaletteBlocks {
 
 	public static final BlockEntry<GlassPaneBlock> TILED_GLASS_PANE =
 		WindowGen.standardGlassPane("tiled_glass", TILED_GLASS, Create.asResource("block/palettes/tiled_glass"),
-			ResourceLocation.withDefaultNamespace("block/glass_pane_top"), () -> RenderType::cutoutMipped);
+			ResourceLocation.withDefaultNamespace("block/glass_pane_top"), () -> () -> ChunkSectionLayer.CUTOUT_MIPPED);
 
 	public static final BlockEntry<ConnectedGlassPaneBlock> FRAMED_GLASS_PANE =
 		framedGlassPane("framed_glass", FRAMED_GLASS, () -> AllSpriteShifts.FRAMED_GLASS),
@@ -105,9 +105,9 @@ public class AllPaletteBlocks {
 		CHERRY_WINDOW_PANE = woodenWindowPane(WoodType.CHERRY, CHERRY_WINDOW),
 		BAMBOO_WINDOW_PANE = woodenWindowPane(WoodType.BAMBOO, BAMBOO_WINDOW),
 		ORNATE_IRON_WINDOW_PANE = customWindowPane("ornate_iron_window", ORNATE_IRON_WINDOW,
-			() -> AllSpriteShifts.ORNATE_IRON_WINDOW, () -> RenderType::cutoutMipped).register(),
+			() -> AllSpriteShifts.ORNATE_IRON_WINDOW, () -> () -> ChunkSectionLayer.CUTOUT_MIPPED).register(),
 		INDUSTRIAL_IRON_WINDOW_PANE = customWindowPane("industrial_iron_window", INDUSTRIAL_IRON_WINDOW,
-			() -> AllSpriteShifts.INDUSTRIAL_IRON_WINDOW, () -> RenderType::cutoutMipped).register(),
+			() -> AllSpriteShifts.INDUSTRIAL_IRON_WINDOW, () -> () -> ChunkSectionLayer.CUTOUT_MIPPED).register(),
 		WEATHERED_IRON_WINDOW_PANE =
 			customWindowPane("weathered_iron_window", WEATHERED_IRON_WINDOW, null, () -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.TRANSLUCENT)
 				.onRegister(CreateRegistrate.connectedTextures(() -> new WeatheredIronWindowPaneCTBehaviour()))

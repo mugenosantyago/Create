@@ -176,7 +176,7 @@ public class BasinRecipe extends StandardProcessingRecipe<RecipeInput> {
 
 	public static RecipeHolder<BasinRecipe> convertShapeless(RecipeHolder<?> recipe) {
 		BasinRecipe basinRecipe =
-			new Builder<>(BasinRecipe::new, recipe.id()).withItemIngredients(recipe.value().placementInfo().ingredients())
+			new Builder<>(BasinRecipe::new, recipe.id().location()).withItemIngredients(recipe.value().placementInfo().ingredients())
 				.withSingleItemOutput(recipe.value().assemble(null, null))
 				.build();
 		return new RecipeHolder<>(recipe.id(), basinRecipe);

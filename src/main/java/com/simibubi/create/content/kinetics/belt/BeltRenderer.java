@@ -32,8 +32,8 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
@@ -283,8 +283,7 @@ public class BeltRenderer extends SafeBlockEntityRenderer<BeltBlockEntity> {
 		}
 
 		boolean renderUpright = BeltHelper.isItemUpright(transported.stack);
-		BakedModel bakedModel = itemRenderer.getModel(transported.stack, be.getLevel(), null, 0);
-		boolean blockItem = bakedModel.isGui3d();
+		boolean blockItem = transported.stack.getItem() instanceof BlockItem;
 
 		int count = 0;
 		if (be.getLevel() instanceof PonderLevel || mc.player.getEyePosition(1.0F).distanceTo(itemPos) < 16)
@@ -338,7 +337,10 @@ public class BeltRenderer extends SafeBlockEntityRenderer<BeltBlockEntity> {
 				ms.scale(.5f, .5f, .5f);
 			}
 
-			itemRenderer.render(transported.stack, ItemDisplayContext.FIXED, false, ms, buffer, stackLight, overlay, bakedModel);
+			ItemStackRenderState itemState = new ItemStackRenderState();
+			mc.getItemModelResolver()
+				.updateForTopItem(itemState, transported.stack, ItemDisplayContext.FIXED, be.getLevel(), null, 0);
+			itemState.render(ms, buffer, stackLight, overlay);
 			ms.popPose();
 
 			if (!renderUpright) {

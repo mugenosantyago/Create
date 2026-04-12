@@ -22,6 +22,7 @@ import net.minecraft.world.entity.vehicle.MinecartFurnace;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
@@ -145,7 +146,7 @@ public class ControllerRailBlock extends BaseRailBlock implements IWrenchable {
 		if (world.isClientSide)
 			return;
 		Vec3 accelerationVec = Vec3.atLowerCornerOf(getAccelerationVector(state));
-		double targetSpeed = cart.getMaxSpeedWithRail() * state.getValue(POWER) / 15f;
+		double targetSpeed = (world instanceof ServerLevel sl ? cart.getBehavior().getMaxSpeed(sl) : 0.4) * state.getValue(POWER) / 15f;
 
 		if (cart instanceof MinecartFurnace fme) {
 			fme.xPush = accelerationVec.x;

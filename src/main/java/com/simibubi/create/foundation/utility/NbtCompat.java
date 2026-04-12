@@ -1,5 +1,4 @@
 package com.simibubi.create.foundation.utility;
-import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.UUID;
 
@@ -78,6 +77,29 @@ public class NbtCompat {
 			.orElse(net.minecraft.world.item.ItemStack.EMPTY);
 	}
 
+	/** Equivalent of removed FluidStack.parseOptional(HolderLookup.Provider, CompoundTag) */
+	public static net.neoforged.neoforge.fluids.FluidStack parseFluidStack(net.minecraft.core.HolderLookup.Provider registries, net.minecraft.nbt.Tag tag) {
+		return net.neoforged.neoforge.fluids.FluidStack.OPTIONAL_CODEC
+			.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag)
+			.result()
+			.orElse(net.neoforged.neoforge.fluids.FluidStack.EMPTY);
+	}
+
+	public static net.minecraft.nbt.CompoundTag serializeFluidTank(net.neoforged.neoforge.fluids.capability.templates.FluidTank tank,
+		net.minecraft.core.HolderLookup.Provider registries) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, registries);
+		tank.serialize(out);
+		return out.buildResult();
+	}
+
+	public static void deserializeFluidTank(net.neoforged.neoforge.fluids.capability.templates.FluidTank tank,
+		net.minecraft.core.HolderLookup.Provider registries, net.minecraft.nbt.CompoundTag tag) {
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.ValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
+		tank.deserialize(input);
+	}
+
 	/** Save an entity as passenger using the new ValueOutput API, returns CompoundTag */
 	public static CompoundTag saveEntityAsPassenger(net.minecraft.world.entity.Entity entity, net.minecraft.core.HolderLookup.Provider registries) {
 		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
@@ -97,14 +119,14 @@ public class NbtCompat {
 	/** Load an entity from a CompoundTag using the new ValueInput API */
 	public static void loadEntity(net.minecraft.world.entity.Entity entity, CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
 		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
-		net.minecraft.world.level.storage.TagValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
+		net.minecraft.world.level.storage.ValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
 		entity.load(input);
 	}
 
 	/** Compatibility replacement for removed Ingredient.of(TagKey<Item>) */
 	public static net.minecraft.world.item.crafting.Ingredient ingredientFromTag(net.minecraft.tags.TagKey<net.minecraft.world.item.Item> tag) {
 		net.minecraft.core.HolderSet.Named<net.minecraft.world.item.Item> namedSet =
-			net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(tag)
+			net.minecraft.core.registries.BuiltInRegistries.ITEM.get(tag)
 				.orElseGet(() -> net.minecraft.core.HolderSet.emptyNamed(net.minecraft.core.registries.BuiltInRegistries.ITEM, tag));
 		return net.minecraft.world.item.crafting.Ingredient.of(namedSet);
 	}
@@ -120,8 +142,16 @@ public class NbtCompat {
 	/** Compatibility replacement for ItemStackHandler.deserializeNBT(Provider, CompoundTag) */
 	public static void deserializeItemStackHandler(net.neoforged.neoforge.items.ItemStackHandler handler, net.minecraft.core.HolderLookup.Provider registries, net.minecraft.nbt.CompoundTag tag) {
 		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
-		net.minecraft.world.level.storage.TagValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
+		net.minecraft.world.level.storage.ValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, registries, tag);
 		handler.deserialize(input);
+	}
+
+	/** Encode a fluid stack to NBT (not an item stack). */
+	public static net.minecraft.nbt.Tag saveFluidStack(net.neoforged.neoforge.fluids.FluidStack stack, net.minecraft.core.HolderLookup.Provider registries) {
+		return net.neoforged.neoforge.fluids.FluidStack.OPTIONAL_CODEC
+			.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, stack)
+			.result()
+			.orElse(new net.minecraft.nbt.CompoundTag());
 	}
 
 	/** Compatibility replacement for Entity.saveAsPassenger(CompoundTag) */
@@ -161,7 +191,7 @@ public class NbtCompat {
 	/** Compatibility: Entity.load() now takes ValueInput */
 	public static void loadEntity(net.minecraft.world.entity.Entity entity, net.minecraft.nbt.CompoundTag tag) {
 		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
-		net.minecraft.world.level.storage.TagValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, entity.registryAccess(), tag);
+		net.minecraft.world.level.storage.ValueInput input = net.minecraft.world.level.storage.TagValueInput.create(reporter, entity.registryAccess(), tag);
 		entity.load(input);
 	}
 

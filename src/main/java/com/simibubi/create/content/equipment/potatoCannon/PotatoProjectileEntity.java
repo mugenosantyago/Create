@@ -231,9 +231,9 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 
 		boolean onServer = !level().isClientSide;
 		DamageSource damageSource = causePotatoDamage();
-		if (onServer && !target.hurt(damageSource, damage)) {
+		if (onServer && !target.hurtServer((ServerLevel) level(), damageSource, damage)) {
 			target.setRemainingFireTicks(k);
-			kill((net.minecraft.server.level.ServerLevel)level());
+			kill((ServerLevel) level());
 			return;
 		}
 
@@ -322,7 +322,7 @@ public class PotatoProjectileEntity extends AbstractHurtingProjectile implements
 	public boolean hurtServer(net.minecraft.server.level.ServerLevel serverLevel, @NotNull DamageSource source, float amt) {
 		if (source.is(DamageTypeTags.IS_FIRE))
 			return false;
-		if (this.isInvulnerableTo(source))
+		if (this.isInvulnerableToBase(source))
 			return false;
 		pop(position());
 		kill(serverLevel);

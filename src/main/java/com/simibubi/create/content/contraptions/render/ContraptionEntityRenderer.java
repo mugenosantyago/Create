@@ -1,5 +1,8 @@
 package com.simibubi.create.content.contraptions.render;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,23 +24,23 @@ import net.createmod.catnip.render.SuperByteBufferCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-
-import net.neoforged.neoforge.model.data.ModelData;
 
 /**
  * Renders contraption entities (moving structures).
@@ -47,6 +50,23 @@ import net.neoforged.neoforge.model.data.ModelData;
  */
 public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
         extends EntityRenderer<C, ContraptionEntityRenderer.ContraptionRenderState> {
+	/**
+	 * Layers used for world/chunk-style block rendering. Replaces removed {@code RenderType.chunkBufferLayers()}.
+	 */
+	public static final List<RenderType> CHUNK_BUFFER_RENDER_TYPES = List.of(
+			RenderType.SOLID,
+			RenderType.CUTOUT_MIPPED,
+			RenderType.CUTOUT,
+			RenderType.TRANSLUCENT_MOVING_BLOCK,
+			RenderType.TRIPWIRE);
+
+	private static final Map<RenderType, ChunkSectionLayer> RENDER_TYPE_TO_CHUNK_LAYER = Map.of(
+			RenderType.SOLID, ChunkSectionLayer.SOLID,
+			RenderType.CUTOUT_MIPPED, ChunkSectionLayer.CUTOUT_MIPPED,
+			RenderType.CUTOUT, ChunkSectionLayer.CUTOUT,
+			RenderType.TRANSLUCENT_MOVING_BLOCK, ChunkSectionLayer.TRANSLUCENT,
+			RenderType.TRIPWIRE, ChunkSectionLayer.TRIPWIRE);
+
 	public static final SuperByteBufferCache.Compartment<Pair<Contraption, RenderType>> CONTRAPTION = new SuperByteBufferCache.Compartment<>();
 	private static final ThreadLocal<ThreadLocalObjects> THREAD_LOCAL_OBJECTS = ThreadLocal.withInitial(ThreadLocalObjects::new);
 
@@ -85,31 +105,36 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
 		sbbBuilder.begin();
 
+		ChunkSectionLayer targetLayer = RENDER_TYPE_TO_CHUNK_LAYER.get(layer);
+
 		ModelBlockRenderer.enableCaching();
-		for (BlockPos pos : blocks.positions()) {
-			BlockState state = blocks.lookup().apply(pos);
-			if (state.getRenderShape() == RenderShape.MODEL) {
-				net.minecraft.client.renderer.block.model.BlockStateModel modelRaw_ = dispatcher.getBlockModel(state); BakedModel model = (BakedModel)(Object)modelRaw_;
-				ModelData modelData = renderWorld.getModelData(pos);
-				modelData = model.getModelData(renderWorld, pos, state, modelData);
+		if (targetLayer != null) {
+			for (BlockPos pos : blocks.positions()) {
+				BlockState state = blocks.lookup().apply(pos);
+				if (state.getRenderShape() != RenderShape.MODEL) {
+					continue;
+				}
+				if (!ItemBlockRenderTypes.getChunkRenderType(state).equals(targetLayer)) {
+					continue;
+				}
+
+				BlockStateModel model = dispatcher.getBlockModel(state);
+				List<BlockModelPart> parts = model.collectParts(renderWorld, pos, state, random);
+				if (parts.isEmpty()) {
+					continue;
+				}
+
 				long randomSeed = state.getSeed(pos);
 				random.setSeed(randomSeed);
-				if (model.getRenderTypes(state, random, modelData).contains(layer)) {
-					poseStack.pushPose();
-					poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-					renderer.tesselateBlock(renderWorld, model, state, pos, poseStack, sbbBuilder, true, random, randomSeed, OverlayTexture.NO_OVERLAY, modelData, layer);
-					poseStack.popPose();
-				}
+				poseStack.pushPose();
+				poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+				renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbbBuilder, true, OverlayTexture.NO_OVERLAY);
+				poseStack.popPose();
 			}
 		}
 		ModelBlockRenderer.clearCache();
 
 		return sbbBuilder.end();
-	}
-
-	@Override
-	public ResourceLocation getTextureLocation(ContraptionRenderState state) {
-		return null;
 	}
 
 	@Override
@@ -145,7 +170,7 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		matrices.setup(poseStack, entity);
 
 		if (!VisualizationManager.supportsVisualization(level)) {
-			for (RenderType renderType : RenderType.chunkBufferLayers()) {
+			for (RenderType renderType : CHUNK_BUFFER_RENDER_TYPES) {
 				SuperByteBuffer sbb = getBuffer(contraption, renderWorld, renderType);
 				if (!sbb.isEmpty()) {
 					VertexConsumer vc = buffers.getBuffer(renderType);

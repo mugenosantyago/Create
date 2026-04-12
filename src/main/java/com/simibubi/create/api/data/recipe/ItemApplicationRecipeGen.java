@@ -29,7 +29,7 @@ import net.neoforged.neoforge.common.Tags;
  */
 public abstract class ItemApplicationRecipeGen extends ProcessingRecipeGen<ItemApplicationRecipeParams, ManualApplicationRecipe, ItemApplicationRecipe.Builder<ManualApplicationRecipe>> {
 	protected GeneratedRecipe woodCasing(String type, Supplier<ItemLike> ingredient, Supplier<ItemLike> output) {
-		return woodCasingIngredient(type, () -> com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(ingredient.get()), output);
+		return woodCasingIngredient(type, () -> Ingredient.of(ingredient.get()), output);
 	}
 
 	protected GeneratedRecipe woodCasingTag(String type, Supplier<TagKey<Item>> ingredient, Supplier<ItemLike> output) {

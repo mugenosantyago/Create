@@ -46,7 +46,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -532,7 +535,7 @@ public class Carriage {
 				.read(c, registries));
 
 		CompoundTag passengersTag = tag.getCompoundOrEmpty("Passengers");
-		passengersTag.getAllKeys()
+		passengersTag.keySet()
 			.forEach(key -> carriage.serialisedPassengers.put(Integer.valueOf(key.substring(4)),
 				passengersTag.getCompoundOrEmpty(key)));
 
@@ -730,7 +733,7 @@ public class Carriage {
 						.getPlayer(tag.getIntArray("PlayerPassenger").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null));
 
 				} else {
-					passenger = EntityType.loadEntityRecursive(tag, entity.level(), e -> {
+					passenger = EntityType.loadEntityRecursive(tag, entity.level(), EntitySpawnReason.LOAD, e -> {
 						e.moveTo(positionAnchor);
 						return e;
 					});
@@ -767,7 +770,7 @@ public class Carriage {
 				}
 
 				CompoundTag passengerData = new CompoundTag();
-				com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, passengerData, registries);
+				com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, passengerData, sLevel.registryAccess());
 				serialisedPassengers.put(seat, passengerData);
 				passenger.discard();
 			}
@@ -799,7 +802,7 @@ public class Carriage {
 					continue;
 				ServerLevel level = sLevel.getServer()
 					.getLevel(other.getKey());
-				sp.teleportTo(level, loc.x, loc.y, loc.z, sp.getYRot(), sp.getXRot());
+				sp.teleportTo(level, loc.x, loc.y, loc.z, Set.of(), sp.getYRot(), sp.getXRot(), false);
 				sp.setPortalCooldown();
 				AllAdvancements.TRAIN_PORTAL.awardTo(sp);
 			}
@@ -832,7 +835,10 @@ public class Carriage {
 		private void createEntity(Level level, boolean loadPassengers) {
 			if (positionAnchor != null)
 				serialisedEntity.put("Pos", VecHelper.writeNBT(positionAnchor));
-			Entity entity = EntityType.create(serialisedEntity, level)
+			Entity entity = EntityType.create(
+					TagValueInput.create(new ProblemReporter.Collector(), level.registryAccess(), serialisedEntity),
+					level,
+					EntitySpawnReason.LOAD)
 				.orElse(null);
 
 			if (!(entity instanceof CarriageContraptionEntity cce)) {
@@ -868,7 +874,7 @@ public class Carriage {
 					}
 
 					CompoundTag passengerData = new CompoundTag();
-					com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, passengerData, registries);
+					com.simibubi.create.foundation.utility.NbtCompat.saveEntityToTag(passenger, passengerData, entity.level().registryAccess());
 					serialisedPassengers.put(seat, passengerData);
 				}
 			}

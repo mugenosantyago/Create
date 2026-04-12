@@ -22,9 +22,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.FireworkRocketItem;
-import net.minecraft.world.item.FireworkStarItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.level.Level;
 
@@ -43,7 +42,7 @@ public record ColorAttribute(DyeColor color) implements ItemAttribute {
 
 		Set<DyeColor> colors = new HashSet<>();
 		if (stack.has(DataComponents.FIREWORKS)) {
-			if (stack.getItem() instanceof FireworkRocketItem || stack.getItem() instanceof FireworkStarItem) {
+			if (stack.is(Items.FIREWORK_ROCKET) || stack.is(Items.FIREWORK_STAR)) {
 				List<FireworkExplosion> explosions = stack.get(DataComponents.FIREWORKS).explosions();
 				for (FireworkExplosion explosion : explosions) {
 					colors.addAll(getFireworkStarColors(explosion));

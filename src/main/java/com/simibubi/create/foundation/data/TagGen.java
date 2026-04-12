@@ -131,5 +131,15 @@ public class TagGen {
 			return this;
 		}
 
+		public CreateTagAppender<T> remove(ResourceKey<T> first, ResourceKey<T>... rest) {
+			delegate.remove(first, rest);
+			return this;
+		}
+
+		public CreateTagAppender<T> remove(TagKey<T> tag) {
+			delegate.remove(tag);
+			return this;
+		}
+
 	}
 }

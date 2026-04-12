@@ -93,7 +93,6 @@ import com.simibubi.create.content.equipment.bell.HauntedBellMovementBehaviour;
 import com.simibubi.create.content.equipment.bell.PeculiarBellBlock;
 import com.simibubi.create.content.equipment.clipboard.ClipboardBlock;
 import com.simibubi.create.content.equipment.clipboard.ClipboardBlockItem;
-import com.simibubi.create.content.equipment.clipboard.ClipboardOverrides;
 import com.simibubi.create.content.equipment.toolbox.ToolboxBlock;
 import com.simibubi.create.content.fluids.PipeAttachmentModel;
 import com.simibubi.create.content.fluids.drain.ItemDrainBlock;
@@ -273,7 +272,7 @@ import com.simibubi.create.foundation.item.UncontainableBlockItem;
 import com.simibubi.create.foundation.mixin.accessor.BlockLootSubProviderAccessor;
 import com.simibubi.create.foundation.utility.DyeHelper;
 import com.simibubi.create.infrastructure.config.CStress;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
@@ -372,7 +371,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+		.onRegister(CreateRegistrate.blockModel())
 		.simpleItem()
 		.register();
 
@@ -383,7 +382,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(axeOrPickaxe())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+		.onRegister(CreateRegistrate.blockModel())
 		.item(CogwheelBlockItem::new)
 		.build()
 		.register();
@@ -396,7 +395,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.transform(CStress.setNoImpact())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> BracketedKineticBlockModel::new))
+			.onRegister(CreateRegistrate.blockModel())
 			.item(CogwheelBlockItem::new)
 			.build()
 			.register();
@@ -515,8 +514,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/encased_chain_drive/item"))
-				.texture("side", p.modLoc("block/" + c.getName())))
+			.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.modLoc("block/encased_chain_drive/item")))
 			.build()
 			.register();
 
@@ -529,7 +527,7 @@ public class AllBlocks {
 		.defaultBlockstate()
 		.transform(CStress.setNoImpact())
 		.transform(displaySource(AllDisplaySources.ITEM_NAMES))
-		.onRegister(CreateRegistrate.blockModel(() -> BeltModel::new))
+		.onRegister(CreateRegistrate.blockModel())
 		.clientExtension(() -> () -> new BeltBlock.RenderProperties())
 		.register();
 
@@ -745,7 +743,7 @@ public class AllBlocks {
 			.onRegister(movementBehaviour(new BlazeBurnerMovementBehaviour()))
 			.onRegister(interactionBehaviour(new ConductorBlockInteractionBehavior.BlazeBurner()))
 			.item(BlazeBurnerBlockItem::withBlaze)
-			.model(AssetLookup.customBlockItemModel("blaze_burner", "block_with_blaze"))
+			.model(() -> AssetLookup.customBlockItemModel("blaze_burner", "block_with_blaze"))
 			.build()
 			.register();
 
@@ -863,7 +861,7 @@ public class AllBlocks {
 		.properties(p -> p.forceSolidOff())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::withAO))
+		.onRegister(CreateRegistrate.blockModel())
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -878,7 +876,7 @@ public class AllBlocks {
 			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
 				(s, f) -> !s.getValue(EncasedPipeBlock.FACING_TO_PROPERTY_MAP.get(f)))))
-			.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::withAO))
+			.onRegister(CreateRegistrate.blockModel())
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.transform(EncasingRegistry.addVariantTo(AllBlocks.FLUID_PIPE))
 			.register();
@@ -890,7 +888,7 @@ public class AllBlocks {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::withAO))
+			.onRegister(CreateRegistrate.blockModel())
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.register();
 
@@ -899,7 +897,7 @@ public class AllBlocks {
 		.properties(p -> p.mapColor(MapColor.STONE))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::withAO))
+		.onRegister(CreateRegistrate.blockModel())
 		.transform(CStress.setImpact(4.0))
 		.item()
 		.transform(customItemModel())
@@ -911,7 +909,7 @@ public class AllBlocks {
 			.properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW))
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::withAO))
+			.onRegister(CreateRegistrate.blockModel())
 			.item()
 			.transform(customItemModel())
 			.register();
@@ -921,7 +919,7 @@ public class AllBlocks {
 		.transform(pickaxeOnly())
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> PipeAttachmentModel::withAO))
+		.onRegister(CreateRegistrate.blockModel())
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -939,11 +937,11 @@ public class AllBlocks {
 			.properties(p -> p.mapColor(colour.getMapColor()))
 			.transform(pickaxeOnly())
 			.transform(BuilderTransformers.valveHandle(colour))
-			.recipe((c, p) -> ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, c.get())
+			.recipe((c, p) -> ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.MISC, c.get())
 				.requires(colour.getTag())
 				.requires(AllItemTags.VALVE_HANDLES.tag)
-				.unlockedBy("has_valve", RegistrateRecipeProvider.has(AllItemTags.VALVE_HANDLES.tag))
-				.save(p, Create.asResource("crafting/kinetics/" + c.getName() + "_from_other_valve_handle")))
+				.unlockedBy("has_valve", p.has(AllItemTags.VALVE_HANDLES.tag))
+				.save(p, p.safeKey(Create.asResource("crafting/kinetics/" + c.getName() + "_from_other_valve_handle"))))
 			.register();
 	});
 
@@ -953,13 +951,13 @@ public class AllBlocks {
 			.isRedstoneConductor((p1, p2, p3) -> true))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> FluidTankModel::standard))
+		.onRegister(CreateRegistrate.blockModel())
 		.transform(displaySource(AllDisplaySources.BOILER))
 		.transform(mountedFluidStorage(AllMountedStorageTypes.FLUID_TANK))
 		.onRegister(movementBehaviour(new FluidTankMovementBehavior()))
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.item(FluidTankItem::new)
-		.model(AssetLookup.customBlockItemModel("_", "block_single_window"))
+		.model(() -> AssetLookup.customBlockItemModel("_", "block_single_window"))
 		.build()
 		.register();
 
@@ -971,17 +969,12 @@ public class AllBlocks {
 			.transform(pickaxeOnly())
 			.tag(AllBlockTags.SAFE_NBT.tag)
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> FluidTankModel::creative))
+			.onRegister(CreateRegistrate.blockModel())
 			.transform(mountedFluidStorage(AllMountedStorageTypes.CREATIVE_FLUID_TANK))
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.item(FluidTankItem::new)
 			.properties(p -> p.rarity(Rarity.EPIC))
-			.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/fluid_tank/block_single_window"))
-				.texture("5", p.modLoc("block/creative_fluid_tank_window_single"))
-				.texture("1", p.modLoc("block/creative_fluid_tank"))
-				.texture("particle", p.modLoc("block/creative_fluid_tank"))
-				.texture("4", p.modLoc("block/creative_casing"))
-				.texture("0", p.modLoc("block/creative_casing")))
+			.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.modLoc("block/fluid_tank/block_single_window")))
 			.build()
 			.register();
 
@@ -1217,7 +1210,7 @@ public class AllBlocks {
 				.getColorForPower(pos != null && world != null ? state.getValue(BlockStateProperties.POWER) : 0))
 			.tag(BlockTags.RAILS)
 			.item()
-			.model((c, p) -> p.generated(c, Create.asResource("block/" + c.getName())))
+			.model(() -> (c, p) -> p.generateFlatItem(c.get(), Create.asResource("block/" + c.getName())))
 			.build()
 			.register();
 
@@ -1258,10 +1251,7 @@ public class AllBlocks {
 			.tag(AllBlockTags.SAFE_NBT.tag)
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> {
-				String path = "block/" + c.getName();
-				p.cubeColumn(c.getName(), p.modLoc(path + "_side"), p.modLoc(path + "_end"));
-			})
+			.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.modLoc("block/" + c.getName())))
 			.build()
 			.register();
 
@@ -1552,7 +1542,7 @@ public class AllBlocks {
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.transform(pickaxeOnly())
 		.clientExtension(() -> () -> new TrackBlock.RenderProperties())
-		.onRegister(CreateRegistrate.blockModel(() -> TrackModel::new))
+		.onRegister(CreateRegistrate.blockModel())
 		.defaultBlockstate()
 		.tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED)
 		.tag(AllBlockTags.TRACKS.tag)
@@ -1560,7 +1550,7 @@ public class AllBlocks {
 		.lang("Train Track")
 		.item(TrackBlockItem::new)
 		.tag(AllItemTags.TRACKS.tag)
-		.model((c, p) -> p.generated(c, Create.asResource("item/" + c.getName())))
+		.model(() -> (c, p) -> p.generateFlatItem(c.get(), Create.asResource("item/" + c.getName())))
 		.build()
 		.register();
 
@@ -1816,24 +1806,22 @@ public class AllBlocks {
 			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.create.package_postbox"))
 			.item(PackagePortItem::new)
 			.recipe((c, p) -> {
-				ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get())
+				ShapedRecipeBuilder.shaped(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get())
 					.define('D', colour.getTag())
 					.define('B', Items.BARREL)
 					.define('A', AllItems.ANDESITE_ALLOY)
 					.pattern("D")
 					.pattern("B")
 					.pattern("A")
-					.unlockedBy("has_barrel", RegistrateRecipeProvider.has(Items.BARREL))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName().toString()));
-				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
+					.unlockedBy("has_barrel", p.has(Items.BARREL))
+					.save(p, p.safeKey(Create.asResource("crafting/logistics/" + c.getName().toString())));
+				ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(colour.getTag())
 					.requires(AllItemTags.POSTBOXES.tag)
-					.unlockedBy("has_postbox", RegistrateRecipeProvider.has(AllItemTags.POSTBOXES.tag))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName() + "_from_other_postbox"));
+					.unlockedBy("has_postbox", p.has(AllItemTags.POSTBOXES.tag))
+					.save(p, p.safeKey(Create.asResource("crafting/logistics/" + c.getName() + "_from_other_postbox")));
 			})
-			.model((c, p) -> p.withExistingParent(colourName + "_postbox", p.modLoc("block/package_postbox/item"))
-				.texture("0", p.modLoc("block/post_box/post_box_" + colourName))
-				.texture("1", p.modLoc("block/post_box/post_box_" + colourName + "_closed")))
+			.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.modLoc("block/package_postbox/item")))
 			.tag(AllItemTags.POSTBOXES.tag)
 			.build()
 			.register();
@@ -1880,7 +1868,7 @@ public class AllBlocks {
 			.properties(p -> p.forceSolidOn())
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> FactoryPanelModel::new))
+			.onRegister(CreateRegistrate.blockModel())
 			.transform(displaySource(AllDisplaySources.GAUGE_STATUS))
 			.item(FactoryPanelBlockItem::new)
 			.model(() -> AssetLookup::customItemModel)
@@ -1893,16 +1881,16 @@ public class AllBlocks {
 			.transform(BuilderTransformers.tableCloth(colourName, () -> Blocks.BLACK_CARPET, true))
 			.properties(p -> p.mapColor(colour))
 			.recipe((c, p) -> {
-				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get(), 2)
+				ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get(), 2)
 					.requires(DyeHelper.getWoolOfDye(colour))
 					.requires(AllItems.ANDESITE_ALLOY)
-					.unlockedBy("has_wool", RegistrateRecipeProvider.has(ItemTags.WOOL))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName().toString()));
-				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
+					.unlockedBy("has_wool", p.has(ItemTags.WOOL))
+					.save(p, p.safeKey(Create.asResource("crafting/logistics/" + c.getName().toString())));
+				ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(colour.getTag())
 					.requires(AllItemTags.DYED_TABLE_CLOTHS.tag)
-					.unlockedBy("has_postbox", RegistrateRecipeProvider.has(AllItemTags.DYED_TABLE_CLOTHS.tag))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName() + "_from_other_table_cloth"));
+					.unlockedBy("has_postbox", p.has(AllItemTags.DYED_TABLE_CLOTHS.tag))
+					.save(p, p.safeKey(Create.asResource("crafting/logistics/" + c.getName() + "_from_other_table_cloth")));
 			})
 			.register();
 	});
@@ -2157,8 +2145,7 @@ public class AllBlocks {
 			.transform(mountedItemStorage(AllMountedStorageTypes.TOOLBOX))
 			.tag(AllBlockTags.TOOLBOXES.tag)
 			.item(UncontainableBlockItem::new)
-			.model((c, p) -> p.withExistingParent(colourName + "_toolbox", p.modLoc("block/toolbox/item"))
-				.texture("0", p.modLoc("block/toolbox/" + colourName)))
+			.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.modLoc("block/toolbox/item")))
 			.tag(AllItemTags.TOOLBOXES.tag)
 			.build()
 			.register();
@@ -2173,7 +2160,7 @@ public class AllBlocks {
 		.loot((lt, b) -> lt.add(b, BlockLootSubProvider.noDrop()))
 		.item(ClipboardBlockItem::new)
 		.onRegister(ClipboardBlockItem::registerModelOverrides)
-		.model((c, p) -> ClipboardOverrides.addOverrideModels(c, p))
+		.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.modLoc("block/clipboard/item")))
 		.build()
 		.register();
 
@@ -2235,7 +2222,7 @@ public class AllBlocks {
 			.sound(SoundType.NETHERITE_BLOCK))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> ConnectedGirderModel::new))
+		.onRegister(CreateRegistrate.blockModel())
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -2251,7 +2238,7 @@ public class AllBlocks {
 				.withPool(p.applyExplosionCondition(SHAFT.get(), LootPool.lootPool()
 					.setRolls(ConstantValue.exactly(1.0F))
 					.add(LootItem.lootTableItem(SHAFT.get()))))))
-			.onRegister(CreateRegistrate.blockModel(() -> ConnectedGirderModel::new))
+			.onRegister(CreateRegistrate.blockModel())
 			.register();
 
 	public static final BlockEntry<Block> COPYCAT_BASE = REGISTRATE.block("copycat_base", Block::new)
@@ -2267,7 +2254,7 @@ public class AllBlocks {
 		REGISTRATE.block("copycat_step", CopycatStepBlock::new)
 			.properties(p -> p.forceSolidOn())
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(() -> CopycatStepModel::new))
+			.onRegister(CreateRegistrate.blockModel())
 			.item()
 			.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(CommonMetal.ZINC.ingots),
 				RecipeCategory.BUILDING_BLOCKS, c::get, 4))
@@ -2277,7 +2264,7 @@ public class AllBlocks {
 	public static final BlockEntry<CopycatPanelBlock> COPYCAT_PANEL =
 		REGISTRATE.block("copycat_panel", CopycatPanelBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(() -> CopycatPanelModel::new))
+			.onRegister(CreateRegistrate.blockModel())
 			.item()
 			.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(CommonMetal.ZINC.ingots),
 				RecipeCategory.BUILDING_BLOCKS, c::get, 4))
@@ -2287,7 +2274,7 @@ public class AllBlocks {
 	public static final BlockEntry<WrenchableDirectionalBlock> COPYCAT_BARS =
 		REGISTRATE.block("copycat_bars", WrenchableDirectionalBlock::new)
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> CopycatBarsModel::new))
+			.onRegister(CreateRegistrate.blockModel())
 			.register();
 
 	public static final DyedBlockList<SeatBlock> SEATS = new DyedBlockList<>(colour -> {
@@ -2303,16 +2290,16 @@ public class AllBlocks {
 			.transform(displaySource(AllDisplaySources.ENTITY_NAME))
 			.defaultBlockstate()
 			.recipe((c, p) -> {
-				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
+				ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(DyeHelper.getWoolOfDye(colour))
 					.requires(ItemTags.WOODEN_SLABS)
-					.unlockedBy("has_wool", RegistrateRecipeProvider.has(ItemTags.WOOL))
-					.save(p, Create.asResource("crafting/kinetics/" + c.getName().toString()));
-				ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, c.get())
+					.unlockedBy("has_wool", p.has(ItemTags.WOOL))
+					.save(p, p.safeKey(Create.asResource("crafting/kinetics/" + c.getName().toString())));
+				ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get())
 					.requires(colour.getTag())
 					.requires(AllItemTags.SEATS.tag)
-					.unlockedBy("has_seat", RegistrateRecipeProvider.has(AllItemTags.SEATS.tag))
-					.save(p, Create.asResource("crafting/kinetics/" + c.getName() + "_from_other_seat"));
+					.unlockedBy("has_seat", p.has(AllItemTags.SEATS.tag))
+					.save(p, p.safeKey(Create.asResource("crafting/kinetics/" + c.getName() + "_from_other_seat")));
 			})
 			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.create.seat"))
 			.tag(AllBlockTags.SEATS.tag)

@@ -20,7 +20,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -95,12 +94,13 @@ public class RedstoneContactBlock extends WrenchableDirectionalBlock {
 		return stateIn;
 	}
 
-	@SuppressWarnings("deprecation")
-		public void onRemove(BlockState state, Level worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+	@Override
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel worldIn, BlockPos pos, boolean movedByPiston) {
+		BlockState newState = worldIn.getBlockState(pos);
 		if (state.getBlock() == this && newState.getBlock() == this)
 			if (state == newState.cycle(POWERED))
 				worldIn.updateNeighborsAt(pos, this);
-		super.onRemove(state, worldIn, pos, newState, isMoving);
+		super.affectNeighborsAfterRemoval(state, worldIn, pos, movedByPiston);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class RedstoneContactBlock extends WrenchableDirectionalBlock {
 			worldIn.setBlockAndUpdate(pos, state.setValue(POWERED, hasValidContact));
 	}
 
-	public static boolean hasValidContact(LevelAccessor world, BlockPos pos, Direction direction) {
+	public static boolean hasValidContact(net.minecraft.world.level.LevelReader world, BlockPos pos, Direction direction) {
 		BlockState blockState = world.getBlockState(pos.relative(direction));
 		return (AllBlocks.REDSTONE_CONTACT.has(blockState) || AllBlocks.ELEVATOR_CONTACT.has(blockState))
 			&& blockState.getValue(FACING) == direction.getOpposite();

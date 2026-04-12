@@ -71,7 +71,7 @@ public class GlobalStation extends SingleBlockEntityEdgePoint {
 		NBTHelper.iterateCompoundList(portList, c -> {
 			GlobalPackagePort port = new GlobalPackagePort();
 			port.address = c.getStringOr("Address", "");
-			port.com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(offlineBuffer, registries, c.getCompoundOrEmpty("OfflineBuffer"));
+			NbtCompat.deserializeItemStackHandler(port.offlineBuffer, registries, c.getCompoundOrEmpty("OfflineBuffer"));
 			port.primed = c.getBooleanOr("Primed", false);
 			connectedPorts.put(NBTHelper.readBlockPos(c, "Pos"), port);
 		});
@@ -95,7 +95,7 @@ public class GlobalStation extends SingleBlockEntityEdgePoint {
 		nbt.put("Ports", NBTHelper.writeCompoundList(connectedPorts.entrySet(), e -> {
 			CompoundTag c = new CompoundTag();
 			c.putString("Address", e.getValue().address);
-			c.put("OfflineBuffer", e.getValue().com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(offlineBuffer, registries));
+			c.put("OfflineBuffer", NbtCompat.serializeItemStackHandler(e.getValue().offlineBuffer, registries));
 			c.putBoolean("Primed", e.getValue().primed);
 			c.put("Pos", NbtCompat.writeBlockPos(e.getKey()));
 			return c;

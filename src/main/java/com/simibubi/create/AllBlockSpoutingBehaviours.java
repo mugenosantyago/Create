@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -40,8 +39,8 @@ public class AllBlockSpoutingBehaviours {
 		for (String name : List.of("table", "basin")) {
 			ResourceLocation id = Mods.TCONSTRUCT.rl(name);
 			if (BuiltInRegistries.BLOCK_ENTITY_TYPE.containsKey(id)) {
-				BlockEntityType<?> table = BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id);
-				BlockSpoutingBehaviour.BY_BLOCK_ENTITY.register(table, SpoutCasting.INSTANCE);
+				BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id)
+					.ifPresent(holder -> BlockSpoutingBehaviour.BY_BLOCK_ENTITY.register(holder.value(), SpoutCasting.INSTANCE));
 			} else {
 				Create.LOGGER.warn("Block entity {} wasn't found. Outdated compat?", id);
 			}

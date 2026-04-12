@@ -7,6 +7,9 @@ import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity.CasingType;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
+
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 
 import net.createmod.catnip.render.SpriteShiftEntry;
 import net.minecraft.client.renderer.RenderType;
@@ -60,10 +63,10 @@ public class BeltModel extends BakedModelWrapper<BakedModel> {
 		if (cover) {
 			boolean alongX = state.getValue(BeltBlock.HORIZONTAL_FACING)
 				.getAxis() == Axis.X;
-			BakedModel coverModel =
+			BlockStateModel coverModel =
 				(brassCasing ? alongX ? AllPartialModels.BRASS_BELT_COVER_X : AllPartialModels.BRASS_BELT_COVER_Z
 					: alongX ? AllPartialModels.ANDESITE_BELT_COVER_X : AllPartialModels.ANDESITE_BELT_COVER_Z).get();
-			quads.addAll(coverModel.getQuads(state, side, rand, extraData, renderType));
+			quads.addAll(BlockStateModelUtil.collectQuads(coverModel, state, side, rand));
 		}
 
 		if (brassCasing)

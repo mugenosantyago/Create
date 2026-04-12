@@ -180,7 +180,7 @@ public class MechanicalCrafterBlockEntity extends KineticBlockEntity implements 
 
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-		compound.put("Inventory", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(inventory, registries));
+		compound.put("Inventory", inventory.serializeNBT(registries));
 
 		CompoundTag inputNBT = new CompoundTag();
 		input.write(inputNBT);
@@ -207,7 +207,7 @@ public class MechanicalCrafterBlockEntity extends KineticBlockEntity implements 
 		Phase phaseBefore = phase;
 		GroupedItems before = this.groupedItems;
 
-		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(inventory, registries, compound.getCompoundOrEmpty("Inventory"));
+		inventory.deserializeNBT(registries, compound.getCompoundOrEmpty("Inventory"));
 		input.read(compound.getCompoundOrEmpty("ConnectedInput"));
 		groupedItems = GroupedItems.read(compound.getCompoundOrEmpty("GroupedItems"), registries);
 		phase = Phase.IDLE;

@@ -20,6 +20,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -92,7 +94,7 @@ public class ClientContraption {
 	}
 
 	public void invalidateStructure() {
-		for (RenderType renderType : RenderType.chunkBufferLayers()) {
+		for (RenderType renderType : ContraptionEntityRenderer.CHUNK_BUFFER_RENDER_TYPES) {
 			SuperByteBufferCache.getInstance()
 				.invalidate(ContraptionEntityRenderer.CONTRAPTION, Pair.of(contraption, renderType));
 		}
@@ -148,7 +150,7 @@ public class ClientContraption {
 		BlockEntity be = entityBlock.newBlockEntity(pos, state);
 		postprocessReadBlockEntity(level, be, state);
 		if (be != null && nbt != null) {
-			be.handleUpdateTag(nbt, level.registryAccess());
+			be.handleUpdateTag(TagValueInput.create(new ProblemReporter.Collector(), level.registryAccess(), nbt));
 		}
 
 		return be;

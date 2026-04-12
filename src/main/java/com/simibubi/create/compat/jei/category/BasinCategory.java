@@ -22,6 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.createmod.catnip.data.Pair;
+import net.minecraft.core.NonNullList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +43,7 @@ public class BasinCategory extends CreateRecipeCategory<BasinRecipe> {
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, BasinRecipe recipe, IFocusGroup focuses) {
-		List<Pair<Ingredient, MutableInt>> condensedIngredients = ItemHelper.condenseIngredients(recipe.placementInfo().ingredients());
+		List<Pair<Ingredient, MutableInt>> condensedIngredients = ItemHelper.condenseIngredients(NonNullList.copyOf(recipe.placementInfo().ingredients()));
 
 		int size = condensedIngredients.size() + recipe.getFluidIngredients().size();
 		int xOffset = size < 3 ? (3 - size) * 19 / 2 : 0;

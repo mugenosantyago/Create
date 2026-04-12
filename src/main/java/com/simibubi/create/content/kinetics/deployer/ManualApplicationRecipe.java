@@ -53,8 +53,8 @@ public class ManualApplicationRecipe extends ItemApplicationRecipe {
 			return;
 
 		RecipeType<Recipe<RecipeWrapper>> type = AllRecipeTypes.ITEM_APPLICATION.getType();
-		Optional<RecipeHolder<Recipe<RecipeWrapper>>> foundRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
-			.getAllRecipesFor(type)
+		Optional<RecipeHolder<Recipe<RecipeWrapper>>> foundRecipe = com.simibubi.create.foundation.utility.RecipeCompat
+			.getAllRecipesFor(com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level), type)
 			.stream()
 			.filter(r -> {
 				ManualApplicationRecipe mar = (ManualApplicationRecipe) r.value();
@@ -131,7 +131,7 @@ public class ManualApplicationRecipe extends ItemApplicationRecipe {
 	public static RecipeHolder<DeployerApplicationRecipe> asDeploying(RecipeHolder<?> recipe) {
 		ManualApplicationRecipe mar = (ManualApplicationRecipe) recipe.value();
 		ResourceLocation id = AllRecipeTypes.CAN_BE_AUTOMATED.test(recipe) ?
-			recipe.id().withSuffix("_using_deployer") : recipe.id();
+			recipe.id().location().withSuffix("_using_deployer") : recipe.id().location();
 		ItemApplicationRecipe.Builder<DeployerApplicationRecipe> builder =
 			new ItemApplicationRecipe.Builder<>(DeployerApplicationRecipe::new, id)
 					.require(mar.ingredients.get(0))

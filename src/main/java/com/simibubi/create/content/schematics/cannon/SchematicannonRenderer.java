@@ -13,7 +13,6 @@ import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRender
 import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
-import net.createmod.ponder.render.VirtualRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -179,8 +178,7 @@ public class SchematicannonRenderer extends SafeBlockEntityRenderer<Schematicann
 				ms.scale(scale, scale, scale);
 				Minecraft.getInstance()
 					.getBlockRenderer()
-					.renderSingleBlock(state, ms, buffer, light, overlay,
-						VirtualRenderHelper.VIRTUAL_DATA, null);
+					.renderSingleBlock(state, ms, buffer, light, overlay);
 			} else if (launched instanceof ForEntity) {
 				// Render the item
 				float scale = 1.2f;

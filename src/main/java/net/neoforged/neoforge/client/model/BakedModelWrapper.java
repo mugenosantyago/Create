@@ -69,16 +69,25 @@ public class BakedModelWrapper<T extends BakedModel> implements BakedModel {
 		return getParticleIcon();
 	}
 
+	@Override
+	public net.neoforged.neoforge.client.ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data) {
+		return wrapped != null ? wrapped.getRenderTypes(state, rand, data) : net.neoforged.neoforge.client.ChunkRenderTypeSet.ALL;
+	}
+
+	@Override
 	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data, net.minecraft.client.renderer.RenderType renderType) {
-		return getQuads(state, side, rand);
+		return wrapped != null ? wrapped.getQuads(state, side, rand, data, renderType) : getQuads(state, side, rand);
 	}
 
-	protected net.neoforged.neoforge.model.data.ModelData.Builder gatherModelData(net.neoforged.neoforge.model.data.ModelData.Builder builder, net.minecraft.world.level.BlockAndTintGetter world, net.minecraft.core.BlockPos pos, BlockState state, net.neoforged.neoforge.model.data.ModelData existing) {
-		return builder;
-	}
-
+	@Override
 	public net.neoforged.neoforge.model.data.ModelData getModelData(net.minecraft.world.level.BlockAndTintGetter world, net.minecraft.core.BlockPos pos, BlockState state, net.neoforged.neoforge.model.data.ModelData data) {
 		return data != null ? data : net.neoforged.neoforge.model.data.ModelData.EMPTY;
+	}
+
+	@Override
+	public net.minecraft.util.TriState useAmbientOcclusion(BlockState state, net.neoforged.neoforge.model.data.ModelData data, net.minecraft.client.renderer.RenderType renderType) {
+		return wrapped != null ? wrapped.useAmbientOcclusion(state, data, renderType)
+			: (useAmbientOcclusion() ? net.minecraft.util.TriState.TRUE : net.minecraft.util.TriState.FALSE);
 	}
 
 }

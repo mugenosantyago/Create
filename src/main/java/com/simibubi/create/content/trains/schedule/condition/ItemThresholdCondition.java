@@ -66,7 +66,7 @@ public class ItemThresholdCondition extends CargoThresholdCondition {
 	@Override
 	protected void writeAdditional(HolderLookup.Provider registries, CompoundTag tag) {
 		super.writeAdditional(registries, tag);
-		tag.put("Item", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(stack, registries));
+		tag.put("Item", stack.serializeNBT(registries));
 	}
 
 	@Override

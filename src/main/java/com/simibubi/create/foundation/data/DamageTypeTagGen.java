@@ -9,6 +9,7 @@ import com.simibubi.create.Create;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
@@ -20,11 +21,11 @@ public class DamageTypeTagGen extends TagsProvider<DamageType> {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		tag(DamageTypeTags.BYPASSES_ARMOR)
+		TagAppender.forBuilder(getOrCreateRawBuilder(DamageTypeTags.BYPASSES_ARMOR))
 				.add(AllDamageTypes.CRUSH, AllDamageTypes.FAN_FIRE, AllDamageTypes.FAN_LAVA, AllDamageTypes.DRILL, AllDamageTypes.SAW);
-		tag(DamageTypeTags.IS_FIRE)
+		TagAppender.forBuilder(getOrCreateRawBuilder(DamageTypeTags.IS_FIRE))
 				.add(AllDamageTypes.FAN_FIRE, AllDamageTypes.FAN_LAVA);
-		tag(DamageTypeTags.IS_EXPLOSION)
+		TagAppender.forBuilder(getOrCreateRawBuilder(DamageTypeTags.IS_EXPLOSION))
 				.add(AllDamageTypes.CUCKOO_SURPRISE);
 	}
 

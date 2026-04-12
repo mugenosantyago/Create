@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.OldMinecartBehavior;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -135,12 +136,16 @@ public class CouplingRenderer {
 		Vec3 frontVec = positionVec.add(VecHelper.rotate(new Vec3(.5, 0, 0), 180 - yaw, Direction.Axis.Y));
 		Vec3 backVec = positionVec.add(VecHelper.rotate(new Vec3(-.5, 0, 0), 180 - yaw, Direction.Axis.Y));
 
-		Vec3 railVecOfPos = cart.getPos(xIn, yIn, zIn);
+		Vec3 railVecOfPos = null;
 		boolean flip = false;
 
-		if (railVecOfPos != null) {
-			frontVec = cart.getPosOffs(xIn, yIn, zIn, (double) 0.3F);
-			backVec = cart.getPosOffs(xIn, yIn, zIn, (double) -0.3F);
+		if (cart.getBehavior() instanceof OldMinecartBehavior oldBehavior) {
+			railVecOfPos = oldBehavior.getPos(xIn, yIn, zIn);
+		}
+
+		if (railVecOfPos != null && cart.getBehavior() instanceof OldMinecartBehavior oldBehavior) {
+			frontVec = oldBehavior.getPosOffs(xIn, yIn, zIn, (double) 0.3F);
+			backVec = oldBehavior.getPosOffs(xIn, yIn, zIn, (double) -0.3F);
 			if (frontVec == null)
 				frontVec = railVecOfPos;
 			if (backVec == null)

@@ -3,6 +3,7 @@ package com.simibubi.create.infrastructure.gametest.tests;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
@@ -217,7 +218,7 @@ public class TestFluids {
 
 	@GameTest(template = "waterwheel_materials", timeoutTicks = CreateGameTestHelper.FIFTEEN_SECONDS)
 	public static void waterwheelMaterials(CreateGameTestHelper helper) {
-		List<Item> planks = BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.PLANKS).stream()
+		List<Item> planks = StreamSupport.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(BlockTags.PLANKS).spliterator(), false)
 				.map(Holder::value).map(ItemLike::asItem).collect(Collectors.toCollection(ArrayList::new));
 		List<BlockPos> chests = List.of(new BlockPos(6, 4, 2), new BlockPos(6, 4, 3));
 		List<BlockPos> deployers = chests.stream().map(pos -> pos.below(2)).toList();

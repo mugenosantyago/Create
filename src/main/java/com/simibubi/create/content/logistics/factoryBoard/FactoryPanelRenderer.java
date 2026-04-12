@@ -63,7 +63,7 @@ public class FactoryPanelRenderer extends SmartBlockEntityRenderer<FactoryPanelB
 			.translate(behaviour.slot.xOffset * .5, 0, behaviour.slot.yOffset * .5)
 			.light(glow > 0.125f ? LightTexture.FULL_BRIGHT : light)
 			.overlay(overlay)
-			.renderInto(ms, buffer.getBuffer(RenderType.translucent()));
+			.renderInto(ms, buffer.getBuffer(RenderTypes.entityTranslucentBlockMipped()));
 
 		if (glow < .125f)
 			return;

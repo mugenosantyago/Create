@@ -72,7 +72,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -1108,12 +1110,13 @@ public class Train {
 		return Penalties.ANY_TRAIN;
 	}
 
-	public void burnFuel() {
+	public void burnFuel(Level level) {
 		if (fuelTicks > 0) {
 			fuelTicks--;
 			return;
 		}
 
+		FuelValues fuelValues = level.fuelValues();
 		boolean iterateFromBack = speed < 0;
 		int carriageCount = carriages.size();
 
@@ -1126,7 +1129,7 @@ public class Train {
 
 			for (int slot = 0; slot < fuelItems.getSlots(); slot++) {
 				ItemStack stack = fuelItems.extractItem(slot, 1, true);
-				int burnTime = stack.getBurnTime(null);
+				int burnTime = stack.getBurnTime(RecipeType.SMELTING, fuelValues);
 				if (burnTime <= 0)
 					continue;
 

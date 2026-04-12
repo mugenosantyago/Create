@@ -11,4 +11,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ShapedRecipeAccessor {
 	@Accessor("pattern")
 	ShapedRecipePattern create$getPattern();
+
+	@Accessor("result")
+	net.minecraft.world.item.ItemStack create$getResult();
 }

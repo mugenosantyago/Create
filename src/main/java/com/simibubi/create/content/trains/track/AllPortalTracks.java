@@ -137,7 +137,7 @@ public class AllPortalTracks {
 		if (!minecraftServer.isLevelEnabled(dimensiontransition.newLevel()))
 			return null;
 
-		BlockPos otherPortalPos = BlockPos.containing(dimensiontransition.pos());
+		BlockPos otherPortalPos = BlockPos.containing(dimensiontransition.position());
 		BlockState otherPortalState = otherLevel.getBlockState(otherPortalPos);
 		if (!otherPortalState.is(portalState.getBlock()))
 			return null;

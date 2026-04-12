@@ -6,12 +6,14 @@ import java.util.List;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.model.BakedModelHelper;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,18 +45,16 @@ public class CopycatPanelModel extends CopycatModel {
 		if (CopycatSpecialCases.isBarsMaterial(material))
 			specialCopycatModelState = AllBlocks.COPYCAT_BARS.getDefaultState();
 		if (CopycatSpecialCases.isTrapdoorMaterial(material))
-			return blockRenderer.getBlockModel(material)
-				.getQuads(material, side, rand, wrappedData, renderType);
+			return BlockStateModelUtil.collectQuads(blockRenderer.getBlockModel(material), material, side, rand);
 
 		if (specialCopycatModelState != null) {
-			BakedModel blockModel =
+			BlockStateModel barsModel =
 				blockRenderer.getBlockModel(specialCopycatModelState.setValue(DirectionalBlock.FACING, facing));
-			if (blockModel instanceof CopycatModel cm)
-				return cm.getCroppedQuads(state, side, rand, material, wrappedData, renderType);
+			return BlockStateModelUtil.collectQuads(barsModel, material, side, rand);
 		}
 
-		BakedModel model = getModelOf(material);
-		List<BakedQuad> templateQuads = model.getQuads(material, side, rand, wrappedData, renderType);
+		BlockStateModel model = getModelOf(material);
+		List<BakedQuad> templateQuads = BlockStateModelUtil.collectQuads(model, material, side, rand);
 		int size = templateQuads.size();
 
 		List<BakedQuad> quads = new ArrayList<>();

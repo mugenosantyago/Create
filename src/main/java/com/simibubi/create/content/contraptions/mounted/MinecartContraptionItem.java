@@ -30,6 +30,7 @@ import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -37,6 +38,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.entity.vehicle.MinecartChest;
+import net.minecraft.world.entity.vehicle.MinecartFurnace;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -73,6 +77,16 @@ public class MinecartContraptionItem extends Item {
 
 	public static MinecartContraptionItem chest(Properties builder) {
 		return new MinecartContraptionItem(Type.CHEST, builder);
+	}
+
+	private static Type minecartTypeFrom(AbstractMinecart cart) {
+		if (cart instanceof MinecartFurnace)
+			return Type.FURNACE;
+		if (cart instanceof MinecartChest)
+			return Type.CHEST;
+		if (cart instanceof Minecart)
+			return Type.RIDEABLE;
+		return null;
 	}
 
 	@Override
@@ -202,8 +216,8 @@ public class MinecartContraptionItem extends Item {
 	}
 
 	@Override
-	public String getDescriptionId(ItemStack stack) {
-		return "item.create.minecart_contraption";
+	public Component getName(ItemStack stack) {
+		return Component.translatable("item.create.minecart_contraption");
 	}
 
 	@SubscribeEvent
@@ -226,7 +240,7 @@ public class MinecartContraptionItem extends Item {
 			return;
 		if (player instanceof DeployerFakePlayer dfp && dfp.onMinecartContraption)
 			return;
-		Type type = cart.getMinecartType();
+		Type type = minecartTypeFrom(cart);
 		if (type != Type.RIDEABLE && type != Type.FURNACE && type != Type.CHEST)
 			return;
 		List<Entity> passengers = cart.getPassengers();

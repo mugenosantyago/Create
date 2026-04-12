@@ -58,7 +58,7 @@ public class PotatoProjectileRenderer
         ItemStackRenderState itemState = new ItemStackRenderState();
         Minecraft.getInstance()
             .getItemModelResolver()
-            .updateForTopItem(itemState, item, ItemDisplayContext.GROUND, false, null, null, 0);
+            .updateForTopItem(itemState, item, ItemDisplayContext.GROUND, null, null, 0);
         itemState.render(ms, buffer, light, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
 
         ms.popPose();

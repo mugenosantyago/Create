@@ -29,6 +29,26 @@ public class BlockModelProvider {
         return new ModelFile(ResourceLocation.parse(name));
     }
 
+	public ModelFile slab(String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+		return new ModelFile(ResourceLocation.parse(name));
+	}
+
+	public ModelFile slabTop(String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+		return new ModelFile(ResourceLocation.parse(name));
+	}
+
+	public ModelFile cubeColumn(String name, ResourceLocation side, ResourceLocation end) {
+		return new ModelFile(ResourceLocation.parse(name));
+	}
+
+	public ModelFile cubeColumnHorizontal(String name, ResourceLocation side, ResourceLocation end) {
+		return new ModelFile(ResourceLocation.parse(name));
+	}
+
+	public ModelFile cubeBottomTop(String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+		return new ModelFile(ResourceLocation.parse(name));
+	}
+
     public BlockModelBuilder withExistingParent(String name, ResourceLocation parent) {
         return new BlockModelBuilder(ResourceLocation.parse(name));
     }

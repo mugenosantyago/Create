@@ -12,8 +12,10 @@ import com.simibubi.create.foundation.data.recipe.Mods;
 import com.simibubi.create.foundation.mixin.accessor.MappedRegistryAccessor;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -63,8 +65,8 @@ public class SimpleDatagenIngredient implements ICustomIngredient {
 	}
 
 	@Override
-	public @NotNull Stream<ItemStack> getItems() {
-		return Stream.empty();
+	public @NotNull Stream<Holder<Item>> items() {
+		return BuiltInRegistries.ITEM.get(mod.asResource(id)).stream().map(ref -> ref);
 	}
 
 	@Override

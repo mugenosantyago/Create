@@ -82,7 +82,7 @@ public class CreateTestFunction {
 		return new CreateTestFunction(
 				// use structure for test name since that's what MC fills structure blocks with for some reason
 				fullName, simpleName, gt.batch(), structure, rotation, gt.timeoutTicks(), gt.setupTicks(),
-				gt.required(), gt.attempts(), gt.requiredSuccesses(), run(fullName, asConsumer(method))
+				gt.required(), gt.maxAttempts(), gt.requiredSuccesses(), run(fullName, asConsumer(method))
 		).testFunction;
 	}
 

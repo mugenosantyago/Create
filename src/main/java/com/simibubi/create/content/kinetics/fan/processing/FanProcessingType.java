@@ -33,7 +33,11 @@ public interface FanProcessingType {
 
 	@Nullable
 	static FanProcessingType parse(String str) {
-		return CreateBuiltInRegistries.FAN_PROCESSING_TYPE.getOptional(ResourceLocation.tryParse(str));
+		ResourceLocation id = ResourceLocation.tryParse(str);
+		if (id == null) {
+			return null;
+		}
+		return CreateBuiltInRegistries.FAN_PROCESSING_TYPE.getOptional(id).orElse(null);
 	}
 
 	@Nullable

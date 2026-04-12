@@ -45,7 +45,8 @@ public class CardboardArmorHandlerClient {
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void playerRendersAsBoxWhenSneaking(RenderPlayerEvent.Pre event) {
-		Player player = event.getEntity();
+		if (!(Minecraft.getInstance().level.getEntity(event.getRenderState().id) instanceof AbstractClientPlayer player))
+			return;
 		if (!CardboardArmorHandler.testForStealth(player))
 			return;
 
@@ -58,7 +59,7 @@ public class CardboardArmorHandlerClient {
 		PoseStack ms = event.getPoseStack();
 		ms.pushPose();
 
-		Vec3 renderOffset = event.getRenderer().getRenderOffset((AbstractClientPlayer)player, event.getPartialTick());
+		Vec3 renderOffset = event.getRenderer().getRenderOffset(event.getRenderState());
 		ms.translate(0, -renderOffset.y, 0);
 
 		float movement = (float) player.position()

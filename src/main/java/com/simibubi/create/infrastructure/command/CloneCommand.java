@@ -61,7 +61,7 @@ public class CloneCommand {
 		ServerLevel world = source.getLevel();
 
 		int i = sourceArea.getXSpan() * sourceArea.getYSpan() * sourceArea.getZSpan();
-		int limit = world.getGameRules().getIntOr(GameRules.RULE_COMMAND_MODIFICATION_BLOCK_LIMIT, 0);
+		int limit = world.getGameRules().getInt(GameRules.RULE_COMMAND_MODIFICATION_BLOCK_LIMIT);
 		if (i > limit)
 			throw CLONE_TOO_BIG_EXCEPTION.create(limit, i);
 
@@ -133,7 +133,8 @@ public class CloneCommand {
 
 		for (StructureTemplate.StructureBlockInfo info : reverse) {
 			BlockEntity be = world.getBlockEntity(info.pos());
-			Clearable.tryClear(be);
+			if (be instanceof Clearable clearable)
+				clearable.clearContent();
 			world.setBlock(info.pos(), Blocks.BARRIER.defaultBlockState(), Block.UPDATE_CLIENTS);
 		}
 
@@ -158,7 +159,7 @@ public class CloneCommand {
 		}
 
 		for (StructureTemplate.StructureBlockInfo info : reverse) {
-			world.blockUpdated(info.pos(), info.state().getBlock());
+			world.updateNeighborsAt(info.pos(), info.state().getBlock());
 		}
 
 		world.getBlockTicks()

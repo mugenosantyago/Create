@@ -14,9 +14,12 @@ import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.mixin.accessor.ItemStackHandlerAccessor;
 
 import net.createmod.catnip.data.Pair;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -32,6 +35,16 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class ItemHelper {
+
+	/** MC 1.21+: {@link ItemStack#getDescriptionId()} removed; use this for item translation keys. */
+	public static String descriptionId(ItemStack stack) {
+		return Util.makeDescriptionId("item", BuiltInRegistries.ITEM.getKey(stack.getItem()));
+	}
+
+	/** MC 1.21+: block description keys for tooltips / I18n. */
+	public static String blockDescriptionId(Block block) {
+		return Util.makeDescriptionId("block", BuiltInRegistries.BLOCK.getKey(block));
+	}
 
 	public static boolean sameItem(ItemStack stack, ItemStack otherStack) {
 		return !otherStack.isEmpty() && stack.is(otherStack.getItem());

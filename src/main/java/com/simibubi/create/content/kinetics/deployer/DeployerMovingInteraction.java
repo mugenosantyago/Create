@@ -48,8 +48,11 @@ public class DeployerMovingInteraction extends MovingInteractionBehaviour {
 				UUID owner = ctx.blockEntityData.contains("Owner") ? ctx.blockEntityData.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 				DeployerFakePlayer deployerFakePlayer = new DeployerFakePlayer((ServerLevel) ctx.world, owner);
 				deployerFakePlayer.onMinecartContraption = ctx.contraption instanceof MountedContraption;
+				net.minecraft.util.ProblemReporter.Collector loadReporter = new net.minecraft.util.ProblemReporter.Collector();
+				net.minecraft.world.level.storage.ValueInput invInput =
+					net.minecraft.world.level.storage.TagValueInput.create(loadReporter, ctx.world.registryAccess(), ctx.blockEntityData);
 				deployerFakePlayer.getInventory()
-					.load(ctx.blockEntityData.getListOrEmpty("Inventory"));
+					.load(invInput.listOrEmpty("Inventory", net.minecraft.world.ItemStackWithSlot.CODEC));
 				ctx.temporaryData = fake = deployerFakePlayer;
 				ctx.blockEntityData.remove("Inventory");
 			} else

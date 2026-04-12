@@ -161,8 +161,8 @@ public class AllPotatoProjectileEntityHitActions {
 				double teleportZ = entityZ + (livingEntity.getRandom()
 					.nextDouble() - 0.5D) * teleportDiameter;
 
-				EntityTeleportEvent.ChorusFruit event =
-					EventHooks.onChorusFruitTeleport(livingEntity, teleportX, teleportY, teleportZ);
+				EntityTeleportEvent.ItemConsumption event =
+					EventHooks.onItemConsumptionTeleport(livingEntity, new ItemStack(Items.CHORUS_FRUIT), teleportX, teleportY, teleportZ);
 				if (event.isCanceled())
 					return false;
 				if (livingEntity.randomTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ(), true)) {
@@ -244,8 +244,11 @@ public class AllPotatoProjectileEntityHitActions {
 
 	private static void applyEffect(LivingEntity entity, MobEffectInstance effect) {
 		if (effect.getEffect().value().isInstantenous()) {
-			effect.getEffect().value()
-				.applyInstantenousEffect(null, null, entity, effect.getDuration(), 1.0);
+			if (entity.level() instanceof ServerLevel sl) {
+				effect.getEffect()
+					.value()
+					.applyInstantenousEffect(sl, null, null, entity, effect.getAmplifier(), 1.0);
+			}
 		} else {
 			entity.addEffect(effect);
 		}

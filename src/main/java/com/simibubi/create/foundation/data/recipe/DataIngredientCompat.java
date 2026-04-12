@@ -18,7 +18,7 @@ public class DataIngredientCompat {
      * Uses the built-in item registry to resolve the tag.
      */
     public static DataIngredient tag(TagKey<Item> tagKey) {
-        HolderSet.Named<Item> namedSet = BuiltInRegistries.ITEM.getValue(tagKey)
+        HolderSet.Named<Item> namedSet = BuiltInRegistries.ITEM.get(tagKey)
             .orElseGet(() -> HolderSet.emptyNamed(BuiltInRegistries.ITEM, tagKey));
         return DataIngredient.tag(namedSet);
     }

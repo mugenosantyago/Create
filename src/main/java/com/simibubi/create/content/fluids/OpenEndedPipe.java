@@ -19,6 +19,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -92,8 +96,10 @@ public class OpenEndedPipe extends FlowSource {
 	}
 
 	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-		CompoundTag compound = new CompoundTag();
-		fluidHandler.writeToNBT(registries, compound);
+		ProblemReporter.Collector reporter = new ProblemReporter.Collector();
+		TagValueOutput tagOut = TagValueOutput.createWithContext(reporter, registries);
+		fluidHandler.serialize(tagOut);
+		CompoundTag compound = tagOut.buildResult();
 		compound.putBoolean("Pulling", wasPulling);
 		compound.put("Location", location.serializeNBT());
 		return compound;
@@ -103,7 +109,9 @@ public class OpenEndedPipe extends FlowSource {
 		BlockFace fromNBT = BlockFace.fromNBT(compound.getCompoundOrEmpty("Location"));
 		OpenEndedPipe oep = new OpenEndedPipe(new BlockFace(blockEntityPos, fromNBT.getFace()));
 
-		oep.fluidHandler.readFromNBT(registries, compound);
+		ProblemReporter.Collector reporter = new ProblemReporter.Collector();
+		ValueInput input = TagValueInput.create(reporter, registries, compound);
+		oep.fluidHandler.deserialize(input);
 		oep.wasPulling = compound.getBooleanOr("Pulling", false);
 		return oep;
 	}

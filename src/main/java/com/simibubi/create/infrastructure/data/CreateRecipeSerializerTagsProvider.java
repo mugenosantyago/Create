@@ -11,7 +11,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 
@@ -22,8 +24,9 @@ public class CreateRecipeSerializerTagsProvider extends TagsProvider<RecipeSeria
 
 	@Override
 	protected void addTags(Provider pProvider) {
-		tag(AllRecipeSerializerTags.AUTOMATION_IGNORE.tag).addOptional(Mods.OCCULTISM.rl("spirit_trade"))
-		.addOptional(Mods.OCCULTISM.rl("ritual"));
+		TagAppender.<RecipeSerializer<?>>forBuilder(getOrCreateRawBuilder(AllRecipeSerializerTags.AUTOMATION_IGNORE.tag))
+			.addOptional(ResourceKey.create(Registries.RECIPE_SERIALIZER, Mods.OCCULTISM.rl("spirit_trade")))
+			.addOptional(ResourceKey.create(Registries.RECIPE_SERIALIZER, Mods.OCCULTISM.rl("ritual")));
 	}
 
 	@Override

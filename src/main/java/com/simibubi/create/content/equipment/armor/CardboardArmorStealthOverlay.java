@@ -1,6 +1,7 @@
 package com.simibubi.create.content.equipment.armor;
 
 import com.simibubi.create.Create;
+import com.simibubi.create.foundation.mixin.accessor.GameRendererAccessor;
 import com.simibubi.create.foundation.mixin.accessor.GuiAccessor;
 
 import net.createmod.catnip.animation.LerpedFloat;
@@ -42,8 +43,10 @@ public class CardboardArmorStealthOverlay extends Gui implements IClientItemExte
 		float value = opacity.getValue(partialTick);
 		if (value == 0)
 			return;
-		((GuiAccessor) this).create$renderTextureOverlay(new GuiGraphics(mc, mc.renderBuffers()
-			.bufferSource()), PACKAGE_BLUR_LOCATION, value);
+		((GuiAccessor) this).create$renderTextureOverlay(
+			new GuiGraphics(mc, ((GameRendererAccessor) mc.gameRenderer).create$getGuiRenderState()),
+			PACKAGE_BLUR_LOCATION,
+			value);
 	}
 
 }

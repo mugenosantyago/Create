@@ -5,11 +5,13 @@ import java.util.List;
 
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
 import net.createmod.ponder.render.VirtualRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,9 +49,9 @@ public class BracketedKineticBlockModel extends BakedModelWrapper<BakedModel> {
 		if (!VirtualRenderHelper.isVirtual(data)) {
 			if (data.has(BRACKET_PROPERTY)) {
 				BracketedModelData pipeData = data.get(BRACKET_PROPERTY);
-				BakedModel bracket = pipeData.getBracket();
+				BlockStateModel bracket = pipeData.getBracket();
 				if (bracket != null)
-					return bracket.getQuads(state, side, rand, data, renderType);
+					return BlockStateModelUtil.collectQuads(bracket, state, side, rand);
 			}
 			return Collections.emptyList();
 		}
@@ -57,7 +59,7 @@ public class BracketedKineticBlockModel extends BakedModelWrapper<BakedModel> {
 	}
 
 	private static class BracketedModelData {
-		private BakedModel bracket;
+		private BlockStateModel bracket;
 
 		public void putBracket(BlockState state) {
 			if (state != null) {
@@ -67,7 +69,7 @@ public class BracketedKineticBlockModel extends BakedModelWrapper<BakedModel> {
 			}
 		}
 
-		public BakedModel getBracket() {
+		public BlockStateModel getBracket() {
 			return bracket;
 		}
 	}

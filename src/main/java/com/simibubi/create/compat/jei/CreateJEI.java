@@ -437,7 +437,7 @@ public class CreateJEI implements IModPlugin {
 		var recipeManager = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManagerFromConnection(
 			Minecraft.getInstance().getConnection());
 		List<? extends RecipeHolder<?>> map = recipeManager != null
-			? recipeManager.getAllRecipesFor((RecipeType) type)
+			? com.simibubi.create.foundation.utility.RecipeCompat.getAllRecipesFor(recipeManager, (RecipeType) type)
 			: java.util.Collections.emptyList();
 		if (!map.isEmpty())
 			map.forEach(consumer);

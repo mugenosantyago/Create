@@ -13,6 +13,7 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -52,11 +53,9 @@ public abstract class CopycatModel extends BakedModelWrapperWithData {
 		gatherOcclusionData(world, pos, state, material, occlusionData, copycatBlock);
 		builder.with(OCCLUSION_PROPERTY, occlusionData);
 
-		ModelData wrappedData = getModelOf(material).getModelData(
-			new FilteredBlockAndTintGetter(world,
-				targetPos -> copycatBlock.canConnectTexturesToward(world, pos, targetPos, state)),
-			pos, material, ModelData.EMPTY);
-		builder.with(WRAPPED_DATA_PROPERTY, wrappedData);
+		FilteredBlockAndTintGetter filteredWorld = new FilteredBlockAndTintGetter(world,
+			targetPos -> copycatBlock.canConnectTexturesToward(world, pos, targetPos, state));
+		builder.with(WRAPPED_DATA_PROPERTY, filteredWorld.getModelData(pos));
 
 		boolean isEmissive = material.emissiveRendering(world, pos);
 		builder.with(IS_EMISSIVE_PROPERTY, isEmissive);
@@ -111,13 +110,6 @@ public abstract class CopycatModel extends BakedModelWrapperWithData {
 		ModelData wrappedData = data.get(WRAPPED_DATA_PROPERTY);
 		if (wrappedData == null)
 			wrappedData = ModelData.EMPTY;
-		if (renderType != null && !Minecraft.getInstance()
-			.getBlockRenderer()
-			.getBlockModel(material)
-			.getRenderTypes(material, rand, wrappedData)
-			.contains(renderType))
-			return super.getQuads(state, side, rand, data, renderType);
-
 		List<BakedQuad> croppedQuads = getCroppedQuads(state, side, rand, material, wrappedData, renderType);
 
 		// Rubidium: render side!=null versions of the base material during side==null,
@@ -156,7 +148,7 @@ public abstract class CopycatModel extends BakedModelWrapperWithData {
 		if (wrappedData == null)
 			wrappedData = ModelData.EMPTY;
 
-		return getModelOf(material).getParticleIcon(wrappedData);
+		return getModelOf(material).particleIcon();
 	}
 
 	@NotNull
@@ -165,7 +157,7 @@ public abstract class CopycatModel extends BakedModelWrapperWithData {
 		return material == null ? AllBlocks.COPYCAT_BASE.getDefaultState() : material;
 	}
 
-	public static BakedModel getModelOf(BlockState state) {
+	public static BlockStateModel getModelOf(BlockState state) {
 		return Minecraft.getInstance()
 			.getBlockRenderer()
 			.getBlockModel(state);

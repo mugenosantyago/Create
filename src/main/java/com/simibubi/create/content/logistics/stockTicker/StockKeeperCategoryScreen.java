@@ -227,16 +227,12 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 			AllGuiTextures.STOCK_KEEPER_CATEGORY_DOWN.render(graphics, cardWidth + 12, cardHeader - 9);
 
 		graphics.renderItem(entry, 14, 1);
-		graphics.drawString(font,
-			entry.isEmpty() ? CreateLang.translate("gui.stock_ticker.empty_category_name_placeholder")
-				.string()
-				: entry.getHoverName()
-				.getStringOr(20, "")
-				.stripTrailing()
-				+ (entry.getHoverName()
-				.getString()
-				.length() > 20 ? "..." : ""),
-			35, 5, 0x656565, false);
+		String categoryLabel = entry.isEmpty()
+			? CreateLang.translate("gui.stock_ticker.empty_category_name_placeholder").string()
+			: entry.getHoverName().getString();
+		if (categoryLabel.length() > 20)
+			categoryLabel = categoryLabel.substring(0, 20) + "...";
+		graphics.drawString(font, categoryLabel, 35, 5, 0x656565, false);
 
 		matrixStack.popPose();
 		return cardHeight;

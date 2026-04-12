@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,8 +24,10 @@ public class VerticalGearboxItem extends BlockItem {
 	public VerticalGearboxItem(Properties builder) {
 		super(AllBlocks.GEARBOX.get(), builder);
 	}
-	public String getDescriptionId() {
-		return "item.create.vertical_gearbox";
+
+	@Override
+	public Component getName(ItemStack stack) {
+		return Component.translatable("item.create.vertical_gearbox");
 	}
 
 	@Override

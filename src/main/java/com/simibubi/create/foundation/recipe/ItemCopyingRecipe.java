@@ -97,7 +97,8 @@ public class ItemCopyingRecipe extends CustomRecipe {
 		return IntAttached.with(copyTargets, itemToCopy);
 	}
 
-	public RecipeSerializer<?> getSerializer() {
+	@Override
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return AllRecipeTypes.ITEM_COPYING.getSerializer();
 	}
 

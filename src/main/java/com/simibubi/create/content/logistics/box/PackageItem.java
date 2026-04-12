@@ -11,7 +11,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllEntityTypes;
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.Create;
 import com.simibubi.create.content.logistics.box.PackageStyles.PackageStyle;
 import com.simibubi.create.content.logistics.stockTicker.PackageOrderWithCrafts;
 import com.simibubi.create.foundation.item.ItemHelper;
@@ -58,13 +57,11 @@ public class PackageItem extends Item {
 	public PackageStyle style;
 
 	public PackageItem(Properties properties, PackageStyle style) {
-		super(properties);
+		super(style.rare() ? properties.overrideDescription("item.create.rare_package")
+			: properties.overrideDescription("item.create.package"));
 		this.style = style;
 		PackageStyles.ALL_BOXES.add(this);
 		(style.rare() ? PackageStyles.RARE_BOXES : PackageStyles.STANDARD_BOXES).add(this);
-	}
-	public String getDescriptionId() {
-		return "item." + Create.ID + (style.rare() ? ".rare_package" : ".package");
 	}
 
 	public static boolean isPackage(ItemStack stack) {
@@ -222,10 +219,9 @@ public class PackageItem extends Item {
 	public void appendHoverText(ItemStack pStack, net.minecraft.world.item.Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay tooltipDisplay, java.util.function.Consumer<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
 		java.util.List<net.minecraft.network.chat.Component> tooltipList = new java.util.ArrayList<>();
 		appendHoverText_compat(pStack, context, tooltipList, flag);
-		toolipList.forEach(tooltip);
+		tooltipList.forEach(tooltip);
 	}
 
-	@Override
 	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext tooltipContext, java.util.List<net.minecraft.network.chat.Component> tooltipComponents, TooltipFlag tooltipFlag) {
 		// super.appendHoverText(stack, tooltipContext, tooltipComponents, tooltipFlag);;
 
@@ -303,7 +299,7 @@ public class PackageItem extends Item {
 					continue;
 
 				if (itemstack.getItem() instanceof SpawnEggItem sei && worldIn instanceof ServerLevel sl) {
-					EntityType<?> entitytype = sei.getType(itemstack);
+					EntityType<?> entitytype = sei.getType(sl.registryAccess(), itemstack);
 					Entity entity = entitytype.spawn(sl, itemstack, null, BlockPos.containing(playerIn.position()
 							.add(playerIn.getLookAngle()
 								.multiply(1, 0, 1)
@@ -380,18 +376,18 @@ public class PackageItem extends Item {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int ticks) {
+	public boolean releaseUsing(ItemStack stack, Level world, LivingEntity entity, int ticks) {
 		if (!(entity instanceof Player player))
-			return;
+			return false;
 		int i = this.getUseDuration(stack, entity) - ticks;
 		if (i < 0)
-			return;
+			return false;
 
 		float f = getPackageVelocity(i);
 		if (f < 0.1D)
-			return;
+			return false;
 		if (world.isClientSide)
-			return;
+			return false;
 
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SNOWBALL_THROW,
 			SoundSource.NEUTRAL, 0.5F, 0.5F);
@@ -411,6 +407,7 @@ public class PackageItem extends Item {
 		packageEntity.setDeltaMovement(motion);
 		packageEntity.tossedBy = new WeakReference<>(player);
 		world.addFreshEntity(packageEntity);
+		return true;
 	}
 
 	public static float getPackageVelocity(int p_185059_0_) {

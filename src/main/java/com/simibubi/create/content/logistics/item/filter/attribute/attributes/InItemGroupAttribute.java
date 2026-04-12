@@ -15,6 +15,7 @@ import com.simibubi.create.content.logistics.item.filter.attribute.ItemAttribute
 
 import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -30,7 +31,7 @@ public class InItemGroupAttribute implements ItemAttribute {
 			.fieldOf("value");
 
 	public static final StreamCodec<ByteBuf, InItemGroupAttribute> STREAM_CODEC = CatnipStreamCodecBuilders.nullable(ResourceLocation.STREAM_CODEC)
-		.map(i -> new InItemGroupAttribute(BuiltInRegistries.CREATIVE_MODE_TAB.get(i)),
+		.map(i -> new InItemGroupAttribute(BuiltInRegistries.CREATIVE_MODE_TAB.get(i).map(Holder::value).orElse(null)),
 			i -> i.group == null ? null : BuiltInRegistries.CREATIVE_MODE_TAB.getKey(i.group));
 
 	@Nullable

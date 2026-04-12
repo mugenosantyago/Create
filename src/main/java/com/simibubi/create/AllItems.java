@@ -74,6 +74,10 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -98,7 +102,7 @@ public class AllItems {
 
 	public static final ItemEntry<Item>
 		WHEAT_FLOUR = taggedIngredient("wheat_flour", AllItemTags.FLOURS.tag, AllItemTags.WHEAT_FLOURS.tag),
-		DOUGH = taggedIngredient("dough", Tags.Items.FOODS_DOUGH, AllItemTags.FOODS_DOUGH_WHEAT.tag),
+		DOUGH = taggedIngredient("dough", Items.FOODS, AllItemTags.FOODS_DOUGH_WHEAT.tag),
 		CINDER_FLOUR = ingredient("cinder_flour"), ROSE_QUARTZ = ingredient("rose_quartz"),
 		POLISHED_ROSE_QUARTZ = ingredient("polished_rose_quartz"), POWDERED_OBSIDIAN = ingredient("powdered_obsidian"),
 		STURDY_SHEET = taggedIngredient("sturdy_sheet", AllItemTags.OBSIDIAN_PLATES.tag, PLATES.tag),
@@ -172,8 +176,18 @@ public class AllItems {
 				.nutrition(1)
 				.saturationModifier(.6F)
 				.alwaysEdible()
-				.effect(() -> new MobEffectInstance(MobEffects.DIG_SPEED, 3 * 60 * 20, 0, false, false, false), 1F)
 				.build()
+			)
+			.component(
+				DataComponents.CONSUMABLE,
+				Consumable.builder()
+					.consumeSeconds(42 / 20.0F)
+					.animation(ItemUseAnimation.DRINK)
+					.sound(SoundEvents.GENERIC_DRINK)
+					.onConsume(new ApplyStatusEffectsConsumeEffect(
+						new MobEffectInstance(MobEffects.HASTE, 3 * 60 * 20, 0, false, false, false),
+						1F))
+					.build()
 			)
 		)
 		.lang("Builder's Tea")
@@ -190,7 +204,7 @@ public class AllItems {
 				.component(DataComponents.WEAPON, new Weapon(0, 1.0f))
 				// enchantmentValue from AllToolMaterials.CARDBOARD = 1
 				.enchantable(1))
-			.model(AssetLookup.itemModelWithPartials())
+			.model(() -> AssetLookup.itemModelWithPartials())
 			.register();
 
 	public static final ItemEntry<Item> RAW_ZINC =
@@ -206,7 +220,7 @@ public class AllItems {
 	public static final ItemEntry<ChromaticCompoundItem> CHROMATIC_COMPOUND =
 		REGISTRATE.item("chromatic_compound", ChromaticCompoundItem::new)
 			.properties(p -> p.rarity(Rarity.UNCOMMON))
-			.model(AssetLookup.existingItemModel())
+			.model(() -> AssetLookup.existingItemModel())
 			.register();
 
 	public static final ItemEntry<ShadowSteelItem> SHADOW_STEEL = REGISTRATE.item("shadow_steel", ShadowSteelItem::new)
@@ -256,17 +270,17 @@ public class AllItems {
 
 	public static final ItemEntry<VerticalGearboxItem> VERTICAL_GEARBOX =
 		REGISTRATE.item("vertical_gearbox", VerticalGearboxItem::new)
-			.model(AssetLookup.customBlockItemModel("gearbox", "item_vertical"))
+			.model(() -> AssetLookup.customBlockItemModel("gearbox", "item_vertical"))
 			.register();
 
 	public static final ItemEntry<BlazeBurnerBlockItem> EMPTY_BLAZE_BURNER =
 		REGISTRATE.item("empty_blaze_burner", BlazeBurnerBlockItem::empty)
-			.model(AssetLookup.customBlockItemModel("blaze_burner", "block"))
+			.model(() -> AssetLookup.customBlockItemModel("blaze_burner", "block"))
 			.register();
 
 	public static final ItemEntry<GogglesItem> GOGGLES = REGISTRATE.item("goggles", GogglesItem::new)
 		.properties(p -> p.stacksTo(1))
-		.onRegister(CreateRegistrate.itemModel(() -> GogglesModel::new))
+		.onRegister(CreateRegistrate.itemModel())
 		.lang("Engineer's Goggles")
 		.register();
 
@@ -289,7 +303,7 @@ public class AllItems {
 	public static final ItemEntry<BacktankBlockItem> COPPER_BACKTANK_PLACEABLE = REGISTRATE
 		.item("copper_backtank_placeable",
 			p -> new BacktankBlockItem(AllBlocks.COPPER_BACKTANK.get(), AllItems.COPPER_BACKTANK::get, p))
-		.model((c, p) -> p.withExistingParent(c.getName(), p.mcLoc("item/barrier")))
+		.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.mcLoc("item/barrier")))
 		.register();
 
 	// wrapped by NETHERITE_BACKTANK for block placement uses.
@@ -297,7 +311,7 @@ public class AllItems {
 	public static final ItemEntry<BacktankBlockItem> NETHERITE_BACKTANK_PLACEABLE = REGISTRATE
 		.item("netherite_backtank_placeable",
 			p -> new BacktankBlockItem(AllBlocks.NETHERITE_BACKTANK.get(), AllItems.NETHERITE_BACKTANK::get, p))
-		.model((c, p) -> p.withExistingParent(c.getName(), p.mcLoc("item/barrier")))
+		.model(() -> (c, p) -> p.createWithExistingModel(c.get(), p.mcLoc("item/barrier")))
 		.register();
 
 	// In 1.21.4+, Item.Properties.humanoidArmor(ArmorMaterial, ArmorType) applies all armor
@@ -312,7 +326,7 @@ public class AllItems {
 				p -> new BacktankItem(AllArmorMaterials.COPPER,
 					BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.CHESTPLATE),
 					COPPER_BACKTANK_PLACEABLE))
-			.model(AssetLookup.customGenericItemModel("_", "item"))
+			.model(() -> AssetLookup.customGenericItemModel("_", "item"))
 			.tag(AllItemTags.PRESSURIZED_AIR_SOURCES.tag)
 			.tag(ItemTags.CHEST_ARMOR)
 			.register(),
@@ -322,7 +336,7 @@ public class AllItems {
 			p -> new BacktankItem(ArmorMaterials.NETHERITE,
 				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.CHESTPLATE).fireResistant(),
 				NETHERITE_BACKTANK_PLACEABLE))
-		.model(AssetLookup.customGenericItemModel("_", "item"))
+		.model(() -> AssetLookup.customGenericItemModel("_", "item"))
 		.tag(AllItemTags.PRESSURIZED_AIR_SOURCES.tag)
 		.tag(ItemTags.CHEST_ARMOR)
 		.register();
@@ -407,7 +421,7 @@ public class AllItems {
 
 	public static final ItemEntry<WrenchItem> WRENCH = REGISTRATE.item("wrench", WrenchItem::new)
 		.properties(p -> p.stacksTo(1))
-		.model(AssetLookup.itemModelWithPartials())
+		.model(() -> AssetLookup.itemModelWithPartials())
 		.tag(Items.TOOLS_WRENCH)
 		.register();
 
@@ -428,34 +442,34 @@ public class AllItems {
 	public static final ItemEntry<LinkedControllerItem> LINKED_CONTROLLER =
 		REGISTRATE.item("linked_controller", LinkedControllerItem::new)
 			.properties(p -> p.stacksTo(1))
-			.model(AssetLookup.itemModelWithPartials())
+			.model(() -> AssetLookup.itemModelWithPartials())
 			.register();
 
 	public static final ItemEntry<PotatoCannonItem> POTATO_CANNON =
 		REGISTRATE.item("potato_cannon", PotatoCannonItem::new)
 			.properties(p -> p.durability(100))
-			.model(AssetLookup.itemModelWithPartials())
+			.model(() -> AssetLookup.itemModelWithPartials())
 			.tag(Tags.Items.ENCHANTABLES, ItemTags.DURABILITY_ENCHANTABLE, ItemTags.BOW_ENCHANTABLE)
 			.register();
 
 	public static final ItemEntry<ExtendoGripItem> EXTENDO_GRIP = REGISTRATE.item("extendo_grip", ExtendoGripItem::new)
 		.properties(p -> p.rarity(Rarity.UNCOMMON))
 		.tag(ItemTags.DURABILITY_ENCHANTABLE)
-		.model(AssetLookup.itemModelWithPartials())
+		.model(() -> AssetLookup.itemModelWithPartials())
 		.register();
 
 	public static final ItemEntry<SymmetryWandItem> WAND_OF_SYMMETRY =
 		REGISTRATE.item("wand_of_symmetry", SymmetryWandItem::new)
 			.properties(p -> p.stacksTo(1)
 				.rarity(Rarity.UNCOMMON))
-			.model(AssetLookup.itemModelWithPartials())
+			.model(() -> AssetLookup.itemModelWithPartials())
 			.register();
 
 	public static final ItemEntry<WorldshaperItem> WORLDSHAPER =
 		REGISTRATE.item("handheld_worldshaper", WorldshaperItem::new)
 			.properties(p -> p.rarity(Rarity.EPIC))
 			.lang("Creative Worldshaper")
-			.model(AssetLookup.itemModelWithPartials())
+			.model(() -> AssetLookup.itemModelWithPartials())
 			.register();
 
 	public static final ItemEntry<TreeFertilizerItem> TREE_FERTILIZER =

@@ -267,7 +267,7 @@ public class SchematicannonBlockEntity extends SmartBlockEntity implements MenuP
 
 		ListTag tagFlyingBlocks = new ListTag();
 		for (LaunchedItem b : flyingBlocks)
-			tagFlyingBlocks.add(com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(b, registries));
+			tagFlyingBlocks.add(b.serializeNBT(registries));
 		compound.put("FlyingBlocks", tagFlyingBlocks);
 
 		compound.putFloat("DefaultYaw", defaultYaw);

@@ -127,11 +127,11 @@ public class PotionMixingRecipes {
 				FluidStack outputFluid = null;
 				for (ItemStack stack : supportedContainerStacks) {
 					if (input.test(stack)) {
-						ItemStack[] stacks = input.getItems();
-						if (stacks.length == 0){
+						var stacks = input.items().map(ItemStack::new).toList();
+						if (stacks.isEmpty()) {
 							continue;
 						}
-						FluidStack inputFluid = PotionFluidHandler.getFluidFromPotionItem(stacks[0]);
+						FluidStack inputFluid = PotionFluidHandler.getFluidFromPotionItem(stacks.get(0));
 						inputFluid.setAmount(1000);
 						if (outputFluid == null) {
 							outputFluid = PotionFluidHandler.getFluidFromPotionItem(output);
@@ -163,7 +163,7 @@ public class PotionMixingRecipes {
 		Set<Item> processedItems = new HashSet<>();
 		for (RecipeHolder<MixingRecipe> recipe : all) {
 			for (Ingredient ingredient : recipe.value().placementInfo().ingredients()) {
-				for (ItemStack itemStack : ingredient.getItems()) {
+				for (ItemStack itemStack : ingredient.items().map(ItemStack::new).toList()) {
 					Item item = itemStack.getItem();
 					if (processedItems.add(item)) {
 						byItem.computeIfAbsent(item, i -> new ArrayList<>())

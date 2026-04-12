@@ -26,6 +26,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.sound.SoundScapes;
 import com.simibubi.create.foundation.sound.SoundScapes.AmbienceGroup;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
@@ -438,8 +439,8 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 				.style(GOLD)
 				.forGoggles(tooltip);
 			MutableComponent hint =
-				CreateLang.translateDirect("gui.contraptions.not_fast_enough", I18n.get(getBlockState().getBlock()
-					.getDescriptionId()));
+				CreateLang.translateDirect("gui.contraptions.not_fast_enough",
+					I18n.get(ItemHelper.blockDescriptionId(getBlockState().getBlock())));
 			List<Component> cutString = TooltipHelper.cutTextComponent(hint, Palette.GRAY_AND_WHITE);
 			for (Component component : cutString)
 				CreateLang.builder()

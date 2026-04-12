@@ -195,7 +195,7 @@ public class DeployerHandler {
 				}
 				if (!success && entity instanceof Player playerEntity) {
 					if (stack.has(DataComponents.FOOD)) {
-						FoodProperties foodProperties = item.getFoodProperties(stack, player);
+						FoodProperties foodProperties = stack.get(DataComponents.FOOD);
 						if (foodProperties != null && playerEntity.canEat(foodProperties.canAlwaysEat())) {
 							ItemStack copy = stack.copy();
 							player.setItemInHand(hand, stack.finishUsingItem(level, playerEntity));
@@ -353,10 +353,10 @@ public class DeployerHandler {
 		if (onItemRightClick.consumesAction() && item instanceof MobBucketItem bucketItem)
 			bucketItem.checkExtraContent(player, level, stack, clickedPos);
 
-		ItemStack resultStack = onItemRightClick.getObject();
-		if (resultStack != stack || resultStack.getCount() != stack.getCount() || resultStack.getUseDuration(player) > 0
-			|| resultStack.getDamageValue() != stack.getDamageValue()) {
-			player.setItemInHand(hand, onItemRightClick.getObject());
+		if (onItemRightClick instanceof InteractionResult.Success success) {
+			ItemStack transformed = success.heldItemTransformedTo();
+			if (transformed != null)
+				player.setItemInHand(hand, transformed);
 		}
 
 		if (stack.getItem() instanceof SandPaperItem && stack.has(AllDataComponents.SAND_PAPER_POLISHING)) {

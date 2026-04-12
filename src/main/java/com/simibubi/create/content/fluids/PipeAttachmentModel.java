@@ -13,11 +13,13 @@ import com.simibubi.create.content.fluids.FluidTransportBehaviour.AttachmentType
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -68,24 +70,8 @@ public class PipeAttachmentModel extends BakedModelWrapperWithData {
 
 	@Override
 	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
-		List<ChunkRenderTypeSet> set = new ArrayList<>();
-
-		set.add(super.getRenderTypes(state, rand, data));
-		set.add(AllPartialModels.FLUID_PIPE_CASING.get().getRenderTypes(state, rand, data));
-
-		if (data.has(PIPE_PROPERTY)) {
-			PipeModelData pipeData = data.get(PIPE_PROPERTY);
-			for (Direction d : Iterate.directions) {
-				AttachmentTypes type = pipeData.getAttachment(d);
-				for (ComponentPartials partial : type.partials) {
-					ChunkRenderTypeSet attachmentRenderTypeSet = AllPartialModels.PIPE_ATTACHMENTS.get(partial).get(d)
-						.get().getRenderTypes(state, rand, data);
-					set.add(attachmentRenderTypeSet);
-				}
-			}
-		}
-
-		return ChunkRenderTypeSet.union(set);
+		// 1.21.8 uses ChunkSectionLayer / BlockStateModel; compatibility stubs fold unions to ALL anyway.
+		return ChunkRenderTypeSet.ALL;
 	}
 
 	@Override
@@ -115,27 +101,24 @@ public class PipeAttachmentModel extends BakedModelWrapperWithData {
 
 	private void addQuads(List<BakedQuad> quads, BlockState state, Direction side, RandomSource rand, ModelData data,
 						  PipeModelData pipeData, RenderType renderType) {
-		BakedModel bracket = pipeData.getBracket();
+		BlockStateModel bracket = pipeData.getBracket();
 		if (bracket != null)
-			quads.addAll(bracket.getQuads(state, side, rand, data, renderType));
+			BlockStateModelUtil.collectQuads(bracket, state, side, rand, quads);
 		for (Direction d : Iterate.directions) {
 			AttachmentTypes type = pipeData.getAttachment(d);
 			for (ComponentPartials partial : type.partials) {
-				quads.addAll(AllPartialModels.PIPE_ATTACHMENTS.get(partial)
-					.get(d)
-					.get()
-					.getQuads(state, side, rand, data, renderType));
+				BlockStateModel attachmentModel = AllPartialModels.PIPE_ATTACHMENTS.get(partial).get(d).get();
+				BlockStateModelUtil.collectQuads(attachmentModel, state, side, rand, quads);
 			}
 		}
 		if (pipeData.isEncased())
-			quads.addAll(AllPartialModels.FLUID_PIPE_CASING.get()
-				.getQuads(state, side, rand, data, renderType));
+			BlockStateModelUtil.collectQuads(AllPartialModels.FLUID_PIPE_CASING.get(), state, side, rand, quads);
 	}
 
 	private static class PipeModelData {
 		private AttachmentTypes[] attachments;
 		private boolean encased;
-		private BakedModel bracket;
+		private BlockStateModel bracket;
 
 		public PipeModelData() {
 			attachments = new AttachmentTypes[6];
@@ -150,7 +133,7 @@ public class PipeAttachmentModel extends BakedModelWrapperWithData {
 			}
 		}
 
-		public BakedModel getBracket() {
+		public BlockStateModel getBracket() {
 			return bracket;
 		}
 

@@ -80,7 +80,7 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
 
 		if (clientPacket) {
 			NBTHelper.iterateCompoundList(compound.getListOrEmpty("ParticleItems"),
-				c -> particleItems.add(ItemStack.OPTIONAL_CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, c)).result().orElse(net.minecraft.world.item.ItemStack.EMPTY));
+				c -> particleItems.add(NbtCompat.parseOptionalItemStack(registries, c)));
 			spawnParticles();
 		}
 	}

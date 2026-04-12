@@ -10,7 +10,6 @@ import com.simibubi.create.content.fluids.transfer.GenericItemFilling;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -46,9 +45,13 @@ public class FillingBySpout {
 				return requiredFluid.amount();
 		}
 
-		for (RecipeHolder<Recipe<SingleRecipeInput>> recipe : com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(world)
-			.getRecipesFor(AllRecipeTypes.FILLING.getType(), input, world)) {
+		for (RecipeHolder<?> recipe : com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(world)
+			.getRecipes()) {
+			if (recipe.value().getType() != AllRecipeTypes.FILLING.getType())
+				continue;
 			FillingRecipe fillingRecipe = (FillingRecipe) recipe.value();
+			if (!fillingRecipe.matches(input, world))
+				continue;
 			SizedFluidIngredient requiredFluid = fillingRecipe.getRequiredFluid();
 			if (requiredFluid.ingredient().test(availableFluid))
 				return requiredFluid.amount();
@@ -68,9 +71,13 @@ public class FillingBySpout {
 			.filter(fr -> fr.value().getRequiredFluid()
 					.test(toFill))
 				.orElseGet(() -> {
-					for (RecipeHolder<Recipe<SingleRecipeInput>> recipe : com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
-						.getRecipesFor(AllRecipeTypes.FILLING.getType(), input, level)) {
+					for (RecipeHolder<?> recipe : com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
+						.getRecipes()) {
+						if (recipe.value().getType() != AllRecipeTypes.FILLING.getType())
+							continue;
 						FillingRecipe fr = (FillingRecipe) recipe.value();
+						if (!fr.matches(input, level))
+							continue;
 						SizedFluidIngredient requiredFluid = fr.getRequiredFluid();
 						if (requiredFluid.test(toFill))
 							return new RecipeHolder<>(recipe.id(), fr);

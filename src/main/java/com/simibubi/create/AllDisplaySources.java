@@ -96,8 +96,7 @@ public class AllDisplaySources {
 			for (String name : types) {
 				ResourceLocation id = Mods.COMPUTERCRAFT.rl(name);
 				if (BuiltInRegistries.BLOCK_ENTITY_TYPE.containsKey(id)) {
-					BlockEntityType<?> type = BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id);
-					DisplaySource.BY_BLOCK_ENTITY.add(type, source);
+					BuiltInRegistries.BLOCK_ENTITY_TYPE.get(id).ifPresent(holder -> DisplaySource.BY_BLOCK_ENTITY.add(holder.value(), source));
 				} else {
 					Create.LOGGER.warn("Could not find block entity type {}. Outdated compat?", id);
 				}

@@ -193,7 +193,7 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 			.tag(BlockTags.MOSS_REPLACEABLE)
 			.tag(BlockTags.LUSH_GROUND_REPLACEABLE)
 			.item()
-			.model((c, p) -> p.cubeAll(c.getName(),
+			.model(() -> (c, p) -> p.generateFlatItem(c.get(),
 				p.modLoc(hasNaturalVariants ? "block/palettes/stone_types/natural/" + name + "_1"
 					: "block/palettes/stone_types/" + c.getName())))
 			.build();
@@ -256,17 +256,17 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerCasingConnectivity(entry, consumer));
 	}
 
+	/**
+	 * Placeholder for pre-1.21.8 custom block model registration; the factory is ignored until
+	 * model swapping is reimplemented for the new client model pipeline.
+	 */
 	@SuppressWarnings("unused")
-	public static <T extends Block> NonNullConsumer<? super T> blockModel(
-		Supplier<Object> func) {
-		// Model swapping not supported in MC 1.21.8 (BakedModel removed)
+	public static <T extends Block> NonNullConsumer<? super T> blockModel() {
 		return entry -> {};
 	}
 
 	@SuppressWarnings("unused")
-	public static <T extends Item> NonNullConsumer<? super T> itemModel(
-		Supplier<Object> func) {
-		// Model swapping not supported in MC 1.21.8 (BakedModel removed)
+	public static <T extends Item> NonNullConsumer<? super T> itemModel() {
 		return entry -> {};
 	}
 

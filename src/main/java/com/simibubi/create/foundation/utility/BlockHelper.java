@@ -26,7 +26,6 @@ import com.simibubi.create.foundation.blockEntity.IMultiBlockEntityContainer;
 import net.createmod.catnip.nbt.NBTProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -41,12 +40,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.GameRules;
@@ -230,8 +228,8 @@ public class BlockHelper {
 			player.awardStat(Stats.BLOCK_MINED.get(state.getBlock()));
 		}
 
-		if (level instanceof ServerLevel serverLevel && level.getGameRules()
-			.getBooleanOr(GameRules.RULE_DOBLOCKDROPS, false) && !level.restoringBlockSnapshots
+		if (level instanceof ServerLevel serverLevel && serverLevel.getGameRules()
+			.getBoolean(GameRules.RULE_DOBLOCKDROPS) && !level.restoringBlockSnapshots
 			&& (player == null || !player.isCreative())) {
 			List<ItemStack> drops = Block.getDrops(state, serverLevel, pos, blockEntity, player, usedTool);
 
@@ -248,8 +246,8 @@ public class BlockHelper {
 
 			// Simulating IceBlock#playerDestroy. Not calling method directly as it would drop item
 			// entities as a side-effect
-			Registry<Enchantment> enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-			if (state.getBlock() instanceof IceBlock && usedTool.getEnchantmentLevel(enchantmentRegistry.getHolderOrThrow(Enchantments.SILK_TOUCH)) == 0) {
+			if (state.getBlock() instanceof IceBlock && EnchantmentHelper.getItemEnchantmentLevel(
+					level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH), usedTool) == 0) {
 				if (!level.dimensionType().ultraWarm()) {
 					BlockState below = level.getBlockState(pos.below());
 					if (below.blocksMotion() || below.liquid()) {
@@ -281,17 +279,17 @@ public class BlockHelper {
 		LevelChunkSection chunksection = chunk.getSection(idx);
 		if (chunksection == null) {
 			chunksection = new LevelChunkSection(world.registryAccess()
-				.registryOrThrow(Registries.BIOME));
+				.lookupOrThrow(Registries.BIOME));
 			chunk.getSections()[idx] = chunksection;
 		}
 		BlockState old = chunksection.setBlockState(SectionPos.sectionRelative(target.getX()),
 			SectionPos.sectionRelative(target.getY()), SectionPos.sectionRelative(target.getZ()), state);
-		chunk.setUnsaved(true);
+		chunk.markUnsaved();
 		world.markAndNotifyBlock(target, chunk, old, state, 82, 512);
 
 		world.setBlock(target, state, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_MOVE_BY_PISTON);
-		world.neighborChanged(target, world.getBlockState(target.below())
-			.getBlock(), target.below());
+		world.neighborChanged(world.getBlockState(target.below()), target.below(), world.getBlockState(target)
+			.getBlock(), null, false);
 	}
 
 	public static CompoundTag prepareBlockEntityData(Level level, BlockState blockState, BlockEntity blockEntity) {

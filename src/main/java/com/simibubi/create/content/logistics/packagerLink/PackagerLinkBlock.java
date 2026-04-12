@@ -71,7 +71,7 @@ public class PackagerLinkBlock extends FaceAttachedHorizontalDirectionalBlock
 
 	@Override
 	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource _random) {
-		updateWater(pLevel, pState, pPos);
+		updateWater(pLevel, _scheduledTicks, pState, pPos);
 		return pState;
 	}
 

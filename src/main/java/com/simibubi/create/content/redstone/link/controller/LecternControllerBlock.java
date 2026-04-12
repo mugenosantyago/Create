@@ -10,8 +10,8 @@ import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.foundation.block.IBE;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -66,12 +66,13 @@ public class LecternControllerBlock extends LecternBlock
 		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
-		public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+	@Override
+	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean movedByPiston) {
+		BlockState newState = world.getBlockState(pos);
 		if (!state.is(newState.getBlock())) {
 			if (!world.isClientSide)
 				withBlockEntityDo(world, pos, be -> be.dropController(state));
-
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.affectNeighborsAfterRemoval(state, world, pos, movedByPiston);
 		}
 	}
 
@@ -95,7 +96,7 @@ public class LecternControllerBlock extends LecternBlock
 
 	@Override
 	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-		return Blocks.LECTERN.getCloneItemStack(level, pos, state, includeData);
+		return Blocks.LECTERN.defaultBlockState().getCloneItemStack(level, pos, includeData);
 	}
 
 	@Override

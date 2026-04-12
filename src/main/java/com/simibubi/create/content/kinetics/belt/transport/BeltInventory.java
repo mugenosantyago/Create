@@ -423,10 +423,10 @@ public class BeltInventory {
 		}
 		CompoundTag nbt = new CompoundTag();
 		ListTag itemsNBT = new ListTag();
-		items.forEach(stack -> itemsNBT.add(com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(stack, registries)));
+		items.forEach(stack -> itemsNBT.add(stack.serializeNBT(registries)));
 		nbt.put("Items", itemsNBT);
 		if (lazyClientItem != null)
-			nbt.put("LazyItem", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(lazyClientItem, registries));
+			nbt.put("LazyItem", lazyClientItem.serializeNBT(registries));
 		nbt.putBoolean("PositiveOrder", beltMovementPositive);
 		return nbt;
 	}

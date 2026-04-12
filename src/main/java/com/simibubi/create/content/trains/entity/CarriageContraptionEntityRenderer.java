@@ -4,11 +4,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.contraptions.render.ContraptionEntityRenderer;
 
 import dev.engine_room.flywheel.api.visualization.VisualizationManager;
+import net.createmod.catnip.animation.AnimationTickHolder;
 import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
@@ -31,12 +33,18 @@ public class CarriageContraptionEntityRenderer extends ContraptionEntityRenderer
 	}
 
 	@Override
-	public void render(CarriageContraptionEntity entity, float yaw, float partialTicks, PoseStack ms,
-		MultiBufferSource buffers, int overlay) {
-		if (!entity.validForRender || entity.firstPositionUpdate)
+	public void render(ContraptionEntityRenderer.ContraptionRenderState state, PoseStack ms,
+		MultiBufferSource buffers, int light) {
+		CarriageContraptionEntity entity = (CarriageContraptionEntity) state.entity;
+		if (entity == null) {
 			return;
+		}
+		if (!entity.validForRender || entity.firstPositionUpdate) {
+			return;
+		}
 
-		super.render(entity, yaw, partialTicks, ms, buffers, overlay);
+		float partialTicks = AnimationTickHolder.getPartialTicks();
+		super.render(state, ms, buffers, light);
 
 		Carriage carriage = entity.getCarriage();
 		if (carriage == null)
@@ -62,10 +70,10 @@ public class CarriageContraptionEntityRenderer extends ContraptionEntityRenderer
 				ms.pushPose();
 				translateBogey(ms, bogey, bogeySpacing, viewYRot, viewXRot, partialTicks);
 
-				int light = getBogeyLightCoords(entity, bogey, partialTicks);
+				int bogeyLight = getBogeyLightCoords(entity, bogey, partialTicks);
 
-				bogey.getStyle().render(bogey.getSize(), partialTicks, ms, buffers, light,
-					overlay, bogey.wheelAngle.getValue(partialTicks), bogey.bogeyData, true);
+				bogey.getStyle().render(bogey.getSize(), partialTicks, ms, buffers, bogeyLight,
+					OverlayTexture.NO_OVERLAY, bogey.wheelAngle.getValue(partialTicks), bogey.bogeyData, true);
 
 				ms.popPose();
 			}

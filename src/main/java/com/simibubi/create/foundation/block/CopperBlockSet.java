@@ -14,7 +14,7 @@ import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -141,12 +141,12 @@ public class CopperBlockSet {
 			builder.recipe((ctx, prov) -> {
 				if (waxed) {
 					Block unwaxed = get(variant, state, false).get();
-					ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ctx.get())
+					ShapelessRecipeBuilder.shapeless(prov.itemLookup(), RecipeCategory.BUILDING_BLOCKS, ctx.get())
 						.requires(unwaxed)
 						.requires(Items.HONEYCOMB)
-						.unlockedBy("has_unwaxed", RegistrateRecipeProvider.has(unwaxed))
-						.save(prov, ResourceLocation.fromNamespaceAndPath(ctx.getId()
-							.getNamespace(), "crafting/" + generalDirectory + ctx.getName() + "_from_honeycomb"));
+						.unlockedBy("has_unwaxed", prov.has(unwaxed))
+						.save(prov, prov.safeKey(ResourceLocation.fromNamespaceAndPath(ctx.getId()
+							.getNamespace(), "crafting/" + generalDirectory + ctx.getName() + "_from_honeycomb")));
 				}
 
 				variant.generateRecipes(get(BlockVariant.INSTANCE, state, waxed), ctx, prov);

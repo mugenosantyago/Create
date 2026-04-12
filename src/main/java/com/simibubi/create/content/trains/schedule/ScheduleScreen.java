@@ -372,7 +372,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
+		partialTicks = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
 		if (menu.slotsActive)
 			super.render(graphics, mouseX, mouseY, partialTicks);
@@ -502,11 +502,11 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		matrixStack.pushPose();
 		matrixStack.translate(leftPos + 25, topPos + yOffset, 0);
 
-		UIRenderHelper.drawStretched(graphics, 0, 1, cardWidth, cardHeight - 2, light);
-		UIRenderHelper.drawStretched(graphics, 1, 0, cardWidth - 2, cardHeight, light);
-		UIRenderHelper.drawStretched(graphics, 1, 1, cardWidth - 2, cardHeight - 2, dark);
-		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeight - 4, medium);
-		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeader,
+		UIRenderHelper.drawStretched(graphics, 0, 1, cardWidth, cardHeight - 2, zLevel, light);
+		UIRenderHelper.drawStretched(graphics, 1, 0, cardWidth - 2, cardHeight, zLevel, light);
+		UIRenderHelper.drawStretched(graphics, 1, 1, cardWidth - 2, cardHeight - 2, zLevel, dark);
+		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeight - 4, zLevel, medium);
+		UIRenderHelper.drawStretched(graphics, 2, 2, cardWidth - 4, cardHeader, zLevel,
 			supportsConditions ? light : medium);
 
 		AllGuiTextures.SCHEDULE_CARD_REMOVE.render(graphics, cardWidth - 14, 2);

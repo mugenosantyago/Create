@@ -6,8 +6,6 @@ import com.simibubi.create.api.effect.OpenPipeEffectHandler;
 import com.simibubi.create.content.fluids.potion.PotionFluidHandler;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,14 +24,7 @@ public class PotionEffectHandler implements OpenPipeEffectHandler {
 
 		List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, area, LivingEntity::isAffectedByPotions);
 		for (LivingEntity entity : entities) {
-			contents.forEachEffect(effectInstance -> {
-				MobEffect effect = effectInstance.getEffect().value();
-				if (effect.isInstantenous()) {
-					effect.applyInstantenousEffect(null, null, entity, effectInstance.getAmplifier(), 0.5D);
-				} else {
-					entity.addEffect(new MobEffectInstance(effectInstance));
-				}
-			});
+			contents.applyToLivingEntity(entity, 0.5f);
 		}
 	}
 

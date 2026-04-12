@@ -30,12 +30,12 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public class CreateDatagen {
 	public static void gatherDataHighPriority(GatherDataEvent event) {
-		if (event.getMods().contains(Create.ID))
+		if (Create.ID.equals(event.getModContainer().getModId()))
 			addExtraRegistrateData();
 	}
 
 	public static void gatherData(GatherDataEvent event) {
-		if (!event.getMods().contains(Create.ID))
+		if (!Create.ID.equals(event.getModContainer().getModId()))
 			return;
 
 		DataGenerator generator = event.getGenerator();

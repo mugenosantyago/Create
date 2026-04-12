@@ -162,7 +162,7 @@ public class CartAssemblerBlock extends BaseRailBlock
 	}
 
 	public static boolean canAssembleTo(AbstractMinecart cart) {
-		return cart.canBeRidden() || cart instanceof MinecartFurnace || cart instanceof MinecartChest;
+		return cart.isRideable() || cart instanceof MinecartFurnace || cart instanceof MinecartChest;
 	}
 
 	@Override

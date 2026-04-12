@@ -289,7 +289,7 @@ public class ItemDrainBlockEntity extends SmartBlockEntity implements IHaveGoggl
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		compound.putInt("ProcessingTicks", processingTicks);
 		if (heldItem != null)
-			compound.put("HeldItem", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(heldItem, registries));
+			compound.put("HeldItem", heldItem.serializeNBT(registries));
 		super.write(compound, registries, clientPacket);
 	}
 

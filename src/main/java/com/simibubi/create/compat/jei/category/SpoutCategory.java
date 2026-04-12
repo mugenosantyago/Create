@@ -51,7 +51,7 @@ public class SpoutCategory extends CreateRecipeCategory<FillingRecipe> {
 		for (ItemStack stack : ingredientManager.getAllIngredients(VanillaTypes.ITEM_STACK)) {
 			if (PotionFluidHandler.isPotionItem(stack)) {
 				FluidStack fluidFromPotionItem = PotionFluidHandler.getFluidFromPotionItem(stack);
-				Ingredient bottle = com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(Items.GLASS_BOTTLE);
+				Ingredient bottle = Ingredient.of(Items.GLASS_BOTTLE);
 				ResourceLocation id = Create.asResource("potions");
 				SizedFluidIngredient fluidIngredient = new SizedFluidIngredient(
 					DataComponentFluidIngredient.of(false, fluidFromPotionItem), fluidFromPotionItem.getAmount());

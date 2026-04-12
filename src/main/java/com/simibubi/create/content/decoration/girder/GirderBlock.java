@@ -41,7 +41,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChainBlock;
 import net.minecraft.world.level.block.LanternBlock;
@@ -197,7 +197,7 @@ public class GirderBlock extends Block implements SimpleWaterloggedBlock, IWrenc
 		return state.setValue(WATERLOGGED, ifluidstate.getType() == Fluids.WATER);
 	}
 
-	public static BlockState updateState(LevelAccessor level, BlockPos pos, BlockState state, Direction d) {
+	public static BlockState updateState(LevelReader level, BlockPos pos, BlockState state, Direction d) {
 		Axis axis = d.getAxis();
 		Property<Boolean> updateProperty = axis == Axis.X ? X : axis == Axis.Z ? Z : d == Direction.UP ? TOP : BOTTOM;
 		BlockState sideState = level.getBlockState(pos.relative(d));
@@ -245,7 +245,7 @@ public class GirderBlock extends Block implements SimpleWaterloggedBlock, IWrenc
 		return bracket.getValue(BracketBlock.FACING) == d;
 	}
 
-	public static BlockState updateVerticalProperty(LevelAccessor level, BlockPos pos, BlockState state,
+	public static BlockState updateVerticalProperty(LevelReader level, BlockPos pos, BlockState state,
 		Property<Boolean> updateProperty, BlockState sideState, Direction d) {
 		boolean canAttach = false;
 

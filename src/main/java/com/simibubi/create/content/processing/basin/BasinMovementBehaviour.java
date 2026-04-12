@@ -7,6 +7,9 @@ import com.simibubi.create.api.behaviour.movement.MovementBehaviour;
 import com.simibubi.create.content.contraptions.behaviour.MovementContext;
 
 import net.minecraft.core.Direction;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,7 +22,8 @@ public class BasinMovementBehaviour implements MovementBehaviour {
 		Map<String, ItemStackHandler> map = new HashMap<>();
 		map.put("InputItems", new ItemStackHandler(9));
 		map.put("OutputItems", new ItemStackHandler(8));
-		map.forEach((s, h) -> h.deserializeNBT(context.world.registryAccess(), context.blockEntityData.getCompoundOrEmpty(s)));
+		ProblemReporter.Collector loadReporter = new ProblemReporter.Collector();
+		map.forEach((s, h) -> h.deserialize(TagValueInput.create(loadReporter, context.world.registryAccess(), context.blockEntityData.getCompoundOrEmpty(s))));
 		return map;
 	}
 
@@ -46,7 +50,10 @@ public class BasinMovementBehaviour implements MovementBehaviour {
 				context.world.addFreshEntity(itemEntity);
 				itemStackHandler.setStackInSlot(i, ItemStack.EMPTY);
 			}
-			context.blockEntityData.put(key, itemStackHandler.serializeNBT(context.world.registryAccess()));
+			ProblemReporter.Collector saveReporter = new ProblemReporter.Collector();
+			TagValueOutput out = TagValueOutput.createWithContext(saveReporter, context.world.registryAccess());
+			itemStackHandler.serialize(out);
+			context.blockEntityData.put(key, out.buildResult());
 		});
 		// FIXME: Why are we setting client-side data here?
 		if (context.contraption.entity.level().isClientSide) {

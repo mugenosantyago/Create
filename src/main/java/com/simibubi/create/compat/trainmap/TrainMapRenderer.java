@@ -8,6 +8,7 @@ import org.joml.Matrix4f;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.simibubi.create.Create;
 import com.simibubi.create.foundation.render.RenderTypes;
 import com.simibubi.create.infrastructure.config.CClient;
 
@@ -188,8 +189,8 @@ public class TrainMapRenderer implements AutoCloseable {
 			requiresUpload = true;
 			texture = new DynamicTexture(128, 128, true);
 			linearFiltering = false;
-			location = textureManager
-				.register("create_trainmap/" + sectionKey.getFirst() + "_" + sectionKey.getSecond(), texture);
+			location = Create.asResource("trainmap/" + sectionKey.getFirst() + "_" + sectionKey.getSecond());
+			textureManager.register(location, texture);
 			renderType = RenderTypes.TRAIN_MAP.apply(location, linearFiltering);
 			bounds = new Rect2i(sectionKey.getFirst() * WIDTH, sectionKey.getSecond() * HEIGHT, WIDTH, HEIGHT);
 		}

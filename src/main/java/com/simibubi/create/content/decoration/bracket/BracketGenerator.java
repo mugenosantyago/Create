@@ -1,5 +1,6 @@
 package com.simibubi.create.content.decoration.bracket;
 
+import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.DirectionalAxisBlockStateGen;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -43,9 +44,7 @@ public class BracketGenerator extends DirectionalAxisBlockStateGen {
 	}
 
 	public static <I extends BlockItem, P> NonNullFunction<ItemBuilder<I, P>, P> itemModel(String material) {
-		return b -> b.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/bracket/item"))
-			.texture("bracket", p.modLoc("block/bracket_" + material))
-			.texture("plate", p.modLoc("block/bracket_plate_" + material)))
+		return b -> b.model(() -> AssetLookup.bracketItemModel(material))
 			.build();
 	}
 

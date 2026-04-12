@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
 
@@ -26,6 +27,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelData.Builder;
@@ -71,8 +73,7 @@ public class TableClothModel extends BakedModelWrapperWithData {
 		PartialModel pm) {
 		List<BakedQuad> quads = new ArrayList<>();
 
-		for (BakedQuad quad : pm.get()
-			.getQuads(null, null, rand, ModelData.EMPTY, renderType)) {
+		for (BakedQuad quad : BlockStateModelUtil.collectQuads(pm.get(), Blocks.AIR.defaultBlockState(), null, rand)) {
 			TextureAtlasSprite original = quad.sprite();
 			BakedQuad newQuad = BakedQuadHelper.clone(quad);
 			int[] vertexData = newQuad.vertices();

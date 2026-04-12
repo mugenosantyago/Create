@@ -20,7 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.MinecartChest;
 import net.minecraft.world.entity.vehicle.MinecartFurnace;
 import net.minecraft.world.item.ItemStack;
@@ -327,8 +327,12 @@ public class CartAssemblerScenes {
 		scene.idle(5);
 		ElementLink<MinecartElement> cart =
 			scene.special().createCart(util.vector().topOf(assembler1.below()), 0, (level, x, y, z) -> { net.minecraft.world.entity.vehicle.Minecart _m = new net.minecraft.world.entity.vehicle.Minecart(net.minecraft.world.entity.EntityType.MINECART, level); _m.setPos(x, y, z); return _m; });
-		ElementLink<MinecartElement> cart2 =
-			scene.special().createCart(util.vector().topOf(assembler2.below()), 0, MinecartChest::new);
+		ElementLink<MinecartElement> cart2 = scene.special()
+			.createCart(util.vector().topOf(assembler2.below()), 0, (level, x, y, z) -> {
+				MinecartChest m = new MinecartChest(EntityType.CHEST_MINECART, level);
+				m.setPos(x, y, z);
+				return m;
+			});
 		scene.idle(15);
 		scene.world().setBlock(assembler1, AllBlocks.CART_ASSEMBLER.getDefaultState()
 			.setValue(CartAssemblerBlock.RAIL_SHAPE, RailShape.EAST_WEST)
@@ -504,8 +508,11 @@ public class CartAssemblerScenes {
 		scene.world().hideIndependentSection(contraption, Direction.UP);
 		scene.idle(20);
 
-		cart = scene.special().createCart(util.vector().topOf(assembler.east(2)
-			.below()), 0, MinecartFurnace::new);
+		cart = scene.special().createCart(util.vector().topOf(assembler.east(2).below()), 0, (level, x, y, z) -> {
+			MinecartFurnace m = new MinecartFurnace(EntityType.FURNACE_MINECART, level);
+			m.setPos(x, y, z);
+			return m;
+		});
 		scene.idle(10);
 		scene.overlay().showText(50)
 			.attachKeyFrame()

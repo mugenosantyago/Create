@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -54,10 +55,12 @@ public class FluidTankItem extends BlockItem {
 			nbt.remove("Controller");
 			nbt.remove("LastKnownPos");
 			if (nbt.contains("TankContent")) {
-				FluidStack fluid = FluidStack.parseOptional(minecraftserver.registryAccess(), nbt.getCompoundOrEmpty("TankContent"));
+				FluidStack fluid = FluidStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, nbt.getCompoundOrEmpty("TankContent"))
+					.result()
+					.orElse(FluidStack.EMPTY);
 				if (!fluid.isEmpty()) {
 					fluid.setAmount(Math.min(FluidTankBlockEntity.getCapacityMultiplier(), fluid.getAmount()));
-					nbt.put("TankContent", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, minecraftserver.registryAccess(), fluid).orElse(new net.minecraft.nbt.CompoundTag()));
+					nbt.put("TankContent", FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, fluid).getOrThrow());
 				}
 			}
 			com.simibubi.create.foundation.utility.NbtCompat.addEntityType(nbt, ((IBE<?>) this.getBlock()).getBlockEntityType());

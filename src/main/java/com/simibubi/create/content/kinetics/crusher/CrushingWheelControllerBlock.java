@@ -25,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -133,7 +132,7 @@ public class CrushingWheelControllerBlock extends DirectionalBlock implements IB
 		return stateIn;
 	}
 
-	public void updateSpeed(BlockState state, LevelAccessor world, BlockPos pos) {
+	public void updateSpeed(BlockState state, net.minecraft.world.level.LevelReader world, BlockPos pos) {
 		withBlockEntityDo(world, pos, be -> {
 			if (!state.getValue(VALID)) {
 				if (be.crushingspeed != 0) {

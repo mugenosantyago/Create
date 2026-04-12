@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.AllDamageTypes;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -51,17 +51,17 @@ public class CreateDamageSources {
 	}
 
 	private static DamageSource source(ResourceKey<DamageType> key, LevelReader level) {
-		Registry<DamageType> registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-		return new DamageSource(registry.getHolderOrThrow(key));
+		Holder<DamageType> holder = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key);
+		return new DamageSource(holder);
 	}
 
 	private static DamageSource source(ResourceKey<DamageType> key, LevelReader level, @Nullable Entity entity) {
-		Registry<DamageType> registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-		return new DamageSource(registry.getHolderOrThrow(key), entity);
+		Holder<DamageType> holder = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key);
+		return new DamageSource(holder, entity);
 	}
 
 	private static DamageSource source(ResourceKey<DamageType> key, LevelReader level, @Nullable Entity causingEntity, @Nullable Entity directEntity) {
-		Registry<DamageType> registry = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
-		return new DamageSource(registry.getHolderOrThrow(key), causingEntity, directEntity);
+		Holder<DamageType> holder = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key);
+		return new DamageSource(holder, causingEntity, directEntity);
 	}
 }

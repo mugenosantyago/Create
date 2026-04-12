@@ -72,7 +72,7 @@ public class PalettesVariantEntry {
 		REGISTRATE.addDataGenerator(ProviderType.RECIPE,
 			p -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(paletteStoneVariants.materialTag), RecipeCategory.BUILDING_BLOCKS,
 				baseBlock));
-		REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, p -> p.addTag(paletteStoneVariants.materialTag)
+		REGISTRATE.addDataGenerator(ProviderType.ITEM_TAGS, p -> p.tag(paletteStoneVariants.materialTag)
 			.add(baseBlock.get()
 				.asItem()));
 

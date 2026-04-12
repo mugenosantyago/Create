@@ -11,12 +11,15 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonnullType;
 
 import net.createmod.catnip.lang.Lang;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -200,11 +203,11 @@ public abstract class PaletteBlockPartial<B extends Block> {
 			p.slab(DataIngredient.items(patternBlock.get()), category, c::get, c.getName(), false);
 			p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(type.materialTag), category, c::get, 2);
 			DataIngredient ingredient = DataIngredient.items(c.get());
-			ShapelessRecipeBuilder.shapeless(category, patternBlock.get())
+			ShapelessRecipeBuilder.shapeless(p.itemLookup(), category, patternBlock.get())
 				.requires(ingredient.toVanilla())
 				.requires(ingredient.toVanilla())
 				.unlockedBy("has_" + c.getName(), ingredient.getCriterion(p))
-				.save(p, Create.ID + ":" + c.getName() + "_recycling");
+				.save(p, p.safeKey(Create.asResource(c.getName() + "_recycling")));
 		}
 
 		@Override
@@ -231,7 +234,8 @@ public abstract class PaletteBlockPartial<B extends Block> {
 		protected ItemBuilder<BlockItem, BlockBuilder<WallBlock, CreateRegistrate>> transformItem(
 			ItemBuilder<BlockItem, BlockBuilder<WallBlock, CreateRegistrate>> builder, String variantName,
 			PaletteBlockPattern pattern) {
-			builder.model((c, p) -> p.wallInventory(c.getName(), getTexture(variantName, pattern, 0)));
+			builder.model(() -> (c, p) -> p.generateWithTemplate(c.getEntry(), ModelTemplates.WALL_INVENTORY,
+				TextureMapping.singleSlot(TextureSlot.WALL, getTexture(variantName, pattern, 0))));
 			return super.transformItem(builder, variantName, pattern);
 		}
 
@@ -257,12 +261,12 @@ public abstract class PaletteBlockPartial<B extends Block> {
 			RecipeCategory category = RecipeCategory.BUILDING_BLOCKS;
 			p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(type.materialTag), category, c::get, 1);
 			DataIngredient ingredient = DataIngredient.items(patternBlock.get());
-			ShapedRecipeBuilder.shaped(category, c.get(), 6)
+			ShapedRecipeBuilder.shaped(p.itemLookup(), category, c.get(), 6)
 				.pattern("XXX")
 				.pattern("XXX")
 				.define('X', ingredient.toVanilla())
 				.unlockedBy("has_" + p.safeName(ingredient), ingredient.getCriterion(p))
-				.save(p, p.safeId(c.get()));
+				.save(p, p.safeKey(c.get()));
 		}
 
 	}

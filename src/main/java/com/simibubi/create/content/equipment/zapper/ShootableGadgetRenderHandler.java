@@ -1,6 +1,5 @@
 package com.simibubi.create.content.equipment.zapper;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -97,7 +97,6 @@ public abstract class ShootableGadgetRenderHandler {
 
 		// Render arm
 		ms.pushPose();
-		RenderSystem.setShaderTexture(0, player.getSkin().texture());
 
 		float flip = rightHand ? 1.0F : -1.0F;
 		float f1 = Mth.sqrt(event.getSwingProgress());
@@ -119,9 +118,9 @@ public abstract class ShootableGadgetRenderHandler {
 		ms.mulPose(Axis.YP.rotationDegrees(flip * 40.0F));
 		transformHand(ms, flip, equipProgress, recoil, pt);
 		if (rightHand)
-			playerrenderer.renderRightHand(ms, buffer, light, player);
+			playerrenderer.renderRightHand(ms, buffer, light, player.getSkin().texture(), player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE), player);
 		else
-			playerrenderer.renderLeftHand(ms, buffer, light, player);
+			playerrenderer.renderLeftHand(ms, buffer, light, player.getSkin().texture(), player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE), player);
 		ms.popPose();
 
 		// Render gadget

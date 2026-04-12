@@ -164,7 +164,6 @@ public class SuperGlueEntity extends Entity implements IEntityWithComplexSpawn, 
 	public void tick() {
 		xRotO = getXRot();
 		yRotO = getYRot();
-		walkDistO = walkDist;
 		xo = getX();
 		yo = getY();
 		zo = getZ();

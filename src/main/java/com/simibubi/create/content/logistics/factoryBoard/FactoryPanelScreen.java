@@ -673,8 +673,10 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 		ClientLevel level = Minecraft.getInstance().level;
 
 		availableCraftingRecipe = com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(level)
-			.getAllRecipesFor(RecipeType.CRAFTING)
-			.parallelStream()
+			.getRecipes()
+			.stream()
+			.filter(r -> r.value().getType() == RecipeType.CRAFTING)
+			.parallel()
 			.filter(r -> output.getItem() == r.value().assemble(null, null)
 				.getItem())
 			.filter(r -> {
@@ -704,6 +706,8 @@ public class FactoryPanelScreen extends AbstractSimiScreen {
 			})
 			.findAny()
 			.map(RecipeHolder::value)
+			.filter(CraftingRecipe.class::isInstance)
+			.map(CraftingRecipe.class::cast)
 			.orElse(null);
 	}
 

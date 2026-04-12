@@ -44,7 +44,7 @@ public class CreateTestCommand {
 					.executes(ctx -> handleExport(
 						ctx.getSource(),
 						ctx.getSource().getLevel(),
-						StringArgumentType.getStringOr(ctx, "path", "")
+						StringArgumentType.getString(ctx, "path")
 					))
 				)
 			);

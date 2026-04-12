@@ -16,7 +16,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ItemLike;
@@ -90,7 +89,11 @@ public class PotionFluid extends VirtualFluid {
 			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
 			ItemLike itemFromBottleType =
 				PotionFluidHandler.itemFromBottleType(stack.getOrDefault(AllDataComponents.POTION_FLUID_BOTTLE_TYPE, BottleType.REGULAR));
-			return Potion.getName(contents.potion(), itemFromBottleType.asItem().getDescriptionId() + ".effect.");
+			String base = itemFromBottleType.asItem().getDescriptionId() + ".effect.";
+			String suffix = contents.customName()
+				.or(() -> contents.potion().map(h -> h.value().name()))
+				.orElse("empty");
+			return base + suffix;
 		}
 
 		@Override

@@ -163,12 +163,12 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 	protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.write(tag, registries, clientPacket);
 		tag.putString("PreviousAddress", previouslyUsedAddress);
-		tag.put("ReceivedPayments", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(receivedPayments, registries));
+		tag.put("ReceivedPayments", receivedPayments.serializeNBT(registries));
 		tag.put("Categories", NBTHelper.writeItemList(categories, registries));
 		tag.put("HiddenCategories", NBTHelper.writeCompoundList(hiddenCategoriesByPlayer.entrySet(), e -> {
 			CompoundTag c = new CompoundTag();
 			c.putIntArray("Id", net.minecraft.core.UUIDUtil.uuidToIntArray(e.getKey()));
-			c.putIntArray("Indices", e.getValue());
+			c.putIntArray("Indices", e.getValue().stream().mapToInt(Integer::intValue).toArray());
 			return c;
 		}));
 
@@ -180,7 +180,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 	protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(tag, registries, clientPacket);
 		previouslyUsedAddress = tag.getStringOr("PreviousAddress", "");
-		com.simibubi.create.foundation.utility.NbtCompat.deserializeItemStackHandler(receivedPayments, registries, tag.getCompoundOrEmpty("ReceivedPayments"));
+		receivedPayments.deserializeNBT(registries, tag.getCompoundOrEmpty("ReceivedPayments"));
 		categories = NBTHelper.readItemList(tag.getListOrEmpty("Categories"), registries);
 		categories.removeIf(stack -> !stack.isEmpty() && !(stack.getItem() instanceof FilterItem));
 		hiddenCategoriesByPlayer.clear();
@@ -260,7 +260,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 			summary.add(receivedPayments.getStackInSlot(i));
 		for (BigItemStack entry : summary.getStacksByCount())
 			CreateLang.builder()
-				.text(Component.translatable(entry.stack.getDescriptionId())
+				.text(Component.translatable(ItemHelper.descriptionId(entry.stack))
 					.getString() + " x" + entry.count)
 				.style(ChatFormatting.GREEN)
 				.forGoggles(tooltip);

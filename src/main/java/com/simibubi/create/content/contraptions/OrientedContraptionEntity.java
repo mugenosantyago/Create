@@ -418,7 +418,7 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 
 		BlockPos blockpos = new BlockPos(i, j, k);
 		BlockState blockstate = this.level().getBlockState(blockpos);
-		if (furnaceCart.canUseRail() && blockstate.is(BlockTags.RAILS))
+		if (furnaceCart.isOnRails() && blockstate.is(BlockTags.RAILS))
 			if (fuel > 1)
 				riding.setDeltaMovement(riding.getDeltaMovement()
 					.normalize()
@@ -433,8 +433,7 @@ public class OrientedContraptionEntity extends AbstractContraptionEntity {
 		}
 
 		if (fuel != fuelBefore || pushX != 0 || pushZ != 0) {
-			furnaceCart.push.x = pushX;
-			furnaceCart.push.z = pushZ;
+			furnaceCart.push = new Vec3(pushX, furnaceCart.push.y, pushZ);
 			furnaceCartAccessor.create$setFuel(fuel);
 		}
 	}

@@ -8,13 +8,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.foundation.mixin.accessor.ShapedRecipeAccessor;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -32,7 +33,8 @@ public class MechanicalCraftingRecipe extends ShapedRecipe {
 	}
 
 	private static MechanicalCraftingRecipe fromShaped(ShapedRecipe recipe, boolean acceptMirrored) {
-		return new MechanicalCraftingRecipe(recipe.getGroup(), recipe.category(), ((ShapedRecipeAccessor) recipe).create$getPattern(), recipe.assemble(null, null), acceptMirrored);
+		ShapedRecipeAccessor a = (ShapedRecipeAccessor) recipe;
+		return new MechanicalCraftingRecipe(recipe.group(), recipe.category(), a.create$getPattern(), a.create$getResult(), acceptMirrored);
 	}
 
 	@Override
@@ -52,14 +54,14 @@ public class MechanicalCraftingRecipe extends ShapedRecipe {
 
 	// From ShapedRecipe
 	private boolean matchesSpecific(CraftingInput input, int p_77573_2_, int p_77573_3_) {
-		NonNullList<Ingredient> ingredients = getIngredients();
+		java.util.List<Ingredient> ingredients = placementInfo().ingredients();
 		int width = getWidth();
 		int height = getHeight();
 		for (int i = 0; i < input.width(); ++i) {
 			for (int j = 0; j < input.height(); ++j) {
 				int k = i - p_77573_2_;
 				int l = j - p_77573_3_;
-				Ingredient ingredient = Ingredient.EMPTY;
+				Ingredient ingredient = Ingredient.of(Items.AIR);
 				if (k >= 0 && l >= 0 && k < width && l < height)
 					ingredient = ingredients.get(k + l * width);
 				if (!ingredient.test(input.getItem(i + j * input.width())))
@@ -69,9 +71,10 @@ public class MechanicalCraftingRecipe extends ShapedRecipe {
 		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public RecipeType<?> getType() {
-		return AllRecipeTypes.MECHANICAL_CRAFTING.getType();
+	public RecipeType<CraftingRecipe> getType() {
+		return (RecipeType<CraftingRecipe>) (RecipeType<?>) AllRecipeTypes.MECHANICAL_CRAFTING.getType();
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class MechanicalCraftingRecipe extends ShapedRecipe {
 	}
 
 	@Override
-	public @NotNull RecipeSerializer<?> getSerializer() {
+	public @NotNull RecipeSerializer<? extends ShapedRecipe> getSerializer() {
 		return AllRecipeTypes.MECHANICAL_CRAFTING.getSerializer();
 	}
 

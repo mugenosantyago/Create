@@ -20,7 +20,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DirectionalBlock;
@@ -116,19 +116,19 @@ public class WaterWheelStructuralBlock extends DirectionalBlock implements IWren
 	}
 
 	@Override
-	public BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
+	public BlockState updateShape(BlockState pState, LevelReader pLevel, ScheduledTickAccess scheduledTicks, BlockPos pCurrentPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource _random) {
 		if (stillValid(pLevel, pCurrentPos, pState, false)) {
 			BlockPos masterPos = getMaster(pLevel, pCurrentPos, pState);
-			if (!pLevel.getBlockTicks()
+			if (!scheduledTicks.getBlockTicks()
 				.hasScheduledTick(masterPos, AllBlocks.LARGE_WATER_WHEEL.get()))
-				pLevel.scheduleTick(masterPos, AllBlocks.LARGE_WATER_WHEEL.get(), 1);
+				scheduledTicks.scheduleTick(masterPos, AllBlocks.LARGE_WATER_WHEEL.get(), 1);
 			return pState;
 		}
 		if (!(pLevel instanceof Level level) || level.isClientSide())
 			return pState;
-		if (!level.getBlockTicks()
+		if (!scheduledTicks.getBlockTicks()
 			.hasScheduledTick(pCurrentPos, this))
-			level.scheduleTick(pCurrentPos, this, 1);
+			scheduledTicks.scheduleTick(pCurrentPos, this, 1);
 		return pState;
 	}
 

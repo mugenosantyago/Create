@@ -1,5 +1,4 @@
 package com.simibubi.create.content.schematics.cannon;
-import com.simibubi.create.foundation.utility.NbtCompat;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -13,6 +12,7 @@ import com.simibubi.create.content.kinetics.belt.BeltSlope;
 import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
 import com.simibubi.create.content.kinetics.simpleRelays.AbstractSimpleShaftBlock;
 import com.simibubi.create.foundation.utility.BlockHelper;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import net.createmod.catnip.nbt.NBTHelper;
 import net.minecraft.core.BlockPos;
@@ -23,8 +23,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -105,7 +108,7 @@ public abstract class LaunchedItem {
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-			CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
+			CompoundTag serializeNBT = super.serializeNBT(registries);
 			serializeNBT.put("BlockState", NbtUtils.writeBlockState(state));
 			if (data != null) {
 				data.remove("x");
@@ -141,11 +144,11 @@ public abstract class LaunchedItem {
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-			CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
+			CompoundTag serializeNBT = super.serializeNBT(registries);
 			serializeNBT.putInt("Length", length);
 			serializeNBT.putIntArray("Casing", Arrays.stream(casings)
-				.map(CasingType::ordinal)
-				.toList());
+				.mapToInt(CasingType::ordinal)
+				.toArray());
 			return serializeNBT;
 		}
 
@@ -207,7 +210,10 @@ public abstract class LaunchedItem {
 		public boolean update(Level world) {
 			if (deferredTag != null && entity == null) {
 				try {
-					Optional<Entity> loadEntityUnchecked = EntityType.create(deferredTag, world);
+					Optional<Entity> loadEntityUnchecked = EntityType.create(
+						TagValueInput.create(new ProblemReporter.Collector(), world.registryAccess(), deferredTag),
+						world,
+						EntitySpawnReason.LOAD);
 					if (!loadEntityUnchecked.isPresent())
 						return true;
 					entity = loadEntityUnchecked.get();
@@ -221,9 +227,9 @@ public abstract class LaunchedItem {
 
 		@Override
 		public CompoundTag serializeNBT(HolderLookup.Provider registries) {
-			CompoundTag serializeNBT = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
+			CompoundTag serializeNBT = super.serializeNBT(registries);
 			if (entity != null)
-				serializeNBT.put("Entity", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(entity, registries));
+				serializeNBT.put("Entity", NbtCompat.saveEntity(entity, registries));
 			return serializeNBT;
 		}
 

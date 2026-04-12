@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.simibubi.create.foundation.model.BakedModelHelper;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,8 +41,8 @@ public class CopycatStepModel extends CopycatModel {
 		boolean upperHalf = state.getOptionalValue(CopycatStepBlock.HALF)
 			.orElse(Half.BOTTOM) == Half.TOP;
 
-		BakedModel model = getModelOf(material);
-		List<BakedQuad> templateQuads = model.getQuads(material, side, rand, wrappedData, renderType);
+		BlockStateModel model = getModelOf(material);
+		List<BakedQuad> templateQuads = BlockStateModelUtil.collectQuads(model, material, side, rand);
 		int size = templateQuads.size();
 
 		List<BakedQuad> quads = new ArrayList<>();

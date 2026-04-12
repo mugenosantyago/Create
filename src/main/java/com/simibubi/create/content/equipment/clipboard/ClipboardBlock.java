@@ -124,7 +124,7 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 		pLevel.destroyBlock(pPos, false);
 		if (pLevel.getBlockState(pPos) != pState) {
 			Inventory inv = pPlayer.getInventory();
-			ItemStack selected = inv.getSelected();
+			ItemStack selected = inv.getItem(inv.getSelectedSlot());
 			if (selected.isEmpty()) {
 				inv.setItem(inv.getSelectedSlot(), cloneItemStack);
 			} else {

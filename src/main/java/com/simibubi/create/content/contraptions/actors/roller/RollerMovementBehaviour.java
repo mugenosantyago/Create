@@ -403,7 +403,8 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
 	}
 
 	protected BlockState getStateToPaveWith(MovementContext context) {
-		return getStateToPaveWith(net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), context.blockEntityData.getCompoundOrEmpty("Filter").orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+		return getStateToPaveWith(net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), context.blockEntityData.getCompoundOrEmpty("Filter"))
+			.orElse(net.minecraft.world.item.ItemStack.EMPTY));
 	}
 
 	protected BlockState getStateToPaveWithAsSlab(MovementContext context) {

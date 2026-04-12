@@ -19,13 +19,15 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -79,7 +81,8 @@ public class WindowGen {
 		return windowBlock(name, ingredient, null, renderType, translucent, n -> end_texture, n -> side_texture, color)
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> p.cubeColumn(c.getName(), side_texture, ends.apply(1)))
+			.model(() -> (c, p) -> p.generateWithTemplate(c.getEntry(), ModelTemplates.CUBE_COLUMN,
+				TextureMapping.column(side_texture, ends.apply(1))))
 			.build();
 	}
 
@@ -111,13 +114,13 @@ public class WindowGen {
 			.onRegister(ct == null ? $ -> {
 			} : connectedTextures(() -> new HorizontalCTBehaviour(ct.get())))
 			.addLayer(renderType)
-			.recipe((c, p) -> ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get(), 2)
+			.recipe((c, p) -> ShapedRecipeBuilder.shaped(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get(), 2)
 				.pattern(" # ")
 				.pattern("#X#")
 				.define('#', ingredient.get())
 					.define('X', com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(Tags.Items.GLASS_BLOCKS_COLORLESS).toVanilla())
-				.unlockedBy("has_ingredient", RegistrateRecipeProvider.has(ingredient.get()))
-				.save(p))
+				.unlockedBy("has_ingredient", p.has(ingredient.get()))
+				.save(p, p.safeKey(c.get())))
 			.initialProperties(() -> Blocks.GLASS)
 			.properties(WindowGen::glassProperties)
 			.properties(p -> p.mapColor(color.get()))
@@ -141,8 +144,8 @@ public class WindowGen {
 				.tag(Tags.Blocks.GLASS_BLOCKS_COLORLESS, BlockTags.IMPERMEABLE)
 			.item()
 				.tag(Tags.Items.GLASS_BLOCKS_COLORLESS)
-			.model((c, p) -> p.cubeColumn(c.getName(), p.modLoc(palettesDir() + c.getName()),
-				p.modLoc("block/palettes/framed_glass")))
+			.model(() -> (c, p) -> p.generateWithTemplate(c.getEntry(), ModelTemplates.CUBE_COLUMN,
+				TextureMapping.column(p.modLoc(palettesDir() + c.getName()), p.modLoc("block/palettes/framed_glass"))))
 			.build()
 			.register();
 	}
@@ -235,12 +238,12 @@ public class WindowGen {
 				.defaultMapColor()))
 			.defaultBlockstate()
 			.recipe((c, p) -> {
-				ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, c.get(), 16)
+				ShapedRecipeBuilder.shaped(p.itemLookup(), RecipeCategory.BUILDING_BLOCKS, c.get(), 16)
 					.pattern("###")
 					.pattern("###")
 					.define('#', parent.get())
-					.unlockedBy("has_ingredient", RegistrateRecipeProvider.has(parent.get()))
-					.save(p);
+					.unlockedBy("has_ingredient", p.has(parent.get()))
+					.save(p, p.safeKey(c.get()));
 				if (colorless)
 					p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(Tags.Items.GLASS_PANES_COLORLESS), RecipeCategory.BUILDING_BLOCKS,
 						c::get);
@@ -254,7 +257,7 @@ public class WindowGen {
 			itemBuilder.tag(Tags.Items.GLASS_PANES);
 
 		BlockBuilder<G, CreateRegistrate> blockBuilder = itemBuilder
-			.model((c, p) -> p.generated(c, sideTexture))
+			.model(() -> (c, p) -> p.generateFlatItem(c.getEntry(), sideTexture))
 			.build();
 
 		if (colorless)

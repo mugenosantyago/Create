@@ -2,6 +2,7 @@ package com.simibubi.create.content.schematics;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -41,7 +42,7 @@ public class SchematicExport {
 		BlockPos bounds = new BlockPos(bb.getXSpan(), bb.getYSpan(), bb.getZSpan());
 
 		StructureTemplate structure = new StructureTemplate();
-		structure.fillFromWorld(level, origin, bounds, true, Blocks.AIR);
+		structure.fillFromWorld(level, origin, bounds, true, List.of(Blocks.AIR));
 		CompoundTag data = structure.save(new CompoundTag());
 		SchematicAndQuillItem.replaceStructureVoidWithAir(data);
 		SchematicAndQuillItem.clampGlueBoxes(level, new AABB(Vec3.atLowerCornerOf(origin), Vec3.atLowerCornerOf(origin.offset(bounds))), data);

@@ -10,26 +10,36 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.state.MapRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.MapDecorationTextureManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.neoforge.client.gui.map.IMapDecorationRenderer;
 
 public class StationMapDecorationRenderer implements IMapDecorationRenderer {
 	@Override
-	public boolean render(MapDecoration decoration, PoseStack poseStack, MultiBufferSource bufferSource, @NotNull MapItemSavedData mapData, MapDecorationTextureManager decorationTextures, boolean inItemFrame, int packedLight, int index) {
+	public boolean render(
+			MapRenderState.MapDecorationRenderState decorationState,
+			PoseStack poseStack,
+			MultiBufferSource bufferSource,
+			@NotNull MapRenderState mapRenderState,
+			MapDecorationTextureManager decorationTextures,
+			boolean inItemFrame,
+			int packedLight,
+			int index) {
+		TextureAtlasSprite sprite = decorationState.atlasSprite;
+		if (sprite == null)
+			return false;
+
 		poseStack.pushPose();
 
-		poseStack.translate(decoration.x() / 2D + 64.0, decoration.y() / 2D + 64.0, -0.02D);
+		poseStack.translate(decorationState.x / 2D + 64.0, decorationState.y / 2D + 64.0, -0.02D);
 
 		poseStack.pushPose();
 
 		poseStack.translate(0.5f, 0f, 0);
 		poseStack.scale(4.5F, 4.5F, 3.0F);
 
-		TextureAtlasSprite sprite = decorationTextures.get(decoration);
 		float U0 = sprite.getU0();
 		float V0 = sprite.getV0();
 		float U1 = sprite.getU1();
@@ -44,18 +54,15 @@ public class StationMapDecorationRenderer implements IMapDecorationRenderer {
 
 		poseStack.popPose();
 
-		if (decoration.name().isPresent()) {
+		if (decorationState.name != null) {
 			Font font = Minecraft.getInstance().font;
-			Component component = decoration.name().get();
+			Component component = decorationState.name;
 			float f6 = (float)font.width(component);
-//			float f7 = Mth.clamp(25.0F / f6, 0.0F, 6.0F / 9.0F);
 			poseStack.pushPose();
-//			poseStack.translate((double)(0.0F + (float)getX() / 2.0F + 64.0F / 2.0F), (double)(0.0F + (float)getY() / 2.0F + 64.0F + 4.0F), (double)-0.025F);
 			poseStack.translate(0, 6.0D, -0.005F);
 
 			poseStack.scale(0.8f, 0.8f, 1.0F);
 			poseStack.translate(-f6 / 2f + .5f, 0, 0);
-//			poseStack.scale(f7, f7, 1.0F);
 			font.drawInBatch(component, 0.0F, 0.0F, -1, false, poseStack.last()
 					.pose(), bufferSource, Font.DisplayMode.NORMAL, Integer.MIN_VALUE, packedLight);
 			poseStack.popPose();

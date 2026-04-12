@@ -26,6 +26,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringB
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.SidedFilteringBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollOptionBehaviour;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -795,7 +796,7 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity implements IHa
 		CreateLang.translate("tooltip.brass_tunnel.contains").style(ChatFormatting.WHITE).forGoggles(tooltip);
 		for (ItemStack item : allStacks) {
 			CreateLang.translate("tooltip.brass_tunnel.contains_entry",
-					Component.translatable(item.getDescriptionId()).getString(), item.getCount())
+					Component.translatable(ItemHelper.descriptionId(item)).getString(), item.getCount())
 				.style(ChatFormatting.GRAY).forGoggles(tooltip);
 		}
 		CreateLang.translate("tooltip.brass_tunnel.retrieve").style(ChatFormatting.DARK_GRAY).forGoggles(tooltip);

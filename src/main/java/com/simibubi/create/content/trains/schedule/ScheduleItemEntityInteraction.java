@@ -39,7 +39,7 @@ public class ScheduleItemEntityInteraction {
 		if (!(entity instanceof LivingEntity living))
 			return;
 		if (player.getCooldowns()
-			.isOnCooldown(AllItems.SCHEDULE.get()))
+			.isOnCooldown(new ItemStack(AllItems.SCHEDULE.get())))
 			return;
 
 		ItemStack itemStack = event.getItemStack();

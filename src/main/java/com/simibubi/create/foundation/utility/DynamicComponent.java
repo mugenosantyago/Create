@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.JsonOps;
 import com.simibubi.create.Create;
 
 import net.minecraft.commands.CommandSource;
@@ -81,7 +82,7 @@ public class DynamicComponent {
 			return null;
 		try {
 			return ComponentUtils.updateForEntity(getCommandSource(serverLevel, pos),
-				ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, net.minecraft.nbt.StringTag.valueOf(customText)).result().orElse(null), null, 0);
+				ComponentSerialization.CODEC.parse(JsonOps.INSTANCE, customText).result().orElse(null), null, 0);
 		} catch (JsonParseException | CommandSyntaxException e) {
 			return null;
 		}

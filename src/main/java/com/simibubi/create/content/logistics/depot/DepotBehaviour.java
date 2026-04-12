@@ -226,10 +226,10 @@ public class DepotBehaviour extends BlockEntityBehaviour implements Clearable {
 	@Override
 	public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
 		if (heldItem != null)
-			compound.put("HeldItem", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(heldItem, registries));
+			compound.put("HeldItem", heldItem.serializeNBT(registries));
 		compound.put("OutputBuffer", com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(processingOutputBuffer, registries));
 		if (canMergeItems() && !incoming.isEmpty())
-			compound.put("Incoming", NBTHelper.writeCompoundList(incoming, stack -> com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(stack, registries)));
+			compound.put("Incoming", NBTHelper.writeCompoundList(incoming, stack -> stack.serializeNBT(registries)));
 	}
 
 	@Override

@@ -41,7 +41,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -223,8 +222,12 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 			return;
 
 		cancelStall(context);
-		context.blockEntityData.put("Inventory", player.getInventory()
-			.save(new ListTag()));
+		net.minecraft.util.ProblemReporter.Collector reporter = new net.minecraft.util.ProblemReporter.Collector();
+		net.minecraft.world.level.storage.TagValueOutput invOut =
+			net.minecraft.world.level.storage.TagValueOutput.createWithContext(reporter, context.world.registryAccess());
+		player.getInventory()
+			.save(invOut.list("Inventory", net.minecraft.world.ItemStackWithSlot.CODEC));
+		context.blockEntityData.merge(invOut.buildResult());
 		player.discard();
 	}
 
@@ -289,7 +292,7 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 		DeployerFakePlayer player = getPlayer(context);
 		if (player == null)
 			return;
-		context.data.put("HeldItem", player.getMainHandItem().save(context.world.registryAccess()));
+		context.data.put("HeldItem", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), player.getMainHandItem()).orElse(new net.minecraft.nbt.CompoundTag()));
 	}
 
 	private DeployerFakePlayer getPlayer(MovementContext context) {
@@ -297,11 +300,15 @@ public class DeployerMovementBehaviour implements MovementBehaviour {
 			UUID owner = context.blockEntityData.contains("Owner") ? context.blockEntityData.getIntArray("Owner").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null) : null;
 			DeployerFakePlayer deployerFakePlayer = new DeployerFakePlayer((ServerLevel) context.world, owner);
 			deployerFakePlayer.onMinecartContraption = context.contraption instanceof MountedContraption;
+			net.minecraft.util.ProblemReporter.Collector loadReporter = new net.minecraft.util.ProblemReporter.Collector();
+			net.minecraft.world.level.storage.ValueInput invInput = net.minecraft.world.level.storage.TagValueInput.create(loadReporter,
+				context.world.registryAccess(), context.blockEntityData);
 			deployerFakePlayer.getInventory()
-				.load(context.blockEntityData.getListOrEmpty("Inventory"));
+				.load(invInput.listOrEmpty("Inventory", net.minecraft.world.ItemStackWithSlot.CODEC));
 			if (context.data.contains("HeldItem"))
 				deployerFakePlayer.setItemInHand(InteractionHand.MAIN_HAND,
-					net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), context.data.getCompoundOrEmpty("HeldItem").orElse(net.minecraft.world.item.ItemStack.EMPTY)));
+					net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, context.world.registryAccess(), context.data.getCompoundOrEmpty("HeldItem"))
+						.orElse(net.minecraft.world.item.ItemStack.EMPTY));
 			context.blockEntityData.remove("Inventory");
 			context.temporaryData = deployerFakePlayer;
 		}

@@ -12,6 +12,7 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -92,7 +93,11 @@ public class CrushingWheelBlock extends RotatedPillarKineticBlock implements IBE
 					wheelAxis == Axis.Z ? 1 : 0).cross(
 						new Vec3(sideAxis == Axis.X ? 1 : 0, sideAxis == Axis.Y ? 1 : 0, sideAxis == Axis.Z ? 1 : 0));
 
-				controllerNewDirection = Direction.getNearest(controllerDirVec.x * controllerADO, controllerDirVec.y * controllerADO, controllerDirVec.z * controllerADO, null);
+				controllerNewDirection = Direction.getNearest(
+					Mth.floor(controllerDirVec.x * controllerADO),
+					Mth.floor(controllerDirVec.y * controllerADO),
+					Mth.floor(controllerDirVec.z * controllerADO),
+					null);
 
 				controllerShouldBeValid = true;
 			}

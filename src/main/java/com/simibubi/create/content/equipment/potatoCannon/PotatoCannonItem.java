@@ -11,6 +11,7 @@ import com.simibubi.create.CreateClient;
 import com.simibubi.create.api.equipment.potatoCannon.PotatoCannonProjectileType;
 import com.simibubi.create.content.equipment.armor.BacktankUtil;
 import com.simibubi.create.content.equipment.zapper.ShootableGadgetItemMethods;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
 import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import com.simibubi.create.foundation.utility.CreateLang;
@@ -194,7 +195,7 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 		String _knockback = "potato_cannon.ammo.knockback";
 
 		tooltip.add(CommonComponents.EMPTY);
-		tooltip.add(Component.translatable(ammoStack.getDescriptionId()).append(Component.literal(":"))
+		tooltip.add(Component.translatable(ItemHelper.descriptionId(ammoStack)).append(Component.literal(":"))
 			.withStyle(ChatFormatting.GRAY));
 		MutableComponent spacing = CommonComponents.space();
 		ChatFormatting green = ChatFormatting.GREEN;

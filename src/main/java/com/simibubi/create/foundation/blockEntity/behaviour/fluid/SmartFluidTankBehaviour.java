@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.fluid.CombinedTankWrapper;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import com.simibubi.create.foundation.utility.NbtCompat;
 
 import net.createmod.catnip.nbt.NBTHelper;
 import net.createmod.catnip.animation.LerpedFloat;
@@ -16,7 +17,6 @@ import net.createmod.catnip.animation.LerpedFloat.Chaser;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -181,7 +181,7 @@ public class SmartFluidTankBehaviour extends BlockEntityBehaviour {
 	public void read(CompoundTag nbt, HolderLookup.Provider registries, boolean clientPacket) {
 		super.read(nbt, registries, clientPacket);
 		MutableInt index = new MutableInt(0);
-		NBTHelper.iterateCompoundList(nbt.getList(getType().getName() + "Tanks", Tag.TAG_COMPOUND), c -> {
+		NBTHelper.iterateCompoundList(nbt.getListOrEmpty(getType().getName() + "Tanks"), c -> {
 			if (index.intValue() >= tanks.length)
 				return;
 			tanks[index.intValue()].readNBT(c, registries, clientPacket);
@@ -263,13 +263,13 @@ public class SmartFluidTankBehaviour extends BlockEntityBehaviour {
 
 		public CompoundTag writeNBT(HolderLookup.Provider registries) {
 			CompoundTag compound = new CompoundTag();
-			compound.put("TankContent", tank.writeToNBT(registries, new CompoundTag()));
+			compound.put("TankContent", NbtCompat.serializeFluidTank(tank, registries));
 			compound.put("Level", fluidLevel.writeNBT());
 			return compound;
 		}
 
 		public void readNBT(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-			tank.readFromNBT(registries, compound.getCompoundOrEmpty("TankContent"));
+			NbtCompat.deserializeFluidTank(tank, registries, compound.getCompoundOrEmpty("TankContent"));
 			fluidLevel.readNBT(compound.getCompoundOrEmpty("Level"), clientPacket);
 			if (!tank.getFluid()
 				.isEmpty())

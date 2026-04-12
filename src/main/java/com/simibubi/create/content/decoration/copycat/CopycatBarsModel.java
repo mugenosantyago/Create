@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.simibubi.create.foundation.model.BakedQuadHelper;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
 import net.createmod.catnip.render.SpriteShiftEntry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -31,15 +33,15 @@ public class CopycatBarsModel extends CopycatModel {
 	@Override
 	protected List<BakedQuad> getCroppedQuads(BlockState state, Direction side, RandomSource rand, BlockState material,
 											  ModelData wrappedData, RenderType renderType) {
-		BakedModel model = getModelOf(material);
-		List<BakedQuad> superQuads = originalModel.getQuads(state, side, rand, wrappedData, renderType);
-		TextureAtlasSprite targetSprite = model.getParticleIcon(wrappedData);
+		BlockStateModel model = getModelOf(material);
+		List<BakedQuad> superQuads = wrapped.getQuads(state, side, rand, wrappedData, renderType);
+		TextureAtlasSprite targetSprite = model.particleIcon();
 
 		boolean vertical = state.getValue(CopycatPanelBlock.FACING)
 			.getAxis() == Axis.Y;
 
 		if (side != null && (vertical || side.getAxis() == Axis.Y)) {
-			List<BakedQuad> templateQuads = model.getQuads(material, null, rand, wrappedData, renderType);
+			List<BakedQuad> templateQuads = BlockStateModelUtil.collectQuads(model, material, null, rand);
 			for (BakedQuad quad : templateQuads) {
 				if (quad.direction() != Direction.UP)
 					continue;

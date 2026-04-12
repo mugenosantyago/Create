@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import net.createmod.catnip.net.base.ServerboundPacketPayload;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,7 +47,9 @@ public record FilterScreenPacket(Option option, @Nullable CompoundTag data) impl
 			if (this.option == Option.UPDATE_FILTER_ITEM)
 				c.ghostInventory.setStackInSlot(
 					tag.getIntOr("Slot", 0),
-					net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, player.registryAccess(), tag.getCompoundOrEmpty("Item").orElse(net.minecraft.world.item.ItemStack.EMPTY))
+					ItemStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, tag.getCompoundOrEmpty("Item"))
+						.result()
+						.orElse(ItemStack.EMPTY)
 				);
 		}
 

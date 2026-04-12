@@ -32,8 +32,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
@@ -85,12 +84,10 @@ public class DeployerRenderer extends SafeBlockEntityRenderer<DeployerBlockEntit
 		if (punching)
 			ms.translate(0, 1 / 8f, -1 / 16f);
 
-		ItemRenderer itemRenderer = Minecraft.getInstance()
-			.getItemRenderer();
+		Minecraft mc = Minecraft.getInstance();
 
 		ItemDisplayContext transform = ItemDisplayContext.NONE;
-		BakedModel bakedModel = itemRenderer.getModel(be.heldItem, be.getLevel(), null, 0);
-		boolean isBlockItem = (be.heldItem.getItem() instanceof BlockItem) && bakedModel.isGui3d();
+		boolean isBlockItem = be.heldItem.getItem() instanceof BlockItem;
 
 		if (displayMode) {
 			float scale = isBlockItem ? 1.25f : 1;
@@ -105,7 +102,10 @@ public class DeployerRenderer extends SafeBlockEntityRenderer<DeployerBlockEntit
 			transform = punching ? ItemDisplayContext.THIRD_PERSON_RIGHT_HAND : ItemDisplayContext.FIXED;
 		}
 
-		itemRenderer.render(be.heldItem, transform, false, ms, buffer, light, overlay, bakedModel);
+		ItemStackRenderState itemState = new ItemStackRenderState();
+		mc.getItemModelResolver()
+			.updateForTopItem(itemState, be.heldItem, transform, be.getLevel(), null, 0);
+		itemState.render(ms, buffer, light, overlay);
 		ms.popPose();
 	}
 

@@ -15,10 +15,10 @@ import net.createmod.catnip.math.VecHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -101,12 +101,10 @@ public class DepotRenderer extends SafeBlockEntityRenderer<DepotBlockEntity> {
 
 	public static void renderItem(PoseStack ms, MultiBufferSource buffer, int light, int overlay,
 								  ItemStack itemStack, int angle, Random r, Vec3 itemPosition, boolean alwaysUpright) {
-		ItemRenderer itemRenderer = Minecraft.getInstance()
-			.getItemRenderer();
+		Minecraft mc = Minecraft.getInstance();
 		var msr = TransformStack.of(ms);
 		int count = Mth.log2((itemStack.getCount())) / 2;
-		BakedModel bakedModel = itemRenderer.getModel(itemStack, null, null, 0);
-		boolean blockItem = bakedModel.isGui3d();
+		boolean blockItem = itemStack.getItem() instanceof BlockItem;
 		boolean renderUpright = BeltHelper.isItemUpright(itemStack) || alwaysUpright && !blockItem;
 
 		ms.pushPose();
@@ -138,7 +136,10 @@ public class DepotRenderer extends SafeBlockEntityRenderer<DepotBlockEntity> {
 				ms.translate(0, -3 / 16f, 0);
 				msr.rotateXDegrees(90);
 			}
-			itemRenderer.render(itemStack, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, bakedModel);
+			ItemStackRenderState itemState = new ItemStackRenderState();
+			mc.getItemModelResolver()
+				.updateForTopItem(itemState, itemStack, ItemDisplayContext.FIXED, null, null, 0);
+			itemState.render(ms, buffer, light, overlay);
 			ms.popPose();
 
 			if (!renderUpright) {

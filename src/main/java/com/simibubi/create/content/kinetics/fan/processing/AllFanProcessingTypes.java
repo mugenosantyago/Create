@@ -98,6 +98,11 @@ public class AllFanProcessingTypes {
 		return FanProcessingType.parse(str);
 	}
 
+	private static boolean resistsLavaFan(ItemStack stack, Level level) {
+		var dr = stack.get(DataComponents.DAMAGE_RESISTANT);
+		return dr != null && dr.isResistantTo(level.damageSources().lava());
+	}
+
 	public static class BlastingType implements FanProcessingType {
 		@Override
 		public boolean isValidAt(Level level, BlockPos pos) {
@@ -133,7 +138,7 @@ public class AllFanProcessingTypes {
 			if (blastingRecipe.isPresent())
 				return true;
 
-			return !stack.has(DataComponents.FIRE_RESISTANT);
+			return !resistsLavaFan(stack, level);
 		}
 
 		@Override
@@ -275,7 +280,7 @@ public class AllFanProcessingTypes {
 
 			if (entity instanceof LivingEntity livingEntity) {
 				livingEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0, false, false));
-				livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1, false, false));
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 1, false, false));
 			}
 			if (entity instanceof Horse horse) {
 				int progress = horse.getPersistentData()
@@ -298,7 +303,7 @@ public class AllFanProcessingTypes {
 				serializeNBT.remove("UUID");
 				if (!horse.getBodyArmorItem()
 					.isEmpty())
-					horse.spawnAtLocation((net.minecraft.server.level.ServerLevel) level(), horse.getBodyArmorItem());
+					horse.spawnAtLocation((net.minecraft.server.level.ServerLevel) level, horse.getBodyArmorItem());
 
 				com.simibubi.create.foundation.utility.NbtCompat.loadEntity(skeletonHorse, serializeNBT);
 				skeletonHorse.setPos(horse.getPosition(0));

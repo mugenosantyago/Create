@@ -50,7 +50,7 @@ public class SchematicProcessor extends StructureProcessor {
 		return com.simibubi.create.foundation.utility.NbtCompat.entityTypeByTag(info.nbt).flatMap(type -> {
 			if (world instanceof Level) {
 				Entity e = type.create((Level) world);
-				if (e != null && !e.onlyOpCanSetNbt()) {
+				if (e != null && !type.onlyOpCanSetNbt()) {
 					return Optional.of(info);
 				}
 			}

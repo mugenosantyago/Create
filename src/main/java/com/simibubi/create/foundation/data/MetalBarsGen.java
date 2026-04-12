@@ -134,7 +134,7 @@ public class MetalBarsGen {
 			.transform(TagGen.pickaxeOnly())
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> {
+			.model(() -> (c, p) -> {
 				ResourceLocation barsTexture = p.modLoc("block/bars/" + name + "_bars");
 				p.generated(c, barsTexture);
 			})

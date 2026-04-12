@@ -1,7 +1,6 @@
 package com.simibubi.create.content.logistics.box;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +16,7 @@ import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.DamageResistant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -47,7 +47,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -109,7 +108,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	}
 
 	@Override
-	public ItemStack getPickedResult(HitResult target) {
+	public ItemStack getPickResult() {
 		return box.copy();
 	}
 
@@ -143,8 +142,6 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 		motion = collideBoundingBox(this, motion, bb, level(), entityStream);
 
 		Vec3 clientPos = position().add(motion);
-		if (lerpSteps != 0)
-			clientPos = VecHelper.lerp(Math.min(1, tickCount / 20f), clientPos, new Vec3(lerpX, lerpY, lerpZ));
 		if (tickCount < 5)
 			setPos(clientPos.x, clientPos.y, clientPos.z);
 		if (tickCount < 20) {
@@ -244,7 +241,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	}
 
 	@Override
-	public boolean canBeCollidedWith() {
+	public boolean canBeCollidedWith(Entity viewer) {
 		return false;
 	}
 
@@ -321,7 +318,7 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 		if (source.is(DamageTypeTags.IS_FALL))
 			return false;
 
-		if (this.isInvulnerableTo(source))
+		if (this.isInvulnerableTo(level, source))
 			return false;
 
 		if (source.is(DamageTypeTags.IS_EXPLOSION)) {
@@ -376,9 +373,9 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 			ItemStack itemstack = contents.getStackInSlot(i);
 
 			if (itemstack.getItem() instanceof SpawnEggItem sei) {
-				EntityType<?> entitytype = sei.getType(itemstack);
+				EntityType<?> entitytype = sei.getType(level.registryAccess(), itemstack);
 				Entity entity =
-					entitytype.spawn(level, itemstack, null, blockPosition(), EntitySpawnReason.SPAWN_EGG, false, false);
+					entitytype.spawn(level, itemstack, null, blockPosition(), EntitySpawnReason.SPAWN_ITEM_USE, false, false);
 				if (entity != null)
 					itemstack.shrink(1);
 			}
@@ -402,7 +399,8 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 
 	public void readAdditionalSaveData(CompoundTag compound) {
 		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); super.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(__reporter, registryAccess(), compound)); }
-		box = net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), compound.getCompoundOrEmpty("Box").orElse(net.minecraft.world.item.ItemStack.EMPTY));
+		box = net.createmod.catnip.codecs.CatnipCodecUtils.decode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), compound.getCompoundOrEmpty("Box"))
+			.orElse(ItemStack.EMPTY);
 		refreshDimensions();
 	}
 
@@ -421,11 +419,6 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 	public void addAdditionalSaveData(CompoundTag compound) {
 		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); net.minecraft.world.level.storage.TagValueOutput __output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(__reporter, registryAccess()); super.addAdditionalSaveData(__output); compound.merge(__output.buildResult()); }
 		compound.put("Box", net.createmod.catnip.codecs.CatnipCodecUtils.encode(net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, level().registryAccess(), box).orElse(new net.minecraft.nbt.CompoundTag()));
-	}
-
-	@Override
-	public Iterable<ItemStack> getArmorSlots() {
-		return Collections.emptyList();
 	}
 
 	@Override
@@ -493,6 +486,9 @@ public class PackageEntity extends LivingEntity implements IEntityWithComplexSpa
 
 	@Override
 	public boolean fireImmune() {
-		return box.has(DataComponents.FIRE_RESISTANT) || super.fireImmune();
+		DamageResistant dr = box.get(DataComponents.DAMAGE_RESISTANT);
+		if (dr != null && (dr.isResistantTo(damageSources().inFire()) || dr.isResistantTo(damageSources().lava())))
+			return true;
+		return super.fireImmune();
 	}
 }

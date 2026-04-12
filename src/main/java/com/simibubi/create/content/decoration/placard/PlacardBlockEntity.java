@@ -80,7 +80,7 @@ public class PlacardBlockEntity extends SmartBlockEntity {
 		if (!AllBlocks.PLACARD.has(blockState))
 			return;
 
-		DustParticleOptions pParticleData = new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, 1, .2, 0), 1);
+		DustParticleOptions pParticleData = new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, 1.0f, 0.2f, 0.0f), 1);
 		Vec3 centerOf = VecHelper.getCenterOf(worldPosition);
 		Vec3 normal = Vec3.atLowerCornerOf(PlacardBlock.connectedDirection(blockState)
 			.getUnitVec3i());

@@ -11,6 +11,7 @@ import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +55,7 @@ import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.infrastructure.config.CStress;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
+import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
@@ -63,6 +64,9 @@ import net.createmod.catnip.registry.RegisteredObjectsHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
@@ -104,7 +108,7 @@ public class BuilderTransformers {
 				(s, f) -> f.getAxis() != s.getValue(EncasedShaftBlock.AXIS))))
 			.defaultBlockstate()
 			.item()
-			.model(AssetLookup.customBlockItemModel("encased_shaft", "item_" + casing))
+			.model(() -> AssetLookup.customBlockItemModel("encased_shaft", "item_" + casing))
 			.build();
 	}
 
@@ -160,7 +164,7 @@ public class BuilderTransformers {
 			.item()
 			.tag(ItemTags.DOORS)
 			.tag(AllItemTags.CONTRAPTION_CONTROLLED.tag)
-			.model((c, p) -> p.blockSprite(c, p.modLoc("item/" + type + "_door")))
+			.model(() -> (c, p) -> p.generateFlatItem(c.getEntry(), p.modLoc("item/" + type + "_door")))
 			.build();
 	}
 
@@ -177,10 +181,7 @@ public class BuilderTransformers {
 
 	private static <B extends EncasedCogwheelBlock, P> BlockBuilder<B, P> encasedCogwheelBase(BlockBuilder<B, P> b,
 																							  String casing, Supplier<CTSpriteShiftEntry> casingShift, Supplier<ItemLike> drop, boolean large) {
-		String encasedSuffix = "_encased_cogwheel_side" + (large ? "_connected" : "");
 		String blockFolder = large ? "encased_large_cogwheel" : "encased_cogwheel";
-		String wood = casing.equals("brass") ? "dark_oak" : "spruce";
-		String gearbox = casing.equals("brass") ? "brass_gearbox" : "gearbox";
 		return encasedBase(b, drop).addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, casingShift.get(),
 				(s, f) -> f.getAxis() == s.getValue(EncasedCogwheelBlock.AXIS)
@@ -188,11 +189,7 @@ public class BuilderTransformers {
 					: EncasedCogwheelBlock.BOTTOM_SHAFT))))
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/" + blockFolder + "/item"))
-				.texture("casing", Create.asResource("block/" + casing + "_casing"))
-				.texture("particle", Create.asResource("block/" + casing + "_casing"))
-				.texture("1", ResourceLocation.withDefaultNamespace("block/stripped_" + wood + "_log_top"))
-				.texture("side", Create.asResource("block/" + casing + encasedSuffix)))
+			.model(() -> AssetLookup.encasedCogwheelItemModel(blockFolder, casing, large))
 			.build();
 	}
 
@@ -224,7 +221,7 @@ public class BuilderTransformers {
 			.tag(BlockTags.CLIMBABLE)
 			.item()
 			.recipe((c, p) -> p.stonecutting(ingredient.get(), RecipeCategory.DECORATIONS, c::get, 2))
-			.model((c, p) -> p.blockSprite(c::get, p.modLoc("block/ladder_" + name)))
+			.model(() -> (c, p) -> p.generateFlatItem(c.getEntry(), p.modLoc("block/ladder_" + name)))
 			.build();
 	}
 
@@ -242,7 +239,7 @@ public class BuilderTransformers {
 			.tag(BlockTags.CLIMBABLE)
 			.item(MetalScaffoldingBlockItem::new)
 			.recipe((c, p) -> p.stonecutting(ingredient.get(), RecipeCategory.DECORATIONS, c::get, 2))
-			.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/" + c.getName())))
+			.model(() -> (c, p) -> p.createWithExistingModel(c.getEntry(), p.modLoc("block/" + c.getName())))
 			.build();
 	}
 
@@ -287,22 +284,13 @@ public class BuilderTransformers {
 
 	public static <B extends BeltTunnelBlock> NonNullUnaryOperator<BlockBuilder<B, CreateRegistrate>> beltTunnel(
 		String type, ResourceLocation particleTexture) {
-		String prefix = "block/tunnel/" + type + "_tunnel";
-		String funnel_prefix = "block/funnel/" + type + "_funnel";
 		return b -> b.initialProperties(SharedProperties::stone)
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.properties(BlockBehaviour.Properties::noOcclusion)
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
 			.item(BeltTunnelItem::new)
-			.model((c, p) -> {
-				p.withExistingParent("item/" + type + "_tunnel", p.modLoc("block/belt_tunnel/item"))
-					.texture("top", p.modLoc(prefix + "_top"))
-					.texture("tunnel", p.modLoc(prefix))
-					.texture("direction", p.modLoc(funnel_prefix + "_neutral"))
-					.texture("frame", p.modLoc(funnel_prefix + "_frame"))
-					.texture("particle", particleTexture);
-			})
+			.model(() -> AssetLookup.beltTunnelItemModel(type, particleTexture))
 			.build();
 	}
 
@@ -327,10 +315,8 @@ public class BuilderTransformers {
 			.properties(p -> p.noOcclusion())
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> p.withExistingParent(c.getName(), baseItemModelLocation)
-				.texture("top", topTextureLocation)
-				.texture("side", sideTextureLocation)
-				.texture("back", backTextureLocation))
+			.model(() -> AssetLookup.bearingItemModel(baseItemModelLocation, topTextureLocation, sideTextureLocation,
+				backTextureLocation))
 			.build();
 	}
 
@@ -369,7 +355,7 @@ public class BuilderTransformers {
 			.tag(AllBlockTags.BRITTLE.tag)
 			.defaultBlockstate()
 			.item()
-			.model((c, p) -> p.withExistingParent(c.getName(), p.modLoc("block/" + c.getName())))
+			.model(() -> (c, p) -> p.createWithExistingModel(c.getEntry(), p.modLoc("block/" + c.getName())))
 			.tag(AllItemTags.CONTRAPTION_CONTROLLED.tag)
 			.build();
 	}
@@ -380,12 +366,22 @@ public class BuilderTransformers {
 				.getPath(), p -> new PackageItem(p, style))
 			.properties(p -> p.stacksTo(1))
 			.tag(AllItemTags.PACKAGES.tag)
-			.model((c, p) -> {
-				if (style.rare())
-					p.withExistingParent(c.getName(), p.modLoc("item/package/custom" + size))
-						.texture("2", p.modLoc("item/package/" + style.type()));
-				else
-					p.withExistingParent(c.getName(), p.modLoc("item/package/" + style.type() + size));
+			.model(() -> (c, p) -> {
+				if (style.rare()) {
+					TextureSlot layer = TextureSlot.create("2");
+					ResourceLocation styleTex = Create.asResource("item/package/" + style.type());
+					ModelTemplate template = new ModelTemplate(
+						Optional.of(Create.asResource("item/package/custom" + size)),
+						Optional.empty(),
+						layer,
+						TextureSlot.PARTICLE
+					);
+					TextureMapping mapping = new TextureMapping()
+						.put(layer, styleTex)
+						.put(TextureSlot.PARTICLE, styleTex);
+					p.generateWithTemplate(c.getEntry(), template, mapping);
+				} else
+					p.createWithExistingModel(c.getEntry(), p.modLoc("item/package/" + style.type() + size));
 			})
 			.lang((style.rare() ? "Rare"
 				: style.type()
@@ -404,7 +400,7 @@ public class BuilderTransformers {
 			ItemBuilder<TableClothBlockItem, BlockBuilder<B, P>> item = b.initialProperties(initialProps)
 				.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 				.defaultBlockstate()
-				.onRegister(CreateRegistrate.blockModel(() -> TableClothModel::new))
+				.onRegister(CreateRegistrate.blockModel())
 				.tag(AllBlockTags.TABLE_CLOTHS.tag, soundTag)
 				.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.create.table_cloth"))
 				.item(TableClothBlockItem::new);
@@ -412,13 +408,12 @@ public class BuilderTransformers {
 			if (dyed)
 				item.tag(AllItemTags.DYED_TABLE_CLOTHS.tag);
 
-			return item.model((c, p) -> p.withExistingParent(name + "_table_cloth", p.modLoc("block/table_cloth/item"))
-					.texture("0", p.modLoc("block/table_cloth/" + name)))
+			return item.model(() -> AssetLookup.tableClothItemModel(name))
 				.tag(AllItemTags.TABLE_CLOTHS.tag)
-				.recipe((c, p) -> ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, c.get())
+				.recipe((c, p) -> ShapelessRecipeBuilder.shapeless(p.itemLookup(), RecipeCategory.MISC, c.get())
 					.requires(c.get())
-					.unlockedBy("has_" + c.getName(), RegistrateRecipeProvider.has(c.get()))
-					.save(p, Create.asResource("crafting/logistics/" + c.getName() + "_clear")))
+					.unlockedBy("has_" + c.getName(), p.has(c.get()))
+					.save(p, p.safeKey(Create.asResource("crafting/logistics/" + c.getName() + "_clear"))))
 				.build();
 		};
 	}

@@ -44,7 +44,7 @@ public class CreateWikiBlockInfoProvider implements DataProvider {
 				element.addProperty("blast_resistance", block.getExplosionResistance());
 				element.addProperty("hardness", block.defaultDestroyTime());
 
-				element.addProperty("luminous", state.lightEmission() > 0);
+				element.addProperty("luminous", state.getLightEmission() > 0);
 				//element.addProperty("transparent", block.propagatesSkylightDown());
 				element.addProperty("waterloggable", block instanceof SimpleWaterloggedBlock);
 				element.addProperty("flammable", ((FireBlock) Blocks.FIRE).getBurnOdds(state) > 0);

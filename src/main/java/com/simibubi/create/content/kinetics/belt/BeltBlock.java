@@ -510,10 +510,10 @@ public class BeltBlock extends HorizontalKineticBlock
 	public BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader world, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos pos, Direction side, BlockPos p_196271_6_, BlockState p_196271_3_, net.minecraft.util.RandomSource _random) {
 		updateWater(world, _scheduledTicks, state, pos);
 		if (side.getAxis()
-			.isHorizontal())
-			updateTunnelConnections(world, pos.above());
-		if (side == Direction.UP)
-			updateCoverProperty(world, pos, state);
+			.isHorizontal() && world instanceof LevelAccessor levelAccessor)
+			updateTunnelConnections(levelAccessor, pos.above());
+		if (side == Direction.UP && world instanceof LevelAccessor levelAccessor)
+			updateCoverProperty(levelAccessor, pos, state);
 		return state;
 	}
 

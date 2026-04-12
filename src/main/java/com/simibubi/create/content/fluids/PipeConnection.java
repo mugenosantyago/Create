@@ -227,7 +227,7 @@ public class PipeConnection {
 		if (hasFlow()) {
 			CompoundTag flowData = new CompoundTag();
 			Flow flow = this.flow.get();
-			flowData.put("Fluid", NbtCompat.saveItemStack(flow.fluid, registries));
+			flowData.put("Fluid", NbtCompat.saveFluidStack(flow.fluid, registries));
 			flowData.putBoolean("In", flow.inbound);
 			if (!flow.complete)
 				flowData.put("Progress", flow.progress.writeNBT());
@@ -256,7 +256,7 @@ public class PipeConnection {
 		if (connectionData.contains("Flow")) {
 			CompoundTag flowData = connectionData.getCompoundOrEmpty("Flow");
 
-			FluidStack fluid = FluidStack.parseOptional(registries, flowData.getCompoundOrEmpty("Fluid"));
+			FluidStack fluid = NbtCompat.parseFluidStack(registries, flowData.getCompoundOrEmpty("Fluid"));
 			boolean inbound = flowData.getBooleanOr("In", false);
 			if (flow.isEmpty()) {
 				flow = Optional.of(new Flow(inbound, fluid));

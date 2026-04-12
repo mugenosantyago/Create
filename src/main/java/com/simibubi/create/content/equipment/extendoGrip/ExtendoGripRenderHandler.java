@@ -1,6 +1,5 @@
 package com.simibubi.create.content.equipment.extendoGrip;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllPartialModels;
@@ -16,13 +15,13 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 
 @EventBusSubscriber(value = Dist.CLIENT)
@@ -44,11 +43,6 @@ public class ExtendoGripRenderHandler {
 			return;
 		if (!(main.getItem() instanceof BlockItem))
 			return;
-		if (!Minecraft.getInstance()
-			.getItemRenderer()
-			.getModel(main, null, null, 0)
-			.isGui3d())
-			return;
 		pose = AllPartialModels.DEPLOYER_HAND_HOLDING;
 	}
 
@@ -67,7 +61,6 @@ public class ExtendoGripRenderHandler {
 		PoseStack ms = event.getPoseStack();
 		var msr = TransformStack.of(ms);
 		AbstractClientPlayer abstractclientplayerentity = mc.player;
-		RenderSystem.setShaderTexture(0, abstractclientplayerentity.getSkin().texture());
 
 		float flip = rightHand ? 1.0F : -1.0F;
 		float swingProgress = event.getSwingProgress();
@@ -100,10 +93,12 @@ public class ExtendoGripRenderHandler {
 				.getRenderer(player);
 			if (rightHand)
 				playerrenderer.renderRightHand(event.getPoseStack(), event.getMultiBufferSource(),
-					event.getPackedLight(), player);
+					event.getPackedLight(), abstractclientplayerentity.getSkin().texture(),
+					abstractclientplayerentity.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE), abstractclientplayerentity);
 			else
 				playerrenderer.renderLeftHand(event.getPoseStack(), event.getMultiBufferSource(),
-					event.getPackedLight(), player);
+					event.getPackedLight(), abstractclientplayerentity.getSkin().texture(),
+					abstractclientplayerentity.isModelPartShown(PlayerModelPart.LEFT_SLEEVE), abstractclientplayerentity);
 			ms.popPose();
 
 			// Render gun
@@ -116,13 +111,9 @@ public class ExtendoGripRenderHandler {
 				event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
 
 			if (!notInOffhand) {
-				ClientHooks.handleCameraTransforms(ms, mc.getItemRenderer()
-					.getModel(offhandItem, null, null, 0), transform, !rightHand);
 				ms.translate(flip * -.05f, .15f, -1.2f);
 				ms.translate(0, 0, -animation * 2.25f);
-				if (blockItem && mc.getItemRenderer()
-					.getModel(heldItem, null, null, 0)
-					.isGui3d()) {
+				if (blockItem) {
 					msr.rotateYDegrees(flip * 45);
 					ms.translate(flip * 0.15f, -0.15f, -.05f);
 					ms.scale(1.25f, 1.25f, 1.25f);

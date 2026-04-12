@@ -15,7 +15,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,6 +22,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -55,14 +55,14 @@ public class WaterWheelBlock extends DirectionalKineticBlock implements IBE<Wate
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, net.minecraft.world.level.LevelReader worldIn, net.minecraft.world.level.ScheduledTickAccess _scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
+	public BlockState updateShape(BlockState stateIn, LevelReader worldIn, ScheduledTickAccess scheduledTicks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource _random) {
 		if (worldIn instanceof WrappedLevel)
 			return stateIn;
 		if (worldIn.isClientSide())
 			return stateIn;
-		if (!worldIn.getBlockTicks()
+		if (!scheduledTicks.getBlockTicks()
 			.hasScheduledTick(currentPos, this))
-			worldIn.scheduleTick(currentPos, this, 1);
+			scheduledTicks.scheduleTick(currentPos, this, 1);
 		return stateIn;
 	}
 

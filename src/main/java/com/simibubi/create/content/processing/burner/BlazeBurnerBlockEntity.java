@@ -36,6 +36,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -255,7 +256,7 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 			newBurnTime = 3200;
 			newFuel = FuelType.SPECIAL;
 		} else {
-			newBurnTime = itemStack.getBurnTime(null);
+			newBurnTime = itemStack.getBurnTime(RecipeType.SMELTING, getLevel().fuelValues());
 			if (newBurnTime > 0) {
 				newFuel = FuelType.NORMAL;
 			} else if (AllItemTags.BLAZE_BURNER_FUEL_REGULAR.matches(itemStack)) {

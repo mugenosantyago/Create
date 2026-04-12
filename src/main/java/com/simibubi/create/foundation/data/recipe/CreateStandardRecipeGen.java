@@ -46,10 +46,13 @@ import net.createmod.catnip.registry.RegisteredObjectsHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -73,7 +76,9 @@ import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -253,11 +258,11 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 			.pattern("I")
 			.pattern("P")),
 
-	CAKE = create(() -> Items.CAKE).unlockedByTag(() -> Tags.Items.FOODS_DOUGH)
+	CAKE = create(() -> Items.CAKE).unlockedByTag(() -> Tags.Items.EGGS)
 		.viaShaped(b -> b.define('E', Tags.Items.EGGS)
 			.define('S', Items.SUGAR)
-			.define('P', Tags.Items.FOODS_DOUGH)
-			.define('M', () -> Items.MILK_BUCKET)
+			.define('P', AllItemTags.FOODS_DOUGH_WHEAT.tag)
+			.define('M', Items.MILK_BUCKET)
 			.pattern(" M ")
 			.pattern("SES")
 			.pattern(" P "));
@@ -1410,7 +1415,7 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 		ResourceLocation location = Create.asResource(recipeType + "/" + currentFolder + "/" + path);
 		return register(consumer -> {
 			SpecialRecipeBuilder b = SpecialRecipeBuilder.special(builder);
-			b.save(consumer, location.toString());
+			b.save(consumer, ResourceKey.create(Registries.RECIPE, location));
 		});
 	}
 
@@ -1539,16 +1544,24 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 
 		GeneratedRecipeBuilder unlockedBy(Supplier<? extends ItemLike> item) {
 			this.unlockedBy = () -> ItemPredicate.Builder.item()
-				.of(item.get())
+				.of(itemGetter(), item.get())
 				.build();
 			return this;
 		}
 
 		GeneratedRecipeBuilder unlockedByTag(Supplier<TagKey<Item>> tag) {
 			this.unlockedBy = () -> ItemPredicate.Builder.item()
-				.of(tag.get())
+				.of(itemGetter(), tag.get())
 				.build();
 			return this;
+		}
+
+		private HolderGetter<Item> itemGetter() {
+			return registryLookup.lookupOrThrow(Registries.ITEM);
+		}
+
+		private ResourceKey<Recipe<?>> recipeKey(ResourceLocation id) {
+			return ResourceKey.create(Registries.RECIPE, id);
 		}
 
 		GeneratedRecipeBuilder whenModLoaded(String modid) {
@@ -1573,36 +1586,36 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 		GeneratedRecipe viaShaped(UnaryOperator<ShapedRecipeBuilder> builder) {
 			return register(consumer -> {
 				ShapedRecipeBuilder b =
-					builder.apply(ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result.get(), amount));
+					builder.apply(ShapedRecipeBuilder.shaped(itemGetter(), RecipeCategory.MISC, result.get(), amount));
 				if (unlockedBy != null)
-					b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
-				b.save(consumer, createLocation("crafting").toString());
+					b.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(unlockedBy.get()));
+				b.save(consumer, recipeKey(createLocation("crafting")));
 			});
 		}
 
 		GeneratedRecipe viaShapeless(UnaryOperator<ShapelessRecipeBuilder> builder) {
 			return register(recipeOutput -> {
 				ShapelessRecipeBuilder b =
-					builder.apply(ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, result.get(), amount));
+					builder.apply(ShapelessRecipeBuilder.shapeless(itemGetter(), RecipeCategory.MISC, result.get(), amount));
 				if (unlockedBy != null)
-					b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
+					b.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(unlockedBy.get()));
 
 				RecipeOutput conditionalOutput = recipeOutput.withConditions(recipeConditions.toArray(new ICondition[0]));
 
-				b.save(conditionalOutput, createLocation("crafting").toString());
+				b.save(conditionalOutput, recipeKey(createLocation("crafting")));
 			});
 		}
 
 		GeneratedRecipe viaNetheriteSmithing(Supplier<? extends Item> base, Supplier<Ingredient> upgradeMaterial) {
 			return register(consumer -> {
 				SmithingTransformRecipeBuilder b =
-					SmithingTransformRecipeBuilder.smithing(com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
+					SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
 						Ingredient.of(base.get()), upgradeMaterial.get(), RecipeCategory.COMBAT, result.get()
 							.asItem());
-				b.unlocks("has_item", inventoryTrigger(ItemPredicate.Builder.item()
-					.of(base.get())
+				b.unlocks("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
+					.of(itemGetter(), base.get())
 					.build()));
-				b.save(consumer, createLocation("crafting").toString());
+				b.save(consumer, recipeKey(createLocation("crafting")));
 			});
 		}
 
@@ -1624,7 +1637,7 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 		}
 
 		GeneratedCookingRecipeBuilder viaCookingTag(Supplier<TagKey<Item>> tag) {
-			return unlockedByTag(tag).viaCookingIngredient(() -> Ingredient.of(tag.get()));
+			return unlockedByTag(tag).viaCookingIngredient(() -> com.simibubi.create.foundation.utility.NbtCompat.ingredientFromTag(tag.get()));
 		}
 
 		GeneratedCookingRecipeBuilder viaCookingIngredient(Supplier<Ingredient> ingredient) {
@@ -1689,13 +1702,13 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 						RecipeCategory.MISC, isOtherMod ? Items.DIRT : result.get(), exp,
 						(int) (cookingTime * cookingTimeModifier), serializer, factory));
 					if (unlockedBy != null)
-						b.unlockedBy("has_item", inventoryTrigger(unlockedBy.get()));
+						b.unlockedBy("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(unlockedBy.get()));
 
 					RecipeOutput conditionalOutput = recipeOutput.withConditions(recipeConditions.toArray(new ICondition[0]));
 
 					b.save(
 						isOtherMod ? new ModdedCookingRecipeOutput(conditionalOutput, compatDatagenOutput) : conditionalOutput,
-						createSimpleLocation(RegisteredObjectsHelper.getKeyOrThrow(serializer).getPath())
+						recipeKey(createSimpleLocation(RegisteredObjectsHelper.getKeyOrThrow(serializer).getPath()))
 					);
 				});
 			}
@@ -1735,25 +1748,37 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 			throw new AssertionError("Only for datagen output");
 		}
 
-				public boolean canCraftInDimensions(int pWidth, int pHeight) {
+		public boolean canCraftInDimensions(int pWidth, int pHeight) {
 			throw new AssertionError("Only for datagen output");
 		}
 
-				public ItemStack getResultItem(HolderLookup.Provider registries) {
+		public ItemStack getResultItem(HolderLookup.Provider registries) {
 			throw new AssertionError("Only for datagen output");
 		}
 
 		@Override
-		public RecipeSerializer<?> getSerializer() {
+		public PlacementInfo placementInfo() {
+			return wrapped.placementInfo();
+		}
+
+		@Override
+		public RecipeBookCategory recipeBookCategory() {
+			return wrapped.recipeBookCategory();
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public RecipeSerializer<? extends Recipe<RecipeInput>> getSerializer() {
 			return serializers.computeIfAbsent(
-				getType(),
+				wrapped.getType(),
 				t -> Serializer.create(wrapped)
 			);
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
-		public RecipeType<?> getType() {
-			return wrapped.getType();
+		public RecipeType<? extends Recipe<RecipeInput>> getType() {
+			return (RecipeType<? extends Recipe<RecipeInput>>) (RecipeType<?>) wrapped.getType();
 		}
 
 		private record Serializer(
@@ -1818,6 +1843,11 @@ public final class CreateStandardRecipeGen extends BaseRecipeProvider {
 		@Override
 		public Advancement.Builder advancement() {
 			return wrapped.advancement();
+		}
+
+		@Override
+		public void includeRootAdvancement() {
+			wrapped.includeRootAdvancement();
 		}
 
 		@Override

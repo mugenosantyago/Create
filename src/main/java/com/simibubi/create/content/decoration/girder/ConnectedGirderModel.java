@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.foundation.block.connected.CTModel;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.renderer.RenderType;
@@ -48,9 +49,8 @@ public class ConnectedGirderModel extends CTModel {
 		ConnectionData data = extraData.get(CONNECTION_PROPERTY);
 		for (Direction d : Iterate.horizontalDirections)
 			if (data.isConnected(d))
-				quads.addAll(AllPartialModels.METAL_GIRDER_BRACKETS.get(d)
-					.get()
-					.getQuads(state, side, rand, extraData, renderType));
+				quads.addAll(BlockStateModelUtil.collectQuads(AllPartialModels.METAL_GIRDER_BRACKETS.get(d)
+					.get(), state, side, rand));
 		return quads;
 	}
 

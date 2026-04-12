@@ -249,8 +249,7 @@ public class LinkedControllerClientHandler {
 		int x = (width1 / 3) - width / 2;
 		int y = height1 - height - 24;
 
-		// TODO
-		guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, list, x, y);
+		com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(guiGraphics, Minecraft.getInstance().font, list, x, y);
 
 		poseStack.popPose();
 	}

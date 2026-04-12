@@ -16,7 +16,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -151,16 +150,18 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 	}
 
 	@Override
-	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+	public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
 		if (!(entityLiving instanceof Player player))
-			return;
+			return false;
 		if (stack.has(AllDataComponents.SAND_PAPER_POLISHING)) {
 			ItemStack toPolish = stack.get(AllDataComponents.SAND_PAPER_POLISHING).item();
 			//noinspection DataFlowIssue - toPolish won't be null as we do call .has before calling .get
 			player.getInventory()
 				.placeItemBackInInventory(toPolish);
 			stack.remove(AllDataComponents.SAND_PAPER_POLISHING);
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -215,15 +216,10 @@ public class SandPaperItem extends Item implements CustomUseEffectsItem {
 
 		// After 6 ticks play the sound every 7th
 		if ((entity.getTicksUsingItem() - 6) % 7 == 0)
-			entity.playSound(entity.getEatingSound(stack), 0.9F + 0.2F * random.nextFloat(),
+			entity.playSound(AllSoundEvents.SANDING_SHORT.getMainEvent(), 0.9F + 0.2F * random.nextFloat(),
 				random.nextFloat() * 0.2F + 0.9F);
 
 		return true;
-	}
-
-	@Override
-	public SoundEvent getEatingSound() {
-		return AllSoundEvents.SANDING_SHORT.getMainEvent();
 	}
 
 	@Override

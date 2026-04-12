@@ -12,7 +12,7 @@ import net.createmod.catnip.platform.CatnipServices;
 
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -45,7 +45,7 @@ public class BlueprintTransferHandler implements IRecipeTransferHandler<Blueprin
 		if (!doTransfer)
 			return null;
 
-		CatnipServices.NETWORK.sendToServer(new BlueprintAssignCompleteRecipePacket(craftingRecipe.id()));
+		CatnipServices.NETWORK.sendToServer(new BlueprintAssignCompleteRecipePacket(craftingRecipe.id().location()));
 		return null;
 	}
 

@@ -6,6 +6,7 @@ import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.TickRateManager;
@@ -19,6 +20,12 @@ import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.phys.Vec3;
 
 public class CouplingPhysics {
+
+	private static float maxCartSpeedOnRail(Level world, AbstractMinecart cart) {
+		if (world instanceof ServerLevel sl)
+			return (float) cart.getBehavior().getMaxSpeed(sl);
+		return 0.4f;
+	}
 
 	public static void tick(Level world) {
 		CouplingHandler.forEachLoadedCoupling(world, c -> tickCoupling(world, c));
@@ -45,7 +52,7 @@ public class CouplingPhysics {
 			carts = carts.swap();
 
 		Couple<Vec3> corrections = Couple.create(null, null);
-		Couple<Float> maxSpeed = carts.map(AbstractMinecart::getMaxCartSpeedOnRail);
+		Couple<Float> maxSpeed = carts.map(c -> maxCartSpeedOnRail(world, c));
 		boolean firstLoop = true;
 		for (boolean current : new boolean[]{true, false, true}) {
 			AbstractMinecart cart = carts.get(current);
@@ -58,8 +65,8 @@ public class CouplingPhysics {
 				continue;
 
 			RailShape shape = null;
-			BlockPos railPosition = cart.getCurrentRailPosition();
-			BlockState railState = world.getBlockState(railPosition.above());
+			BlockPos railPosition = cart.getCurrentBlockPosOrRailBelow();
+			BlockState railState = world.getBlockState(railPosition);
 
 			if (railState.getBlock() instanceof BaseRailBlock block) {
 				shape = block.getRailDirection(railState, world, railPosition, cart);
@@ -97,7 +104,7 @@ public class CouplingPhysics {
 	}
 
 	public static void softCollisionStep(Level world, Couple<AbstractMinecart> carts, double couplingLength) {
-		Couple<Float> maxSpeed = carts.map(AbstractMinecart::getMaxCartSpeedOnRail);
+		Couple<Float> maxSpeed = carts.map(c -> maxCartSpeedOnRail(world, c));
 		Couple<Boolean> canAddmotion = carts.map(MinecartSim2020::canAddMotion);
 
 		// Assuming Minecarts will never move faster than 1 block/tick

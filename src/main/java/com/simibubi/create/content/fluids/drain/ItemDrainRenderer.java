@@ -17,10 +17,10 @@ import net.createmod.catnip.platform.NeoForgeCatnipServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -74,12 +74,10 @@ public class ItemDrainRenderer extends SmartBlockEntityRenderer<ItemDrainBlockEn
 
 		ItemStack itemStack = transported.stack;
 		Random r = new Random(0);
-		ItemRenderer itemRenderer = Minecraft.getInstance()
-			.getItemRenderer();
+		Minecraft mc = Minecraft.getInstance();
 		int count = (int) (Mth.log2((int) (itemStack.getCount()))) / 2;
 		boolean renderUpright = BeltHelper.isItemUpright(itemStack);
-		BakedModel bakedModel = itemRenderer.getModel(itemStack, null, null, 0);
-		boolean blockItem = bakedModel.isGui3d();
+		boolean blockItem = itemStack.getItem() instanceof BlockItem;
 
 		if (renderUpright)
 			ms.translate(0, 3 / 32d, 0);
@@ -114,7 +112,10 @@ public class ItemDrainRenderer extends SmartBlockEntityRenderer<ItemDrainBlockEn
 			ms.scale(.5f, .5f, .5f);
 			if (!blockItem && !renderUpright)
 				msr.rotateXDegrees(90);
-			itemRenderer.render(itemStack, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, bakedModel);
+			ItemStackRenderState itemState = new ItemStackRenderState();
+			mc.getItemModelResolver()
+				.updateForTopItem(itemState, itemStack, ItemDisplayContext.FIXED, null, null, 0);
+			itemState.render(ms, buffer, light, overlay);
 			ms.popPose();
 
 			if (!renderUpright) {

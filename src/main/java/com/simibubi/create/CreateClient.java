@@ -129,7 +129,8 @@ public class CreateClient {
 			// In 1.21.6+, blit requires a RenderPipeline. The texture is 16x128 pixels;
 			// we draw the full texture scaled to fill the screen.
 			// TODO: Verify scaling behavior matches the old form.
-			graphics.blit(RenderPipelines.GUI_TEXTURED, CreateMainMenuScreen.PANORAMA_OVERLAY_TEXTURES, 0, 0, 0.0F, 0.0F, 16, 128, 16, 128);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, CreateMainMenuScreen.PANORAMA_OVERLAY_TEXTURES, 0, 0, 0.0F, 0.0F,
+				screen.width, screen.height, 16, 128, 16, 128);
 
 			graphics.fill(0, 0, screen.width, screen.height, 0x90_282c34);
 		});

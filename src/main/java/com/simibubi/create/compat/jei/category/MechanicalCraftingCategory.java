@@ -11,7 +11,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.compat.jei.category.animations.AnimatedCrafter;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -131,7 +130,7 @@ public class MechanicalCraftingCategory extends CreateRecipeCategory<CraftingRec
 
 		int amount = 0;
 		for (Ingredient ingredient : recipe.placementInfo().ingredients()) {
-			if (Ingredient.EMPTY == ingredient)
+			if (ingredient.isEmpty())
 				continue;
 			amount++;
 		}
@@ -158,15 +157,10 @@ public class MechanicalCraftingCategory extends CreateRecipeCategory<CraftingRec
 			matrixStack.scale(scale, scale, scale);
 
 			if (ingredient != null) {
-				Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
-				modelViewStack.pushPose();
-				RenderSystem.applyModelViewMatrix();
 				Minecraft minecraft = Minecraft.getInstance();
 				Font font = getFontRenderer(minecraft, ingredient);
 				graphics.renderItem(ingredient, 0, 0);
 				graphics.renderItemDecorations(font, ingredient, 0, 0, null);
-				modelViewStack.popPose();
-				RenderSystem.applyModelViewMatrix();
 			}
 
 			matrixStack.popPose();

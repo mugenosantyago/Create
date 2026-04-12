@@ -26,9 +26,7 @@ public class LecternControllerRenderer extends SafeBlockEntityRenderer<LecternCo
 
 		ItemStack stack = AllItems.LINKED_CONTROLLER.asStack();
 		ItemDisplayContext transformType = ItemDisplayContext.NONE;
-		CustomRenderedItemModel mainModel = (CustomRenderedItemModel) Minecraft.getInstance()
-			.getItemRenderer()
-			.getModel(stack, be.getLevel(), null, 0);
+		CustomRenderedItemModel mainModel = new CustomRenderedItemModel(null);
 		PartialItemModelRenderer renderer = PartialItemModelRenderer.of(stack, transformType, ms, buffer, overlay);
 		boolean active = be.hasUser();
 		boolean renderDepression = be.isUsedBy(Minecraft.getInstance().player);

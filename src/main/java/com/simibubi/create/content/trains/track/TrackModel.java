@@ -71,7 +71,7 @@ public class TrackModel extends BakedModelWrapper<BakedModel> {
 		List<BakedQuad> quads = new ArrayList<>();
 		for (BakedQuad templateQuad : templateQuads) {
 			BakedQuad quad = BakedQuadHelper.clone(templateQuad);
-			int[] vertexData = quad.getVertices();
+			int[] vertexData = quad.vertices();
 			for (int j = 0; j < 4; j++)
 				BakedQuadHelper.setXYZ(vertexData, j, transform.apply(BakedQuadHelper.getXYZ(vertexData, j)));
 			quads.add(quad);

@@ -31,6 +31,7 @@ import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -60,8 +61,12 @@ public class BlazeBurnerBlockItem extends BlockItem {
 		super(block, properties);
 		this.capturedBlaze = capturedBlaze;
 	}
-	public String getDescriptionId() {
-		return hasCapturedBlaze() ? super.getDescriptionId() : "item.create." + RegisteredObjectsHelper.getKeyOrThrow(this).getPath();
+
+	@Override
+	public Component getName(ItemStack stack) {
+		if (hasCapturedBlaze())
+			return super.getName(stack);
+		return Component.translatable("item.create." + RegisteredObjectsHelper.getKeyOrThrow(this).getPath());
 	}
 
 	@Override

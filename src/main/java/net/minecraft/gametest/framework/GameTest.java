@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 public @interface GameTest {
     String templateNamespace() default "";
     String template() default "";
-    long timeoutTicks() default 100L;
+    int timeoutTicks() default 100;
     int setupTicks() default 0;
     String batch() default "defaultBatch";
     boolean required() default true;

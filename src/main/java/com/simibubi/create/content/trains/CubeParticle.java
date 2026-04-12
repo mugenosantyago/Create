@@ -1,23 +1,13 @@
 package com.simibubi.create.content.trains;
 
-import org.jetbrains.annotations.NotNull;
-
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.createmod.ponder.enums.PonderSpecialTextures;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -43,28 +33,7 @@ public class CubeParticle extends Particle {
 		// RIGHT
 		new Vec3(1, -1, 1), new Vec3(1, 1, 1), new Vec3(1, 1, -1), new Vec3(1, -1, -1) };
 
-	private static final ParticleRenderType RENDER_TYPE = new ParticleRenderType() {
-
-		@Override
-		public @NotNull BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-			PonderSpecialTextures.BLANK.bind();
-
-			// transparent, additive blending
-			RenderSystem.depthMask(false);
-			RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-
-			// opaque
-//			RenderSystem.depthMask(true);
-//
-//			RenderSystem.enableLighting();
-
-			BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-
-			RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-			return builder;
-		}
-	};
+	private static final ParticleRenderType RENDER_TYPE = ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
 
 	protected float scale;
 	protected boolean hot;

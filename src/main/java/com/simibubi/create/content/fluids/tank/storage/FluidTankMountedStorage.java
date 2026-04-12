@@ -10,6 +10,7 @@ import com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorageType
 import com.simibubi.create.api.contraption.storage.fluid.WrapperMountedFluidStorage;
 import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.simibubi.create.foundation.utility.NbtCompat;
 import com.simibubi.create.content.fluids.tank.storage.FluidTankMountedStorage.Handler;
 
 import net.createmod.catnip.animation.LerpedFloat;
@@ -91,7 +92,7 @@ public class FluidTankMountedStorage extends WrapperMountedFluidStorage<Handler>
 
 	public static FluidTankMountedStorage fromLegacy(HolderLookup.Provider registries, CompoundTag nbt) {
 		int capacity = nbt.getIntOr("Capacity", 0);
-		FluidStack fluid = FluidStack.parseOptional(registries, nbt);
+		FluidStack fluid = NbtCompat.parseFluidStack(registries, nbt);
 		return new FluidTankMountedStorage(capacity, fluid);
 	}
 

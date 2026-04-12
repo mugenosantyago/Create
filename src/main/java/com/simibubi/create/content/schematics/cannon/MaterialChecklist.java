@@ -13,6 +13,7 @@ import com.simibubi.create.content.equipment.clipboard.ClipboardEntry;
 import com.simibubi.create.content.equipment.clipboard.ClipboardOverrides.ClipboardType;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement.ItemUseType;
+import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -238,9 +239,9 @@ public class MaterialChecklist {
 		int stacks = amount / 64;
 		int remainder = amount % 64;
         MutableComponent tc = Component.empty();
-		tc.append(Component.translatable(item.getDescriptionId())
+		tc.append(Component.translatable(ItemHelper.descriptionId(item))
 			.setStyle(Style.EMPTY
-				.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new HoverEvent.ItemStackInfo(item)))));
+				.withHoverEvent(new HoverEvent.ShowItem(item))));
 
 		if (!unfinished && forBook)
 			tc.append(" \u2714");

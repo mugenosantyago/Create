@@ -81,8 +81,8 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 
 		for (int i = 1; i < recipe.getLoops(); i++) {
 			for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence()) {
-				NonNullList<Ingredient> sequencedIngredients = sequencedRecipe.getRecipe()
-					.placementInfo().ingredients();
+				NonNullList<Ingredient> sequencedIngredients = NonNullList.copyOf(sequencedRecipe.getRecipe()
+					.placementInfo().ingredients());
 				for (Ingredient ingredient : sequencedIngredients.subList(1, sequencedIngredients.size()))
 					builder.addInvisibleIngredients(RecipeIngredientRole.INPUT)
 						.addIngredients(ingredient);

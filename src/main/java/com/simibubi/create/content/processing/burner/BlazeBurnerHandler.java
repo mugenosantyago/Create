@@ -78,7 +78,7 @@ public class BlazeBurnerHandler {
 		Projectile projectile = event.getProjectile();
 		if (projectile.level().isClientSide)
 			return;
-		if (!(projectile instanceof ThrownPotion entity))
+		if (!(projectile instanceof AbstractThrownPotion entity))
 			return;
 
 		if (event.getRayTraceResult()

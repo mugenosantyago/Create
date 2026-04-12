@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllPartialModels;
@@ -116,10 +115,8 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 
 			if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
 				hoveredToolboxSlot = slot;
-				RenderSystem.colorMask(true, true, true, false);
 				int slotColor = this.getSlotColor(baseIndex);
 				graphics.fillGradient(i, j, i + 16, j + 16, slotColor, slotColor);
-				RenderSystem.colorMask(true, true, true, true);
 			}
 		}
 	}

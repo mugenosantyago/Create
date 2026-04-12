@@ -62,6 +62,10 @@ public interface BakedModel {
 		return existing;
 	}
 
+	default net.minecraft.util.TriState useAmbientOcclusion(BlockState state, net.neoforged.neoforge.model.data.ModelData data, net.minecraft.client.renderer.RenderType renderType) {
+		return useAmbientOcclusion() ? net.minecraft.util.TriState.TRUE : net.minecraft.util.TriState.FALSE;
+	}
+
 	default List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
 		return Collections.singletonList(this);
 	}

@@ -10,7 +10,6 @@ import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.math.AngleHelper;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -47,7 +46,7 @@ public class LinkBulbRenderer extends SafeBlockEntityRenderer<LinkWithBulbBlockE
 		CachedBuffers.partial(AllPartialModels.DISPLAY_LINK_TUBE, blockState)
 			.translate(be.getBulbOffset(blockState))
 			.light(LightTexture.FULL_BRIGHT)
-			.renderInto(ms, buffer.getBuffer(RenderType.translucent()));
+			.renderInto(ms, buffer.getBuffer(RenderTypes.entityTranslucentBlockMipped()));
 
 		CachedBuffers.partial(AllPartialModels.DISPLAY_LINK_GLOW, blockState)
 			.translate(be.getBulbOffset(blockState))

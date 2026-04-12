@@ -8,8 +8,8 @@ import net.createmod.catnip.math.AngleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -32,10 +32,8 @@ public class PlacardRenderer extends SafeBlockEntityRenderer<PlacardBlockEntity>
 		Direction facing = blockState.getValue(PlacardBlock.FACING);
 		AttachFace face = blockState.getValue(PlacardBlock.FACE);
 
-		ItemRenderer itemRenderer = Minecraft.getInstance()
-			.getItemRenderer();
-		BakedModel bakedModel = itemRenderer.getModel(heldItem, null, null, 0);
-		boolean blockItem = bakedModel.isGui3d();
+		Minecraft mc = Minecraft.getInstance();
+		boolean blockItem = heldItem.getItem() instanceof BlockItem;
 
 		ms.pushPose();
 		TransformStack.of(ms)
@@ -47,7 +45,10 @@ public class PlacardRenderer extends SafeBlockEntityRenderer<PlacardBlockEntity>
 			.translate(0, 0, 4.5 / 16f)
 			.scale(blockItem ? .5f : .375f);
 
-		itemRenderer.render(heldItem, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, bakedModel);
+		ItemStackRenderState itemState = new ItemStackRenderState();
+		mc.getItemModelResolver()
+			.updateForTopItem(itemState, heldItem, ItemDisplayContext.FIXED, null, null, 0);
+		itemState.render(ms, buffer, light, overlay);
 		ms.popPose();
 	}
 

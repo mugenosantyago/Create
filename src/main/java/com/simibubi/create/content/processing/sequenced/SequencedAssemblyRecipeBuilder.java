@@ -14,7 +14,9 @@ import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.StandardProcessingRecipe.Builder;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -96,15 +98,15 @@ public class SequencedAssemblyRecipeBuilder {
 	}
 
 	public RecipeHolder<SequencedAssemblyRecipe> build() {
-		return new RecipeHolder<>(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE), id), recipe);
+		return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
 	}
 
 	public void build(RecipeOutput consumer) {
 		RecipeHolder<SequencedAssemblyRecipe> holder = build();
 
-		ResourceLocation id = ResourceLocation.fromNamespaceAndPath(holder.id().getNamespace(),
-				AllRecipeTypes.SEQUENCED_ASSEMBLY.getId().getPath() + "/" + holder.id().getPath());
+		ResourceLocation outputId = ResourceLocation.fromNamespaceAndPath(holder.id().location().getNamespace(),
+				AllRecipeTypes.SEQUENCED_ASSEMBLY.getId().getPath() + "/" + holder.id().location().getPath());
 
-		consumer.accept(id, holder.value(), null, recipeConditions.toArray(new ICondition[0]));
+		consumer.accept(ResourceKey.create(Registries.RECIPE, outputId), holder.value(), null, recipeConditions.toArray(new ICondition[0]));
 	}
 }

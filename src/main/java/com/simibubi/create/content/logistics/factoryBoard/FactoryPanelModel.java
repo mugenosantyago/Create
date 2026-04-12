@@ -10,6 +10,7 @@ import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelSlot;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelState;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelType;
+import com.simibubi.create.foundation.model.BlockStateModelUtil;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
 
@@ -74,8 +75,7 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 			: type == PanelType.NETWORK ? AllPartialModels.FACTORY_PANEL_WITH_BULB
 				: AllPartialModels.FACTORY_PANEL_RESTOCKER_WITH_BULB;
 
-		List<BakedQuad> quadsToAdd = factoryPanel.get()
-			.getQuads(state, null, rand, data, RenderType.solid());
+		List<BakedQuad> quadsToAdd = BlockStateModelUtil.collectQuads(factoryPanel.get(), state, null, rand);
 
 		float xRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getXRot(state);
 		float yRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getYRot(state);
@@ -107,10 +107,9 @@ public class FactoryPanelModel extends BakedModelWrapperWithData {
 				BakedQuadHelper.setNormalXYZ(transformedVertices, i, new Vec3(0, 1, 0));
 			}
 
-			Direction newNormal = Direction.fromDelta((int) Math.round(quadNormal.x), (int) Math.round(quadNormal.y),
-				(int) Math.round(quadNormal.z));
+			Direction newNormal = Direction.getApproximateNearest(quadNormal);
 			quads.add(new BakedQuad(transformedVertices, bakedQuad.tintIndex(), newNormal, bakedQuad.sprite(),
-				!ponder && bakedQuad.shade()));
+				!ponder && bakedQuad.shade(), 0, bakedQuad.hasAmbientOcclusion()));
 		}
 
 	}

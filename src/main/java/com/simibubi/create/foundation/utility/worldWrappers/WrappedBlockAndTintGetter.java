@@ -43,6 +43,11 @@ public class WrappedBlockAndTintGetter implements BlockAndTintGetter {
 	}
 
 	@Override
+	public int getMinY() {
+		return wrapped.getMinY();
+	}
+
+	@Override
 	public float getShade(Direction pDirection, boolean pShade) {
 		return wrapped.getShade(pDirection, pShade);
 	}

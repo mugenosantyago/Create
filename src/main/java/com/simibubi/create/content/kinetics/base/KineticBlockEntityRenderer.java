@@ -35,7 +35,7 @@ public class KineticBlockEntityRenderer<T extends KineticBlockEntity> extends Sa
 
 	// In MC 1.21.8, RenderType.chunkBufferLayers() was removed
 	protected static final RenderType[] REVERSED_CHUNK_BUFFER_LAYERS = new RenderType[]{
-		RenderType.translucent(), RenderType.cutoutMipped(), RenderType.cutout(), RenderType.solid()
+		RenderType.translucentMovingBlock(), RenderType.cutoutMipped(), RenderType.cutout(), RenderType.solid()
 	};
 
 	public KineticBlockEntityRenderer(BlockEntityRendererProvider.Context context) {

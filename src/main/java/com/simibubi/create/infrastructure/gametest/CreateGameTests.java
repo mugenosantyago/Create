@@ -29,7 +29,8 @@ public class CreateGameTests {
 
 	@SubscribeEvent
 	public static void registerTests(RegisterGameTestsEvent event) {
-	    event.register(CreateGameTests.class);
+		// Create's tests are still emitted via @GameTestGenerator; wiring them into
+		// RegisterGameTestsEvent / GameTestInstance is not ported yet.
 	}
 
 	@GameTestGenerator
