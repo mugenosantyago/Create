@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 public class EncasedShaftBlock extends AbstractEncasedShaftBlock
 	implements IBE<KineticBlockEntity>, SpecialBlockItemRequirement, EncasedBlock {
@@ -52,9 +51,6 @@ public class EncasedShaftBlock extends AbstractEncasedShaftBlock
 
 	@Override
 	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-		if (target instanceof BlockHitResult)
-			return ((BlockHitResult) target).getDirection()
-				.getAxis() == getRotationAxis(state) ? AllBlocks.SHAFT.asStack() : getCasing().asItem().getDefaultInstance();
 		return super.getCloneItemStack(level, pos, state, includeData);
 	}
 

@@ -103,7 +103,7 @@ public class EncasedPipeBlock extends Block
 	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block otherBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
 		BlockPos fromPos = pos.relative(_orientation.getFront());
 		DebugPackets.sendNeighborsUpdatePacket(world, pos);
-		Direction d = FluidPropagator.validateNeighbourChange(state, world, pos, otherBlock, neighborPos, isMoving);
+		Direction d = FluidPropagator.validateNeighbourChange(state, world, pos, otherBlock, fromPos, isMoving);
 		if (d == null)
 			return;
 		if (!state.getValue(FACING_TO_PROPERTY_MAP.get(d)))
