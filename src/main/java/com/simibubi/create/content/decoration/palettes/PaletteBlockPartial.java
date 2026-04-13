@@ -20,9 +20,11 @@ import net.createmod.catnip.lang.Lang;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -59,7 +61,7 @@ public abstract class PaletteBlockPartial<B extends Block> {
 		String blockName = patternName + "_" + this.name;
 
 		BlockBuilder<B, CreateRegistrate> blockBuilder = Create.registrate()
-			.block(blockName, p -> createBlock(block))
+			.block(blockName, p -> createBlock(block, blockName))
 			.defaultBlockstate()
 			.recipe((c, p) -> createRecipes(variant, block, c, p))
 			.transform(b -> transformBlock(b, variantName, pattern));
@@ -98,7 +100,12 @@ public abstract class PaletteBlockPartial<B extends Block> {
 
 	protected abstract Iterable<TagKey<Item>> getItemTags();
 
-	protected abstract B createBlock(Supplier<? extends Block> block);
+	protected abstract B createBlock(Supplier<? extends Block> block, String blockName);
+
+	private static Properties paletteProperties(Supplier<? extends Block> block, String blockName) {
+		return Properties.ofFullCopy(block.get())
+			.setId(ResourceKey.create(Registries.BLOCK, Create.asResource(blockName)));
+	}
 
 	protected abstract void createRecipes(AllPaletteStoneTypes type, BlockEntry<? extends Block> patternBlock,
 										  DataGenContext<Block, ? extends Block> c, RegistrateRecipeProvider p);
@@ -113,8 +120,8 @@ public abstract class PaletteBlockPartial<B extends Block> {
 		}
 
 		@Override
-		protected StairBlock createBlock(Supplier<? extends Block> block) {
-			return new StairBlock(block.get().defaultBlockState(), Properties.ofFullCopy(block.get()));
+		protected StairBlock createBlock(Supplier<? extends Block> block, String blockName) {
+			return new StairBlock(block.get().defaultBlockState(), paletteProperties(block, blockName));
 		}
 
 		@Override
@@ -153,8 +160,8 @@ public abstract class PaletteBlockPartial<B extends Block> {
 		}
 
 		@Override
-		protected SlabBlock createBlock(Supplier<? extends Block> block) {
-			return new SlabBlock(Properties.ofFullCopy(block.get()));
+		protected SlabBlock createBlock(Supplier<? extends Block> block, String blockName) {
+			return new SlabBlock(paletteProperties(block, blockName));
 		}
 
 		@Override
@@ -226,8 +233,8 @@ public abstract class PaletteBlockPartial<B extends Block> {
 		}
 
 		@Override
-		protected WallBlock createBlock(Supplier<? extends Block> block) {
-			return new WallBlock(Properties.ofFullCopy(block.get()).forceSolidOn());
+		protected WallBlock createBlock(Supplier<? extends Block> block, String blockName) {
+			return new WallBlock(paletteProperties(block, blockName).forceSolidOn());
 		}
 
 		@Override
