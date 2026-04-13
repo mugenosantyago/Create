@@ -23,7 +23,6 @@
     "ProjectileUtilMixin",
     "SmithingMenuMixin",
     "WaterWheelFluidSpreadMixin",
-    "accessor.BlockBehaviourAccessor",
     "accessor.BlockLootSubProviderAccessor",
     "accessor.ConcretePowderBlockAccessor",
     "accessor.CropBlockAccessor",
