@@ -94,8 +94,8 @@ import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ConfiguredModel;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.Tags;
 
 @SuppressWarnings("removal") // addLayer is staying... for now

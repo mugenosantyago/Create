@@ -9,8 +9,8 @@ import com.simibubi.create.infrastructure.gametest.tests.TestMisc;
 import com.simibubi.create.infrastructure.gametest.tests.TestProcessing;
 import com.simibubi.create.infrastructure.gametest.tests.TestRegressions;
 
-import net.minecraft.gametest.framework.GameTestGenerator;
-import net.minecraft.gametest.framework.TestFunction;
+import com.simibubi.create.infrastructure.gametest.framework.GameTestGenerator;
+import com.simibubi.create.infrastructure.gametest.framework.TestFunction;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;

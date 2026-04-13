@@ -18,7 +18,7 @@ import com.simibubi.create.foundation.block.connected.HorizontalCTBehaviour;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -45,8 +45,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ConfiguredModel;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.Tags;
 
 public class WindowGen {

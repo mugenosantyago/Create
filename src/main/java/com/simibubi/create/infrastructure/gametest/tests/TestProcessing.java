@@ -12,7 +12,7 @@ import com.simibubi.create.infrastructure.gametest.CreateGameTestHelper;
 import com.simibubi.create.infrastructure.gametest.GameTestGroup;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
+import com.simibubi.create.infrastructure.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

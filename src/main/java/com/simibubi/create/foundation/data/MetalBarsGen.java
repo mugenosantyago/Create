@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.Create;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 
 public class MetalBarsGen {
 

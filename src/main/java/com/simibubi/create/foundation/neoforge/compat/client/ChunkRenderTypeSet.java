@@ -1,4 +1,4 @@
-package net.neoforged.neoforge.client;
+package com.simibubi.create.foundation.neoforge.compat.client;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -9,6 +9,9 @@ import net.minecraft.client.renderer.RenderType;
 /**
  * Compatibility stub for ChunkRenderTypeSet which was removed in NeoForge for MC 1.21.8.
  * In 1.21.8, chunk rendering uses ChunkSectionLayer instead.
+ * <p>
+ * Lives under Create's package namespace so the mod JAR does not ship classes in
+ * {@code net.neoforged.*} (avoids JPMS split-package conflicts with the NeoForge module).
  */
 public class ChunkRenderTypeSet implements Iterable<RenderType> {
 

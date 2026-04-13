@@ -16,11 +16,11 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
-import net.minecraft.gametest.framework.GameTestGenerator;
+import com.simibubi.create.infrastructure.gametest.framework.GameTest;
+import com.simibubi.create.infrastructure.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.StructureUtils;
-import net.minecraft.gametest.framework.TestFunction;
+import com.simibubi.create.infrastructure.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.StructureBlockEntity;
 

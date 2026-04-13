@@ -3,8 +3,8 @@ package com.simibubi.create.content.logistics.funnel;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.SpecialBlockStateGen;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateItemModelProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateItemModelProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
 import net.minecraft.core.Direction;
@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.BlockModelBuilder;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 
 public class FunnelGenerator extends SpecialBlockStateGen {
 

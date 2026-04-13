@@ -10,7 +10,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 
 public abstract class PaletteBlockPartial<B extends Block> {
 

@@ -19,7 +19,7 @@ import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
 import com.simibubi.create.foundation.block.connected.HorizontalCTBehaviour;
 import com.simibubi.create.foundation.block.connected.RotatedPillarCTBehaviour;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ConfiguredModel;
 
 public class PaletteBlockPattern {
 

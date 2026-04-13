@@ -26,7 +26,7 @@ import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonnullType;
 
@@ -43,11 +43,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.RailShape;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
-import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.BlockModelProvider;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ConfiguredModel;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile.ExistingModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.MultiPartBlockStateBuilder;
 
 public class BlockStateGen {
 

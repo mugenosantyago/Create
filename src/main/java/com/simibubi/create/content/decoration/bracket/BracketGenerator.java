@@ -4,13 +4,13 @@ import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.DirectionalAxisBlockStateGen;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 
 public class BracketGenerator extends DirectionalAxisBlockStateGen {
 

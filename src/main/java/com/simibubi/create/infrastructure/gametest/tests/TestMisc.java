@@ -14,7 +14,7 @@ import com.simibubi.create.infrastructure.gametest.CreateGameTestHelper;
 import com.simibubi.create.infrastructure.gametest.GameTestGroup;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
+import com.simibubi.create.infrastructure.gametest.framework.GameTest;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;

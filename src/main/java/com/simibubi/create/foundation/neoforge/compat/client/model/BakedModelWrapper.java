@@ -1,12 +1,14 @@
-package net.neoforged.neoforge.client.model;
+package com.simibubi.create.foundation.neoforge.compat.client.model;
 
 import java.util.Collections;
 import java.util.List;
 
+import com.simibubi.create.foundation.neoforge.compat.client.ChunkRenderTypeSet;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
+import com.simibubi.create.foundation.client.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Compatibility stub for BakedModelWrapper which was removed in NeoForge for MC 1.21.8.
+ * Packaged under Create to avoid JPMS conflicts with the NeoForge module.
  */
 @SuppressWarnings("all")
 public class BakedModelWrapper<T extends BakedModel> implements BakedModel {
@@ -70,8 +73,8 @@ public class BakedModelWrapper<T extends BakedModel> implements BakedModel {
 	}
 
 	@Override
-	public net.neoforged.neoforge.client.ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data) {
-		return wrapped != null ? wrapped.getRenderTypes(state, rand, data) : net.neoforged.neoforge.client.ChunkRenderTypeSet.ALL;
+	public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data) {
+		return wrapped != null ? wrapped.getRenderTypes(state, rand, data) : ChunkRenderTypeSet.ALL;
 	}
 
 	@Override

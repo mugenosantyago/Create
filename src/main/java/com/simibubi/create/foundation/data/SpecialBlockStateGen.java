@@ -1,15 +1,15 @@
 package com.simibubi.create.foundation.data;
 
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateBlockModelGenerator;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ConfiguredModel;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 
 public abstract class SpecialBlockStateGen {
 

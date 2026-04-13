@@ -1,4 +1,4 @@
-package net.neoforged.neoforge.client.model.generators;
+package com.simibubi.create.foundation.neoforge.compat.client.model.generators;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,11 +19,11 @@ public abstract class BlockStateProvider {
 	public void simpleBlock(net.minecraft.world.level.block.Block block, ModelFile model) {
 	}
 
-	public net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder getVariantBuilder(net.minecraft.world.level.block.Block block) {
-		return new net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder(block);
+	public VariantBlockStateBuilder getVariantBuilder(net.minecraft.world.level.block.Block block) {
+		return new VariantBlockStateBuilder(block);
 	}
 
-	public net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder getMultipartBuilder(net.minecraft.world.level.block.Block block) {
+	public MultiPartBlockStateBuilder getMultipartBuilder(net.minecraft.world.level.block.Block block) {
 		return null;
 	}
 

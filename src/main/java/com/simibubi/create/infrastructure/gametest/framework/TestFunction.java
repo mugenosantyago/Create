@@ -1,8 +1,10 @@
-package net.minecraft.gametest.framework;
+package com.simibubi.create.infrastructure.gametest.framework;
 
 import java.util.function.Consumer;
 
 import net.minecraft.world.level.block.Rotation;
+
+import net.minecraft.gametest.framework.GameTestHelper;
 
 /**
  * Stub for legacy {@code TestFunction} usage during the MC 1.21.8 port (Create's

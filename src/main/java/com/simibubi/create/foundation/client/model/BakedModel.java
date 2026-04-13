@@ -1,4 +1,4 @@
-package net.minecraft.client.resources.model;
+package com.simibubi.create.foundation.client.model;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,9 +11,14 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.simibubi.create.foundation.neoforge.compat.client.ChunkRenderTypeSet;
+
 /**
  * Compatibility stub for BakedModel which was removed in MC 1.21.8.
  * In 1.21.8, the model system was completely revamped to use BlockStateModel and BlockModelPart.
+ * <p>
+ * Packaged under Create so the mod JAR does not declare classes in {@code net.minecraft.*}
+ * (avoids JPMS split-package conflicts with the minecraft module).
  */
 public interface BakedModel {
 
@@ -50,8 +55,8 @@ public interface BakedModel {
 	}
 
 	// NeoForge extended methods
-	default net.neoforged.neoforge.client.ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data) {
-		return net.neoforged.neoforge.client.ChunkRenderTypeSet.ALL;
+	default ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data) {
+		return ChunkRenderTypeSet.ALL;
 	}
 
 	default List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, net.neoforged.neoforge.model.data.ModelData data, net.minecraft.client.renderer.RenderType renderType) {

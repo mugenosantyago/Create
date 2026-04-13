@@ -1,11 +1,11 @@
 package com.simibubi.create.foundation.model;
 
-import net.minecraft.client.resources.model.BakedModel;
+import com.simibubi.create.foundation.client.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
+import com.simibubi.create.foundation.neoforge.compat.client.model.BakedModelWrapper;
 import net.neoforged.neoforge.model.data.ModelData;
 
 /**

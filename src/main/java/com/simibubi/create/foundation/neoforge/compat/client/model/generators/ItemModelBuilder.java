@@ -1,4 +1,4 @@
-package net.neoforged.neoforge.client.model.generators;
+package com.simibubi.create.foundation.neoforge.compat.client.model.generators;
 
 import net.minecraft.resources.ResourceLocation;
 

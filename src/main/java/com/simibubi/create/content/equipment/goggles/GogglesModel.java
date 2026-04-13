@@ -1,9 +1,9 @@
 package com.simibubi.create.content.equipment.goggles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.resources.model.BakedModel;
+import com.simibubi.create.foundation.client.model.BakedModel;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.neoforged.neoforge.client.model.BakedModelWrapper;
+import com.simibubi.create.foundation.neoforge.compat.client.model.BakedModelWrapper;
 
 public class GogglesModel extends BakedModelWrapper<BakedModel> {
 

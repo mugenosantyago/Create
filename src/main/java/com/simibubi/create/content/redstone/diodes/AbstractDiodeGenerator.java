@@ -5,7 +5,7 @@ import java.util.List;
 import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.SpecialBlockStateGen;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateItemModelGenerator;
 
 import net.minecraft.resources.ResourceLocation;
@@ -13,9 +13,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.BlockModelProvider;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile.ExistingModelFile;
 
 public abstract class AbstractDiodeGenerator extends SpecialBlockStateGen {
 

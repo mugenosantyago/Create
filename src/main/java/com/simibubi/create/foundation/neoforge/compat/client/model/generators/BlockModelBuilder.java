@@ -1,6 +1,7 @@
-package net.neoforged.neoforge.client.model.generators;
+package com.simibubi.create.foundation.neoforge.compat.client.model.generators;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -12,25 +13,25 @@ import net.minecraft.resources.ResourceLocation;
 @SuppressWarnings("all")
 public class BlockModelBuilder extends ModelFile {
 
-    public BlockModelBuilder(ResourceLocation location) {
-        super(location);
-    }
+	public BlockModelBuilder(ResourceLocation location) {
+		super(location);
+	}
 
-    public BlockModelBuilder texture(String key, ResourceLocation loc) { return this; }
-    public BlockModelBuilder texture(String key, String loc) { return this; }
-    public BlockModelBuilder renderType(String renderType) { return this; }
-    public BlockModelBuilder renderType(ResourceLocation renderType) { return this; }
-    public BlockModelBuilder transforms() { return this; }
-    public BlockModelBuilder ao(boolean ao) { return this; }
-    public BlockModelBuilder guiLight(String light) { return this; }
+	public BlockModelBuilder texture(String key, ResourceLocation loc) { return this; }
+	public BlockModelBuilder texture(String key, String loc) { return this; }
+	public BlockModelBuilder renderType(String renderType) { return this; }
+	public BlockModelBuilder renderType(ResourceLocation renderType) { return this; }
+	public BlockModelBuilder transforms() { return this; }
+	public BlockModelBuilder ao(boolean ao) { return this; }
+	public BlockModelBuilder guiLight(String light) { return this; }
 
-    public ElementBuilder element() {
-        return new ElementBuilder(this);
-    }
+	public ElementBuilder element() {
+		return new ElementBuilder(this);
+	}
 
-    public <L extends net.neoforged.neoforge.client.model.generators.template.CustomLoaderBuilder> L customLoader(java.util.function.BiFunction<BlockModelBuilder, net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder, L> loader) {
-        return null;
-    }
+	public <L> L customLoader(BiFunction<BlockModelBuilder, Object, L> loader) {
+		return null;
+	}
 
 	public static final class ElementBuilder {
 		private final BlockModelBuilder parent;

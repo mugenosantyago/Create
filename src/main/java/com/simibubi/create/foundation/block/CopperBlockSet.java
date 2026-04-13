@@ -13,7 +13,7 @@ import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateRecipeProvider;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.DataIngredient;
@@ -38,7 +38,7 @@ import net.minecraft.world.level.block.WeatheringCopperFullBlock;
 import net.minecraft.world.level.block.WeatheringCopperSlabBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
-import net.neoforged.neoforge.client.model.generators.ModelProvider;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelProvider;
 
 public class CopperBlockSet {
 	protected static final WeatherState[] WEATHER_STATES = WeatherState.values();

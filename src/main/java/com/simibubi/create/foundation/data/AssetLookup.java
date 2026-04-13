@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 import com.simibubi.create.Create;
 import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
+import com.simibubi.create.foundation.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.generators.RegistrateItemModelGenerator;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
@@ -18,7 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import com.simibubi.create.foundation.neoforge.compat.client.model.generators.ModelFile;
 
 public class AssetLookup {
 
