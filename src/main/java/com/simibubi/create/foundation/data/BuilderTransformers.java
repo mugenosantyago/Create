@@ -133,7 +133,7 @@ public class BuilderTransformers {
 				.isValidSpawn((state, level, pos, type) -> false))
 			// Registrate 1.3.x / MC 1.21.8: only one render layer per block.
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT)
-			.color(() -> CopycatBlock::wrappedColor)
+			// Copycat block tint: RegisterColorHandlersEvent in CreateClient (avoids BlockColor on dedicated server).
 			.transform(TagGen.axeOrPickaxe());
 	}
 

@@ -1,6 +1,7 @@
 package com.simibubi.create;
 
 import com.simibubi.create.compat.Mods;
+import com.simibubi.create.content.decoration.copycat.CopycatBlockColors;
 import com.simibubi.create.content.legacy.ChromaticCompoundColor;
 import com.simibubi.create.compat.ftb.FTBIntegration;
 import com.simibubi.create.compat.pojav.PojavChecker;
@@ -31,6 +32,8 @@ import net.createmod.catnip.config.ui.ConfigScreen;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBufferCache;
 import net.minecraft.client.color.item.ItemTintSources;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.ChatFormatting;
@@ -47,6 +50,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(value = Create.ID, dist = Dist.CLIENT)
@@ -76,6 +80,7 @@ public class CreateClient {
 		IEventBus neoEventBus = NeoForge.EVENT_BUS;
 
 		modEventBus.addListener(CreateClient::clientInit);
+		modEventBus.addListener(CreateClient::registerCopycatBlockColors);
 		modEventBus.addListener(AllFluids::registerFluidClientExtensions);
 		modEventBus.addListener(AllParticleTypes::registerFactories);
 
@@ -89,6 +94,14 @@ public class CreateClient {
 		Mods.FTBLIBRARY.executeIfInstalled(() -> () -> FTBIntegration.init(modEventBus, neoEventBus));
 		Mods.SODIUM.executeIfInstalled(() -> () -> SodiumCompat.init(modEventBus, neoEventBus));
 		PojavChecker.init();
+	}
+
+	private static void registerCopycatBlockColors(RegisterColorHandlersEvent.Block event) {
+		event.register(CopycatBlockColors.wrappedColor(), AllBlocks.COPYCAT_STEP.get(), AllBlocks.COPYCAT_PANEL.get());
+		event.register(
+			(state, world, pos, layer) -> RedStoneWireBlock.getColorForPower(
+				pos != null && world != null ? state.getValue(BlockStateProperties.POWER) : 0),
+			AllBlocks.CONTROLLER_RAIL.get());
 	}
 
 	public static void clientInit(final FMLClientSetupEvent event) {

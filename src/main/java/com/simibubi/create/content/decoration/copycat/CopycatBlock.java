@@ -8,8 +8,6 @@ import com.simibubi.create.AllTags.AllBlockTags;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -28,7 +26,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -359,28 +356,6 @@ public abstract class CopycatBlock extends Block implements IBE<CopycatBlockEnti
 	@Override
 	public float getDestroyProgress(BlockState pState, Player pPlayer, BlockGetter pLevel, BlockPos pPos) {
 		return getMaterial(pLevel, pPos).getDestroyProgress(pPlayer, pLevel, pPos);
-	}
-
-	//
-
-	@OnlyIn(Dist.CLIENT)
-	public static BlockColor wrappedColor() {
-		return new WrappedBlockColor();
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static class WrappedBlockColor implements BlockColor {
-
-		@Override
-		public int getColor(BlockState pState, @Nullable BlockAndTintGetter pLevel, @Nullable BlockPos pPos,
-							int pTintIndex) {
-			if (pLevel == null || pPos == null)
-				return GrassColor.get(0.5D, 1.0D);
-			return Minecraft.getInstance()
-				.getBlockColors()
-				.getColor(getMaterial(pLevel, pPos), pLevel, pPos, pTintIndex);
-		}
-
 	}
 
 }

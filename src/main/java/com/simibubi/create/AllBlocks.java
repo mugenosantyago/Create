@@ -298,7 +298,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.IronBarsBlock;
-import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -1206,8 +1205,7 @@ public class AllBlocks {
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
-			.color(() -> () -> (state, world, pos, layer) -> RedStoneWireBlock
-				.getColorForPower(pos != null && world != null ? state.getValue(BlockStateProperties.POWER) : 0))
+			// Tint: RegisterColorHandlersEvent in CreateClient (RedStoneWireBlock / BlockColor not on dedicated server).
 			.tag(BlockTags.RAILS)
 			.item()
 			.model(() -> (c, p) -> p.generateFlatItem(c.get(), Create.asResource("block/" + c.getName())))
