@@ -1,5 +1,6 @@
 package com.simibubi.create.foundation.advancement;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -15,8 +16,11 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -199,8 +203,16 @@ public class CreateAdvancement {
 		}
 
 		Builder whenItemCollected(TagKey<Item> tag) {
-			return externalTrigger(InventoryChangeTrigger.TriggerInstance
-				.hasItems(ItemPredicate.Builder.item().of(BuiltInRegistries.ITEM, tag).build()));
+			// ItemPredicate.Builder resolves tags via HolderGetter#getOrThrow, which requires tags to be bound.
+			// Advancement entries are initialized during static init (before tag load); use an unbound named set whose
+			// contains() delegates to Holder#is(TagKey) and serializes via unwrap() during datagen.
+			HolderSet<Item> tagSet = HolderSet.emptyNamed(BuiltInRegistries.ITEM, tag);
+			ItemPredicate predicate = new ItemPredicate(
+				Optional.of(tagSet),
+				MinMaxBounds.Ints.ANY,
+				DataComponentMatchers.ANY
+			);
+			return externalTrigger(InventoryChangeTrigger.TriggerInstance.hasItems(predicate));
 		}
 
 		Builder awardedForFree() {

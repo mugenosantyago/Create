@@ -67,7 +67,6 @@
     "client.HeavyBootsOnPlayerMixin",
     "client.HumanoidModelMixin",
     "client.LevelRendererMixin",
-    "client.PlayerRendererMixin",
     "compat.xaeros.XaeroFullscreenMapAccessor",
     "compat.xaeros.XaeroFullscreenMapMixin",
     "compat.xaeros.XaeroPauseScreenOverrideMixin"
