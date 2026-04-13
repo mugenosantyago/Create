@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllFluids;
 import com.simibubi.create.AllFluids.TintedFluidType;
+import com.simibubi.create.Create;
 import com.simibubi.create.content.fluids.VirtualFluid;
 
 import io.netty.buffer.ByteBuf;
@@ -68,8 +69,9 @@ public class PotionFluid extends VirtualFluid {
 
 	public static class PotionFluidType extends TintedFluidType {
 
-		private static final ResourceLocation DEFAULT_STILL = net.minecraft.resources.ResourceLocation.withDefaultNamespace("fluid/water_still");
-		private static final ResourceLocation DEFAULT_FLOWING = net.minecraft.resources.ResourceLocation.withDefaultNamespace("fluid/water_flow");
+		/** Create textures listed under {@code assets/minecraft/atlases/blocks.json}; vanilla {@code fluid/water_*} ids are not in the blocks atlas for mod fluid rendering. */
+		private static final ResourceLocation DEFAULT_STILL = Create.asResource("fluid/potion_still");
+		private static final ResourceLocation DEFAULT_FLOWING = Create.asResource("fluid/potion_flow");
 
 		public PotionFluidType(net.neoforged.neoforge.fluids.FluidType.Properties properties) {
 			super(properties, DEFAULT_STILL, DEFAULT_FLOWING);
