@@ -3,7 +3,6 @@ package com.simibubi.create.content.logistics.stockTicker;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
