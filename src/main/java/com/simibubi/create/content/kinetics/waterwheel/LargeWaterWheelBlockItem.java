@@ -5,12 +5,12 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.data.Pair;
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.outliner.Outliner;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -47,14 +47,14 @@ public class LargeWaterWheelBlockItem extends BlockItem {
 		Axis axis = ((LargeWaterWheelBlock) getBlock()).getAxisForPlacement(context);
 		Vec3 contract = Vec3.atLowerCornerOf(Direction.get(AxisDirection.POSITIVE, axis)
 			.getUnitVec3i());
-		if (!(context.getPlayer()instanceof LocalPlayer localPlayer))
+		if (!(context.getPlayer() instanceof Player player))
 			return;
 		Outliner.getInstance().showAABB(Pair.of("waterwheel", pos), new AABB(pos).inflate(1)
 			.deflate(contract.x, contract.y, contract.z))
 			.colored(0xFF_ff5d6c);
 		CreateLang.translate("large_water_wheel.not_enough_space")
 			.color(0xFF_ff5d6c)
-			.sendStatus(localPlayer);
+			.sendStatus(player);
 	}
 
 }
