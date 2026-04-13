@@ -350,7 +350,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 
 	private void renderActionTooltip(@Nullable GuiGraphics graphics, List<Component> tooltip, int mx, int my) {
 		if (graphics != null)
-			graphics.renderTooltip(font, tooltip, Optional.empty(), mx, my);
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, tooltip, mx, my);
 	}
 
 	@Override
@@ -472,7 +472,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 			return;
 		}
 
-		graphics.fillGradient(0, 0, this.width, this.height, -804253680);
+		graphics.fillGradient(0, 0, this.width, this.height, -804253680, -804253680);
 
 		y = topPos - 5;
 		AllGuiTextures.STOCK_KEEPER_CATEGORY_HEADER.render(graphics, leftPos, y);

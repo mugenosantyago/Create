@@ -234,7 +234,9 @@ public class TestFluids {
 		helper.succeedWhen(() -> {
 			Item plank = planks.get(0);
 			if (!(plank instanceof BlockItem blockItem))
-				throw new GameTestAssertException(BuiltInRegistries.ITEM.getKey(plank) + " is not a BlockItem");
+				throw new GameTestAssertException(
+					net.minecraft.network.chat.Component.literal(BuiltInRegistries.ITEM.getKey(plank) + " is not a BlockItem"),
+					0);
 			Block block = blockItem.getBlock();
 
 			WaterWheelBlockEntity smallWheelBe = helper.getBlockEntity(AllBlockEntityTypes.WATER_WHEEL.get(), smallWheel);

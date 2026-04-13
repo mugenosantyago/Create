@@ -45,14 +45,6 @@ public class NoShadowFontWrapper extends Font {
 	}
 
 	@Override
-	public void drawInBatch(String pText, float pX, float pY, int pColor, boolean pDropShadow, Matrix4f pMatrix,
-		MultiBufferSource pBuffer, DisplayMode pDisplayMode, int pBackgroundColor, int pPackedLightCoords,
-		boolean pBidirectional) {
-		wrapped.drawInBatch(pText, pX, pY, pColor, false, pMatrix, pBuffer, pDisplayMode, pBackgroundColor,
-			pPackedLightCoords, pBidirectional);
-	}
-
-	@Override
 	public FormattedText ellipsize(FormattedText text, int maxWidth) {
 		return wrapped.ellipsize(text, maxWidth);
 	}

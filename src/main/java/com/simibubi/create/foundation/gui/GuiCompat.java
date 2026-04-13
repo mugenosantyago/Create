@@ -1,13 +1,18 @@
 package com.simibubi.create.foundation.gui;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -15,6 +20,9 @@ import net.minecraft.world.item.ItemStack;
  */
 @SuppressWarnings({"unchecked", "all"})
 public class GuiCompat {
+
+    private static final ResourceLocation TOOLTIP_BACKGROUND_SPRITE =
+        ResourceLocation.withDefaultNamespace("textures/gui/sprites/tooltip/background");
 
     /**
      * Returns a PoseStack from GuiGraphics for backward compatibility.
@@ -25,11 +33,26 @@ public class GuiCompat {
     }
 
     /**
-     * Renders a component tooltip. In MC 1.21.8, renderComponentTooltip was removed.
-     * Uses setTooltipForNextFrame as replacement.
+     * Renders a component tooltip immediately (MC 1.21.8 {@link GuiGraphics#renderTooltip} API).
      */
     public static void renderComponentTooltip(GuiGraphics graphics, Font font, List<? extends Component> components, int x, int y) {
-        graphics.setComponentTooltipForNextFrame(font, (List) components, x, y, ItemStack.EMPTY);
+        List<ClientTooltipComponent> list = new ArrayList<>(components.size());
+        for (Component c : components) {
+            list.add(ClientTooltipComponent.create(c.getVisualOrderText()));
+        }
+        graphics.renderTooltip(font, list, x, y, DefaultTooltipPositioner.INSTANCE, TOOLTIP_BACKGROUND_SPRITE);
+    }
+
+    /**
+     * Renders the vanilla item tooltip at the given mouse position.
+     */
+    public static void renderTooltipForItem(GuiGraphics graphics, Font font, ItemStack stack, int mouseX, int mouseY) {
+        List<Component> lines = Screen.getTooltipFromItem(Minecraft.getInstance(), stack);
+        List<ClientTooltipComponent> list = new ArrayList<>(lines.size());
+        for (Component c : lines) {
+            list.add(ClientTooltipComponent.create(c.getVisualOrderText()));
+        }
+        graphics.renderTooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, TOOLTIP_BACKGROUND_SPRITE, stack);
     }
 
     /**

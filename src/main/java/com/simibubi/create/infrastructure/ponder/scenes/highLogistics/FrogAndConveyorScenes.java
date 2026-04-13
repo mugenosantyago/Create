@@ -38,6 +38,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -328,7 +329,7 @@ public class FrogAndConveyorScenes {
 				.getEntityRenderDispatcher();
 
 			if (entity == null) {
-				entity = pose.create(world, net.minecraft.world.entity.EntitySpawnReason.LOAD);
+				entity = pose.create(world);
 				entity.setYRot(entity.yRotO = 180);
 			}
 
@@ -360,12 +361,12 @@ public class FrogAndConveyorScenes {
 			ItemStackRenderState wrenchState = new ItemStackRenderState();
 			Minecraft.getInstance()
 				.getItemModelResolver()
-				.updateForTopItem(wrenchState, wrench.getItem(), ItemDisplayContext.GROUND, world, null, 0);
+				.updateForNonLiving(wrenchState, wrench.getItem(), ItemDisplayContext.GROUND, wrench);
 			wrenchState.render(poseStack, buffer, lightCoordsFromFade(fade), OverlayTexture.NO_OVERLAY);
 			poseStack.popPose();
 
 			entity.flapSpeed = 2;
-			entityrenderermanager.render(entity, 0, 0, 0, 0, pt, poseStack, buffer, lightCoordsFromFade(fade));
+			entityrenderermanager.render(entity, 0, 0, 0, pt, poseStack, buffer, lightCoordsFromFade(fade));
 			poseStack.popPose();
 		}
 

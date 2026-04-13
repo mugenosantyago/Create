@@ -82,7 +82,8 @@ public class TestProcessing {
 
 		SequencedAssemblyRecipe recipe = (SequencedAssemblyRecipe) com.simibubi.create.foundation.utility.RecipeCompat.getRecipeManager(helper.getLevel())
 				.byKey(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, Create.asResource("sequenced_assembly/precision_mechanism")))
-				.orElseThrow(() -> new GameTestAssertException("Precision Mechanism recipe not found")).value();
+				.orElseThrow(() -> new GameTestAssertException(
+					net.minecraft.network.chat.Component.literal("Precision Mechanism recipe not found"), 0)).value();
 		Item result = recipe.assemble(null, null).getItem();
 		Item[] possibleResults = recipe.resultPool.stream()
 				.map(ProcessingOutput::getStack)

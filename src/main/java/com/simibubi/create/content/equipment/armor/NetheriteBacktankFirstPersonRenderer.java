@@ -3,14 +3,15 @@ package com.simibubi.create.content.equipment.armor;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.Create;
 
+import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -48,11 +49,13 @@ public class NetheriteBacktankFirstPersonRenderer {
 			.getRenderer(player) instanceof PlayerRenderer pr))
 			return;
 
-		PlayerModel<AbstractClientPlayer> model = pr.getModel();
-		model.attackTime = 0.0F;
-		model.crouching = false;
-		model.swimAmount = 0.0F;
-		model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+		PlayerRenderState renderState = pr.createRenderState();
+		pr.extractRenderState(player, renderState, AnimationTickHolder.getPartialTicks());
+		PlayerModel model = pr.getModel();
+		renderState.attackTime = 0.0F;
+		renderState.isCrouching = false;
+		renderState.swimAmount = 0.0F;
+		model.setupAnim(renderState);
 		ModelPart armPart = event.getArm() == HumanoidArm.LEFT ? model.leftSleeve : model.rightSleeve;
 		armPart.xRot = 0.0F;
 		armPart.render(event.getPoseStack(), buffer.getBuffer(RenderType.entitySolid(BACKTANK_ARMOR_LOCATION)),

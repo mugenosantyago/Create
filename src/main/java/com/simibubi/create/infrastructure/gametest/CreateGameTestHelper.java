@@ -30,6 +30,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.createmod.catnip.registry.RegisteredObjectsHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
@@ -247,7 +248,7 @@ public class CreateGameTestHelper extends GameTestHelper {
 	// transfer - fluids
 
 	public IFluidHandler fluidStorageAt(BlockPos pos) {
-		BlockEntity be = getBlockEntity(pos);
+		BlockEntity be = getBlockEntity(pos, BlockEntity.class);
 		if (be == null)
 			fail("BlockEntity not present");
 		IFluidHandler handler = be.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
@@ -315,7 +316,7 @@ public class CreateGameTestHelper extends GameTestHelper {
 	// transfer - items
 
 	public IItemHandler itemStorageAt(BlockPos pos) {
-		BlockEntity be = getBlockEntity(pos);
+		BlockEntity be = getBlockEntity(pos, BlockEntity.class);
 		if (be == null)
 			fail("BlockEntity not present");
 		IItemHandler handler = be.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, be.getBlockPos(), null);
@@ -478,8 +479,7 @@ public class CreateGameTestHelper extends GameTestHelper {
 	// misc
 
 	@Contract("_->fail") // make IDEA happier
-	@Override
 	public void fail(@NotNull String exceptionMessage) {
-		super.fail(net.minecraft.network.chat.Component.literal(exceptionMessage));
+		super.fail(Component.literal(exceptionMessage));
 	}
 }

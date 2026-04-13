@@ -68,8 +68,7 @@ public class PackagerRenderer extends SmartBlockEntityRenderer<PackagerBlockEnti
 				.scale(1.49f, 1.49f, 1.49f);
 			Minecraft.getInstance()
 				.getItemRenderer()
-				.renderStatic(null, renderedBox, ItemDisplayContext.FIXED, false, ms, buffer, be.getLevel(), light,
-					overlay, 0);
+				.renderStatic(renderedBox, ItemDisplayContext.FIXED, light, overlay, ms, buffer, be.getLevel(), 0);
 			ms.popPose();
 		}
 	}

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import com.simibubi.create.api.equipment.potatoCannon.PotatoProjectileRenderMode;
@@ -58,15 +57,10 @@ public class PotatoProjectileRenderer
         ItemStackRenderState itemState = new ItemStackRenderState();
         Minecraft.getInstance()
             .getItemModelResolver()
-            .updateForTopItem(itemState, item, ItemDisplayContext.GROUND, null, null, 0);
+            .updateForNonLiving(itemState, item, ItemDisplayContext.GROUND, state.entity);
         itemState.render(ms, buffer, light, net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY);
 
         ms.popPose();
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(PotatoProjectileRenderState state) {
-        return null;
     }
 
     public static class PotatoProjectileRenderState extends EntityRenderState {

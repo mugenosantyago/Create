@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -853,7 +852,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 
 	private void renderActionTooltip(@Nullable GuiGraphics graphics, List<Component> tooltip, int mx, int my) {
 		if (graphics != null)
-			graphics.renderTooltip(font, tooltip, Optional.empty(), mx, my);
+			com.simibubi.create.foundation.gui.GuiCompat.renderComponentTooltip(graphics, font, tooltip, mx, my);
 	}
 
 	private int getFieldSize(int minSize, Pair<ItemStack, Component> pair) {
@@ -1029,7 +1028,7 @@ public class ScheduleScreen extends AbstractSimiContainerScreen<ScheduleMenu> {
 		matrices.pushPose();
 		matrices.translate(0, 0, 200);
 
-		graphics.fillGradient(0, 0, this.width, this.height, -804253680);
+		graphics.fillGradient(0, 0, this.width, this.height, -804253680, -804253680);
 		AllGuiTextures.SCHEDULE_EDITOR.render(graphics, leftPos - 2, topPos + 40);
 		AllGuiTextures.PLAYER_INVENTORY.render(graphics, leftPos + 38, topPos + 122);
 		graphics.drawString(font, playerInventoryTitle, leftPos + 46, topPos + 128, 0x505050, false);

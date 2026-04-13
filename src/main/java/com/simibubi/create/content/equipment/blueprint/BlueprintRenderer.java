@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -46,6 +45,7 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity, Blueprint
     @Override
     public void extractRenderState(BlueprintEntity entity, BlueprintRenderState state, float pt) {
         super.extractRenderState(entity, state, pt);
+        state.yRot = Mth.lerp(pt, entity.yRotO, entity.getYRot());
         // Store entity reference as workaround; TODO: extract all needed fields properly.
         state.entity = entity;
     }
@@ -124,8 +124,8 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity, Blueprint
 
                     // In 1.21.4+, use ItemModelResolver instead of ItemRenderer.renderStatic
                     ItemStackRenderState itemRenderState = new ItemStackRenderState();
-                    Minecraft.getInstance().getItemModelResolver().updateForTopItem(
-                        itemRenderState, stack, ItemDisplayContext.GUI, false, entity.level(), null, 0);
+                    Minecraft.getInstance().getItemModelResolver()
+                        .updateForNonLiving(itemRenderState, stack, ItemDisplayContext.GUI, entity);
                     itemRenderState.render(squashedMS, buffer, itemLight, OverlayTexture.NO_OVERLAY);
 
                     squashedMS.popPose();
@@ -140,13 +140,9 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity, Blueprint
         ms.popPose();
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(BlueprintRenderState state) {
-        return null;
-    }
-
     public static class BlueprintRenderState extends EntityRenderState {
         /** Live entity reference – TODO: extract all fields properly. */
         public BlueprintEntity entity;
+        public float yRot;
     }
 }

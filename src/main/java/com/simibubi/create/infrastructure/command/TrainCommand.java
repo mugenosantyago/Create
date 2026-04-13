@@ -2,6 +2,7 @@ package com.simibubi.create.infrastructure.command;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import com.mojang.brigadier.Command;
@@ -18,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 
@@ -89,11 +91,13 @@ public class TrainCommand {
 
 		serverPlayer.teleportTo(
 			serverLevel,
-			pos.getX(),
+			pos.getX() + 0.5,
 			pos.getY() + 5,
-			pos.getZ(),
-			serverPlayer.getViewYRot(0),
-			serverPlayer.getViewXRot(0)
+			pos.getZ() + 0.5,
+			Set.of(),
+			serverPlayer.getYRot(),
+			serverPlayer.getXRot(),
+			false
 		);
 
 		source.sendSuccess(() -> {

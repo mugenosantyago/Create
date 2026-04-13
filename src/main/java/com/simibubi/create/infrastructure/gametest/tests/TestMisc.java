@@ -65,7 +65,7 @@ public class TestMisc {
 	public static void shearing(CreateGameTestHelper helper) {
 		BlockPos sheepPos = new BlockPos(2, 1, 2);
 		Sheep sheep = helper.getFirstEntity(EntityType.SHEEP, sheepPos);
-		sheep.shear(SoundSource.NEUTRAL);
+		sheep.shear(helper.getLevel(), SoundSource.NEUTRAL, ItemStack.EMPTY);
 		helper.succeedWhen(() -> {
 			helper.assertItemEntityPresent(Items.WHITE_WOOL, sheepPos, 2);
 		});

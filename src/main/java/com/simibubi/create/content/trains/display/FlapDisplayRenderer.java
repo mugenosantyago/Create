@@ -21,6 +21,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.client.gui.font.glyphs.BakedGlyph;
 import net.minecraft.client.gui.font.glyphs.EmptyGlyph;
+import net.minecraft.util.ARGB;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -187,7 +188,14 @@ public class FlapDisplayRenderer extends KineticBlockEntityRenderer<FlapDisplayB
 
 			if (isNotEmpty(bakedglyph)) {
 				VertexConsumer vertexconsumer = bufferSource.getBuffer(renderTypeOf(bakedglyph));
-				bakedglyph.render(style.isItalic(), x, 0, pose, vertexconsumer, red, green, blue, a, light);
+				int packed = ARGB.colorFromFloat(a, red, green, blue);
+				bakedglyph.renderChar(
+					new BakedGlyph.GlyphInstance(x, 0, packed, Font.NO_SHADOW, bakedglyph, style,
+						style.isBold() ? 0.5f : 0.0f, 0.0f),
+					pose,
+					vertexconsumer,
+					light,
+					false);
 			}
 
 			if (section.renderCharsIndividually())
@@ -209,8 +217,9 @@ public class FlapDisplayRenderer extends KineticBlockEntityRenderer<FlapDisplayB
 
 			BakedGlyph bakedglyph = getFontSet().whiteGlyph();
 			VertexConsumer vertexconsumer = bufferSource.getBuffer(renderTypeOf(bakedglyph));
-			bakedglyph.renderEffect(new BakedGlyph.Effect(-1f, 9f, section.size, -2f, 0.01f, r, g, b, a), this.pose,
-				vertexconsumer, light);
+			int bgPacked = ARGB.colorFromFloat(a, r, g, b);
+			bakedglyph.renderEffect(new BakedGlyph.Effect(-1f, 9f, section.size, -2f, 0.01f, bgPacked), this.pose,
+				vertexconsumer, light, false);
 
 			return x;
 		}

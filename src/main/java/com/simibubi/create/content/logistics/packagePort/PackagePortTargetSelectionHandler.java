@@ -17,6 +17,7 @@ import org.joml.Vector3f;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -155,7 +156,7 @@ public class PackagePortTargetSelectionHandler {
 
 	public static void animateConnection(Minecraft mc, Vec3 source, Vec3 target, Color color) {
 		Vector3f rgb = color.asVectorF();
-		DustParticleOptions data = new DustParticleOptions(ARGB.colorFromFloat(1.0f, rgb.x(), rgb.y(), rgb.z()), 1);
+		DustParticleOptions data = new DustParticleOptions(ARGB.colorFromFloat(1.0f, rgb.x(), rgb.y(), rgb.z()), 1.0f);
 		ClientLevel world = mc.level;
 		double totalFlyingTicks = 10;
 		int segments = (((int) totalFlyingTicks) / 3) + 1;

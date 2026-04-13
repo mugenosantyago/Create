@@ -119,7 +119,7 @@ public class ExtendoGripRenderHandler {
 					ms.scale(1.25f, 1.25f, 1.25f);
 				}
 
-				firstPersonRenderer.renderItem(mc.player, heldItem, transform, !rightHand, event.getPoseStack(),
+				firstPersonRenderer.renderItem(mc.player, heldItem, transform, event.getPoseStack(),
 					event.getMultiBufferSource(), event.getPackedLight());
 			}
 

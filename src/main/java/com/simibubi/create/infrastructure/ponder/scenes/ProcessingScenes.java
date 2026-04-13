@@ -34,6 +34,7 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Blaze;
@@ -568,7 +569,7 @@ public class ProcessingScenes {
 		BlockPos center = util.grid().at(2, 0, 2);
 
 		scene.world().createEntity(w -> {
-			Blaze blazeEntity = EntityType.BLAZE.create(w);
+			Blaze blazeEntity = EntityType.BLAZE.create(w, EntitySpawnReason.LOAD);
 			Vec3 v = util.vector().topOf(center);
 			blazeEntity.setPosRaw(v.x, v.y, v.z);
 			blazeEntity.setYRot(blazeEntity.yRotO = 180);
@@ -701,7 +702,7 @@ public class ProcessingScenes {
 
 		Class<DeployerBlockEntity> teType = DeployerBlockEntity.class;
 		scene.world().modifyBlockEntityNBT(util.select().position(4, 1, 2), teType,
-			nbt -> nbt.put("HeldItem", AllItems.com.simibubi.create.foundation.utility.NbtCompat.saveItemStack(BLAZE_CAKE.asStack(), scene.world().getHolderLookupProvider())));
+			nbt -> nbt.put("HeldItem", NbtCompat.saveItemStack(AllItems.BLAZE_CAKE.asStack(), scene.world().getHolderLookupProvider())));
 
 		scene.world().showSection(util.select().fromTo(3, 0, 5, 2, 0, 5), Direction.UP);
 		scene.idle(5);
