@@ -76,6 +76,7 @@ public class CreateClient {
 		IEventBus neoEventBus = NeoForge.EVENT_BUS;
 
 		modEventBus.addListener(CreateClient::clientInit);
+		modEventBus.addListener(AllFluids::registerFluidClientExtensions);
 		modEventBus.addListener(AllParticleTypes::registerFactories);
 
 		AllInstanceTypes.init();

@@ -1,11 +1,11 @@
 package com.simibubi.create;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.AllTags.AllFluidTags;
@@ -43,6 +43,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -115,6 +116,50 @@ public class AllFluids {
 	// Load this class
 
 	public static void register() {
+	}
+
+	/**
+	 * NeoForge 21.8+ expects fluid rendering to be registered with {@link RegisterClientExtensionsEvent}.
+	 * {@link TintedFluidType}'s former {@code initializeClient} hook is no longer invoked on {@link FluidType}.
+	 */
+	public static void registerFluidClientExtensions(RegisterClientExtensionsEvent event) {
+		registerTintedFluidTypeClientExtensions(event, POTION.get().getFluidType());
+		registerTintedFluidTypeClientExtensions(event, HONEY.get().getFluidType());
+		registerTintedFluidTypeClientExtensions(event, CHOCOLATE.get().getFluidType());
+		registerTeaFluidTypeClientExtensions(event);
+	}
+
+	private static void registerTintedFluidTypeClientExtensions(RegisterClientExtensionsEvent event, FluidType fluidType) {
+		if (fluidType instanceof TintedFluidType tintedFluidType) {
+			event.registerFluidType(tintedFluidType.createExtensions(), fluidType);
+		}
+	}
+
+	private static void registerTeaFluidTypeClientExtensions(RegisterClientExtensionsEvent event) {
+		FluidType teaType = TEA.get().getFluidType();
+		ResourceLocation still = Create.asResource("fluid/tea_still");
+		ResourceLocation flowing = Create.asResource("fluid/tea_flow");
+		event.registerFluidType(new IClientFluidTypeExtensions() {
+			@Override
+			public ResourceLocation getStillTexture() {
+				return still;
+			}
+
+			@Override
+			public ResourceLocation getFlowingTexture() {
+				return flowing;
+			}
+
+			@Override
+			public int getTintColor(FluidStack stack) {
+				return TintedFluidType.NO_TINT;
+			}
+
+			@Override
+			public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+				return 0x00ffffff;
+			}
+		}, teaType);
 	}
 
 	public static void registerFluidInteractions() {
@@ -194,9 +239,8 @@ public class AllFluids {
 			this.flowingTexture = flowingTexture;
 		}
 
-		// @Override - removed in NeoForge 21.8.51
-		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-			consumer.accept(new IClientFluidTypeExtensions() {
+		public IClientFluidTypeExtensions createExtensions() {
+			return new IClientFluidTypeExtensions() {
 
 				@Override
 				public ResourceLocation getStillTexture() {
@@ -218,14 +262,17 @@ public class AllFluids {
 					return TintedFluidType.this.getTintColor(state, getter, pos);
 				}
 
-				// @Override - return type changed to Vector4f
-				public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
-														int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+				@Override
+				public @NotNull Vector4f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
+														int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
 					Vector3f customFogColor = TintedFluidType.this.getCustomFogColor();
-					return customFogColor == null ? fluidFogColor : customFogColor;
+					if (customFogColor == null) {
+						return fluidFogColor;
+					}
+					return new Vector4f(customFogColor.x, customFogColor.y, customFogColor.z, fluidFogColor.w);
 				}
 
-			@Override
+				@Override
 				public void modifyFogRender(Camera camera, FogEnvironment environment, float renderDistance, float partialTick,
 										FogData fogData) {
 					float modifier = TintedFluidType.this.getFogDistanceModifier();
@@ -236,7 +283,7 @@ public class AllFluids {
 					}
 				}
 
-			});
+			};
 		}
 
 		protected abstract int getTintColor(FluidStack stack);
