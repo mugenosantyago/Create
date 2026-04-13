@@ -18,11 +18,9 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.content.schematics.client.SchematicEditScreen;
 import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.foundation.utility.CreatePaths;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -168,9 +166,14 @@ public class SchematicItem extends Item {
 		return true;
 	}
 
-	@OnlyIn(value = Dist.CLIENT)
 	protected void displayBlueprintScreen() {
-		ScreenOpener.open(new SchematicEditScreen());
+		try {
+			Class.forName("com.simibubi.create.content.schematics.SchematicItemClientHooks")
+				.getMethod("openEditScreen")
+				.invoke(null);
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

@@ -20,7 +20,6 @@ import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.createmod.catnip.data.Iterate;
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,8 +41,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
 
@@ -144,9 +141,14 @@ public class SymmetryWandItem extends Item {
 		return InteractionResult.SUCCESS;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private void openWandGUI(ItemStack wand, InteractionHand hand) {
-		ScreenOpener.open(new SymmetryWandScreen(wand, hand));
+		try {
+			Class.forName("com.simibubi.create.content.equipment.symmetryWand.SymmetryWandClientHooks")
+				.getMethod("openWandGui", ItemStack.class, InteractionHand.class)
+				.invoke(null, wand, hand);
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static void checkComponents(ItemStack wand) {

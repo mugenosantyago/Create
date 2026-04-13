@@ -7,7 +7,6 @@ import com.simibubi.create.content.equipment.zapper.PlacementPatterns;
 import com.simibubi.create.content.equipment.zapper.ZapperItem;
 import com.simibubi.create.foundation.utility.CreateLang;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -18,8 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 public class WorldshaperItem extends ZapperItem {
 
 	public WorldshaperItem(Properties properties) {
@@ -27,9 +24,14 @@ public class WorldshaperItem extends ZapperItem {
 	}
 
 	@Override
-	@OnlyIn(value = Dist.CLIENT)
 	protected void openHandgunGUI(ItemStack item, InteractionHand hand) {
-		ScreenOpener.open(new WorldshaperScreen(item, hand));
+		try {
+			Class.forName("com.simibubi.create.content.equipment.zapper.terrainzapper.WorldshaperItemClientHooks")
+				.getMethod("openHandgunGui", ItemStack.class, InteractionHand.class)
+				.invoke(null, item, hand);
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
