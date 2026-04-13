@@ -1,5 +1,6 @@
 package com.simibubi.create.content.equipment.clipboard;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,14 +99,22 @@ public class ClipboardBlockEntity extends SmartBlockEntity {
 	@OnlyIn(Dist.CLIENT)
 	private void readClientSide(CompoundTag tag) {
 		Minecraft mc = Minecraft.getInstance();
-		if (!(mc.screen instanceof ClipboardScreen cs))
+		if (mc.screen == null
+			|| !"com.simibubi.create.content.equipment.clipboard.ClipboardScreen".equals(mc.screen.getClass().getName()))
 			return;
+		Object screen = mc.screen;
 		if (tag.contains("LastEdit") && tag.getIntArray("LastEdit").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null)
 			.equals(mc.player.getUUID()))
 			return;
-		if (!worldPosition.equals(cs.targetedBlock))
-			return;
-		cs.reopenWith(components().getOrDefault(AllDataComponents.CLIPBOARD_CONTENT, ClipboardContent.EMPTY));
+		try {
+			BlockPos targeted = (BlockPos) screen.getClass().getField("targetedBlock").get(screen);
+			if (!worldPosition.equals(targeted))
+				return;
+			Method reopenWith = screen.getClass().getMethod("reopenWith", ClipboardContent.class);
+			reopenWith.invoke(screen, components().getOrDefault(AllDataComponents.CLIPBOARD_CONTENT, ClipboardContent.EMPTY));
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

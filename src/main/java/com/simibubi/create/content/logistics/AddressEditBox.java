@@ -32,7 +32,7 @@ public class AddressEditBox extends EditBox {
 
 	public AddressEditBox(Screen screen, Font pFont, int pX, int pY, int pWidth, int pHeight, boolean anchorToBottom, String localAddress) {
 		super(pFont, pX, pY, pWidth, pHeight, Component.empty());
-		destinationSuggestions = AddressEditBoxHelper.createSuggestions(screen, this, anchorToBottom, localAddress);
+		destinationSuggestions = AddressEditBoxHelperClient.createSuggestions(screen, this, anchorToBottom, localAddress);
 		destinationSuggestions.setAllowSuggestions(true);
 		destinationSuggestions.updateCommandInfo();
 		mainResponder = t -> {
