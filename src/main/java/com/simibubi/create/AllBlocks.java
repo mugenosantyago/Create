@@ -1298,7 +1298,6 @@ public class AllBlocks {
 		.defaultBlockstate()
 		.transform(CStress.setImpact(4.0))
 		.onRegister(movementBehaviour(new SawMovementBehaviour()))
-		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.item()
 		.tag(AllItemTags.CONTRAPTION_CONTROLLED.tag)
 		.transform(customItemModel())

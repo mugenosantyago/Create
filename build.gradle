@@ -190,9 +190,15 @@ tasks.register("patchFlywheelJar") {
             throw new GradleException("Could not find flywheel-neoforge jar in flywheelOriginal: ${configurations.flywheelOriginal.files.collect { it.name }}")
         }
         def classRoot = sourceSets.flywheelPatch.java.destinationDirectory.get().asFile
-        def classFile = new File(classRoot, "dev/engine_room/flywheel/backend/mixin/RenderSystemMixin.class")
-        if (!classFile.exists()) {
-            throw new GradleException("Missing patched class: ${classFile}")
+        def flywheelReplacements = [
+            "dev/engine_room/flywheel/backend/mixin/RenderSystemMixin.class",
+            "dev/engine_room/flywheel/backend/mixin/GlStateManagerMixin.class"
+        ]
+        flywheelReplacements.each { entry ->
+            def f = new File(classRoot, entry)
+            if (!f.exists()) {
+                throw new GradleException("Missing patched class: ${f}")
+            }
         }
         def target = outProvider.get().asFile
         target.parentFile.mkdirs()
@@ -203,8 +209,8 @@ tasks.register("patchFlywheelJar") {
                     if (e.isDirectory()) return
                     def zosEntry = new ZipEntry(e)
                     zos.putNextEntry(zosEntry)
-                    if (e.name == "dev/engine_room/flywheel/backend/mixin/RenderSystemMixin.class") {
-                        classFile.withInputStream { stream -> stream.transferTo(zos) }
+                    if (flywheelReplacements.contains(e.name)) {
+                        new File(classRoot, e.name).withInputStream { stream -> stream.transferTo(zos) }
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }

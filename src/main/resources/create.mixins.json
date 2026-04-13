@@ -16,6 +16,7 @@
     "EntityMixin",
     "ItemStackMixin",
     "LavaSwimmingMixin",
+    "DimensionDataStorageMixin",
     "MapItemSavedDataMixin",
     "MobMixin",
     "PlayerMixin",

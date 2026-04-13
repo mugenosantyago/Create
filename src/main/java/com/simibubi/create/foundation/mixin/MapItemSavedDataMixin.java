@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.common.collect.Maps;
 import com.simibubi.create.content.trains.station.StationBlockEntity;
@@ -21,7 +20,6 @@ import com.simibubi.create.content.trains.station.StationMapData;
 import com.simibubi.create.content.trains.station.StationMarker;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -56,33 +54,6 @@ public class MapItemSavedDataMixin implements StationMapData {
 
 	@Unique
 	private final Map<String, StationMarker> create$stationMarkers = Maps.newHashMap();
-
-	@Inject(
-			method = "load",
-			at = @At("RETURN")
-	)
-	private static void create$onLoad(CompoundTag tag, HolderLookup.Provider levelRegistry, CallbackInfoReturnable<MapItemSavedData> cir) {
-		MapItemSavedData mapData = cir.getReturnValue();
-		StationMapData stationMapData = (StationMapData) mapData;
-
-		ListTag listTag = tag.getListOrEmpty(STATION_MARKERS_KEY);
-		for (int i = 0; i < listTag.size(); ++i) {
-			StationMarker stationMarker = StationMarker.load(listTag.getCompoundOrEmpty(i), levelRegistry);
-			stationMapData.addStationMarker(stationMarker);
-		}
-	}
-
-	@Inject(
-			method = "save",
-			at = @At("RETURN")
-	)
-	private void create$onSave(CompoundTag tag, HolderLookup.Provider registries, CallbackInfoReturnable<CompoundTag> cir) {
-		ListTag listTag = new ListTag();
-		for (StationMarker stationMarker : create$stationMarkers.values()) {
-			listTag.add(stationMarker.save(registries));
-		}
-		tag.put(STATION_MARKERS_KEY, listTag);
-	}
 
 	@Override
 	public void addStationMarker(StationMarker marker) {
@@ -128,6 +99,11 @@ public class MapItemSavedDataMixin implements StationMapData {
 	@Shadow
 	public boolean isTrackedCountOverLimit(int trackedCount) {
 		throw new AssertionError();
+	}
+
+	@Override
+	public java.util.Collection<StationMarker> getStationMarkersForPersistence() {
+		return create$stationMarkers.values();
 	}
 
 	@Override
