@@ -5,11 +5,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.simibubi.create.foundation.item.CustomUseEffectsItem;
 
 import net.createmod.catnip.data.TriState;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,27 +24,34 @@ public abstract class CustomItemUseEffectsMixin extends Entity {
 	}
 
 	@Shadow
-	public abstract ItemStack getUseItem();
+	protected RandomSource random;
 
-	@Inject(method = "shouldTriggerItemUseEffects()Z", at = @At("HEAD"), cancellable = true)
-	private void create$onShouldTriggerUseEffects(CallbackInfoReturnable<Boolean> cir) {
-		ItemStack using = getUseItem();
-		Item item = using.getItem();
-		if (item instanceof CustomUseEffectsItem handler) {
-			TriState result = handler.shouldTriggerUseEffects(using, (LivingEntity) (Object) this);
-			if (result != TriState.DEFAULT) {
-				cir.setReturnValue(result.getValue());
-			}
-		}
+	/**
+	 * MC 1.21.8 removed {@code shouldTriggerItemUseEffects} / {@code triggerItemUseEffects}; drive custom
+	 * use feedback from {@link LivingEntity#updateUsingItem(ItemStack)} instead.
+	 */
+	@Inject(method = "updateUsingItem", at = @At("TAIL"))
+	private void create$customUseEffectsAfterUpdate(ItemStack usingItem, CallbackInfo ci) {
+		if (usingItem.isEmpty())
+			return;
+		Item item = usingItem.getItem();
+		if (!(item instanceof CustomUseEffectsItem handler))
+			return;
+		LivingEntity self = (LivingEntity) (Object) this;
+		TriState should = handler.shouldTriggerUseEffects(usingItem, self);
+		if (should == TriState.FALSE)
+			return;
+		if (should == TriState.DEFAULT && !create$vanillaShouldTriggerItemUseEffects(usingItem))
+			return;
+		handler.triggerUseEffects(usingItem, self, 1, random);
 	}
 
-	@Inject(method = "triggerItemUseEffects(Lnet/minecraft/world/item/ItemStack;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;", ordinal = 0), cancellable = true)
-	private void create$onTriggerUseEffects(ItemStack stack, int count, CallbackInfo ci) {
-		Item item = stack.getItem();
-		if (item instanceof CustomUseEffectsItem handler) {
-			if (handler.triggerUseEffects(stack, (LivingEntity) (Object) this, count, random)) {
-				ci.cancel();
-			}
-		}
+	/** Same tick rhythm vanilla used before 1.21.8 for eat/drink-style use animations. */
+	private boolean create$vanillaShouldTriggerItemUseEffects(ItemStack usingItem) {
+		LivingEntity self = (LivingEntity) (Object) this;
+		int remaining = self.getUseItemRemainingTicks();
+		int duration = usingItem.getUseDuration(self);
+		int j = duration - remaining * 2;
+		return j % 4 == 0;
 	}
 }

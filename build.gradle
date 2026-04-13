@@ -159,7 +159,7 @@ tasks.register("patchPonderJar") {
 
 repositories {
     maven { url = "https://maven.tterrag.com" } // tterrag Registrate (1.20.x only on official maven)
-    mavenLocal() // Locally built: Flywheel 1.0.7, Ponder 1.0.0, Registrate MC1.21.8-1.3.0 for MC 1.21.8
+    mavenLocal() // Locally built: Flywheel 1.0.8+, Ponder 1.0.0, Registrate MC1.21.8-1.3.0 for MC 1.21.8
     maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate snapshots (MC1.21.8 not yet published here)
     mavenCentral() // io.github.polari-stars-mc:Registrate-P-STAR:MC1.21.8 stopgap
     maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
