@@ -30,7 +30,8 @@ public class BaseArmorItem extends Item {
      *
      * @param material  the armor material to use
      * @param type      the armor slot
-     * @return ready-to-use Item.Properties for this piece; call further modifiers as needed
+     * @return a new {@link Item.Properties} without a registry id — not suitable for Registrate
+     *         item factories unless you also call {@link Item.Properties#setId}
      */
     public static Properties propertiesFor(ArmorMaterial material, ArmorType type) {
         // humanoidArmor() sets all required data components including MAX_DAMAGE, EQUIPPABLE,
