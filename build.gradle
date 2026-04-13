@@ -12,6 +12,11 @@ plugins {
 apply(from: "./gradle/java.gradle")
 apply(from: "./gradle/property_loader.gradle")
 
+import java.util.Collections
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+
 boolean dev = System.getenv("RELEASE") == null || System.getenv("RELEASE") == "false"
 String buildNumber = System.getenv("BUILD_NUMBER")
 String gitHash = calculateGitHash() + (hasUnstaged() ? "-modified" : "")
@@ -97,6 +102,56 @@ neoForge {
 
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+    // Unpatched Ponder (used only as input to patchPonderJar; JiJ uses the patched file below).
+    ponderOriginal
+}
+
+// One class compiled only to patch JiJ Ponder (must not ship in create's module — JPMS duplicate export).
+sourceSets {
+    ponderPatch {
+        java { srcDir "src/ponderPatch/java" }
+    }
+}
+
+tasks.register("patchPonderJar") {
+    group = "build"
+    description = "Replace broken RenderTypeAccessor in Ponder JiJ with a proper @Mixin invoker."
+    dependsOn compilePonderPatchJava
+    dependsOn configurations.ponderOriginal
+
+    def outProvider = layout.buildDirectory.file("ponder-patch/ponder-neoforge-${ponder_version}+mc${minecraft_version}.jar")
+    outputs.file(outProvider)
+    inputs.files({ configurations.ponderOriginal.files })
+    inputs.dir({ sourceSets.ponderPatch.java.destinationDirectory })
+
+    doLast {
+        def orig = configurations.ponderOriginal.singleFile
+        def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
+        def classFile = new File(classRoot, "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class")
+        if (!classFile.exists()) {
+            throw new GradleException("Missing patched class: ${classFile}")
+        }
+        def target = outProvider.get().asFile
+        target.parentFile.mkdirs()
+        def zip = new ZipFile(orig)
+        try {
+            new ZipOutputStream(new FileOutputStream(target)).withCloseable { zos ->
+                Collections.list(zip.entries()).each { ZipEntry e ->
+                    if (e.isDirectory()) return
+                    def zosEntry = new ZipEntry(e)
+                    zos.putNextEntry(zosEntry)
+                    if (e.name == "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class") {
+                        classFile.withInputStream { stream -> stream.transferTo(zos) }
+                    } else {
+                        zip.getInputStream(e).transferTo(zos)
+                    }
+                    zos.closeEntry()
+                }
+            }
+        } finally {
+            zip.close()
+        }
+    }
 }
 
 repositories {
@@ -124,6 +179,8 @@ repositories {
 }
 
 dependencies {
+    ponderPatchCompileClasspath.extendsFrom configurations.compileClasspath
+
     // Registrate MC1.21.8-1.3.0 built locally from tterrag1098/Registrate 1.21.8/dev branch.
     // Uses com.tterrag.registrate package (original package name maintained).
     jarJar(implementation("com.tterrag.registrate:Registrate:MC1.21.8-1.3.0+96c1702"))
@@ -133,8 +190,12 @@ dependencies {
     jarJar(implementation("dev.engine-room.flywheel:flywheel-neoforge-1.21.8:$flywheel_version"))
     // vanillin is runtime-only so no compileOnly stub needed for it
 
-    // Ponder 1.0.0 built locally for MC 1.21.8 (published to Maven local).
-    jarJar(implementation("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version"))
+    // Ponder JiJ: use patchPonderJar output so RenderTypeAccessor keeps @Mixin without duplicating
+    // net.createmod.ponder packages in the create module (JPMS: two exporters of the same package).
+    ponderOriginal("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version")
+    jarJar(implementation(files(layout.buildDirectory.file("ponder-patch/ponder-neoforge-$ponder_version+mc$minecraft_version.jar"))) {
+        builtBy patchPonderJar
+    })
 
     //compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
     //compileOnly("mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version")
@@ -179,6 +240,10 @@ dependencies {
     // TODO: Verify Xaero versions for MC 1.21.8
     compileOnly("xaero.lib:xaerolib-neoforge-1.21:1.0.42")
     compileOnly("curse.maven:xaeros-world-map-317780:7401095")
+}
+
+tasks.named("compilePonderPatchJava", JavaCompile) {
+    dependsOn compileJava
 }
 
 sourceSets.main {

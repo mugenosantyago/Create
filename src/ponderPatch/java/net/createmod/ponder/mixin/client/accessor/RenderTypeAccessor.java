@@ -8,10 +8,11 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
 
 /**
- * Correct {@link Mixin} invoker for {@link RenderType}'s private factory. The jar-in-jar
- * Ponder build published for MC 1.21.8 accidentally shipped this class without the
- * {@code @Mixin} annotation, which makes Mixin fail during prepare. Shipping the proper
- * interface here ensures it is loaded from Create's main jar before the nested copy.
+ * Correct {@link Mixin} invoker for {@link RenderType}'s private factory. The JiJ Ponder build
+ * for MC 1.21.8 accidentally shipped this class without {@code @Mixin}, which makes Mixin fail
+ * during prepare. This source is compiled only to replace that class inside the Ponder jar
+ * (see {@code patchPonderJar} in build.gradle); it must not live in Create's main sources or
+ * JPMS sees two modules exporting the same package.
  */
 @Mixin(RenderType.class)
 public interface RenderTypeAccessor {
