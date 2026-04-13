@@ -13,20 +13,47 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
 public class SequencedRecipe<T extends ProcessingRecipe<?, ?>> {
-	public static final Codec<SequencedRecipe<?>> CODEC = Recipe.CODEC
+	/**
+	 * {@link Recipe#CODEC} eagerly pulls in every registered recipe serializer; some modded codecs reference
+	 * client-only classes. Lazy-init avoids {@link ClassNotFoundException} for e.g. {@code ClientLevel} during
+	 * dedicated-server bootstrap when {@link com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipeSerializer}
+	 * is registered.
+	 */
+	public static final Codec<SequencedRecipe<?>> CODEC = Codec.lazyInitialized(() -> Recipe.CODEC
 		.comapFlatMap(recipe -> recipe instanceof ProcessingRecipe<?,?> processing && recipe instanceof IAssemblyRecipe
 				? DataResult.success(new SequencedRecipe<>(processing))
 				: DataResult.error(() -> recipe.getClass().getSimpleName() + " is not supported in Sequenced Assembly"),
 			SequencedRecipe::getRecipe
-		);
-	public static final StreamCodec<RegistryFriendlyByteBuf, SequencedRecipe<?>> STREAM_CODEC = Recipe.STREAM_CODEC
-		.map(recipe -> {
-				if (recipe instanceof ProcessingRecipe<?,?> processing && recipe instanceof IAssemblyRecipe)
-					return new SequencedRecipe<>(processing);
-				throw new DecoderException("Unexpected " + recipe.getClass().getSimpleName() + " not supported in Sequenced Assembly");
-			},
-			SequencedRecipe::getRecipe
-		);
+		));
+
+	public static final StreamCodec<RegistryFriendlyByteBuf, SequencedRecipe<?>> STREAM_CODEC = new StreamCodec<>() {
+		private StreamCodec<RegistryFriendlyByteBuf, SequencedRecipe<?>> delegate;
+
+		private StreamCodec<RegistryFriendlyByteBuf, SequencedRecipe<?>> delegate() {
+			if (delegate == null) {
+				delegate = Recipe.STREAM_CODEC
+					.map(recipe -> {
+							if (recipe instanceof ProcessingRecipe<?,?> processing && recipe instanceof IAssemblyRecipe)
+								return new SequencedRecipe<>(processing);
+							throw new DecoderException("Unexpected " + recipe.getClass()
+								.getSimpleName() + " not supported in Sequenced Assembly");
+						},
+						SequencedRecipe::getRecipe
+					);
+			}
+			return delegate;
+		}
+
+		@Override
+		public SequencedRecipe<?> decode(RegistryFriendlyByteBuf buf) {
+			return delegate().decode(buf);
+		}
+
+		@Override
+		public void encode(RegistryFriendlyByteBuf buf, SequencedRecipe<?> value) {
+			delegate().encode(buf, value);
+		}
+	};
 
 	private final T wrapped;
 

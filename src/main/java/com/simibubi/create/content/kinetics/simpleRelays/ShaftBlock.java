@@ -20,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +33,22 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ShaftBlock extends AbstractSimpleShaftBlock implements EncasableBlock {
 
-	public static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+	/**
+	 * Registered on first use so {@link net.createmod.catnip.placement.IPlacementHelper} static init (and any early
+	 * {@link net.minecraft.world.level.block.state.BlockState} creation) does not run during {@code <clinit>} while
+	 * other mods (e.g. Moonrise) are still transforming {@link net.minecraft.world.level.block.state.StateHolder}.
+	 */
+	private static int placementHelperId = -1;
+
+	public static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (ShaftBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	public ShaftBlock(Properties properties) {
 		super(properties);
@@ -92,7 +106,7 @@ public class ShaftBlock extends AbstractSimpleShaftBlock implements EncasableBlo
 			return InteractionResult.SUCCESS;
 		}
 
-		IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper helper = PlacementHelpers.get(placementHelperId());
 		if (helper.matchesItem(stack))
 			return helper.getOffset(player, level, state, pos, hitResult)
 				.placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
