@@ -15,6 +15,7 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.data.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -99,18 +100,20 @@ public class TimeOfDayCondition extends ScheduleWaitCondition {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public boolean renderSpecialIcon(GuiGraphics graphics, int x, int y) {
+	public boolean renderSpecialIcon(Object graphics, int x, int y) {
+		GuiGraphics g = (GuiGraphics) graphics;
 		int displayHr = (intData("Hour") + 12) % 24;
 		float progress = (displayHr * 60f + intData("Minute")) / (24 * 60);
 		ResourceLocation location =
 			ResourceLocation.withDefaultNamespace("textures/item/clock_" + twoDigits(Mth.clamp((int) (progress * 64), 0, 63)) + ".png");
-		graphics.blit(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED, location, x, y, (float)(0), (float)(0), 0, 16, 16, 16, 16, 256, 256);
+		g.blit(RenderPipelines.GUI_TEXTURED, location, x, y, (float) (0), (float) (0), 0, 16, 16, 16, 16, 256, 256);
 		return true;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
+	public void initConfigurationWidgets(Object builderUncast) {
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		MutableObject<ScrollInput> minuteInput = new MutableObject<>();
 		MutableObject<ScrollInput> hourInput = new MutableObject<>();
 		MutableObject<Label> timeLabel = new MutableObject<>();

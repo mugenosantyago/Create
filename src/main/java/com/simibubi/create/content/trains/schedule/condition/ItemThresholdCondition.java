@@ -116,8 +116,9 @@ public class ItemThresholdCondition extends CargoThresholdCondition {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
-		super.initConfigurationWidgets(builder);
+	public void initConfigurationWidgets(Object builderUncast) {
+		super.initConfigurationWidgets(builderUncast);
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addSelectionScrollInput(71, 50, (i, l) -> {
 			i.forOptions(ImmutableList.of(CreateLang.translateDirect("schedule.condition.threshold.items"),
 				CreateLang.translateDirect("schedule.condition.threshold.stacks")))

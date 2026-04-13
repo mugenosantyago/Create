@@ -24,7 +24,6 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.data.Glob;
 import net.createmod.catnip.data.Pair;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -83,8 +82,14 @@ public class FetchPackagesInstruction extends TextScheduleInstruction {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	protected void modifyEditBox(EditBox box) {
-		box.setFilter(s -> StringUtils.countMatches(s, '*') <= 3);
+	protected void modifyEditBox(Object box) {
+		try {
+			box.getClass()
+				.getMethod("setFilter", java.util.function.Predicate.class)
+				.invoke(box, (java.util.function.Predicate<String>) s -> StringUtils.countMatches(s, '*') <= 3);
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

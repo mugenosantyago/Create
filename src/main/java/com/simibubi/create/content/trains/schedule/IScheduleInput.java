@@ -5,10 +5,8 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableList;
-import com.simibubi.create.foundation.gui.ModularGuiLineBuilder;
 
 import net.createmod.catnip.data.Pair;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -52,11 +50,18 @@ public interface IScheduleInput {
 		return null;
 	}
 
+	/**
+	 * @param builder client {@link com.simibubi.create.foundation.gui.ModularGuiLineBuilder}; typed as {@link Object}
+	 *                so this interface does not reference client classes (dedicated server compatibility).
+	 */
 	@OnlyIn(Dist.CLIENT)
-	public default void initConfigurationWidgets(ModularGuiLineBuilder builder) {};
+	public default void initConfigurationWidgets(Object builder) {}
 
+	/**
+	 * @param graphics client {@link net.minecraft.client.gui.GuiGraphics}; {@link Object} for server-safe loading.
+	 */
 	@OnlyIn(Dist.CLIENT)
-	public default boolean renderSpecialIcon(GuiGraphics graphics, int x, int y) {
+	public default boolean renderSpecialIcon(Object graphics, int x, int y) {
 		return false;
 	}
 

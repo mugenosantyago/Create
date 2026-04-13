@@ -54,7 +54,8 @@ public class PlayerPassengerCondition extends ScheduleWaitCondition {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
+	public void initConfigurationWidgets(Object builderUncast) {
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addScrollInput(0, 31, (i, l) -> {
 			i.titled(CreateLang.translateDirect("schedule.condition.player_count.players"))
 				.withShiftStep(5)

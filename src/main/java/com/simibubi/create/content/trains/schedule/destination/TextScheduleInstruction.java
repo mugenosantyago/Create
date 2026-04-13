@@ -7,7 +7,6 @@ import com.simibubi.create.foundation.gui.ModularGuiLineBuilder;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -26,11 +25,12 @@ public abstract class TextScheduleInstruction extends ScheduleInstruction {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
+	public void initConfigurationWidgets(Object builderUncast) {
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addTextInput(0, 121, (e, t) -> modifyEditBox(e), "Text");
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	protected void modifyEditBox(EditBox box) {}
+	protected void modifyEditBox(Object editBox) {}
 
 }

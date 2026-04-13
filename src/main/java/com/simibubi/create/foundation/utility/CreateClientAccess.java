@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 /**
  * Reflective calls into {@link com.simibubi.create.CreateClient} and Minecraft so common item classes do not reference
@@ -40,6 +41,18 @@ public final class CreateClientAccess {
 			Object mc = mcClass.getMethod("getInstance").invoke(null);
 			Object playerObj = mcClass.getField("player").get(mc);
 			return playerObj instanceof Player p ? p : null;
+		} catch (ReflectiveOperationException e) {
+			return null;
+		}
+	}
+
+	@Nullable
+	public static Level getClientLevel() {
+		try {
+			Class<?> mcClass = Class.forName("net.minecraft.client.Minecraft");
+			Object mc = mcClass.getMethod("getInstance").invoke(null);
+			Object levelObj = mcClass.getField("level").get(mc);
+			return levelObj instanceof Level l ? l : null;
 		} catch (ReflectiveOperationException e) {
 			return null;
 		}

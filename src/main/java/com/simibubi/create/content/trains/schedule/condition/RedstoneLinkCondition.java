@@ -114,7 +114,8 @@ public class RedstoneLinkCondition extends ScheduleWaitCondition {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
+	public void initConfigurationWidgets(Object builderUncast) {
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addSelectionScrollInput(20, 101,
 			(i, l) -> i.forOptions(CreateLang.translatedOptions("schedule.condition.redstone_link", "powered", "unpowered"))
 				.titled(CreateLang.translateDirect("schedule.condition.redstone_link.frequency_state")),

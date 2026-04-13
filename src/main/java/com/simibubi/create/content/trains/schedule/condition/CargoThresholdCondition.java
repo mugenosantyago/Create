@@ -117,7 +117,8 @@ public abstract class CargoThresholdCondition extends LazyTickedScheduleConditio
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
+	public void initConfigurationWidgets(Object builderUncast) {
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addSelectionScrollInput(0, 24, (i, l) -> {
 			i.forOptions(Ops.translatedOptions())
 				.titled(CreateLang.translateDirect("schedule.condition.threshold.train_holds", ""))

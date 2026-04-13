@@ -8,11 +8,11 @@ import com.simibubi.create.content.logistics.filter.FilterItemStack;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.Train;
 import com.simibubi.create.foundation.gui.ModularGuiLineBuilder;
+import com.simibubi.create.foundation.utility.CreateClientAccess;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import net.createmod.catnip.lang.Lang;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -79,7 +79,10 @@ public class FluidThresholdCondition extends CargoThresholdCondition {
 
 	@OnlyIn(Dist.CLIENT)
 	private FluidStack loadFluid() {
-		return compareStack.fluid(Minecraft.getInstance().level);
+		Level clientLevel = CreateClientAccess.getClientLevel();
+		if (clientLevel == null)
+			return FluidStack.EMPTY;
+		return compareStack.fluid(clientLevel);
 	}
 
 	@Override
@@ -113,8 +116,9 @@ public class FluidThresholdCondition extends CargoThresholdCondition {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
-		super.initConfigurationWidgets(builder);
+	public void initConfigurationWidgets(Object builderUncast) {
+		super.initConfigurationWidgets(builderUncast);
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addSelectionScrollInput(71, 50, (i, l) -> {
 			i.forOptions(ImmutableList.of(CreateLang.translateDirect("schedule.condition.threshold.buckets")))
 				.titled(null);

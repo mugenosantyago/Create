@@ -64,7 +64,8 @@ public class ChangeThrottleInstruction extends ScheduleInstruction {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void initConfigurationWidgets(ModularGuiLineBuilder builder) {
+	public void initConfigurationWidgets(Object builderUncast) {
+		ModularGuiLineBuilder builder = (ModularGuiLineBuilder) builderUncast;
 		builder.addScrollInput(0, 50, (si, l) -> {
 			si.withRange(5, 101)
 				.withStepFunction(c -> c.shift ? 25 : 5)
