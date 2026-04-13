@@ -6,9 +6,7 @@ import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.content.equipment.clipboard.ClipboardOverrides.ClipboardType;
 import com.simibubi.create.foundation.recipe.ItemCopyingRecipe.SupportsItemCopying;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -22,10 +20,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
 public class ClipboardBlockItem extends BlockItem implements SupportsItemCopying {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.equipment.clipboard.ClipboardBlockClientHooks";
 
 	public ClipboardBlockItem(Block pBlock, Properties pProperties) {
 		super(pBlock, pProperties);
@@ -62,17 +60,21 @@ public class ClipboardBlockItem extends BlockItem implements SupportsItemCopying
 		player.getCooldowns()
 			.addCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(heldItem.getItem()), 10);
 		if (world.isClientSide)
-			CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> openScreen(player, heldItem.getComponents()));
+			CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> openScreenFromClientHooks(player, heldItem.getComponents()));
 		ClipboardContent content = heldItem.getOrDefault(AllDataComponents.CLIPBOARD_CONTENT, ClipboardContent.EMPTY);
 		heldItem.set(AllDataComponents.CLIPBOARD_CONTENT, content.setType(ClipboardType.EDITING));
 
 		return InteractionResult.SUCCESS;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private void openScreen(Player player, DataComponentMap components) {
-		if (Minecraft.getInstance().player == player)
-			ScreenOpener.open(new ClipboardScreen(player.getInventory().getSelectedSlot(), components, null));
+	private static void openScreenFromClientHooks(Player player, DataComponentMap components) {
+		try {
+			Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+			hooks.getMethod("openScreen", Player.class, DataComponentMap.class, BlockPos.class)
+				.invoke(null, player, components, null);
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void registerModelOverrides() {
