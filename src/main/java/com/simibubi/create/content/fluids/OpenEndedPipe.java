@@ -25,6 +25,7 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -157,8 +158,8 @@ public class OpenEndedPipe extends FlowSource {
 
 			var newFluidState = newState.getFluidState();
 
-			if (newFluidState.getType() instanceof FlowingFluidAccessor flowing) {
-				var potentiallyFilled = flowing.create$getNewLiquid(world, outputPos, newState);
+			if (world instanceof ServerLevel serverLevel && newFluidState.getType() instanceof FlowingFluidAccessor flowing) {
+				var potentiallyFilled = flowing.create$getNewLiquid(serverLevel, outputPos, newState);
 
 				// Check if we'd immediately become the same fluid again.
 				if (potentiallyFilled.equals(fluidState)) {

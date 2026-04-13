@@ -104,12 +104,17 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
     // Unpatched Ponder (used only as input to patchPonderJar; JiJ uses the patched file below).
     ponderOriginal
+    // Unpatched Flywheel (input to patchFlywheelJar; JiJ uses patched nested jar).
+    flywheelOriginal
 }
 
 // One class compiled only to patch JiJ Ponder (must not ship in create's module — JPMS duplicate export).
 sourceSets {
     ponderPatch {
         java { srcDir "src/ponderPatch/java" }
+    }
+    flywheelPatch {
+        java { srcDir "src/flywheelPatch/java" }
     }
 }
 
@@ -157,6 +162,50 @@ tasks.register("patchPonderJar") {
     }
 }
 
+tasks.register("patchFlywheelJar") {
+    group = "build"
+    description = "Replace RenderSystemMixin in Flywheel JiJ (initRenderer signature for MC 1.21.8)."
+    dependsOn compileFlywheelPatchJava
+    dependsOn configurations.flywheelOriginal
+
+    def outProvider = layout.buildDirectory.file("flywheel-patch/flywheel-neoforge-1.21.8-${flywheel_version}.jar")
+    outputs.file(outProvider)
+    inputs.files({ configurations.flywheelOriginal.files })
+    inputs.dir({ sourceSets.flywheelPatch.java.destinationDirectory })
+
+    doLast {
+        def orig = configurations.flywheelOriginal.files.find { it.name.startsWith("flywheel-neoforge") && it.name.endsWith(".jar") }
+        if (orig == null) {
+            throw new GradleException("Could not find flywheel-neoforge jar in flywheelOriginal: ${configurations.flywheelOriginal.files.collect { it.name }}")
+        }
+        def classRoot = sourceSets.flywheelPatch.java.destinationDirectory.get().asFile
+        def classFile = new File(classRoot, "dev/engine_room/flywheel/backend/mixin/RenderSystemMixin.class")
+        if (!classFile.exists()) {
+            throw new GradleException("Missing patched class: ${classFile}")
+        }
+        def target = outProvider.get().asFile
+        target.parentFile.mkdirs()
+        def zip = new ZipFile(orig)
+        try {
+            new ZipOutputStream(new FileOutputStream(target)).withCloseable { zos ->
+                Collections.list(zip.entries()).each { ZipEntry e ->
+                    if (e.isDirectory()) return
+                    def zosEntry = new ZipEntry(e)
+                    zos.putNextEntry(zosEntry)
+                    if (e.name == "dev/engine_room/flywheel/backend/mixin/RenderSystemMixin.class") {
+                        classFile.withInputStream { stream -> stream.transferTo(zos) }
+                    } else {
+                        zip.getInputStream(e).transferTo(zos)
+                    }
+                    zos.closeEntry()
+                }
+            }
+        } finally {
+            zip.close()
+        }
+    }
+}
+
 repositories {
     maven { url = "https://maven.tterrag.com" } // tterrag Registrate (1.20.x only on official maven)
     mavenLocal() // Locally built: Flywheel 1.0.8+, Ponder 1.0.0, Registrate MC1.21.8-1.3.0 for MC 1.21.8
@@ -189,6 +238,9 @@ dependencies {
     // Flywheel 1.0.7 built locally for MC 1.21.8 (published to Maven local).
     // Use full jar for runtime, api jar for compile.
     jarJar(implementation("dev.engine-room.flywheel:flywheel-neoforge-1.21.8:$flywheel_version"))
+    flywheelOriginal("dev.engine-room.flywheel:flywheel-neoforge-1.21.8:$flywheel_version") {
+        transitive = false
+    }
     // vanillin is runtime-only so no compileOnly stub needed for it
 
     // Ponder JiJ (unpatched at resolve time; replacePonderInCreateJar swaps nested jar after :jar — avoids
@@ -249,6 +301,11 @@ tasks.named("compilePonderPatchJava", JavaCompile) {
     classpath = sourceSets.main.compileClasspath
 }
 
+tasks.named("compileFlywheelPatchJava", JavaCompile) {
+    dependsOn tasks.named("createMinecraftArtifacts")
+    classpath = sourceSets.main.compileClasspath
+}
+
 tasks.register("replacePonderInCreateJar") {
     group = "build"
     description = "Swap META-INF/jarjar/ponder-neoforge-*.jar in the Create jar with patchPonderJar output."
@@ -286,9 +343,51 @@ tasks.register("replacePonderInCreateJar") {
     }
 }
 
+tasks.register("replaceFlywheelInCreateJar") {
+    group = "build"
+    description = "Swap META-INF/jarjar/flywheel-neoforge-*.jar in the Create jar with patchFlywheelJar output."
+    dependsOn replacePonderInCreateJar
+    dependsOn patchFlywheelJar
+    inputs.files(patchFlywheelJar.outputs.files)
+    inputs.file(jar.archiveFile)
+
+    doLast {
+        def patchedFlywheel = patchFlywheelJar.outputs.files.singleFile
+        def mainJarFile = jar.archiveFile.get().asFile
+        def tmp = layout.buildDirectory.file("tmp/create-with-patched-flywheel.jar").get().asFile
+        tmp.parentFile.mkdirs()
+        def zip = new ZipFile(mainJarFile)
+        try {
+            new ZipOutputStream(new FileOutputStream(tmp)).withCloseable { zos ->
+                Collections.list(zip.entries()).each { ZipEntry e ->
+                    if (e.isDirectory()) return
+                    def zosEntry = new ZipEntry(e)
+                    zos.putNextEntry(zosEntry)
+                    if (e.name.startsWith("META-INF/jarjar/") && e.name.contains("flywheel-neoforge") && e.name.endsWith(".jar")) {
+                        patchedFlywheel.withInputStream { stream -> stream.transferTo(zos) }
+                    } else {
+                        zip.getInputStream(e).transferTo(zos)
+                    }
+                    zos.closeEntry()
+                }
+            }
+        } finally {
+            zip.close()
+        }
+        tmp.withInputStream { ins ->
+            mainJarFile.withOutputStream { outs -> ins.transferTo(outs) }
+        }
+    }
+}
+
 tasks.named("jar") {
     dependsOn patchPonderJar
+    dependsOn patchFlywheelJar
     finalizedBy replacePonderInCreateJar
+}
+
+tasks.named("replacePonderInCreateJar") {
+    finalizedBy replaceFlywheelInCreateJar
 }
 
 sourceSets.main {
