@@ -3,10 +3,7 @@ package com.simibubi.create.content.redstone.analogLever;
 
 import com.mojang.serialization.MapCodec;
 
-import com.simibubi.create.foundation.mixin.accessor.BlockBehaviourAccessor;
-
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.foundation.block.IBE;
@@ -17,26 +14,36 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import java.util.Map;
+
 public class AnalogLeverBlock extends FaceAttachedHorizontalDirectionalBlock implements IBE<AnalogLeverBlockEntity> {
+
+	/**
+	 * Same geometry as {@link net.minecraft.world.level.block.LeverBlock}. Do not delegate
+	 * {@link #getShape} to the lever block: its cached shape function sets {@code powered} on the
+	 * passed state for lookup, which analog levers do not define.
+	 */
+	private static final Map<AttachFace, Map<Direction, VoxelShape>> SHAPES =
+		Shapes.rotateAttachFace(Block.boxZ(6.0, 8.0, 10.0, 16.0));
 
 	public static final MapCodec<AnalogLeverBlock> CODEC = simpleCodec(AnalogLeverBlock::new);
 
@@ -116,7 +123,7 @@ public class AnalogLeverBlock extends FaceAttachedHorizontalDirectionalBlock imp
 
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-		return ((BlockBehaviourAccessor) Blocks.LEVER).create$getShape(state, worldIn, pos, context);
+		return SHAPES.get(state.getValue(FACE)).get(state.getValue(FACING));
 	}
 
 	@Override
