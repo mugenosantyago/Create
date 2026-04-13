@@ -563,12 +563,14 @@ public class MinecartController {
 			super.sendData();
 		}
 
+		@Override
 		public CompoundTag serializeNBT(@Nullable HolderLookup.Provider provider) {
-			return this.serializeNBT(provider);
+			return super.serializeNBT(provider);
 		}
 
+		@Override
 		public void deserializeNBT(@Nullable HolderLookup.Provider provider, CompoundTag nbt) {
-			this.deserializeNBT(provider, nbt);
+			super.deserializeNBT(provider, nbt);
 		}
 
 		@Override
