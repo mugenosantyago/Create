@@ -23,7 +23,7 @@ import com.simibubi.create.content.equipment.armor.NetheriteBacktankFirstPersonR
 import com.simibubi.create.content.equipment.armor.NetheriteDivingHandler;
 import com.simibubi.create.content.equipment.armor.RemainingAirOverlay;
 import com.simibubi.create.content.equipment.blueprint.BlueprintOverlayRenderer;
-import com.simibubi.create.content.equipment.clipboard.ClipboardValueSettingsHandler;
+import com.simibubi.create.content.equipment.clipboard.ClipboardValueSettingsHandlerClient;
 import com.simibubi.create.content.equipment.extendoGrip.ExtendoGripRenderHandler;
 import com.simibubi.create.content.equipment.goggles.GoggleOverlayRenderer;
 import com.simibubi.create.content.equipment.hats.CreateHatArmorLayer;
@@ -184,7 +184,7 @@ public class ClientEvents {
 		CameraDistanceModifier.tick();
 		CameraAngleAnimationService.tick();
 		TrainHUD.tick();
-		ClipboardValueSettingsHandler.clientTick();
+		ClipboardValueSettingsHandlerClient.clientTick();
 		CreateClient.VALUE_SETTINGS_HANDLER.tick();
 		ScrollValueHandler.tick();
 		NetheriteBacktankFirstPersonRenderer.clientTick();
