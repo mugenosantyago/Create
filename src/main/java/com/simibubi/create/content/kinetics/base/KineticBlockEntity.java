@@ -35,7 +35,6 @@ import net.createmod.catnip.lang.FontHelper.Palette;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -440,7 +439,7 @@ public class KineticBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 				.forGoggles(tooltip);
 			MutableComponent hint =
 				CreateLang.translateDirect("gui.contraptions.not_fast_enough",
-					I18n.get(ItemHelper.blockDescriptionId(getBlockState().getBlock())));
+					Component.translatable(ItemHelper.blockDescriptionId(getBlockState().getBlock())).getString());
 			List<Component> cutString = TooltipHelper.cutTextComponent(hint, Palette.GRAY_AND_WHITE);
 			for (Component component : cutString)
 				CreateLang.builder()

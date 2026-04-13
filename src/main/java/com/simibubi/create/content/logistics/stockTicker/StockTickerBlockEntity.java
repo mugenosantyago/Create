@@ -25,6 +25,7 @@ import com.simibubi.create.content.logistics.packagerLink.WiFiParticle;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.SmartInventory;
+import com.simibubi.create.foundation.utility.CreateClientAccess;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import dan200.computercraft.api.peripheral.PeripheralCapability;
@@ -32,7 +33,6 @@ import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.nbt.NBTHelper;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -248,7 +248,8 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 	public boolean addToTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
 		if (receivedPayments.isEmpty())
 			return false;
-		if (!behaviour.mayAdministrate(Minecraft.getInstance().player))
+		Player clientPlayer = CreateClientAccess.getClientSidePlayer();
+		if (clientPlayer == null || !behaviour.mayAdministrate(clientPlayer))
 			return false;
 
 		CreateLang.translate("stock_ticker.contains_payments")

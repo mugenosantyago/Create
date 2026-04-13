@@ -8,10 +8,10 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.CreateClientAccess;
 
 import net.createmod.catnip.codecs.CatnipCodecUtils;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -139,9 +139,13 @@ public class LecternControllerBlockEntity extends SmartBlockEntity {
 
 	@OnlyIn(Dist.CLIENT)
 	private void tryToggleActive() {
-		if (user == null && Minecraft.getInstance().player.getUUID().equals(prevUser)) {
+		Player client = CreateClientAccess.getClientSidePlayer();
+		if (client == null)
+			return;
+		var clientId = client.getUUID();
+		if (user == null && clientId.equals(prevUser)) {
 			LinkedControllerClientHandler.deactivateInLectern();
-		} else if (prevUser == null && Minecraft.getInstance().player.getUUID().equals(user)) {
+		} else if (prevUser == null && clientId.equals(user)) {
 			LinkedControllerClientHandler.activateInLectern(worldPosition);
 		}
 	}

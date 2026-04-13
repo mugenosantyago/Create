@@ -15,6 +15,7 @@ import com.simibubi.create.content.processing.basin.BasinBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.utility.CreateClientAccess;
 
 import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.createmod.catnip.animation.LerpedFloat;
@@ -22,8 +23,6 @@ import net.createmod.catnip.animation.LerpedFloat.Chaser;
 import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.math.VecHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -37,6 +36,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -152,7 +152,7 @@ public class BlazeBurnerBlockEntity extends SmartBlockEntity {
 
 		if (!active) {
 			float target = 0;
-			LocalPlayer player = Minecraft.getInstance().player;
+			Player player = CreateClientAccess.getClientSidePlayer();
 			if (player != null && !player.isInvisible()) {
 				double x;
 				double z;
