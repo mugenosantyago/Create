@@ -56,9 +56,9 @@ public final class NetheriteDivingHandler {
 	}
 
 	public static boolean isNetheriteArmor(ItemStack stack) {
-		// In 1.21.5+, ArmorItem is removed. Netherite armor is identified by the FIRE_RESISTANT
-		// data component and the EQUIPPABLE component (set via ArmorMaterial#humanoidProperties).
-		return stack.has(DataComponents.EQUIPPABLE) && stack.has(DataComponents.FIRE_RESISTANT);
+		// In 1.21.5+, ArmorItem is removed. Netherite armor is identified by DAMAGE_RESISTANT
+		// and the EQUIPPABLE component (set via ArmorMaterial#humanoidProperties).
+		return stack.has(DataComponents.EQUIPPABLE) && stack.has(DataComponents.DAMAGE_RESISTANT);
 	}
 
 	public static void setBit(LivingEntity entity, EquipmentSlot slot) {

@@ -100,7 +100,7 @@ public class CardboardArmorHandler {
 
 		if (testForStealth(mob.getLastHurtByMob())) {
 			mob.setLastHurtByMob(null);
-			mob.setLastHurtByPlayer(null);
+			mob.setLastHurtByPlayer((java.util.UUID) null, 0);
 		}
 	}
 

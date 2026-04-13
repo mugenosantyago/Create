@@ -1,7 +1,9 @@
 package com.simibubi.create.content.logistics.filter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +27,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
@@ -57,6 +60,14 @@ public abstract class FilterItem extends Item implements MenuProvider, SupportsI
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+		Consumer<Component> tooltip, TooltipFlag flagIn) {
+		List<Component> lines = new ArrayList<>();
+		appendHoverText_compat(stack, context, lines, flagIn);
+		lines.forEach(tooltip);
+	}
+
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flagIn) {
 		if (AllKeys.shiftDown())
