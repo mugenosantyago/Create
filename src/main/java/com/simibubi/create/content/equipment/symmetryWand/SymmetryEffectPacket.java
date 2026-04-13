@@ -9,7 +9,6 @@ import net.createmod.catnip.net.base.ClientboundPacketPayload;
 
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
@@ -34,6 +33,6 @@ public record SymmetryEffectPacket(BlockPos mirror, List<BlockPos> positions) im
 		if (player.position().distanceTo(Vec3.atLowerCornerOf(mirror)) > 100)
 			return;
 		for (BlockPos to : positions)
-			SymmetryHandler.drawEffect(mirror, to);
+			SymmetryHandlerClient.drawEffect(mirror, to);
 	}
 }
