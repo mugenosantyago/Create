@@ -160,7 +160,6 @@ public class ToolboxInventory extends ItemStackHandler {
 		return insertItem;
 	}
 
-	@Override
 	public @NotNull CompoundTag serializeNBT(@NotNull HolderLookup.Provider registries) {
 		CompoundTag compound = com.simibubi.create.foundation.utility.NbtCompat.serializeItemStackHandler(this, registries);
 		compound.put("Compartments", NBTHelper.writeItemList(filters, registries));
@@ -175,7 +174,6 @@ public class ToolboxInventory extends ItemStackHandler {
 		super.onContentsChanged(slot);
 	}
 
-	@Override
 	public void deserializeNBT(@NotNull HolderLookup.Provider registries, CompoundTag nbt) {
 		filters = NBTHelper.readItemList(nbt.getListOrEmpty("Compartments"), registries);
 		if (filters.size() != 8) {

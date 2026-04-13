@@ -132,7 +132,7 @@ public class TrackRenderer extends SafeBlockEntityRenderer<TrackBlockEntity> {
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(TrackBlockEntity pBlockEntity) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 

@@ -212,7 +212,7 @@ public class SchematicannonRenderer extends SafeBlockEntityRenderer<Schematicann
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(SchematicannonBlockEntity blockEntity) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 

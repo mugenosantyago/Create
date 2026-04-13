@@ -142,7 +142,7 @@ public class StationRenderer extends SafeBlockEntityRenderer<StationBlockEntity>
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(StationBlockEntity pBlockEntity) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 

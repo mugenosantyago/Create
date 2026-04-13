@@ -10,11 +10,11 @@ import com.simibubi.create.content.fluids.potion.PotionFluid;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -39,7 +39,7 @@ public class FluidStackParticle extends TextureSheetParticle {
 
 		this.fluid = fluid;
 		this.setSprite(Minecraft.getInstance()
-			.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+			.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
 			.apply(clientFluid.getStillTexture(fluid)));
 
 		this.gravity = 1.0F;

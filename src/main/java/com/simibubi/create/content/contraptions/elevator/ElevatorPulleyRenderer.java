@@ -104,7 +104,7 @@ public class ElevatorPulleyRenderer extends KineticBlockEntityRenderer<ElevatorP
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(ElevatorPulleyBlockEntity p_188185_1_) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 

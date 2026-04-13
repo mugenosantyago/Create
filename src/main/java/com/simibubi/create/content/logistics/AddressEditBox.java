@@ -132,7 +132,7 @@ public class AddressEditBox extends EditBox {
 				CreateLang.translate("gui.address_box.clipboard_tip_4")
 					.style(ChatFormatting.DARK_GRAY)
 					.component());
-			pGuiGraphics.renderComponentTooltip(Minecraft.getInstance().font, promiseTip, pMouseX, pMouseY);
+			pGuiGraphics.setComponentTooltipForNextFrame(Minecraft.getInstance().font, promiseTip, pMouseX, pMouseY);
 		}
 	}
 

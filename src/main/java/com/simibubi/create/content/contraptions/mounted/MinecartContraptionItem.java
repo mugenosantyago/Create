@@ -36,6 +36,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Minecart;
@@ -77,6 +79,14 @@ public class MinecartContraptionItem extends Item {
 
 	public static MinecartContraptionItem chest(Properties builder) {
 		return new MinecartContraptionItem(Type.CHEST, builder);
+	}
+
+	private static EntityType<? extends AbstractMinecart> entityTypeFor(Type type) {
+		return switch (type) {
+			case RIDEABLE -> EntityType.MINECART;
+			case FURNACE -> EntityType.FURNACE_MINECART;
+			case CHEST -> EntityType.CHEST_MINECART;
+		};
 	}
 
 	private static Type minecartTypeFrom(AbstractMinecart cart) {
@@ -144,7 +154,7 @@ public class MinecartContraptionItem extends Item {
 			}
 
 			AbstractMinecart abstractminecartentity = AbstractMinecart.createMinecart(world, d0, d1 + d3, d2,
-				((MinecartContraptionItem) stack.getItem()).minecartType, stack, null);
+				entityTypeFor(((MinecartContraptionItem) stack.getItem()).minecartType), EntitySpawnReason.DISPENSER, stack, null);
 			if (stack.has(DataComponents.CUSTOM_NAME))
 				abstractminecartentity.setCustomName(stack.getHoverName());
 			world.addFreshEntity(abstractminecartentity);
@@ -182,7 +192,7 @@ public class MinecartContraptionItem extends Item {
 
 				AbstractMinecart abstractminecartentity =
 					AbstractMinecart.createMinecart(serverlevel, (double) blockpos.getX() + 0.5D,
-						(double) blockpos.getY() + 0.0625D + d0, (double) blockpos.getZ() + 0.5D, this.minecartType, itemstack, null);
+						(double) blockpos.getY() + 0.0625D + d0, (double) blockpos.getZ() + 0.5D, entityTypeFor(this.minecartType), EntitySpawnReason.SPAWN_ITEM_USE, itemstack, context.getPlayer());
 				if (itemstack.has(DataComponents.CUSTOM_NAME))
 					abstractminecartentity.setCustomName(itemstack.getHoverName());
 				Player player = context.getPlayer();

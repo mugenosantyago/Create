@@ -11,6 +11,7 @@ import net.createmod.catnip.nbt.NBTProcessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -49,7 +50,7 @@ public class SchematicProcessor extends StructureProcessor {
 			StructureTemplate.StructureEntityInfo info, StructurePlaceSettings settings, StructureTemplate template) {
 		return com.simibubi.create.foundation.utility.NbtCompat.entityTypeByTag(info.nbt).flatMap(type -> {
 			if (world instanceof Level) {
-				Entity e = type.create((Level) world);
+				Entity e = type.create((Level) world, EntitySpawnReason.LOAD);
 				if (e != null && !type.onlyOpCanSetNbt()) {
 					return Optional.of(info);
 				}

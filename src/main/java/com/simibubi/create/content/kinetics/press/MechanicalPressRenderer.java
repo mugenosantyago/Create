@@ -21,7 +21,7 @@ public class MechanicalPressRenderer extends KineticBlockEntityRenderer<Mechanic
 	}
 
 	@Override
-	public boolean shouldRenderOffScreen(MechanicalPressBlockEntity be) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 

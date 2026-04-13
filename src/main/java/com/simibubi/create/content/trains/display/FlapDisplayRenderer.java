@@ -235,9 +235,4 @@ public class FlapDisplayRenderer extends KineticBlockEntityRenderer<FlapDisplayB
 			state.getValue(FlapDisplayBlock.HORIZONTAL_FACING));
 	}
 
-	@Override
-	public boolean shouldRenderOffScreen(FlapDisplayBlockEntity be) {
-		return be.isController;
-	}
-
 }

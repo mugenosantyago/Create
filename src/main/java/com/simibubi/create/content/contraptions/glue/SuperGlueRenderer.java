@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -18,11 +17,6 @@ public class SuperGlueRenderer extends EntityRenderer<SuperGlueEntity, EntityRen
     @Override
     public EntityRenderState createRenderState() {
         return new EntityRenderState();
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(EntityRenderState state) {
-        return null;
     }
 
     @Override

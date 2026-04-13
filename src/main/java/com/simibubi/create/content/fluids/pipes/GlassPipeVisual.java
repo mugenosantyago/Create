@@ -27,10 +27,10 @@ import dev.engine_room.flywheel.lib.visual.util.SmartRecycler;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 
 public class GlassPipeVisual extends AbstractBlockEntityVisual<StraightPipeBlockEntity> implements SimpleDynamicVisual {
@@ -96,7 +96,7 @@ public class GlassPipeVisual extends AbstractBlockEntityVisual<StraightPipeBlock
 			IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid);
 			FluidType fluidAttributes = fluid.getFluidType();
 			var atlas = Minecraft.getInstance()
-				.getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+				.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 			TextureAtlasSprite flowTexture = atlas.apply(clientFluid.getFlowingTexture(fluidStack));
 
 			int color = clientFluid.getTintColor(fluidStack);

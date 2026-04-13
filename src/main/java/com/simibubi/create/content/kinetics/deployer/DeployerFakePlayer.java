@@ -26,7 +26,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -87,12 +86,6 @@ public class DeployerFakePlayer extends FakePlayer {
 	@Override
 	public boolean canEat(boolean ignoreHunger) {
 		return false;
-	}
-
-	@Override
-	public ItemStack eat(Level level, ItemStack food, FoodProperties foodProperties) {
-		food.shrink(1);
-		return food;
 	}
 
 	@Override

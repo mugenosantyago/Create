@@ -117,9 +117,4 @@ public class FluidTankRenderer extends SafeBlockEntityRenderer<FluidTankBlockEnt
 		ms.popPose();
 	}
 
-	@Override
-	public boolean shouldRenderOffScreen(FluidTankBlockEntity be) {
-		return be.isController();
-	}
-
 }
