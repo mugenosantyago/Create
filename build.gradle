@@ -120,7 +120,7 @@ sourceSets {
 
 tasks.register("patchPonderJar") {
     group = "build"
-    description = "Replace broken RenderTypeAccessor in Ponder JiJ with a proper @Mixin invoker."
+    description = "Replace broken accessors in Ponder JiJ with MC 1.21.8-compatible classes."
     dependsOn compilePonderPatchJava
     dependsOn configurations.ponderOriginal
 
@@ -135,9 +135,15 @@ tasks.register("patchPonderJar") {
             throw new GradleException("Could not find ponder-neoforge jar in ponderOriginal: ${configurations.ponderOriginal.files.collect { it.name }}")
         }
         def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
-        def classFile = new File(classRoot, "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class")
-        if (!classFile.exists()) {
-            throw new GradleException("Missing patched class: ${classFile}")
+        def replacements = [
+            "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class",
+            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class"
+        ]
+        replacements.each { entry ->
+            def classFile = new File(classRoot, entry)
+            if (!classFile.exists()) {
+                throw new GradleException("Missing patched class: ${classFile}")
+            }
         }
         def target = outProvider.get().asFile
         target.parentFile.mkdirs()
@@ -148,8 +154,8 @@ tasks.register("patchPonderJar") {
                     if (e.isDirectory()) return
                     def zosEntry = new ZipEntry(e)
                     zos.putNextEntry(zosEntry)
-                    if (e.name == "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class") {
-                        classFile.withInputStream { stream -> stream.transferTo(zos) }
+                    if (replacements.contains(e.name)) {
+                        new File(classRoot, e.name).withInputStream { stream -> stream.transferTo(zos) }
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }
