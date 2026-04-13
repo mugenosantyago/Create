@@ -27,9 +27,9 @@ public class SmithingMenuMixin {
 		}
 	}
 
-	// Only add enchantments to the backtank if it supports them
+	// Only add enchantments to the backtank if it supports them (assemble lives in lambda$createResult$1 since 1.21.8)
 	@ModifyExpressionValue(
-		method = "createResult",
+		method = "lambda$createResult$1",
 		at = @At(
 			value = "INVOKE",
 			target = "Lnet/minecraft/world/item/crafting/SmithingRecipe;assemble(Lnet/minecraft/world/item/crafting/RecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;"
