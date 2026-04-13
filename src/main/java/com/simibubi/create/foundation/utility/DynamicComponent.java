@@ -88,7 +88,7 @@ public class DynamicComponent {
 		}
 	}
 
-	// FIXME 1.21: checkover if it's still needed
+	/** Resolves selectors and components against a block position (display links, etc.). */
 	public static Component parseCustomText(Level level, BlockPos pos, Component customText) {
 		if (!(level instanceof ServerLevel serverLevel))
 			return null;

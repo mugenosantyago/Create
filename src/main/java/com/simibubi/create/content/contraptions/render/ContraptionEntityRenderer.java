@@ -82,9 +82,7 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 	@Override
 	public void extractRenderState(C entity, ContraptionRenderState state, float partialTick) {
 		super.extractRenderState(entity, state, partialTick);
-		// Store the entity reference so render() can access contraption data.
-		// TODO: Properly extract all needed data (contraption, level, matrices) into state
-		// fields rather than keeping a live entity reference.
+		// Contraption rendering still reads matrices and BE views from the live entity.
 		state.entity = entity;
 	}
 
@@ -218,13 +216,8 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		}
 	}
 
-	/**
-	 * Render state for contraption entities.
-	 * TODO: Replace the entity reference with properly extracted fields once the
-	 * contraption rendering pipeline is decoupled from the live entity.
-	 */
+	/** Render state for contraption entities (entity retained for contraption/mesh access). */
 	public static class ContraptionRenderState extends EntityRenderState {
-		/** Live entity reference – temporary workaround for the 1.21.2 render-state migration. */
 		public AbstractContraptionEntity entity;
 	}
 

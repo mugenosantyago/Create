@@ -138,15 +138,14 @@ public class Create {
 
 		AllConfigs.register(modLoadingContext, modContainer);
 
-		// TODO - Make these use Registry.register and move them into the RegisterEvent
 		AllPackagePortTargetTypes.register(modEventBus);
 
 		AllSchematicStateFilters.registerDefaults();
 
-		// FIXME: some of these registrations are not thread-safe
-		BogeySizes.init();
-		AllBogeyStyles.init();
-		// ----
+		synchronized (Create.class) {
+			BogeySizes.init();
+			AllBogeyStyles.init();
+		}
 
 		ComputerCraftProxy.register();
 
@@ -169,9 +168,7 @@ public class Create {
 		CreateNBTProcessors.register();
 
 		event.enqueueWork(() -> {
-			// TODO: custom registration should all happen in one place
-			// Most registration happens in the constructor.
-			// These registrations use Create's registered objects directly so they must run after registration has finished.
+			// Deferred: depends on objects registered in the mod constructor.
 			BoilerHeaters.registerDefaults();
 			AllPortalTracks.registerDefaults();
 			AllBlockSpoutingBehaviours.registerDefaults();

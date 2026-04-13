@@ -38,7 +38,6 @@ public class PotatoProjectileRenderer
         state.bbYSize     = (float) entity.getBoundingBox().getYsize();
         state.renderMode  = entity.getRenderMode();
         state.partialTick = pt;
-        // TODO: extract all fields needed by RenderMode.transform() instead of entity ref.
         state.entity      = entity;
     }
 
@@ -68,7 +67,7 @@ public class PotatoProjectileRenderer
         public float bbYSize;
         public PotatoProjectileRenderMode renderMode;
         public float partialTick;
-        /** Live entity reference – TODO: extract into pure fields. */
+        /** Used by {@link com.simibubi.create.api.equipment.potatoCannon.PotatoProjectileRenderMode} transforms. */
         public PotatoProjectileEntity entity;
     }
 }

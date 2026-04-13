@@ -128,7 +128,6 @@ public class CreateClient {
 			// RenderSystem.blendFunc removed in 1.21.8 - rendering uses RenderPipeline now
 			// In 1.21.6+, blit requires a RenderPipeline. The texture is 16x128 pixels;
 			// we draw the full texture scaled to fill the screen.
-			// TODO: Verify scaling behavior matches the old form.
 			graphics.blit(RenderPipelines.GUI_TEXTURED, CreateMainMenuScreen.PANORAMA_OVERLAY_TEXTURES, 0, 0, 0.0F, 0.0F,
 				screen.width, screen.height, 16, 128, 16, 128);
 

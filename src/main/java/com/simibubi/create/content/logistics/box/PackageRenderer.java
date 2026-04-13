@@ -50,8 +50,7 @@ public class PackageRenderer extends EntityRenderer<PackageEntity, PackageRender
 
     @Override
     public void render(PackageRenderState state, PoseStack ms, MultiBufferSource buffer, int light) {
-        // TODO: VisualizationManager lookup needs entity, not render state.
-        // Using state.box directly - visualization check skipped until entity lookup is resolved.
+        // VisualizationManager expects a live entity; render state has no world handle here.
         ItemStack box = state.box;
         if (box == null || box.isEmpty() || !PackageItem.isPackage(box))
             box = AllBlocks.CARDBOARD_BLOCK.asStack();

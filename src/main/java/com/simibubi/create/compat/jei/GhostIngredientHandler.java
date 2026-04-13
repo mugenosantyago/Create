@@ -51,7 +51,7 @@ public class GhostIngredientHandler<T extends GhostItemMenu<?>>
 
 	@Override
 	public boolean shouldHighlightTargets() {
-		// TODO change to false and highlight the slots ourself in some better way
+		// Keep JEI's default slot highlight; custom outlines would require per-screen layout work.
 		return true;
 	}
 

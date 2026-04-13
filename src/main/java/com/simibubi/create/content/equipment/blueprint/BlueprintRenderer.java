@@ -46,7 +46,7 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity, Blueprint
     public void extractRenderState(BlueprintEntity entity, BlueprintRenderState state, float pt) {
         super.extractRenderState(entity, state, pt);
         state.yRot = Mth.lerp(pt, entity.yRotO, entity.getYRot());
-        // Store entity reference as workaround; TODO: extract all needed fields properly.
+        // Entity kept for item model resolution and section data; yaw is extracted to state.
         state.entity = entity;
     }
 
@@ -141,7 +141,7 @@ public class BlueprintRenderer extends EntityRenderer<BlueprintEntity, Blueprint
     }
 
     public static class BlueprintRenderState extends EntityRenderState {
-        /** Live entity reference – TODO: extract all fields properly. */
+        /** Entity reference for crafting grid sections and level access during render. */
         public BlueprintEntity entity;
         public float yRot;
     }

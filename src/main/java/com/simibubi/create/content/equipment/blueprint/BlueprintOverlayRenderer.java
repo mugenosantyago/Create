@@ -52,7 +52,7 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-// TODO - Split up into specific overlays
+/** In-world blueprint / shopping overlay (kept as one class for shared static state). */
 public class BlueprintOverlayRenderer {
 
 	public static final GuiLayer OVERLAY = BlueprintOverlayRenderer::renderOverlay;

@@ -8,11 +8,11 @@ package com.simibubi.create.foundation.item;
  * Custom rendering should be done via a {@link net.minecraft.client.renderer.entity.layers.RenderLayer}
  * subclass registered on the relevant entity renderer.
  *
- * <p>TODO: Update all usages of this interface to the new EntityRenderState render layer API.
+ * <p>Create no longer registers implementations; custom armor visuals use dedicated {@link
+ * net.minecraft.client.renderer.entity.layers.RenderLayer}s (e.g. backtank, diving helmet).
  *
- * @deprecated Superseded by the 1.21.2 EntityRenderState rendering system.
+ * @deprecated Superseded by the 1.21.2+ EntityRenderState rendering system.
  */
 @Deprecated(forRemoval = true)
 public interface CustomRenderedArmorItem {
-    // Interface kept as stub for gradual migration.
 }
