@@ -1,7 +1,5 @@
 package com.simibubi.create;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.simibubi.create.compat.Mods;
 import com.simibubi.create.content.legacy.ChromaticCompoundColor;
 import com.simibubi.create.compat.ftb.FTBIntegration;
@@ -93,33 +91,37 @@ public class CreateClient {
 	}
 
 	public static void clientInit(final FMLClientSetupEvent event) {
-		//BUFFER_CACHE.registerCompartment(CachedBufferer.GENERIC_BLOCK);
-		//BUFFER_CACHE.registerCompartment(CachedPartialBuffers.partial);
-		//BUFFER_CACHE.registerCompartment(CachedBufferer.DIRECTIONAL_PARTIAL);
-		//BUFFER_CACHE.registerCompartment(KineticBlockEntityRenderer.KINETIC_BLOCK);
-		//BUFFER_CACHE.registerCompartment(WaterWheelRenderer.WATER_WHEEL);
-		//BUFFER_CACHE.registerCompartment(ContraptionRenderInfo.CONTRAPTION, 20);
-		//BUFFER_CACHE.registerCompartment(WorldSectionElement.DOC_WORLD_SECTION, 20);
+		// FMLClientSetupEvent may run on a worker thread; anything touching GL / RenderSystem
+		// (e.g. Catnip ConfigScreen / UIRenderHelper) must run on the game thread.
+		event.enqueueWork(() -> {
+			//BUFFER_CACHE.registerCompartment(CachedBufferer.GENERIC_BLOCK);
+			//BUFFER_CACHE.registerCompartment(CachedPartialBuffers.partial);
+			//BUFFER_CACHE.registerCompartment(CachedBufferer.DIRECTIONAL_PARTIAL);
+			//BUFFER_CACHE.registerCompartment(KineticBlockEntityRenderer.KINETIC_BLOCK);
+			//BUFFER_CACHE.registerCompartment(WaterWheelRenderer.WATER_WHEEL);
+			//BUFFER_CACHE.registerCompartment(ContraptionRenderInfo.CONTRAPTION, 20);
+			//BUFFER_CACHE.registerCompartment(WorldSectionElement.DOC_WORLD_SECTION, 20);
 
-		SuperByteBufferCache.getInstance().registerCompartment(CachedBuffers.PARTIAL);
-		SuperByteBufferCache.getInstance().registerCompartment(CachedBuffers.DIRECTIONAL_PARTIAL);
-		SuperByteBufferCache.getInstance().registerCompartment(KineticBlockEntityRenderer.KINETIC_BLOCK);
-		SuperByteBufferCache.getInstance().registerCompartment(WaterWheelRenderer.WATER_WHEEL);
-		SuperByteBufferCache.getInstance().registerCompartment(ContraptionEntityRenderer.CONTRAPTION, 20);
+			SuperByteBufferCache.getInstance().registerCompartment(CachedBuffers.PARTIAL);
+			SuperByteBufferCache.getInstance().registerCompartment(CachedBuffers.DIRECTIONAL_PARTIAL);
+			SuperByteBufferCache.getInstance().registerCompartment(KineticBlockEntityRenderer.KINETIC_BLOCK);
+			SuperByteBufferCache.getInstance().registerCompartment(WaterWheelRenderer.WATER_WHEEL);
+			SuperByteBufferCache.getInstance().registerCompartment(ContraptionEntityRenderer.CONTRAPTION, 20);
 
-		AllPartialModels.init();
+			AllPartialModels.init();
 
-		// Register ItemTintSources for animated item colors (1.21.4+ Client Items system)
-		// ID_MAPPER is exposed via accesstransformer.cfg
-		ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer0"), ChromaticCompoundColor.Layer0.CODEC);
-		ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer1"), ChromaticCompoundColor.Layer1.CODEC);
-		ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer2"), ChromaticCompoundColor.Layer2.CODEC);
+			// Register ItemTintSources for animated item colors (1.21.4+ Client Items system)
+			// ID_MAPPER is exposed via accesstransformer.cfg
+			ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer0"), ChromaticCompoundColor.Layer0.CODEC);
+			ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer1"), ChromaticCompoundColor.Layer1.CODEC);
+			ItemTintSources.ID_MAPPER.put(Create.asResource("chromatic_compound_layer2"), ChromaticCompoundColor.Layer2.CODEC);
 
-		//AllPonderTags.register();
-		//PonderIndex.register();
-		PonderIndex.addPlugin(new CreatePonderPlugin());
+			//AllPonderTags.register();
+			//PonderIndex.register();
+			PonderIndex.addPlugin(new CreatePonderPlugin());
 
-		setupConfigUIBackground();
+			setupConfigUIBackground();
+		});
 	}
 
 	private static void setupConfigUIBackground() {
