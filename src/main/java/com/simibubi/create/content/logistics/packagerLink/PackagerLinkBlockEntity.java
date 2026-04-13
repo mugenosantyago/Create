@@ -73,7 +73,7 @@ public class PackagerLinkBlockEntity extends LinkWithBulbBlockEntity {
 			.scale(f * 0.125));
 
 		pulse();
-		level.addParticle(new WiFiParticle.Data(), vec3.x, vec3.y, vec3.z, 1, face == AttachFace.CEILING ? -1 : 1, 1);
+		level.addParticle(new WiFiParticleData(), vec3.x, vec3.y, vec3.z, 1, face == AttachFace.CEILING ? -1 : 1, 1);
 	}
 
 	public Pair<PackagerBlockEntity, PackagingRequest> processRequest(ItemStack stack, int amount, String address,

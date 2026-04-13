@@ -1,12 +1,10 @@
 package com.simibubi.create.content.equipment.bell;
 
 import com.mojang.math.Axis;
-import com.simibubi.create.AllParticleTypes;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleType;
 import org.joml.Quaternionf;
 
 public class SoulBaseParticle extends CustomRotationParticle {
@@ -39,15 +37,4 @@ public class SoulBaseParticle extends CustomRotationParticle {
 		return Axis.XP.rotationDegrees(90);
 	}
 
-	public static class Data extends BasicParticleData<SoulBaseParticle> {
-		@Override
-		public IBasicParticleFactory<SoulBaseParticle> getBasicFactory() {
-			return SoulBaseParticle::new;
-		}
-
-		@Override
-		public ParticleType<?> getType() {
-			return AllParticleTypes.SOUL_BASE.get();
-		}
-	}
 }

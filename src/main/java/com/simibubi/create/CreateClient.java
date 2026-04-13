@@ -20,6 +20,7 @@ import com.simibubi.create.content.schematics.client.SchematicAndQuillHandler;
 import com.simibubi.create.content.schematics.client.SchematicHandler;
 import com.simibubi.create.content.trains.GlobalRailwayManager;
 import com.simibubi.create.foundation.ClientResourceReloadListener;
+import com.simibubi.create.foundation.particle.CreateParticleProviders;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsClient;
 import com.simibubi.create.foundation.model.ModelSwapper;
 import com.simibubi.create.foundation.ponder.CreatePonderPlugin;
@@ -82,7 +83,7 @@ public class CreateClient {
 		modEventBus.addListener(CreateClient::clientInit);
 		modEventBus.addListener(CreateClient::registerCopycatBlockColors);
 		modEventBus.addListener(AllFluids::registerFluidClientExtensions);
-		modEventBus.addListener(AllParticleTypes::registerFactories);
+		modEventBus.addListener(CreateParticleProviders::register);
 
 		AllInstanceTypes.init();
 

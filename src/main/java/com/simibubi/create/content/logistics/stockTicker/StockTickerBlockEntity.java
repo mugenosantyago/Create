@@ -21,7 +21,7 @@ import com.simibubi.create.content.logistics.filter.FilterItemStack;
 import com.simibubi.create.content.logistics.packager.IdentifiedInventory;
 import com.simibubi.create.content.logistics.packager.InventorySummary;
 import com.simibubi.create.content.logistics.packagerLink.LogisticallyLinkedBehaviour.RequestType;
-import com.simibubi.create.content.logistics.packagerLink.WiFiParticle;
+import com.simibubi.create.content.logistics.packagerLink.WiFiParticleData;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.SmartInventory;
@@ -291,7 +291,7 @@ public class StockTickerBlockEntity extends StockCheckingBlockEntity implements 
 	public void playEffect() {
 		AllSoundEvents.STOCK_LINK.playAt(level, worldPosition, 1.0f, 1.0f, false);
 		Vec3 vec3 = Vec3.atCenterOf(worldPosition);
-		level.addParticle(new WiFiParticle.Data(), vec3.x, vec3.y, vec3.z, 1, 1, 1);
+		level.addParticle(new WiFiParticleData(), vec3.x, vec3.y, vec3.z, 1, 1, 1);
 	}
 
 	public class CategoryMenuProvider implements MenuProvider {
