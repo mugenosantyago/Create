@@ -2,7 +2,9 @@ package com.simibubi.create.foundation.item.render;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.simibubi.create.foundation.item.CustomArmPoseItem;
+import com.simibubi.create.content.equipment.potatoCannon.PotatoCannonItem;
+import com.simibubi.create.content.equipment.zapper.ZapperItem;
+import com.simibubi.create.foundation.item.CustomArmPoseItemMarker;
 
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -32,9 +34,15 @@ public class SimpleCustomRenderer implements IClientItemExtensions {
 	@Override
 	@Nullable
 	public ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
-		if (itemStack.getItem() instanceof CustomArmPoseItem armPoseItem
-			&& entityLiving instanceof AbstractClientPlayer clientPlayer) {
-			return armPoseItem.getArmPose(itemStack, clientPlayer, hand);
+		if (!(entityLiving instanceof AbstractClientPlayer clientPlayer))
+			return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
+		Item item = itemStack.getItem();
+		if (!(item instanceof CustomArmPoseItemMarker))
+			return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
+		if (item instanceof PotatoCannonItem || item instanceof ZapperItem) {
+			if (!clientPlayer.swinging)
+				return ArmPose.CROSSBOW_HOLD;
+			return null;
 		}
 		return IClientItemExtensions.super.getArmPose(entityLiving, hand, itemStack);
 	}

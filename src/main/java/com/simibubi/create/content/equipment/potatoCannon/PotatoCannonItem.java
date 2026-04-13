@@ -8,22 +8,18 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.AllEntityTypes;
-import com.simibubi.create.CreateClient;
 import com.simibubi.create.api.equipment.potatoCannon.PotatoCannonProjectileType;
 import com.simibubi.create.content.equipment.armor.BacktankUtil;
 import com.simibubi.create.content.equipment.zapper.ShootableGadgetItemMethods;
 import com.simibubi.create.foundation.item.ItemHelper;
-import com.simibubi.create.foundation.item.CustomArmPoseItem;
+import com.simibubi.create.foundation.item.CustomArmPoseItemMarker;
+import com.simibubi.create.foundation.utility.CreateClientAccess;
 import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.foundation.utility.GlobalRegistryAccess;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel.ArmPose;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -53,7 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmPoseItem {
+public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmPoseItemMarker {
 	private static final Predicate<ItemStack> AMMO_PREDICATE = s -> {
 		RegistryAccess access = GlobalRegistryAccess.get();
 		return access != null
@@ -104,7 +100,7 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 		PotatoCannonProjectileType projectileType = ammo.type();
 
 		if (level.isClientSide) {
-			CreateClient.POTATO_CANNON_RENDER_HANDLER.dontAnimateItem(hand);
+			CreateClientAccess.potatoCannonDontAnimateItem(hand);
 			return InteractionResult.SUCCESS;
 		}
 
@@ -175,7 +171,7 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-		LocalPlayer player = Minecraft.getInstance().player;
+		Player player = CreateClientAccess.getClientSidePlayer();
 		if (player == null) {
 			// super.appendHoverText(stack, context, tooltip, flag);;
 			return;
@@ -282,14 +278,6 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 	@Override
 	public ItemUseAnimation getUseAnimation(ItemStack stack) {
 		return ItemUseAnimation.NONE;
-	}
-
-	@Nullable
-	public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
-		if (!player.swinging) {
-			return ArmPose.CROSSBOW_HOLD;
-		}
-		return null;
 	}
 
 	public record Ammo(ItemStack stack, PotatoCannonProjectileType type) {

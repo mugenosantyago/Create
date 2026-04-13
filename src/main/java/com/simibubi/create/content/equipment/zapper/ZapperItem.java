@@ -10,16 +10,14 @@ import org.jetbrains.annotations.Nullable;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.AllTags.AllBlockTags;
-import com.simibubi.create.CreateClient;
-import com.simibubi.create.foundation.item.CustomArmPoseItem;
+import com.simibubi.create.foundation.item.CustomArmPoseItemMarker;
+import com.simibubi.create.foundation.utility.CreateClientAccess;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 
 import net.createmod.catnip.nbt.NBTProcessors;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.model.HumanoidModel.ArmPose;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -47,7 +45,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-public abstract class ZapperItem extends Item implements CustomArmPoseItem {
+public abstract class ZapperItem extends Item implements CustomArmPoseItemMarker {
 
 	public ZapperItem(Properties properties) {
 		super(properties.stacksTo(1));
@@ -160,7 +158,7 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 
 		// Client side
 		if (world.isClientSide) {
-			CreateClient.ZAPPER_RENDER_HANDLER.dontAnimateItem(hand);
+			CreateClientAccess.zapperDontAnimateItem(hand);
 			return InteractionResult.SUCCESS;
 		}
 
@@ -202,14 +200,6 @@ public abstract class ZapperItem extends Item implements CustomArmPoseItem {
 	@Override
 	public ItemUseAnimation getUseAnimation(ItemStack stack) {
 		return ItemUseAnimation.NONE;
-	}
-
-	@Nullable
-	public ArmPose getArmPose(ItemStack stack, AbstractClientPlayer player, InteractionHand hand) {
-		if (!player.swinging) {
-			return ArmPose.CROSSBOW_HOLD;
-		}
-		return null;
 	}
 
 	public static void setBlockEntityData(Level world, BlockPos pos, BlockState state, CompoundTag data, Player player) {
