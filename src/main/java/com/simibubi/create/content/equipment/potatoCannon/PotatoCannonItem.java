@@ -27,6 +27,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -53,8 +54,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmPoseItem {
-	private static final Predicate<ItemStack> AMMO_PREDICATE = s ->
-		PotatoCannonProjectileType.getTypeForItem(GlobalRegistryAccess.getOrThrow(), s.getItem()).isPresent();
+	private static final Predicate<ItemStack> AMMO_PREDICATE = s -> {
+		RegistryAccess access = GlobalRegistryAccess.get();
+		return access != null
+			&& PotatoCannonProjectileType.getTypeForItem(access, s.getItem()).isPresent();
+	};
 
 	public PotatoCannonItem(Properties properties) {
 		super(properties);

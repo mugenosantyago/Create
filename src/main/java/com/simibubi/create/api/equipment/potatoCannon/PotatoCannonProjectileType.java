@@ -53,10 +53,10 @@ public record PotatoCannonProjectileType(HolderSet<Item> items, int reloadTicks,
 
 	public static Optional<Reference<PotatoCannonProjectileType>> getTypeForItem(RegistryAccess registryAccess, Item item) {
 		// Cache this if it causes performance issues, but it probably won't
-		return registryAccess.lookupOrThrow(CreateRegistries.POTATO_PROJECTILE_TYPE)
-			.listElements()
-			.filter(ref -> ref.value().items.contains(item.builtInRegistryHolder()))
-			.findFirst();
+		return registryAccess.lookup(CreateRegistries.POTATO_PROJECTILE_TYPE)
+			.flatMap(reg -> reg.listElements()
+				.filter(ref -> ref.value().items.contains(item.builtInRegistryHolder()))
+				.findFirst());
 	}
 
 	public boolean preEntityHit(ItemStack stack, EntityHitResult ray) {
