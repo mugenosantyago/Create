@@ -64,6 +64,7 @@ import net.createmod.catnip.registry.RegisteredObjectsHelper;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
@@ -75,6 +76,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -327,6 +329,24 @@ public class BuilderTransformers {
 	}
 
 	public static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> backtank(Supplier<ItemLike> drop) {
+		return backtankLootItem(() -> drop.get()
+			.asItem());
+	}
+
+	/**
+	 * Resolves the dropped armor item from the registry when loot is built, so common block registration
+	 * does not need a static reference to another registrate class (which may pull client-only types on dedicated servers).
+	 */
+	public static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> backtankLootItem(ResourceLocation dropItemId) {
+		return backtankLootItem(() -> {
+			Item item = BuiltInRegistries.ITEM.getValue(dropItemId);
+			if (item == null)
+				throw new IllegalStateException("Missing backtank loot item: " + dropItemId);
+			return item;
+		});
+	}
+
+	private static <B extends Block, P> NonNullUnaryOperator<BlockBuilder<B, P>> backtankLootItem(Supplier<Item> dropItem) {
 		return b -> b.defaultBlockstate()
 			.transform(pickaxeOnly())
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
@@ -337,7 +357,7 @@ public class BuilderTransformers {
 				lt.add(block, builder.withPool(LootPool.lootPool()
 					.when(survivesExplosion)
 					.setRolls(ConstantValue.exactly(1))
-					.add(LootItem.lootTableItem(drop.get())
+					.add(LootItem.lootTableItem(dropItem.get())
 						.apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
 							.include(AllDataComponents.BACKTANK_AIR)))));
 			});

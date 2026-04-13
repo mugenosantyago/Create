@@ -2085,13 +2085,13 @@ public class AllBlocks {
 	public static final BlockEntry<BacktankBlock> COPPER_BACKTANK =
 		REGISTRATE.block("copper_backtank", BacktankBlock::new)
 			.initialProperties(SharedProperties::copperMetal)
-			.transform(BuilderTransformers.backtank(AllItems.COPPER_BACKTANK::get))
+			.transform(BuilderTransformers.backtankLootItem(Create.asResource("copper_backtank")))
 			.register();
 
 	public static final BlockEntry<BacktankBlock> NETHERITE_BACKTANK =
 		REGISTRATE.block("netherite_backtank", BacktankBlock::new)
 			.initialProperties(SharedProperties::netheriteMetal)
-			.transform(BuilderTransformers.backtank(AllItems.NETHERITE_BACKTANK::get))
+			.transform(BuilderTransformers.backtankLootItem(Create.asResource("netherite_backtank")))
 			.register();
 
 	public static final BlockEntry<PeculiarBellBlock> PECULIAR_BELL =
