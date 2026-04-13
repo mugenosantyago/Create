@@ -124,10 +124,13 @@ tasks.register("patchPonderJar") {
     dependsOn compilePonderPatchJava
     dependsOn configurations.ponderOriginal
 
+    def patchedMixinsJson = layout.projectDirectory.file("src/ponderPatch/resources/ponder-common.mixins.json")
+
     def outProvider = layout.buildDirectory.file("ponder-patch/ponder-neoforge-${ponder_version}+mc${minecraft_version}.jar")
     outputs.file(outProvider)
     inputs.files({ configurations.ponderOriginal.files })
     inputs.dir({ sourceSets.ponderPatch.java.destinationDirectory })
+    inputs.file(patchedMixinsJson)
 
     doLast {
         def orig = configurations.ponderOriginal.files.find { it.name.startsWith("ponder-neoforge") && it.name.endsWith(".jar") }
@@ -156,6 +159,8 @@ tasks.register("patchPonderJar") {
                     zos.putNextEntry(zosEntry)
                     if (replacements.contains(e.name)) {
                         new File(classRoot, e.name).withInputStream { stream -> stream.transferTo(zos) }
+                    } else if (e.name == "ponder-common.mixins.json") {
+                        patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }

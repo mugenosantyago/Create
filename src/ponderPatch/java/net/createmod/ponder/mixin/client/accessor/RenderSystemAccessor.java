@@ -3,15 +3,13 @@ package net.createmod.ponder.mixin.client.accessor;
 import java.lang.reflect.Field;
 
 import org.joml.Vector3f;
-import org.spongepowered.asm.mixin.Mixin;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 
 /**
- * MC 1.21.8: RenderSystem no longer stores shader lights as {@code Vector3f[]}.
- * Ponder still expects this helper; provide a stable fallback to keep diffuse shading.
+ * MC 1.21.8: vanilla no longer exposes shader lights as {@code Vector3f[]} on
+ * {@link com.mojang.blaze3d.systems.RenderSystem}. The upstream Ponder build still used a
+ * mixin {@code @Accessor} here; that entry is removed from {@code ponder-common.mixins.json}
+ * in {@code patchPonderJar} so this type is a plain helper (not a Mixin interface).
  */
-@Mixin(value = RenderSystem.class, remap = false)
 public interface RenderSystemAccessor {
 	Vector3f FALLBACK_LIGHT_0 = new Vector3f(0.2f, 1.0f, -0.7f).normalize();
 	Vector3f FALLBACK_LIGHT_1 = new Vector3f(-0.2f, 1.0f, 0.7f).normalize();
