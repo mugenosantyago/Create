@@ -60,6 +60,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(Create.ID)
@@ -154,8 +155,11 @@ public class Create {
 		modEventBus.addListener(Create::init);
 		modEventBus.addListener(Create::onRegister);
 		modEventBus.addListener(AllEntityTypes::registerEntityAttributes);
-		modEventBus.addListener(EventPriority.HIGHEST, CreateDatagen::gatherDataHighPriority);
-		modEventBus.addListener(EventPriority.LOWEST, CreateDatagen::gatherData);
+		// NeoForge 21.8+: GatherDataEvent is abstract — subscribe to concrete Server/Client types.
+		modEventBus.addListener(EventPriority.HIGHEST, (GatherDataEvent.Server e) -> CreateDatagen.gatherDataHighPriority(e));
+		modEventBus.addListener(EventPriority.HIGHEST, (GatherDataEvent.Client e) -> CreateDatagen.gatherDataHighPriority(e));
+		modEventBus.addListener(EventPriority.LOWEST, (GatherDataEvent.Server e) -> CreateDatagen.gatherData(e));
+		modEventBus.addListener(EventPriority.LOWEST, (GatherDataEvent.Client e) -> CreateDatagen.gatherData(e));
 		modEventBus.addListener(AllSoundEvents::register);
 
 		// FIXME: this is not thread-safe
