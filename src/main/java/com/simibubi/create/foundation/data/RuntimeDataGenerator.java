@@ -26,12 +26,9 @@ import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.createmod.catnip.codecs.CatnipCodecUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ConcretePowderBlock;
@@ -130,7 +127,11 @@ public class RuntimeDataGenerator {
 				ResourceLocation tag = Create.asResource("runtime_generated/compat/" + itemId.getNamespace() + "/" + base.getPath());
 				insertIntoTag(tag, itemId);
 
-				simpleWoodRecipe(TagKey.create(Registries.ITEM, tag), planksId, planksCount);
+				// Do not use a tag-based ingredient here: HolderSet.emptyNamed (used when the tag is not
+				// registered yet) cannot be encoded into recipe JSON, and BuiltInRegistries.ITEM.get(tag)
+				// throws while tags are still being constructed (AddPackFindersEvent). The tag file is still
+				// emitted for datapack consumers; this recipe targets the concrete item we just tagged.
+				simpleWoodRecipe(itemId, planksId, planksCount);
 			}
 
 			if (!path.contains("_wood") && !path.contains("_hyphae") && BuiltInRegistries.ITEM.containsKey(planksId)) {
@@ -168,16 +169,6 @@ public class RuntimeDataGenerator {
 		if (BuiltInRegistries.ITEM.containsKey(outputId)) {
 			new StandardBuilder<>(inputId.getNamespace(), CuttingRecipe::new, inputId.getPath(), outputId.getPath())
 				.require(BuiltInRegistries.ITEM.getValue(inputId))
-				.output(BuiltInRegistries.ITEM.getValue(outputId), amount)
-				.duration(50)
-				.build();
-		}
-	}
-
-	private static void simpleWoodRecipe(TagKey<Item> inputTag, ResourceLocation outputId, int amount) {
-		if (BuiltInRegistries.ITEM.containsKey(outputId)) {
-			new StandardBuilder<>(inputTag.location().getNamespace(), CuttingRecipe::new, "tag_" + inputTag.location().getPath(), outputId.getPath())
-				.require(inputTag)
 				.output(BuiltInRegistries.ITEM.getValue(outputId), amount)
 				.duration(50)
 				.build();

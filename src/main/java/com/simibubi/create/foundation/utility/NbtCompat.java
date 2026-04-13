@@ -125,20 +125,10 @@ public class NbtCompat {
 
 	/** Compatibility replacement for removed Ingredient.of(TagKey<Item>) */
 	public static net.minecraft.world.item.crafting.Ingredient ingredientFromTag(net.minecraft.tags.TagKey<net.minecraft.world.item.Item> tag) {
-		// BuiltInRegistries.ITEM.get(tag) dereferences the tag; that is illegal while registries/tags are still
-		// being constructed (e.g. AddPackFindersEvent when RuntimeDataGenerator emits compat tags + recipes).
-		net.minecraft.core.HolderSet<net.minecraft.world.item.Item> holderSet;
-		try {
-			var named = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(tag);
-			if (named.isPresent()) {
-				holderSet = named.get();
-			} else {
-				holderSet = net.minecraft.core.HolderSet.emptyNamed(net.minecraft.core.registries.BuiltInRegistries.ITEM, tag);
-			}
-		} catch (UnsupportedOperationException e) {
-			holderSet = net.minecraft.core.HolderSet.emptyNamed(net.minecraft.core.registries.BuiltInRegistries.ITEM, tag);
-		}
-		return net.minecraft.world.item.crafting.Ingredient.of(holderSet);
+		net.minecraft.core.HolderSet.Named<net.minecraft.world.item.Item> namedSet =
+			net.minecraft.core.registries.BuiltInRegistries.ITEM.get(tag)
+				.orElseGet(() -> net.minecraft.core.HolderSet.emptyNamed(net.minecraft.core.registries.BuiltInRegistries.ITEM, tag));
+		return net.minecraft.world.item.crafting.Ingredient.of(namedSet);
 	}
 
 	/** Compatibility replacement for ItemStackHandler.serializeNBT(Provider) */
