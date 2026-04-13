@@ -26,7 +26,10 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.SimpleRemapper
 
@@ -153,7 +156,8 @@ tasks.register("patchPonderJar") {
         def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
         def replacements = [
             "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class",
-            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class"
+            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class",
+            "net/createmod/ponder/mixin/client/accessor/GameRendererAccessor.class"
         ]
         // Compiled outside mixin-owned package; upstream still references the old accessor FQN — remapped below.
         def additions = [
@@ -169,6 +173,45 @@ tasks.register("patchPonderJar") {
             def reader = new ClassReader(bytes)
             def writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
             reader.accept(new ClassRemapper(writer, itemRendererAccessorRemapper), ClassReader.EXPAND_FRAMES)
+            writer.toByteArray()
+        }
+        /** Ponder calls {@code catnip$callGetFov(...)D}; MC 1.21.8 {@code GameRenderer#getFov} returns float. */
+        def patchVecHelperCallGetFovReturnType = { byte[] bytes ->
+            def reader = new ClassReader(bytes)
+            def writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
+            reader.accept(new ClassVisitor(Opcodes.ASM9, writer) {
+                @Override
+                MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                    MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions)
+                    return new MethodVisitor(Opcodes.ASM9, mv) {
+                        private boolean skipNextD2f = false
+
+                        @Override
+                        void visitMethodInsn(int opcode, String owner, String methodName, String methodDesc, boolean isInterface) {
+                            if (opcode == Opcodes.INVOKEINTERFACE
+                                    && owner == "net/createmod/ponder/mixin/client/accessor/GameRendererAccessor"
+                                    && methodName == "catnip\$callGetFov"
+                                    && methodDesc == "(Lnet/minecraft/client/Camera;FZ)D") {
+                                skipNextD2f = true
+                                super.visitMethodInsn(opcode, owner, methodName, "(Lnet/minecraft/client/Camera;FZ)F", isInterface)
+                            } else {
+                                super.visitMethodInsn(opcode, owner, methodName, methodDesc, isInterface)
+                            }
+                        }
+
+                        @Override
+                        void visitInsn(int opcode) {
+                            if (skipNextD2f) {
+                                skipNextD2f = false
+                                if (opcode == Opcodes.D2F) {
+                                    return
+                                }
+                            }
+                            super.visitInsn(opcode)
+                        }
+                    }
+                }
+            }, ClassReader.EXPAND_FRAMES)
             writer.toByteArray()
         }
         (replacements + additions).each { entry ->
@@ -196,7 +239,11 @@ tasks.register("patchPonderJar") {
                         patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
                     } else if (e.name.endsWith(".class")) {
                         def bytes = zip.getInputStream(e).bytes
-                        zos.write(remapItemRendererAccessorRefs(bytes))
+                        bytes = remapItemRendererAccessorRefs(bytes)
+                        if (e.name == "net/createmod/catnip/math/VecHelper.class") {
+                            bytes = patchVecHelperCallGetFovReturnType(bytes)
+                        }
+                        zos.write(bytes)
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }

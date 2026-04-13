@@ -126,14 +126,11 @@ public class BuilderTransformers {
 	public static <B extends CopycatBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> copycat() {
 		return b -> b.initialProperties(SharedProperties::softMetal)
 			.defaultBlockstate()
-			.initialProperties(SharedProperties::softMetal)
 			.properties(p -> p.noOcclusion()
 				.mapColor(MapColor.NONE)
 				.isValidSpawn((state, level, pos, type) -> false))
-			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.SOLID)
+			// Registrate 1.3.x / MC 1.21.8: only one render layer per block.
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT)
-			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
-			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.TRANSLUCENT)
 			.color(() -> CopycatBlock::wrappedColor)
 			.transform(TagGen.axeOrPickaxe());
 	}
