@@ -125,7 +125,10 @@ tasks.register("patchPonderJar") {
     inputs.dir({ sourceSets.ponderPatch.java.destinationDirectory })
 
     doLast {
-        def orig = configurations.ponderOriginal.singleFile
+        def orig = configurations.ponderOriginal.files.find { it.name.startsWith("ponder-neoforge") && it.name.endsWith(".jar") }
+        if (orig == null) {
+            throw new GradleException("Could not find ponder-neoforge jar in ponderOriginal: ${configurations.ponderOriginal.files.collect { it.name }}")
+        }
         def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
         def classFile = new File(classRoot, "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class")
         if (!classFile.exists()) {
@@ -179,8 +182,6 @@ repositories {
 }
 
 dependencies {
-    ponderPatchCompileClasspath.extendsFrom configurations.compileClasspath
-
     // Registrate MC1.21.8-1.3.0 built locally from tterrag1098/Registrate 1.21.8/dev branch.
     // Uses com.tterrag.registrate package (original package name maintained).
     jarJar(implementation("com.tterrag.registrate:Registrate:MC1.21.8-1.3.0+96c1702"))
@@ -190,12 +191,12 @@ dependencies {
     jarJar(implementation("dev.engine-room.flywheel:flywheel-neoforge-1.21.8:$flywheel_version"))
     // vanillin is runtime-only so no compileOnly stub needed for it
 
-    // Ponder JiJ: use patchPonderJar output so RenderTypeAccessor keeps @Mixin without duplicating
-    // net.createmod.ponder packages in the create module (JPMS: two exporters of the same package).
-    ponderOriginal("net.createmod.ponder:ponder-neoforge:$ponder_version+mc$minecraft_version")
-    jarJar(implementation(files(layout.buildDirectory.file("ponder-patch/ponder-neoforge-$ponder_version+mc$minecraft_version.jar"))) {
-        builtBy patchPonderJar
-    })
+    // Ponder JiJ (unpatched at resolve time; replacePonderInCreateJar swaps nested jar after :jar — avoids
+    // Gradle cycles and JPMS duplicate export if we shadowed net.createmod.ponder in main sources).
+    ponderOriginal("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}") {
+        transitive = false
+    }
+    jarJar(implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"))
 
     //compileOnly("mezz.jei:jei-$minecraft_version-common-api:$jei_version")
     //compileOnly("mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version")
@@ -243,7 +244,51 @@ dependencies {
 }
 
 tasks.named("compilePonderPatchJava", JavaCompile) {
-    dependsOn compileJava
+    // Same mapped deps + AT as main; must not depend on compileJava (jarJar would pull patchPonderJar into compile graph).
+    dependsOn tasks.named("createMinecraftArtifacts")
+    classpath = sourceSets.main.compileClasspath
+}
+
+tasks.register("replacePonderInCreateJar") {
+    group = "build"
+    description = "Swap META-INF/jarjar/ponder-neoforge-*.jar in the Create jar with patchPonderJar output."
+    dependsOn jar
+    dependsOn patchPonderJar
+    inputs.files(patchPonderJar.outputs.files)
+    inputs.file(jar.archiveFile)
+
+    doLast {
+        def patchedPonder = patchPonderJar.outputs.files.singleFile
+        def mainJarFile = jar.archiveFile.get().asFile
+        def tmp = layout.buildDirectory.file("tmp/create-with-patched-ponder.jar").get().asFile
+        tmp.parentFile.mkdirs()
+        def zip = new ZipFile(mainJarFile)
+        try {
+            new ZipOutputStream(new FileOutputStream(tmp)).withCloseable { zos ->
+                Collections.list(zip.entries()).each { ZipEntry e ->
+                    if (e.isDirectory()) return
+                    def zosEntry = new ZipEntry(e)
+                    zos.putNextEntry(zosEntry)
+                    if (e.name.startsWith("META-INF/jarjar/") && e.name.contains("ponder-neoforge") && e.name.endsWith(".jar")) {
+                        patchedPonder.withInputStream { stream -> stream.transferTo(zos) }
+                    } else {
+                        zip.getInputStream(e).transferTo(zos)
+                    }
+                    zos.closeEntry()
+                }
+            }
+        } finally {
+            zip.close()
+        }
+        tmp.withInputStream { ins ->
+            mainJarFile.withOutputStream { outs -> ins.transferTo(outs) }
+        }
+    }
+}
+
+tasks.named("jar") {
+    dependsOn patchPonderJar
+    finalizedBy replacePonderInCreateJar
 }
 
 sourceSets.main {
