@@ -3,7 +3,6 @@ package com.simibubi.create.content.logistics.chute;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.logistics.chute.ChuteBlock.Shape;
 
@@ -23,7 +22,9 @@ public class ChuteShapes {
 	public static final VoxelShape COLLISION_MASK = Block.box(0, 0, 0, 16, 24, 16);
 
 	public static VoxelShape createShape(BlockState state) {
-		if (AllBlocks.SMART_CHUTE.has(state))
+		// Use instanceof instead of AllBlocks.SMART_CHUTE.has(state): BlockEntry.has resolves the DeferredHolder,
+		// which throws if the registry is rolling back / the key is temporarily unbound (parallel loading errors).
+		if (state.getBlock() instanceof SmartChuteBlock)
 			return Shapes.block();
 		
 		Direction direction = state.getValue(ChuteBlock.FACING);
