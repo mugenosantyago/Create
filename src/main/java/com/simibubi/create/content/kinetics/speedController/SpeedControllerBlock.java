@@ -58,7 +58,7 @@ public class SpeedControllerBlock extends HorizontalAxisKineticBlock implements 
 	@Override
 	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
 		BlockPos fromPos = pos.relative(_orientation.getFront());
-		if (neighbourPos.equals(pos.above()))
+		if (fromPos.equals(pos.above()))
 			withBlockEntityDo(world, pos, SpeedControllerBlockEntity::updateBracket);
 	}
 

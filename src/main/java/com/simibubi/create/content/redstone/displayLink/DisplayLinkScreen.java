@@ -112,12 +112,9 @@ public class DisplayLinkScreen extends AbstractSimiScreen {
 		int x = guiLeft;
 		int y = guiTop;
 
-		Block sourceBlock = sourceState.getBlock();
-		Block targetBlock = targetState.getBlock();
-
-		asItem = sourceBlock.getCloneItemStack(level, blockEntity.getSourcePosition(), sourceState, false);
+		asItem = sourceState.getCloneItemStack(level, blockEntity.getSourcePosition(), false);
 		ItemStack sourceIcon = asItem == null || asItem.isEmpty() ? FALLBACK : asItem;
-		asItem = targetBlock.getCloneItemStack(level, blockEntity.getTargetPosition(), targetState, false);
+		asItem = targetState.getCloneItemStack(level, blockEntity.getTargetPosition(), false);
 		ItemStack targetIcon = asItem == null || asItem.isEmpty() ? FALLBACK : asItem;
 
 		sources = DisplaySource.getAll(level, blockEntity.getSourcePosition());

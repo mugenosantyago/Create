@@ -79,7 +79,7 @@ public class GantryCarriageBlock extends DirectionalAxisKineticBlock implements 
 	@Override
 	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
 		BlockPos fromPos = pos.relative(_orientation.getFront());
-		if (updatePos.equals(pos.relative(state.getValue(FACING)
+		if (fromPos.equals(pos.relative(state.getValue(FACING)
 			.getOpposite())) && !canSurvive(state, world, pos))
 			world.destroyBlock(pos, true);
 	}

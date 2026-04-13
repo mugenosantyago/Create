@@ -48,7 +48,6 @@ public class ContraptionControlsBlock extends ControlsBlock implements IBE<Contr
 
 	@Override
 	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
-		BlockPos fromPos = pos.relative(_orientation.getFront());
 		withBlockEntityDo(pLevel, pPos, ContraptionControlsBlockEntity::updatePoweredState);
 	}
 

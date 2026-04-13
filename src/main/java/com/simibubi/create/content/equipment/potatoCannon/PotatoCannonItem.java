@@ -49,6 +49,9 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
 public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmPoseItem {
 	private static final Predicate<ItemStack> AMMO_PREDICATE = s ->
 		PotatoCannonProjectileType.getTypeForItem(GlobalRegistryAccess.getOrThrow(), s.getItem()).isPresent();

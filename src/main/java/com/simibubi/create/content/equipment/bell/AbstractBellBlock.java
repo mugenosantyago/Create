@@ -41,7 +41,7 @@ public abstract class AbstractBellBlock<BE extends AbstractBellBlockEntity> exte
 
 	@Override
 	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
-		BlockPos fromPos = pos.relative(_orientation.getFront());
+		BlockPos fromPos = pPos.relative(_orientation.getFront());
 		if (pLevel.isClientSide)
 			return;
 		boolean shouldPower = pLevel.hasNeighborSignal(pPos);
