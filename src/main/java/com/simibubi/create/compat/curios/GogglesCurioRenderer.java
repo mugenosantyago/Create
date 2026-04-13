@@ -13,8 +13,8 @@ import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -40,40 +40,33 @@ public class GogglesCurioRenderer implements ICurioRenderer {
 	}
 
 	@Override
-	public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+	public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(ItemStack stack,
+		SlotContext slotContext, PoseStack matrixStack, MultiBufferSource renderTypeBuffer, int light, S state,
+		RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context, float partialTicks,
+		float ageInTicks) {
 		LivingEntity entity = slotContext.entity();
-		var renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
-		if (renderer instanceof LivingEntityRenderer<?, ?, ?> ler) {
-			LivingEntityRenderState state = ler.createRenderState();
-			@SuppressWarnings("unchecked")
-			LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?> typedLer =
-				(LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>) ler;
-			typedLer.extractRenderState(entity, state, partialTicks);
-			if (state instanceof HumanoidRenderState humanoidState) {
-				HumanoidMobRenderer.extractHumanoidRenderState(entity, humanoidState, partialTicks, Minecraft.getInstance().getItemModelResolver());
-				model.setupAnim(humanoidState);
-			}
+		if (state instanceof HumanoidRenderState humanoidState) {
+			HumanoidMobRenderer.extractHumanoidRenderState(entity, humanoidState, partialTicks,
+				Minecraft.getInstance().getItemModelResolver());
+			model.setupAnim(humanoidState);
 		}
 		ICurioRenderer.followHeadRotations(slotContext.entity(), model.head);
 
-		// Translate and rotate with our head
 		matrixStack.pushPose();
 		matrixStack.translate(model.head.x / 16.0, model.head.y / 16.0, model.head.z / 16.0);
 		matrixStack.mulPose(Axis.ZP.rotation(model.head.zRot));
 		matrixStack.mulPose(Axis.YP.rotation(model.head.yRot));
 		matrixStack.mulPose(Axis.XP.rotation(model.head.xRot));
 
-		// Translate and scale to our head
 		matrixStack.translate(0, -0.25, 0);
 		matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
 		matrixStack.scale(0.625f, 0.625f, 0.625f);
 
-		if(!slotContext.entity().getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+		if (!slotContext.entity().getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
 			matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
 			matrixStack.translate(0, -0.25, 0);
 		}
 
-		// Render
 		Minecraft mc = Minecraft.getInstance();
 		mc.getItemRenderer()
 			.renderStatic(stack, ItemDisplayContext.HEAD, light, OverlayTexture.NO_OVERLAY, matrixStack,

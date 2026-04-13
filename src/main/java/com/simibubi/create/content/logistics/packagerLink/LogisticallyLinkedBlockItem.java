@@ -1,7 +1,9 @@
 package com.simibubi.create.content.logistics.packagerLink;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,8 +23,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -53,21 +57,23 @@ public class LogisticallyLinkedBlockItem extends BlockItem {
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext tooltipContext,
-								@NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-		super.appendHoverText(stack, tooltipContext, tooltipComponents, tooltipFlag);
+	public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext tooltipContext,
+		@NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltip,
+		@NotNull TooltipFlag tooltipFlag) {
+		super.appendHoverText(stack, tooltipContext, tooltipDisplay, tooltip, tooltipFlag);
 
 		CompoundTag tag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
 		if (!tag.getIntArray("Freq").map(arr -> arr.length == 4).orElse(false))
 			return;
 
+		List<Component> extra = new ArrayList<>();
 		CreateLang.translate("logistically_linked.tooltip")
 			.style(ChatFormatting.GOLD)
-			.addTo(tooltipComponents);
-
+			.addTo(extra);
 		CreateLang.translate("logistically_linked.tooltip_clear")
 			.style(ChatFormatting.GRAY)
-			.addTo(tooltipComponents);
+			.addTo(extra);
+		extra.forEach(tooltip);
 	}
 
 	@Override

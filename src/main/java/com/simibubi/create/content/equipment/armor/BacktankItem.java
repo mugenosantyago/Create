@@ -51,11 +51,6 @@ public class BacktankItem extends BaseArmorItem {
     }
 
     @Override
-    public boolean isEnchantable(ItemStack p_77616_1_) {
-        return true;
-    }
-
-    @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         if (enchantment.is(Enchantments.MENDING) || enchantment.is(Enchantments.UNBREAKING))
             return false;

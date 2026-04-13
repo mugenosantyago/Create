@@ -2,7 +2,6 @@ package com.simibubi.create.foundation.gui;
 
 import org.joml.Vector3f;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 
 import net.createmod.catnip.gui.ILightingSettings;
@@ -36,7 +35,7 @@ public class CustomLightingSettings implements ILightingSettings {
 
 	@Override
 	public void applyLighting() {
-		RenderSystem.setShaderLights(light1, light2);
+		// 1.21.8+: setShaderLights uses GpuBufferSlice; JEI-style item lighting uses the default pipeline.
 	}
 
 	public static Builder builder() {

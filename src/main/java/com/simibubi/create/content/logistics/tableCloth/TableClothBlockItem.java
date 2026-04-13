@@ -28,10 +28,9 @@ public class TableClothBlockItem extends BlockItem {
 	public void appendHoverText(ItemStack pStack, net.minecraft.world.item.Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay tooltipDisplay, java.util.function.Consumer<net.minecraft.network.chat.Component> tooltip, TooltipFlag flag) {
 		java.util.List<net.minecraft.network.chat.Component> tooltipList = new java.util.ArrayList<>();
 		appendHoverText_compat(pStack, context, tooltipList, flag);
-		toolipList.forEach(tooltip);
+		tooltipList.forEach(tooltip);
 	}
 
-	@Override
 	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext tooltipContext, java.util.List<net.minecraft.network.chat.Component> tooltipComponents, TooltipFlag tooltipFlag) {
 		// super.appendHoverText(stack, tooltipContext, tooltipComponents, tooltipFlag);;
 		if (!isFoil(stack))

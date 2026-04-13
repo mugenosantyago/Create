@@ -23,9 +23,9 @@ public class CreateContraptionTypeTagsProvider extends TagsProvider<ContraptionT
 
 	@Override
 	protected void addTags(Provider pProvider) {
-		TagAppender.forBuilder(getOrCreateRawBuilder(AllContraptionTypeTags.OPENS_CONTROLS.tag))
+		TagAppender.<ContraptionType>forBuilder(getOrCreateRawBuilder(AllContraptionTypeTags.OPENS_CONTROLS.tag))
 			.add(AllContraptionTypes.CARRIAGE.key());
-		TagAppender.forBuilder(getOrCreateRawBuilder(AllContraptionTypeTags.REQUIRES_VEHICLE_FOR_RENDER.tag))
+		TagAppender.<ContraptionType>forBuilder(getOrCreateRawBuilder(AllContraptionTypeTags.REQUIRES_VEHICLE_FOR_RENDER.tag))
 			.add(AllContraptionTypes.MOUNTED.key());
 	}
 

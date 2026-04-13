@@ -7,7 +7,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Mirror;
@@ -69,13 +72,21 @@ public class SchematicItem extends Item {
 
 	@Override
 	@OnlyIn(value = Dist.CLIENT)
-	public void appendHoverText_compat(ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+		Consumer<Component> tooltip, TooltipFlag flagIn) {
+		List<Component> lines = new ArrayList<>();
+		appendHoverText_compat(stack, context, lines, flagIn);
+		lines.forEach(tooltip);
+	}
+
+	@OnlyIn(value = Dist.CLIENT)
+	public void appendHoverText_compat(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+		TooltipFlag flagIn) {
 		if (stack.has(AllDataComponents.SCHEMATIC_FILE)) {
 			tooltip.add(Component.literal(ChatFormatting.GOLD + stack.get(AllDataComponents.SCHEMATIC_FILE)));
 		} else {
 			tooltip.add(CreateLang.translateDirect("schematic.invalid").withStyle(ChatFormatting.RED));
 		}
-		// super.appendHoverText(stack, context, tooltip, flagIn);;
 	}
 
 	public static void writeSize(Level level, ItemStack blueprint) {

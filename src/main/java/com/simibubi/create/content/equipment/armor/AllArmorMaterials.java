@@ -3,6 +3,7 @@ package com.simibubi.create.content.equipment.armor;
 import java.util.EnumMap;
 
 import com.simibubi.create.AllSoundEvents;
+import com.simibubi.create.AllTags;
 import com.simibubi.create.Create;
 
 import net.minecraft.Util;
@@ -56,7 +57,7 @@ public class AllArmorMaterials {
             AllSoundEvents.COPPER_ARMOR_EQUIP.getMainEventHolder(),
             0.0F,
             0.0F,
-            ItemTags.REPAIRS_COPPER_ARMOR,
+            AllTags.commonItemTag("ingots/copper"),
             COPPER_DIVING_ASSET
     );
 
