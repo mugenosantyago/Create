@@ -32,16 +32,38 @@ public class CogwheelBlockItem extends BlockItem {
 
 	boolean large;
 
-	private final int placementHelperId;
-	private final int integratedCogHelperId;
+	/**
+	 * Registered on first use so {@link IPlacementHelper} static init does not run during item construction while
+	 * other mods (e.g. Moonrise) are still transforming {@link net.minecraft.world.level.block.state.StateHolder}.
+	 */
+	private volatile int placementHelperId = -1;
+
+	private volatile int integratedCogHelperId = -1;
 
 	public CogwheelBlockItem(CogWheelBlock block, Properties builder) {
 		super(block, builder);
 		large = block.isLarge;
+	}
 
-		placementHelperId = PlacementHelpers.register(large ? new LargeCogHelper() : new SmallCogHelper());
-		integratedCogHelperId =
-			PlacementHelpers.register(large ? new IntegratedLargeCogHelper() : new IntegratedSmallCogHelper());
+	private int placementHelperId() {
+		if (placementHelperId >= 0)
+			return placementHelperId;
+		synchronized (this) {
+			if (placementHelperId < 0)
+				placementHelperId = PlacementHelpers.register(large ? new LargeCogHelper() : new SmallCogHelper());
+			return placementHelperId;
+		}
+	}
+
+	private int integratedCogHelperId() {
+		if (integratedCogHelperId >= 0)
+			return integratedCogHelperId;
+		synchronized (this) {
+			if (integratedCogHelperId < 0)
+				integratedCogHelperId =
+					PlacementHelpers.register(large ? new IntegratedLargeCogHelper() : new IntegratedSmallCogHelper());
+			return integratedCogHelperId;
+		}
 	}
 
 	@Override
@@ -50,7 +72,7 @@ public class CogwheelBlockItem extends BlockItem {
 		BlockPos pos = context.getClickedPos();
 		BlockState state = world.getBlockState(pos);
 
-		IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper helper = PlacementHelpers.get(placementHelperId());
 		Player player = context.getPlayer();
 		BlockHitResult ray = new BlockHitResult(context.getClickLocation(), context.getClickedFace(), pos, true);
 		if (helper.matchesState(state) && player != null && !player.isShiftKeyDown()) {
@@ -58,13 +80,10 @@ public class CogwheelBlockItem extends BlockItem {
 				.placeInWorld(world, this, player, context.getHand(), ray);
 		}
 
-		if (integratedCogHelperId != -1) {
-			helper = PlacementHelpers.get(integratedCogHelperId);
-
-			if (helper.matchesState(state) && player != null && !player.isShiftKeyDown()) {
-				return helper.getOffset(player, world, state, pos, ray)
-					.placeInWorld(world, this, player, context.getHand(), ray);
-			}
+		helper = PlacementHelpers.get(integratedCogHelperId());
+		if (helper.matchesState(state) && player != null && !player.isShiftKeyDown()) {
+			return helper.getOffset(player, world, state, pos, ray)
+				.placeInWorld(world, this, player, context.getHand(), ray);
 		}
 
 		return super.onItemUseFirst(stack, context);
