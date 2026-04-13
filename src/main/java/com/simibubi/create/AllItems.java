@@ -317,7 +317,8 @@ public class AllItems {
 		.register();
 
 	// In 1.21.4+, Item.Properties.humanoidArmor(ArmorMaterial, ArmorType) applies all armor
-	// data components. BaseArmorItem.propertiesFor() handles this, plus correct durability.
+	// data components. Registrate's factory `p` already has setId; chain humanoidArmor onto it
+	// (do not use BaseArmorItem.propertiesFor() here — it creates a fresh Properties without id).
 	// Equipment textures are in assets/create/textures/entity/equipment/ and
 	// assets/create/equipment/<asset-id>.json (EquipmentAsset JSON).
 
@@ -326,7 +327,7 @@ public class AllItems {
 		COPPER_BACKTANK = REGISTRATE
 			.item("copper_backtank",
 				p -> new BacktankItem(AllArmorMaterials.COPPER,
-					BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.CHESTPLATE),
+					p.humanoidArmor(AllArmorMaterials.COPPER, ArmorType.CHESTPLATE),
 					COPPER_BACKTANK_PLACEABLE))
 			.model(() -> AssetLookup.customGenericItemModel("_", "item"))
 			.tag(AllItemTags.PRESSURIZED_AIR_SOURCES.tag)
@@ -336,7 +337,7 @@ public class AllItems {
 	NETHERITE_BACKTANK = REGISTRATE
 		.item("netherite_backtank",
 			p -> new BacktankItem(ArmorMaterials.NETHERITE,
-				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.CHESTPLATE).fireResistant(),
+				p.humanoidArmor(ArmorMaterials.NETHERITE, ArmorType.CHESTPLATE).fireResistant(),
 				NETHERITE_BACKTANK_PLACEABLE))
 		.model(() -> AssetLookup.customGenericItemModel("_", "item"))
 		.tag(AllItemTags.PRESSURIZED_AIR_SOURCES.tag)
@@ -347,14 +348,14 @@ public class AllItems {
 		COPPER_DIVING_HELMET = REGISTRATE
 		.item("copper_diving_helmet",
 			p -> new DivingHelmetItem(AllArmorMaterials.COPPER,
-				BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.HELMET)))
+				p.humanoidArmor(AllArmorMaterials.COPPER, ArmorType.HELMET)))
 		.tag(ItemTags.HEAD_ARMOR)
 		.register(),
 
 	NETHERITE_DIVING_HELMET = REGISTRATE
 		.item("netherite_diving_helmet",
 			p -> new DivingHelmetItem(ArmorMaterials.NETHERITE,
-				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.HELMET).fireResistant()))
+				p.humanoidArmor(ArmorMaterials.NETHERITE, ArmorType.HELMET).fireResistant()))
 		.tag(ItemTags.HEAD_ARMOR)
 		.register();
 
@@ -362,14 +363,14 @@ public class AllItems {
 		COPPER_DIVING_BOOTS = REGISTRATE
 		.item("copper_diving_boots",
 			p -> new DivingBootsItem(AllArmorMaterials.COPPER,
-				BaseArmorItem.propertiesFor(AllArmorMaterials.COPPER, ArmorType.BOOTS)))
+				p.humanoidArmor(AllArmorMaterials.COPPER, ArmorType.BOOTS)))
 		.tag(ItemTags.FOOT_ARMOR)
 		.register(),
 
 	NETHERITE_DIVING_BOOTS = REGISTRATE
 		.item("netherite_diving_boots",
 			p -> new DivingBootsItem(ArmorMaterials.NETHERITE,
-				BaseArmorItem.propertiesFor(ArmorMaterials.NETHERITE, ArmorType.BOOTS).fireResistant()))
+				p.humanoidArmor(ArmorMaterials.NETHERITE, ArmorType.BOOTS).fireResistant()))
 		.tag(ItemTags.FOOT_ARMOR)
 		.register();
 
@@ -377,7 +378,7 @@ public class AllItems {
 
 		CARDBOARD_HELMET = REGISTRATE
 		.item("cardboard_helmet", p -> new CardboardArmorItem(ArmorType.HELMET,
-			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.HELMET)))
+			p.humanoidArmor(AllArmorMaterials.CARDBOARD, ArmorType.HELMET)))
 		.tag(ItemTags.HEAD_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
@@ -387,7 +388,7 @@ public class AllItems {
 
 	CARDBOARD_CHESTPLATE = REGISTRATE
 		.item("cardboard_chestplate", p -> new CardboardArmorItem(ArmorType.CHESTPLATE,
-			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.CHESTPLATE)))
+			p.humanoidArmor(AllArmorMaterials.CARDBOARD, ArmorType.CHESTPLATE)))
 		.tag(ItemTags.CHEST_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
@@ -396,7 +397,7 @@ public class AllItems {
 
 	CARDBOARD_LEGGINGS = REGISTRATE
 		.item("cardboard_leggings", p -> new CardboardArmorItem(ArmorType.LEGGINGS,
-			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.LEGGINGS)))
+			p.humanoidArmor(AllArmorMaterials.CARDBOARD, ArmorType.LEGGINGS)))
 		.tag(ItemTags.LEG_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))
@@ -405,7 +406,7 @@ public class AllItems {
 
 	CARDBOARD_BOOTS = REGISTRATE
 		.item("cardboard_boots", p -> new CardboardArmorItem(ArmorType.BOOTS,
-			BaseArmorItem.propertiesFor(AllArmorMaterials.CARDBOARD, ArmorType.BOOTS)))
+			p.humanoidArmor(AllArmorMaterials.CARDBOARD, ArmorType.BOOTS)))
 		.tag(ItemTags.FOOT_ARMOR)
 		.burnTime(1000)
 		.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.create.cardboard_armor"))

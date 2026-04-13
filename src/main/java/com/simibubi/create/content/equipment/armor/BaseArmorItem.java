@@ -9,8 +9,9 @@ import net.minecraft.world.item.equipment.ArmorType;
  * Item. Data components (EQUIPPABLE, ATTRIBUTE_MODIFIERS, MAX_DAMAGE, etc.) are set by calling
  * {@link Item.Properties#humanoidArmor(ArmorMaterial, ArmorType)}.
  *
- * <p>Subclasses pass {@link #propertiesFor(ArmorMaterial, ArmorType)} as the constructor
- * {@code properties} argument, which automatically applies the correct components for the slot.
+ * <p>When registering through Registrate, use the factory {@code p} and call
+ * {@code p.humanoidArmor(material, type)} so {@link Item.Properties#setId} is preserved.
+ * {@link #propertiesFor(ArmorMaterial, ArmorType)} is only for callers that set an id themselves.
  */
 public class BaseArmorItem extends Item {
 
