@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains.graph;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.UUID;
 
 import com.simibubi.create.CreateClient;
@@ -18,7 +20,7 @@ public abstract class TrackGraphPacket implements ClientboundPacketPayload {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		this.handle(CreateClient.RAILWAYS, CreateClient.RAILWAYS.getOrCreateGraph(graphId, netId));
 	}
 

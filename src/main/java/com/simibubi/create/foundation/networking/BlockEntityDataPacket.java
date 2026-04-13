@@ -1,5 +1,7 @@
 package com.simibubi.create.foundation.networking;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
@@ -21,8 +23,8 @@ public abstract class BlockEntityDataPacket<BE extends SyncedBlockEntity> implem
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		BlockEntity blockEntity = player.clientLevel.getBlockEntity(pos);
+	public void handle(Player player) {
+		BlockEntity blockEntity = player.level().getBlockEntity(pos);
 
 		if (blockEntity instanceof SyncedBlockEntity) {
 			handlePacket((BE) blockEntity);

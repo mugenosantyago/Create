@@ -1,5 +1,7 @@
 package com.simibubi.create.content.equipment.tool;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 
 import io.netty.buffer.ByteBuf;
@@ -25,7 +27,7 @@ public record KnockbackPacket(float yRot, float strength) implements Clientbound
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		if (player != null)
 			CardboardSwordItem.knockback(player, strength, yRot);
 	}

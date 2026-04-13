@@ -1,5 +1,7 @@
 package com.simibubi.create.content.equipment.symmetryWand;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.List;
 
 import com.simibubi.create.AllPackets;
@@ -28,7 +30,7 @@ public record SymmetryEffectPacket(BlockPos mirror, List<BlockPos> positions) im
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		if (player.position().distanceTo(Vec3.atLowerCornerOf(mirror)) > 100)
 			return;
 		for (BlockPos to : positions)

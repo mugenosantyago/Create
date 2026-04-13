@@ -1,5 +1,7 @@
 package com.simibubi.create.content.logistics.depot;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllPackets;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
@@ -57,7 +59,7 @@ public record EjectorPlacementPacket(int h, int v, BlockPos pos, Direction facin
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			EjectorTargetHandler.flushSettings(pos);
 		}
 	}

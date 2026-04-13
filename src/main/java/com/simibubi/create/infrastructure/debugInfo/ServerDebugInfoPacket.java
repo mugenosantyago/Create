@@ -29,7 +29,7 @@ public record ServerDebugInfoPacket(String serverInfo) implements ClientboundPac
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		StringBuilder output = new StringBuilder();
 		List<DebugInfoSection> clientInfo = DebugInformation.getClientInfo();
 

@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains.entity;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.UUID;
 
 import com.simibubi.create.AllPackets;
@@ -22,7 +24,7 @@ public record RemoveTrainPacket(UUID id) implements ClientboundPacketPayload {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		CreateClient.RAILWAYS.trains.remove(this.id);
 	}
 

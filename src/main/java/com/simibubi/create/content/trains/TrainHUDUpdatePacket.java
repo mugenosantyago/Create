@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +63,7 @@ public abstract class TrainHUDUpdatePacket implements CustomPacketPayload {
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			Train train = Create.RAILWAYS.sided(null).trains.get(trainId);
 			if (train == null)
 				return;

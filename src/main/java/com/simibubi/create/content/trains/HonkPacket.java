@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -53,7 +55,7 @@ public abstract class HonkPacket implements CustomPacketPayload {
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			Train train = Create.RAILWAYS.sided(null).trains.get(trainId);
 			if (train == null)
 				return;

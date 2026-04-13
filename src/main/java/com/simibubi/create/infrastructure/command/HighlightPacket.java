@@ -1,5 +1,7 @@
 package com.simibubi.create.infrastructure.command;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.AllSpecialTextures;
 
@@ -19,8 +21,8 @@ public record HighlightPacket(BlockPos pos) implements ClientboundPacketPayload 
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		if (!player.clientLevel.isLoaded(pos)) {
+	public void handle(Player player) {
+		if (!player.level().isLoaded(pos)) {
 			return;
 		}
 

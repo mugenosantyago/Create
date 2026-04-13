@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions.minecart.capability;
 
+import net.minecraft.world.entity.player.Player;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,8 +34,8 @@ public record MinecartControllerUpdatePacket(int entityId, @Nullable CompoundTag
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		Entity entityByID = player.clientLevel.getEntity(entityId);
+	public void handle(Player player) {
+		Entity entityByID = player.level().getEntity(entityId);
 		if (entityByID == null)
 			return;
 		if (entityByID.hasData(AllAttachmentTypes.MINECART_CONTROLLER)) {

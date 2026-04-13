@@ -1,5 +1,7 @@
 package com.simibubi.create.content.kinetics.chainConveyor;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
@@ -30,7 +32,7 @@ public record ClientboundChainConveyorRidingPacket(Collection<UUID> uuids) imple
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		PlayerSkyhookRenderer.updatePlayerList(this.uuids);
 	}
 }

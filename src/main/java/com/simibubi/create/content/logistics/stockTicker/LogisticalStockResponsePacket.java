@@ -1,5 +1,7 @@
 package com.simibubi.create.content.logistics.stockTicker;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.List;
 
 import com.simibubi.create.AllPackets;
@@ -32,7 +34,7 @@ public record LogisticalStockResponsePacket(boolean lastPacket, BlockPos pos, Li
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		if (Minecraft.getInstance().level.getBlockEntity(pos) instanceof StockTickerBlockEntity stbe)
 			stbe.receiveStockPacket(items, lastPacket);
 	}

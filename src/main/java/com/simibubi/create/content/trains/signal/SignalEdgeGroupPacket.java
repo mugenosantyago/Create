@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains.signal;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +35,7 @@ public record SignalEdgeGroupPacket(List<UUID> ids, List<EdgeGroupColor> colors,
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		Map<UUID, SignalEdgeGroup> signalEdgeGroups = CreateClient.RAILWAYS.signalEdgeGroups;
 		for (int i = 0; i < ids.size(); i++) {
 			UUID id = ids.get(i);

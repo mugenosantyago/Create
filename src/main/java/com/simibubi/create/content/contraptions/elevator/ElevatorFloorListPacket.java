@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions.elevator;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.List;
 
 import com.simibubi.create.AllPackets;
@@ -34,8 +36,8 @@ public record ElevatorFloorListPacket(int entityId, List<IntAttached<Couple<Stri
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		Entity entityByID = player.clientLevel.getEntity(entityId);
+	public void handle(Player player) {
+		Entity entityByID = player.level().getEntity(entityId);
 		if (!(entityByID instanceof AbstractContraptionEntity ace))
 			return;
 		if (!(ace.getContraption() instanceof ElevatorContraption ec))

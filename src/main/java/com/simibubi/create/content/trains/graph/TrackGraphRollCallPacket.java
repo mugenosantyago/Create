@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains.graph;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,7 +40,7 @@ public record TrackGraphRollCallPacket(List<Entry> entries) implements Clientbou
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		GlobalRailwayManager manager = Create.RAILWAYS.sided(null);
 		Set<UUID> unusedIds = new HashSet<>(manager.trackNetworks.keySet());
 		List<Integer> failedIds = new ArrayList<>();

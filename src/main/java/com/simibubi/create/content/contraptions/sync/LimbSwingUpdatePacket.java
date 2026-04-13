@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions.sync;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 
 import io.netty.buffer.ByteBuf;
@@ -25,8 +27,8 @@ public record LimbSwingUpdatePacket(int entityId, Vec3 position, float limbSwing
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		Entity entity = player.clientLevel.getEntity(entityId);
+	public void handle(Player player) {
+		Entity entity = player.level().getEntity(entityId);
 		if (entity == null)
 			return;
 		CompoundTag data = entity.getPersistentData();

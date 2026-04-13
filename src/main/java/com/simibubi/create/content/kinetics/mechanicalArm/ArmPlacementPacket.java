@@ -1,5 +1,7 @@
 package com.simibubi.create.content.kinetics.mechanicalArm;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.Collection;
 
 import com.simibubi.create.AllPackets;
@@ -64,7 +66,7 @@ public record ArmPlacementPacket(ListTag tag, BlockPos pos) implements Serverbou
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			ArmInteractionPointHandler.flushSettings(pos);
 		}
 	}

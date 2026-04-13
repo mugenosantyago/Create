@@ -1,5 +1,7 @@
 package com.simibubi.create.foundation.networking;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.HashSet;
 
 import com.simibubi.create.AllPackets;
@@ -36,8 +38,8 @@ public interface ISyncPersistentData {
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
-			Entity entityByID = player.clientLevel.getEntity(entityId);
+		public void handle(Player player) {
+			Entity entityByID = player.level().getEntity(entityId);
 			CompoundTag data = entityByID.getPersistentData();
 			new HashSet<>(data.keySet()).forEach(data::remove);
 			data.merge(readData);

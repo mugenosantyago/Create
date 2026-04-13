@@ -1,5 +1,7 @@
 package com.simibubi.create.foundation.utility;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
 import net.createmod.catnip.platform.CatnipServices;
@@ -55,7 +57,7 @@ public class ServerSpeedProvider {
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			if (!initialized) {
 				initialized = true;
 				clientTimer = 0;

@@ -1,5 +1,7 @@
 package com.simibubi.create.content.fluids.transfer;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.content.fluids.FluidFX;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
@@ -22,7 +24,7 @@ public record FluidSplashPacket(BlockPos pos, FluidStack fluid) implements Clien
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		if (player.position().distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ())) > 100)
 			return;
 		FluidFX.splash(pos, fluid);

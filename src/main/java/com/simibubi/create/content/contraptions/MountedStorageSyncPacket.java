@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public record MountedStorageSyncPacket(int contraptionId, Map<BlockPos, MountedI
 	}
 
 	@Override
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		Entity entity = Minecraft.getInstance().level.getEntity(this.contraptionId);
 		if (!(entity instanceof AbstractContraptionEntity contraption))
 			return;

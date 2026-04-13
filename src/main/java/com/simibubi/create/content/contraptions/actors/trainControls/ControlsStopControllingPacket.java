@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions.actors.trainControls;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
 
@@ -16,7 +18,7 @@ public enum ControlsStopControllingPacket implements ClientboundPacketPayload {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		ControlsHandler.stopControlling();
 	}
 

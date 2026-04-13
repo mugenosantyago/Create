@@ -1,5 +1,7 @@
 package com.simibubi.create.content.equipment.zapper;
 
+import net.minecraft.world.entity.player.Player;
+
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
 
 import net.minecraft.client.Minecraft;
@@ -30,7 +32,7 @@ public abstract class ShootGadgetPacket implements ClientboundPacketPayload {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		Entity renderViewEntity = Minecraft.getInstance()
 				.getCameraEntity();
 		if (renderViewEntity == null)

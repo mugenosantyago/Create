@@ -1,5 +1,7 @@
 package com.simibubi.create.content.logistics.redstoneRequester;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 
 import io.netty.buffer.ByteBuf;
@@ -27,7 +29,7 @@ public record RedstoneRequesterEffectPacket(BlockPos pos, boolean success) imple
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		if (Minecraft.getInstance().level.getBlockEntity(pos) instanceof RedstoneRequesterBlockEntity plbe)
 			plbe.playEffect(success);
 	}

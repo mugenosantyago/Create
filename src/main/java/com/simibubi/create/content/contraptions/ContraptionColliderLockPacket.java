@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
 import net.createmod.catnip.platform.CatnipServices;
@@ -23,7 +25,7 @@ public record ContraptionColliderLockPacket(int contraption, double offset, int 
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		ContraptionCollider.lockPacketReceived(contraption, sender, offset);
 	}
 

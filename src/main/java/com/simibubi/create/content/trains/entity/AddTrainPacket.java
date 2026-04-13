@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains.entity;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.CreateClient;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
@@ -15,7 +17,7 @@ public record AddTrainPacket(Train train) implements ClientboundPacketPayload {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		CreateClient.RAILWAYS.trains.put(train.id, train);
 	}
 

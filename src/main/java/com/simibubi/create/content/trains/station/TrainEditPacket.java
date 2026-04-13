@@ -89,7 +89,7 @@ public abstract class TrainEditPacket implements CustomPacketPayload {
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			handleSided(null);
 		}
 

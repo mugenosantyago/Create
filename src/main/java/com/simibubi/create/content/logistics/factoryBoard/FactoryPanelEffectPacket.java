@@ -1,16 +1,17 @@
 package com.simibubi.create.content.logistics.factoryBoard;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllBlocks;
 
 import com.simibubi.create.AllPackets;
 
 import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 import net.neoforged.api.distmarker.Dist;
@@ -31,8 +32,8 @@ public record FactoryPanelEffectPacket(FactoryPanelPosition fromPos, FactoryPane
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		ClientLevel level = Minecraft.getInstance().level;
+	public void handle(Player player) {
+		Level level = player.level();
 		BlockState blockState = level.getBlockState(fromPos.pos());
 		if (!AllBlocks.FACTORY_GAUGE.has(blockState))
 			return;

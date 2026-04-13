@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions.sync;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -38,8 +40,8 @@ public record ContraptionSeatMappingPacket(int entityId, Map<UUID, Integer> mapp
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
-		Entity entityByID = player.clientLevel.getEntity(entityId);
+	public void handle(Player player) {
+		Entity entityByID = player.level().getEntity(entityId);
 		if (!(entityByID instanceof AbstractContraptionEntity contraptionEntity))
 			return;
 

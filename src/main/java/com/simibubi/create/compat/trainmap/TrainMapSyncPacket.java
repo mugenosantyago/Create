@@ -1,5 +1,7 @@
 package com.simibubi.create.compat.trainmap;
 
+import net.minecraft.world.entity.player.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -45,7 +47,7 @@ public class TrainMapSyncPacket implements ClientboundPacketPayload {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		TrainMapSyncClient.receive(this);
 	}
 

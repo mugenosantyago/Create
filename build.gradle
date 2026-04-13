@@ -134,6 +134,7 @@ sourceSets {
     }
 }
 
+
 tasks.register("patchPonderJar") {
     group = "build"
     description = "Replace broken accessors in Ponder JiJ with MC 1.21.8-compatible classes."
@@ -157,7 +158,8 @@ tasks.register("patchPonderJar") {
         def replacements = [
             "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class",
             "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class",
-            "net/createmod/ponder/mixin/client/accessor/GameRendererAccessor.class"
+            "net/createmod/ponder/mixin/client/accessor/GameRendererAccessor.class",
+            "net/createmod/catnip/net/base/ClientboundPacketPayload.class"
         ]
         // Compiled outside mixin-owned package; upstream still references the old accessor FQN — remapped below.
         def additions = [
@@ -214,6 +216,38 @@ tasks.register("patchPonderJar") {
             }, ClassReader.EXPAND_FRAMES)
             writer.toByteArray()
         }
+        /** Catnip clientbound packets ship with {@code handle(LocalPlayer)}; dedicated server cannot load that type. */
+        def patchCatnipClientboundHandleUsesPlayer = { byte[] bytes ->
+            def reader = new ClassReader(bytes)
+            def writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
+            def oldHandleDesc = "(Lnet/minecraft/client/player/LocalPlayer;)V"
+            def newHandleDesc = "(Lnet/minecraft/world/entity/player/Player;)V"
+            reader.accept(new ClassVisitor(Opcodes.ASM9, writer) {
+                @Override
+                MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+                    def desc = descriptor
+                    if (name == "handle" && desc == oldHandleDesc) {
+                        desc = newHandleDesc
+                    }
+                    MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
+                    if (name != "handle" || desc != newHandleDesc) {
+                        return mv
+                    }
+                    return new MethodVisitor(Opcodes.ASM9, mv) {
+                        @Override
+                        void visitMethodInsn(int opcode, String owner, String methodName, String methodDesc, boolean isInterface) {
+                            if (opcode == Opcodes.INVOKEVIRTUAL
+                                    && "net/minecraft/client/player/LocalPlayer" == owner
+                                    && "displayClientMessage" == methodName) {
+                                owner = "net/minecraft/world/entity/player/Player"
+                            }
+                            super.visitMethodInsn(opcode, owner, methodName, methodDesc, isInterface)
+                        }
+                    }
+                }
+            }, ClassReader.EXPAND_FRAMES)
+            writer.toByteArray()
+        }
         (replacements + additions).each { entry ->
             def classFile = new File(classRoot, entry)
             if (!classFile.exists()) {
@@ -234,7 +268,10 @@ tasks.register("patchPonderJar") {
                     zos.putNextEntry(zosEntry)
                     if (replacements.contains(e.name)) {
                         def bytes = new File(classRoot, e.name).bytes
-                        zos.write(remapItemRendererAccessorRefs(bytes))
+                        if (e.name != "net/createmod/catnip/net/base/ClientboundPacketPayload.class") {
+                            bytes = remapItemRendererAccessorRefs(bytes)
+                        }
+                        zos.write(bytes)
                     } else if (e.name == "ponder-common.mixins.json") {
                         patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
                     } else if (e.name.endsWith(".class")) {
@@ -242,6 +279,10 @@ tasks.register("patchPonderJar") {
                         bytes = remapItemRendererAccessorRefs(bytes)
                         if (e.name == "net/createmod/catnip/math/VecHelper.class") {
                             bytes = patchVecHelperCallGetFovReturnType(bytes)
+                        }
+                        if (e.name == "net/createmod/catnip/net/packets/ClientboundSimpleActionPacket.class"
+                                || e.name == "net/createmod/catnip/net/packets/ClientboundConfigPacket.class") {
+                            bytes = patchCatnipClientboundHandleUsesPlayer(bytes)
                         }
                         zos.write(bytes)
                     } else {
@@ -406,6 +447,12 @@ tasks.named("compilePonderPatchJava", JavaCompile) {
     // Same mapped deps + AT as main; must not depend on compileJava (jarJar would pull patchPonderJar into compile graph).
     dependsOn tasks.named("createMinecraftArtifacts")
     classpath = sourceSets.main.compileClasspath
+}
+
+// Patched Catnip ClientboundPacketPayload (handle(Player)) must shadow JiJ Ponder during main compilation.
+tasks.named("compileJava", JavaCompile).configure {
+    dependsOn tasks.named("compilePonderPatchJava")
+    classpath = files(sourceSets.ponderPatch.output.classesDirs).plus(classpath)
 }
 
 tasks.named("compileFlywheelPatchJava", JavaCompile) {

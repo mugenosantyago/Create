@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions.glue;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
 
@@ -22,10 +24,10 @@ public record GlueEffectPacket(BlockPos pos, Direction direction, boolean fullBl
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		if (!player.blockPosition().closerThan(pos, 100))
 			return;
-		SuperGlueItem.spawnParticles(player.clientLevel, pos, direction, fullBlock);
+		SuperGlueItem.spawnParticles(player.level(), pos, direction, fullBlock);
 	}
 
 	@Override

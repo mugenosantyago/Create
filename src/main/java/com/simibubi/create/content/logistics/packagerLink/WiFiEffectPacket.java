@@ -1,5 +1,7 @@
 package com.simibubi.create.content.logistics.packagerLink;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.content.logistics.stockTicker.StockTickerBlockEntity;
 
@@ -28,7 +30,7 @@ public record WiFiEffectPacket(BlockPos pos) implements ClientboundPacketPayload
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(pos);
 			if (blockEntity instanceof PackagerLinkBlockEntity plbe)
 				plbe.playEffect();

@@ -1,5 +1,7 @@
 package com.simibubi.create.content.contraptions;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import net.createmod.catnip.net.base.ClientboundPacketPayload;
 
@@ -19,7 +21,7 @@ public record ContraptionDisassemblyPacket(int entityId, StructureTransform tran
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void handle(LocalPlayer player) {
+	public void handle(Player player) {
 		AbstractContraptionEntity.handleDisassemblyPacket(this);
 	}
 

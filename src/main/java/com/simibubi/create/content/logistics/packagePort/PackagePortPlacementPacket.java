@@ -1,5 +1,7 @@
 package com.simibubi.create.content.logistics.packagePort;
 
+import net.minecraft.world.entity.player.Player;
+
 import com.simibubi.create.AllPackets;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
@@ -61,7 +63,7 @@ public record PackagePortPlacementPacket(PackagePortTarget target, BlockPos pos)
 		}
 
 		@Override
-		public void handle(LocalPlayer player) {
+		public void handle(Player player) {
 			PackagePortTargetSelectionHandler.flushSettings(pos);
 		}
 	}
