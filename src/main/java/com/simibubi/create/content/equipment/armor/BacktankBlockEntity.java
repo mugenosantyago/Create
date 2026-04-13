@@ -140,7 +140,7 @@ public class BacktankBlockEntity extends KineticBlockEntity implements Nameable 
 		capacityEnchantLevel = compound.getIntOr("CapacityEnchantment", 0);
 
 		if (compound.contains("CustomName"))
-			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, compound.get("CustomName"), registries).result().orElse(null);
+			this.customName = ComponentSerialization.CODEC.parse(registries.createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE), compound.get("CustomName")).result().orElse(null);
 
 		componentPatch = CatnipCodecUtils.decode(DataComponentPatch.CODEC, registries, compound.getCompoundOrEmpty("Components")).orElse(DataComponentPatch.EMPTY);
 		if (prev != 0 && prev != airLevel && airLevel == BacktankUtil.maxAir(capacityEnchantLevel) && clientPacket)

@@ -6,9 +6,9 @@ import com.simibubi.create.Create;
 
 import net.caffeinemc.mods.sodium.api.texture.SpriteUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -23,7 +23,7 @@ public class SodiumCompat {
 	public static void init(IEventBus modEventBus, IEventBus neoEventBus) {
 		Minecraft mc = Minecraft.getInstance();
 		neoEventBus.addListener((RenderLevelStageEvent.AfterEntities event) -> {
-			Function<ResourceLocation, TextureAtlasSprite> atlas = mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+			Function<ResourceLocation, TextureAtlasSprite> atlas = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 			TextureAtlasSprite sawSprite = atlas.apply(SAW_TEXTURE);
 			SpriteUtil.INSTANCE.markSpriteActive(sawSprite);
 

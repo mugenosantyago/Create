@@ -82,7 +82,7 @@ public abstract class AbstractPulleyRenderer<T extends KineticBlockEntity> exten
 	public static void renderAt(LevelAccessor world, SuperByteBuffer partial, float offset, BlockPos pulleyPos,
 		PoseStack ms, VertexConsumer buffer) {
 		BlockPos actualPos = pulleyPos.below((int) offset);
-		int light = LevelRenderer.getLightColor(world, world.getBlockState(actualPos), actualPos);
+		int light = LevelRenderer.getLightColor(world, actualPos);
 		partial.translate(0, -offset, 0)
 		.light(light)
 			.renderInto(ms, buffer);

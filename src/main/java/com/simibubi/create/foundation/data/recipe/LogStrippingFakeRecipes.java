@@ -62,7 +62,7 @@ public class LogStrippingFakeRecipes {
 		ResourceLocation id = ResourceLocation.fromNamespaceAndPath(rn.getNamespace(), rn.getPath() + "_via_vanilla_stripping");
 		ManualApplicationRecipe recipe = new ItemApplicationRecipe.Builder<>(ManualApplicationRecipe::new, id)
 				.require(fromItem)
-				.require(Ingredient.of(axe))
+				.require(Ingredient.of(axe.getItem()))
 				.output(toItem)
 				.build();
 

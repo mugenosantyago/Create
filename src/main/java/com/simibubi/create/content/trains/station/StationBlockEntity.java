@@ -172,7 +172,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
 		if (tag.contains("ForceFlag"))
 			trainPresent = tag.getBooleanOr("ForceFlag", false);
 		if (tag.contains("PrevTrainName"))
-			lastDisassembledTrainName = ComponentSerialization.CODEC.parse(net.minecraft.core.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("PrevTrainName", ""))).result().orElse(null);
+			lastDisassembledTrainName = ComponentSerialization.CODEC.parse(net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("PrevTrainName", ""))).result().orElse(null);
 		lastDisassembledMapColorIndex = tag.getIntOr("PrevTrainColor", 0);
 
 		if (!clientPacket)

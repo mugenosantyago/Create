@@ -67,7 +67,7 @@ public class NixieTubePeripheral extends SyncedPeripheral<NixieTubeBlockEntity> 
 			return;
 		blockEntity.computerSignal = null;
 
-		String tagElement = ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, Component.literal(arguments.optString(0, "")), level.registryAccess());
+		String tagElement = ComponentSerialization.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, Component.literal(arguments.optString(0, ""))).result().map(Object::toString).orElse("");
 
 		@Nullable String colour = arguments.optString(1, null);
 		BlockState state = null;

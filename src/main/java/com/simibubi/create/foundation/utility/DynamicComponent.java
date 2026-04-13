@@ -55,7 +55,7 @@ public class DynamicComponent {
 	public void read(BlockPos pos, CompoundTag nbt, HolderLookup.Provider registries) {
 		rawCustomText = getJsonFromString(nbt.getStringOr("RawCustomText", ""));
 		try {
-			parsedCustomText = ComponentSerialization.CODEC.parse(net.minecraft.core.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(nbt.getStringOr("CustomText", ""))).result().orElse(null);
+			parsedCustomText = ComponentSerialization.CODEC.parse(net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(nbt.getStringOr("CustomText", ""))).result().orElse(null);
 		} catch (JsonParseException e) {
 			parsedCustomText = null;
 		}

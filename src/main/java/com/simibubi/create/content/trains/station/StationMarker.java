@@ -36,7 +36,7 @@ public class StationMarker {
 	public static StationMarker load(CompoundTag tag, HolderLookup.Provider registries) {
 		BlockPos source = NBTHelper.readBlockPos(tag, "source");
 		BlockPos target = NBTHelper.readBlockPos(tag, "target");
-		Component name = ComponentSerialization.CODEC.parse(net.minecraft.core.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("name", ""))).result().orElse(null);
+		Component name = ComponentSerialization.CODEC.parse(net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(tag.getStringOr("name", ""))).result().orElse(null);
 		if (name == null) name = CommonComponents.EMPTY;
 
 		return new StationMarker(source, target, name);

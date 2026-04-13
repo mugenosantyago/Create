@@ -289,7 +289,7 @@ public class ToolboxBlockEntity extends SmartBlockEntity implements MenuProvider
 		if (compound.contains("UniqueId"))
 			this.uniqueId = compound.getIntArray("UniqueId").map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null);
 		if (compound.contains("CustomName"))
-			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.core.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", ""))).result().orElse(null);
+			this.customName = ComponentSerialization.CODEC.parse(net.minecraft.resources.RegistryOps.create(net.minecraft.nbt.NbtOps.INSTANCE, registries), net.minecraft.nbt.StringTag.valueOf(compound.getStringOr("CustomName", ""))).result().orElse(null);
 	}
 
 	@Override

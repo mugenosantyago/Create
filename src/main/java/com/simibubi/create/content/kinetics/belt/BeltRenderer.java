@@ -31,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.BlockItem;
@@ -47,11 +48,6 @@ import net.minecraft.world.phys.Vec3;
 public class BeltRenderer extends SafeBlockEntityRenderer<BeltBlockEntity> {
 
 	public BeltRenderer(BlockEntityRendererProvider.Context context) {}
-
-	@Override
-	public boolean shouldRenderOffScreen(BeltBlockEntity be) {
-		return be.isController();
-	}
 
 	@Override
 	protected void renderSafe(BeltBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light,
