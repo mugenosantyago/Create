@@ -18,6 +18,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.tterrag.registrate.builders.FluidBuilder.FluidTypeFactory;
 import com.tterrag.registrate.util.entry.FluidEntry;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Camera;
@@ -55,6 +56,11 @@ import net.neoforged.neoforge.fluids.FluidType;
 public class AllFluids {
 	private static final CreateRegistrate REGISTRATE = Create.registrate();
 
+	@SuppressWarnings("unchecked")
+	private static final FluidEntry<BaseFlowingFluid.Flowing>[] honeyClientExtEntry = new FluidEntry[1];
+	@SuppressWarnings("unchecked")
+	private static final FluidEntry<BaseFlowingFluid.Flowing>[] chocolateClientExtEntry = new FluidEntry[1];
+
 	static {
 		REGISTRATE.setCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB);
 	}
@@ -69,7 +75,7 @@ public class AllFluids {
 		.tag(AllFluidTags.TEA.tag)
 		.register();
 
-	public static final FluidEntry<BaseFlowingFluid.Flowing> HONEY =
+	public static final FluidEntry<BaseFlowingFluid.Flowing> HONEY = assignFluidClientSlot(honeyClientExtEntry,
 		REGISTRATE.standardFluid("honey",
 				SolidRenderedPlaceableFluidType.create(0xEAAE2F,
 					() -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
@@ -89,9 +95,10 @@ public class AllFluids {
 			.onRegister(AllFluids::registerFluidDispenseBehavior)
 			.tag(Tags.Items.BUCKETS, AllItemTags.HONEY_BUCKETS.tag)
 			.build()
-			.register();
+			.clientExtension(tintedClientExtension(honeyClientExtEntry))
+			.register());
 
-	public static final FluidEntry<BaseFlowingFluid.Flowing> CHOCOLATE =
+	public static final FluidEntry<BaseFlowingFluid.Flowing> CHOCOLATE = assignFluidClientSlot(chocolateClientExtEntry,
 		REGISTRATE.standardFluid("chocolate",
 				SolidRenderedPlaceableFluidType.create(0x622020,
 					() -> 1f / 32f * AllConfigs.client().chocolateTransparencyMultiplier.getF()))
@@ -111,11 +118,29 @@ public class AllFluids {
 			.onRegister(AllFluids::registerFluidDispenseBehavior)
 			.tag(Tags.Items.BUCKETS, AllItemTags.CHOCOLATE_BUCKETS.tag)
 			.build()
-			.register();
+			.clientExtension(tintedClientExtension(chocolateClientExtEntry))
+			.register());
 
 	// Load this class
 
 	public static void register() {
+	}
+
+	/**
+	 * Registrates {@code AbstractRegistrate#fluid} wires {@link com.tterrag.registrate.builders.FluidBuilder#clientExtension}
+	 * with default still/flow textures. Calling {@link com.tterrag.registrate.builders.FluidBuilder#clientExtension} again
+	 * replaces that supplier (only one listener is registered), so {@link TintedFluidType#createExtensions} is the sole
+	 * {@link RegisterClientExtensionsEvent} registration for standard tinted fluids.
+	 */
+	private static FluidEntry<BaseFlowingFluid.Flowing> assignFluidClientSlot(FluidEntry<BaseFlowingFluid.Flowing>[] slot,
+		FluidEntry<BaseFlowingFluid.Flowing> entry) {
+		slot[0] = entry;
+		return entry;
+	}
+
+	private static NonNullSupplier<Supplier<IClientFluidTypeExtensions>> tintedClientExtension(
+		FluidEntry<BaseFlowingFluid.Flowing>[] entrySlot) {
+		return () -> () -> ((TintedFluidType) entrySlot[0].get().getFluidType()).createExtensions();
 	}
 
 	/**
@@ -124,8 +149,6 @@ public class AllFluids {
 	 */
 	public static void registerFluidClientExtensions(RegisterClientExtensionsEvent event) {
 		registerTintedFluidTypeClientExtensions(event, POTION.get().getFluidType());
-		registerTintedFluidTypeClientExtensions(event, HONEY.get().getFluidType());
-		registerTintedFluidTypeClientExtensions(event, CHOCOLATE.get().getFluidType());
 		registerTeaFluidTypeClientExtensions(event);
 	}
 
