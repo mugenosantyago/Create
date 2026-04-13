@@ -10,7 +10,7 @@
     "client.accessor.BufferBuilderAccessor",
     "client.accessor.ClientPacketListenerAccessor",
     "client.accessor.GameRendererAccessor",
-    "client.accessor.ItemRendererAccessor",
+    "client.ItemRendererMixin",
     "client.accessor.RenderTypeAccessor",
     "client.accessor.ScreenAccessor"
   ],

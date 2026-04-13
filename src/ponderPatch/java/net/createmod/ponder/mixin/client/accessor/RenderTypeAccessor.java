@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.RenderType;
  * This source replaces the JiJ Ponder accessor (see {@code patchPonderJar} in build.gradle).
  */
 @Mixin(RenderType.class)
-public interface RenderTypeAccessor {
+public abstract class RenderTypeAccessor {
 
-	static RenderType.CompositeRenderType catnip$create(
+	private static RenderType.CompositeRenderType catnip$create(
 			String name,
 			VertexFormat vertexFormat,
 			VertexFormat.Mode mode,

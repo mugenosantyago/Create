@@ -140,9 +140,14 @@ tasks.register("patchPonderJar") {
         def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
         def replacements = [
             "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class",
-            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class"
+            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class",
+            "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor.class"
         ]
-        replacements.each { entry ->
+        // New classes not present in upstream Ponder (must be appended after copying orig entries).
+        def additions = [
+            "net/createmod/ponder/mixin/client/ItemRendererMixin.class"
+        ]
+        (replacements + additions).each { entry ->
             def classFile = new File(classRoot, entry)
             if (!classFile.exists()) {
                 throw new GradleException("Missing patched class: ${classFile}")
@@ -164,6 +169,12 @@ tasks.register("patchPonderJar") {
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }
+                    zos.closeEntry()
+                }
+                additions.each { path ->
+                    def zosEntry = new ZipEntry(path)
+                    zos.putNextEntry(zosEntry)
+                    new File(classRoot, path).withInputStream { stream -> stream.transferTo(zos) }
                     zos.closeEntry()
                 }
             }
