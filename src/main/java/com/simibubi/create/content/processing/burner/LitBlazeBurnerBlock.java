@@ -2,6 +2,7 @@ package com.simibubi.create.content.processing.burner;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllShapes;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 
@@ -78,8 +79,9 @@ public class LitBlazeBurnerBlock extends Block implements IWrenchable {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-		return AllBlocks.BLAZE_BURNER.get()
-			.getShape(state, reader, pos, context);
+		// Match {@link BlazeBurnerBlock#getShape}; do not use AllBlocks.BLAZE_BURNER.get() — DeferredHolder
+		// resolution throws if the registry is rolling back (parallel loading errors).
+		return AllShapes.HEATER_BLOCK_SHAPE;
 	}
 
 	@Override
@@ -135,8 +137,10 @@ public class LitBlazeBurnerBlock extends Block implements IWrenchable {
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter reader, BlockPos pos,
 		CollisionContext context) {
-		return AllBlocks.BLAZE_BURNER.get()
-			.getCollisionShape(state, reader, pos, context);
+		// Match {@link BlazeBurnerBlock#getCollisionShape}
+		if (context == CollisionContext.empty())
+			return AllShapes.HEATER_BLOCK_SPECIAL_COLLISION_SHAPE;
+		return getShape(state, reader, pos, context);
 	}
 
 	@Override
