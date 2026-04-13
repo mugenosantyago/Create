@@ -93,9 +93,8 @@ public abstract class EntityContraptionInteractionMixin {
 	}
 
 	// involves block step sounds on contraptions
-	// injecting before `!blockstate1.isAir(this.world, blockpos)`
-	// `if (this.moveDist > this.nextStep && !blockstate1.isAir())
-	@Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isAir()Z", ordinal = 0))
+	// 1.21+: vanilla step sounds moved from inline isAir checks to applyMovementEmissionAndPlaySound
+	@Inject(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;applyMovementEmissionAndPlaySound(Lnet/minecraft/world/entity/Entity$MovementEmission;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V"))
 	private void create$contraptionStepSounds(MoverType mover, Vec3 movement, CallbackInfo ci) {
 		Vec3 worldPos = position.add(0, -0.2, 0);
 		MutableBoolean stepped = new MutableBoolean(false);
