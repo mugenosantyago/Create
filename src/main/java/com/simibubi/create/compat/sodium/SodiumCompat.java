@@ -21,9 +21,12 @@ public class SodiumCompat {
 	public static final ResourceLocation FACTORY_PANEL_TEXTURE = Create.asResource("block/factory_panel_connections_animated");
 
 	public static void init(IEventBus modEventBus, IEventBus neoEventBus) {
-		Minecraft mc = Minecraft.getInstance();
 		neoEventBus.addListener((RenderLevelStageEvent.AfterEntities event) -> {
-			Function<ResourceLocation, TextureAtlasSprite> atlas = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
+			Minecraft minecraft = Minecraft.getInstance();
+			if (minecraft == null) {
+				return;
+			}
+			Function<ResourceLocation, TextureAtlasSprite> atlas = minecraft.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 			TextureAtlasSprite sawSprite = atlas.apply(SAW_TEXTURE);
 			SpriteUtil.INSTANCE.markSpriteActive(sawSprite);
 
