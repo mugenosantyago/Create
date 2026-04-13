@@ -13,12 +13,9 @@ import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.foundation.gui.GuiCompat;
 import com.simibubi.create.AllKeys;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
@@ -313,11 +310,10 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 	}
 
 	private void renderDirectionIndicator(GuiGraphics graphics, double theta) {
-		PoseStack poseStack = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
+		PoseStack poseStack = GuiCompat.poseStack(graphics);
 
-		float r = 0.8f;
-		float g = 0.8f;
-		float b = 0.8f;
+		int center = 0xC0CCCCCC;
+		int rim = 0x60CCCCCC;
 
 		poseStack.pushPose();
 		TransformStack.of(poseStack)
@@ -325,23 +321,11 @@ public class RadialWrenchMenu extends AbstractSimiScreen {
 			.translateY(innerRadius + 3)
 			.translateZ(15);
 
-		// TODO: MC 1.21.8 - CoreShaders.POSITION_COLOR and BufferUploader were removed; rendering needs update
-		// // RenderSystem.setShader removed in 1.21.8
-
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.begin(Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-
 		Matrix4f mat = poseStack.last().pose();
-
-		bufferbuilder.addVertex(mat, 0, 0, 0).setColor(r, g, b, 0.75f);
-
-		bufferbuilder.addVertex(mat, 5, -5, 0).setColor(r, g, b, 0.4f);
-		bufferbuilder.addVertex(mat, 3, -4.5f, 0).setColor(r, g, b, 0.4f);
-		bufferbuilder.addVertex(mat, 0, -4.2f, 0).setColor(r, g, b, 0.4f);
-		bufferbuilder.addVertex(mat, -3, -4.5f, 0).setColor(r, g, b, 0.4f);
-		bufferbuilder.addVertex(mat, -5, -5, 0).setColor(r, g, b, 0.4f);
-
-		// BufferUploader.drawWithShader(bufferbuilder.buildOrThrow()); // MC 1.21.8: needs update
+		GuiCompat.fillTriangle(graphics, mat, 0, 0, 0, 5, -5, 0, 0, -4.2f, 0, center);
+		GuiCompat.fillTriangle(graphics, mat, 5, -5, 0, 3, -4.5f, 0, 0, -4.2f, 0, rim);
+		GuiCompat.fillTriangle(graphics, mat, 3, -4.5f, 0, 0, -4.2f, 0, -3, -4.5f, 0, rim);
+		GuiCompat.fillTriangle(graphics, mat, 0, -4.2f, 0, -3, -4.5f, 0, -5, -5, 0, rim);
 
 		poseStack.popPose();
 	}

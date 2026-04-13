@@ -1,7 +1,9 @@
 package com.simibubi.create.content.equipment.armor;
 
 import com.simibubi.create.AllTags.AllItemTags;
+import com.simibubi.create.foundation.networking.ISyncPersistentData.PersistentDataPacket;
 
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -92,10 +94,10 @@ public final class NetheriteDivingHandler {
 		}
 	}
 
-	// TODO: sync to the client
-	// The feature works without syncing because health and burning are calculated server-side and synced through vanilla code.
-	// This method will not be called when the entity is wearing a full diving set on creation because the NBT values are persistent.
+	/** Syncs {@link net.minecraft.world.entity.Entity#getPersistentData()} to tracking clients so {@link com.simibubi.create.foundation.mixin.EntityMixin} sees fire immunity. */
 	public static void setFireImmune(LivingEntity entity, boolean fireImmune) {
 		entity.getPersistentData().putBoolean(FIRE_IMMUNE_KEY, fireImmune);
+		if (!entity.level().isClientSide())
+			CatnipServices.NETWORK.sendToClientsTrackingEntity(entity, new PersistentDataPacket(entity));
 	}
 }

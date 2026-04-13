@@ -56,7 +56,6 @@
     "accessor.FontAccessor",
     "accessor.GameRendererAccessor",
     "accessor.GuiAccessor",
-    "accessor.HumanoidArmorLayerAccessor",
     "accessor.LevelRendererAccessor",
     "accessor.MinecraftAccessor",
     "accessor.MouseHandlerAccessor",

@@ -10,13 +10,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllSoundEvents;
@@ -331,7 +324,7 @@ public class ClipboardScreen extends AbstractSimiScreen {
 		for (LineInfo line : cache.lines)
 			graphics.drawString(font, line.asComponent, line.x, line.y, 0x311A00, false);
 
-		renderHighlight(cache.selection);
+		renderHighlight(graphics, cache.selection);
 		renderCursor(graphics, cache.cursor, cache.cursorAtEnd);
 	}
 
@@ -540,32 +533,16 @@ public class ClipboardScreen extends AbstractSimiScreen {
 		}
 	}
 
-	private void renderHighlight(Rect2i[] pSelected) {
-		// TODO: MC 1.21.8 - CoreShaders.POSITION and BufferUploader were removed; rendering needs update
-		// Temporarily disabled as rendering pipeline changed
-		/*
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		// // RenderSystem.setShader removed in 1.21.8
-		// RenderSystem.setShaderColor removed in 1.21.8
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-
+	private void renderHighlight(GuiGraphics graphics, Rect2i[] pSelected) {
+		// Replaces legacy XOR logic-ops highlight with a translucent overlay (1.21.8+ pipeline).
+		int highlight = 0x66003399;
 		for (Rect2i rect2i : pSelected) {
 			int i = rect2i.getX();
 			int j = rect2i.getY();
 			int k = i + rect2i.getWidth();
 			int l = j + rect2i.getHeight();
-			bufferbuilder.addVertex(i, l, 0);
-			bufferbuilder.addVertex(k, l, 0);
-			bufferbuilder.addVertex(k, j, 0);
-			bufferbuilder.addVertex(i, j, 0);
+			graphics.fill(i, j, k, l, highlight);
 		}
-
-		@Nullable MeshData meshData = bufferbuilder.build();
-		// BufferUploader.drawWithShader(meshData);
-		RenderSystem.disableColorLogicOp();
-		*/
 	}
 
 	private Pos2i convertScreenToLocal(Pos2i pScreenPos) {

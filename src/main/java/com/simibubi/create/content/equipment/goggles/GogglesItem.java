@@ -35,16 +35,22 @@ public class GogglesItem extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		// swapWithEquipmentSlot removed in MC 1.21.8 - TODO: implement proper equip behavior
-		ItemStack heldStack = playerIn.getItemInHand(handIn);
-		ItemStack headStack = playerIn.getItemBySlot(EquipmentSlot.HEAD);
-		if (headStack.isEmpty()) {
-			playerIn.setItemSlot(EquipmentSlot.HEAD, heldStack.copyWithCount(1));
-			heldStack.shrink(1);
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		ItemStack inHand = player.getItemInHand(hand);
+		if (!inHand.is(this))
+			return InteractionResult.PASS;
+		if (level.isClientSide)
 			return InteractionResult.SUCCESS;
+		ItemStack onHead = player.getItemBySlot(EquipmentSlot.HEAD);
+		ItemStack toEquip = inHand.split(1);
+		player.setItemSlot(EquipmentSlot.HEAD, toEquip);
+		if (!onHead.isEmpty()) {
+			if (inHand.isEmpty())
+				player.setItemInHand(hand, onHead);
+			else if (!player.getInventory().add(onHead))
+				player.drop(onHead, false);
 		}
-		return InteractionResult.FAIL;
+		return InteractionResult.SUCCESS;
 	}
 
 	public static boolean isWearingGoggles(Player player) {

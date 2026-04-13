@@ -15,6 +15,7 @@ import net.createmod.catnip.data.WorldAttached;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.Consumable;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -123,8 +124,12 @@ public class AllPotatoProjectileEntityHitActions {
 				return true;
 
 			if (entity instanceof LivingEntity livingEntity) {
-				// FoodProperties.effects() was removed in MC 1.21.8 - food effects handled via Consumable component
-				// TODO: implement food effect application via new API
+				ItemStack helper = new ItemStack(Items.BREAD);
+				helper.set(DataComponents.FOOD, foodProperty);
+				Consumable consumable = helper.get(DataComponents.CONSUMABLE);
+				if (consumable == null)
+					consumable = Consumable.builder().build();
+				foodProperty.onConsume(livingEntity.level(), livingEntity, helper, consumable);
 			}
 			return !recoverable;
 		}
