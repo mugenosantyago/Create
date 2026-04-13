@@ -1,5 +1,6 @@
 package com.simibubi.create.content.contraptions.elevator;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
@@ -19,16 +20,13 @@ import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.WrenchableDirectionalBlock;
 import com.simibubi.create.foundation.utility.BlockHelper;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,11 +47,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
 public class ElevatorContactBlock extends WrenchableDirectionalBlock
 	implements IBE<ElevatorContactBlockEntity>, SpecialBlockItemRequirement {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.contraptions.elevator.ElevatorContactBlockClientHooks";
 
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	public static final BooleanProperty CALLING = BooleanProperty.create("calling");
@@ -238,15 +236,16 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (player != null && AllItems.WRENCH.isIn(stack))
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
-		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> withBlockEntityDo(level, pos, be -> this.displayScreen(be, player)));
+		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> {
+			try {
+				Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+				Method open = hooks.getMethod("openScreen", Level.class, BlockPos.class, Player.class);
+				open.invoke(null, level, pos, player);
+			} catch (ReflectiveOperationException e) {
+				throw new RuntimeException(e);
+			}
+		});
 		return InteractionResult.SUCCESS;
-	}
-
-	@OnlyIn(value = Dist.CLIENT)
-	protected void displayScreen(ElevatorContactBlockEntity be, Player player) {
-		if (player instanceof LocalPlayer)
-			ScreenOpener
-				.open(new ElevatorContactScreen(be.getBlockPos(), be.shortName, be.longName, be.doorControls.mode));
 	}
 
 	public static int getLight(BlockState state) {
