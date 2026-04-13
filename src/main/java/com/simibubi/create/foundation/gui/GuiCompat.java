@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
@@ -22,18 +23,21 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Compatibility shim for MC 1.21.8 GUI API changes.
  */
-@SuppressWarnings({"unchecked", "all"})
 public class GuiCompat {
 
     private static final ResourceLocation TOOLTIP_BACKGROUND_SPRITE =
         ResourceLocation.withDefaultNamespace("textures/gui/sprites/tooltip/background");
 
     /**
-     * Returns a PoseStack from GuiGraphics for backward compatibility.
+     * Returns a {@link PoseStack} carrying the current {@link GuiGraphics} 2D transform.
+     * In MC 1.21.8, {@link GuiGraphics#pose()} is a {@link Matrix3x2fStack}, not a {@link PoseStack}; callers still use
+     * {@link PoseStack} for 3D model paths (e.g. {@code TransformStack}, {@code GuiGameElement}).
      */
-    @SuppressWarnings("unchecked")
     public static PoseStack poseStack(GuiGraphics graphics) {
-        return (PoseStack)(Object) graphics.pose();
+        Matrix3x2fStack guiPose = graphics.pose();
+        PoseStack pose = new PoseStack();
+        pose.last().pose().identity().mul(guiPose);
+        return pose;
     }
 
     /**
