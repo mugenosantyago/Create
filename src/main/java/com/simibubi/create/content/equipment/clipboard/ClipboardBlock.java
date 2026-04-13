@@ -120,7 +120,7 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 			return;
 		if (pLevel.isClientSide)
 			return;
-		ItemStack cloneItemStack = getCloneItemStack(pLevel, pPos, pState);
+		ItemStack cloneItemStack = getCloneItemStack(pLevel, pPos, pState, true);
 		pLevel.destroyBlock(pPos, false);
 		if (pLevel.getBlockState(pPos) != pState) {
 			Inventory inv = pPlayer.getInventory();
@@ -134,7 +134,7 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		return applyComponentsToDropStack(new ItemStack(this), level.getBlockEntity(pos));
 	}
 

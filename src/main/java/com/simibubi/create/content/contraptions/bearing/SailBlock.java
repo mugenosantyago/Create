@@ -191,10 +191,10 @@ public class SailBlock extends WrenchableDirectionalBlock {
 	}
 
 	@Override
-	public void fallOn(Level p_152426_, BlockState p_152427_, BlockPos p_152428_, Entity p_152429_, float p_152430_) {
+	public void fallOn(Level p_152426_, BlockState p_152427_, BlockPos p_152428_, Entity p_152429_, double p_152430_) {
 		if (frame)
 			super.fallOn(p_152426_, p_152427_, p_152428_, p_152429_, p_152430_);
-		super.fallOn(p_152426_, p_152427_, p_152428_, p_152429_, 0);
+		super.fallOn(p_152426_, p_152427_, p_152428_, p_152429_, 0.0D);
 	}
 
 	public void updateEntityMovementAfterFallOn(BlockGetter p_176216_1_, Entity p_176216_2_) {

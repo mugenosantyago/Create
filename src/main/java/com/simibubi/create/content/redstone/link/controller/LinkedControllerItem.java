@@ -1,15 +1,11 @@
 package com.simibubi.create.content.redstone.link.controller;
 
-import java.util.function.Consumer;
-
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler.Frequency;
 import com.simibubi.create.foundation.item.ItemHelper;
-import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
-
 import net.createmod.catnip.data.Couple;
 import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.BlockPos;
@@ -30,9 +26,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class LinkedControllerItem extends Item implements MenuProvider {
@@ -142,9 +135,4 @@ public class LinkedControllerItem extends Item implements MenuProvider {
 		return Component.translatable(getDescriptionId());
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(SimpleCustomRenderer.create(this, new LinkedControllerItemRenderer()));
-	}
 }

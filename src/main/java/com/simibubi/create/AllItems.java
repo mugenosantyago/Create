@@ -205,6 +205,8 @@ public class AllItems {
 				// enchantmentValue from AllToolMaterials.CARDBOARD = 1
 				.enchantable(1))
 			.model(() -> AssetLookup.itemModelWithPartials())
+			.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+				new com.simibubi.create.content.equipment.tool.CardboardSwordItemRenderer()))
 			.register();
 
 	public static final ItemEntry<Item> RAW_ZINC =
@@ -429,6 +431,8 @@ public class AllItems {
 		.properties(p -> p.stacksTo(1))
 		.model(() -> AssetLookup.itemModelWithPartials())
 		.tag(Items.TOOLS_WRENCH)
+		.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+			new com.simibubi.create.content.equipment.wrench.WrenchItemRenderer()))
 		.register();
 
 	public static final ItemEntry<MinecartContraptionItem> MINECART_CONTRAPTION =
@@ -449,6 +453,8 @@ public class AllItems {
 		REGISTRATE.item("linked_controller", LinkedControllerItem::new)
 			.properties(p -> p.stacksTo(1))
 			.model(() -> AssetLookup.itemModelWithPartials())
+			.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+				new com.simibubi.create.content.redstone.link.controller.LinkedControllerItemRenderer()))
 			.register();
 
 	public static final ItemEntry<PotatoCannonItem> POTATO_CANNON =
@@ -456,12 +462,16 @@ public class AllItems {
 			.properties(p -> p.durability(100))
 			.model(() -> AssetLookup.itemModelWithPartials())
 			.tag(Tags.Items.ENCHANTABLES, ItemTags.DURABILITY_ENCHANTABLE, ItemTags.BOW_ENCHANTABLE)
+			.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+				new com.simibubi.create.content.equipment.potatoCannon.PotatoCannonItemRenderer()))
 			.register();
 
 	public static final ItemEntry<ExtendoGripItem> EXTENDO_GRIP = REGISTRATE.item("extendo_grip", ExtendoGripItem::new)
 		.properties(p -> p.rarity(Rarity.UNCOMMON))
 		.tag(ItemTags.DURABILITY_ENCHANTABLE)
 		.model(() -> AssetLookup.itemModelWithPartials())
+		.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+			new com.simibubi.create.content.equipment.extendoGrip.ExtendoGripItemRenderer()))
 		.register();
 
 	public static final ItemEntry<SymmetryWandItem> WAND_OF_SYMMETRY =
@@ -469,6 +479,8 @@ public class AllItems {
 			.properties(p -> p.stacksTo(1)
 				.rarity(Rarity.UNCOMMON))
 			.model(() -> AssetLookup.itemModelWithPartials())
+			.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+				new com.simibubi.create.content.equipment.symmetryWand.SymmetryWandItemRenderer()))
 			.register();
 
 	public static final ItemEntry<WorldshaperItem> WORLDSHAPER =
@@ -476,6 +488,8 @@ public class AllItems {
 			.properties(p -> p.rarity(Rarity.EPIC))
 			.lang("Creative Worldshaper")
 			.model(() -> AssetLookup.itemModelWithPartials())
+			.clientExtension((item) -> () -> () -> com.simibubi.create.foundation.item.render.SimpleCustomRenderer.create(item,
+				new com.simibubi.create.content.equipment.zapper.terrainzapper.WorldshaperItemRenderer()))
 			.register();
 
 	public static final ItemEntry<TreeFertilizerItem> TREE_FERTILIZER =

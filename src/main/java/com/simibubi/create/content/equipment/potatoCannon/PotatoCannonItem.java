@@ -14,7 +14,6 @@ import com.simibubi.create.content.equipment.armor.BacktankUtil;
 import com.simibubi.create.content.equipment.zapper.ShootableGadgetItemMethods;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.item.CustomArmPoseItem;
-import com.simibubi.create.foundation.item.render.SimpleCustomRenderer;
 import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.foundation.utility.GlobalRegistryAccess;
 import com.simibubi.create.infrastructure.config.AllConfigs;
@@ -49,10 +48,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmPoseItem {
 	private static final Predicate<ItemStack> AMMO_PREDICATE = s ->
@@ -288,11 +283,6 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements CustomArmP
 			return ArmPose.CROSSBOW_HOLD;
 		}
 		return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		consumer.accept(SimpleCustomRenderer.create(this, new PotatoCannonItemRenderer()));
 	}
 
 	public record Ammo(ItemStack stack, PotatoCannonProjectileType type) {

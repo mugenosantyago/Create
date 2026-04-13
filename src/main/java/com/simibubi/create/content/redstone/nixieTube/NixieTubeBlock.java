@@ -253,11 +253,6 @@ public class NixieTubeBlock extends DoubleFaceAttachedBlock
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader pLevel, BlockPos pPos, BlockState pState) {
-		return AllBlocks.ORANGE_NIXIE_TUBE.asStack();
-	}
-
-	@Override
 	public ItemRequirement getRequiredItems(BlockState state, BlockEntity be) {
 		return new ItemRequirement(ItemUseType.CONSUME, AllBlocks.ORANGE_NIXIE_TUBE.get()
 			.asItem());

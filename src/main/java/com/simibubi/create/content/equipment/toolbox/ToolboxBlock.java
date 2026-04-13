@@ -97,7 +97,7 @@ public class ToolboxBlock extends HorizontalDirectionalBlock implements SimpleWa
 			return;
 		withBlockEntityDo(world, pos, ToolboxBlockEntity::unequipTracked);
 		if (world instanceof ServerLevel) {
-			ItemStack cloneItemStack = getCloneItemStack(world, pos, state);
+			ItemStack cloneItemStack = getCloneItemStack(world, pos, state, true);
 			withBlockEntityDo(world, pos, i -> {
 				cloneItemStack.applyComponents(i.collectComponents());
 			});
@@ -108,7 +108,7 @@ public class ToolboxBlock extends HorizontalDirectionalBlock implements SimpleWa
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
 		ItemStack item = new ItemStack(this);
 		Optional<ToolboxBlockEntity> blockEntityOptional = getBlockEntityOptional(level, pos);
 

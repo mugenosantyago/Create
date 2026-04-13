@@ -37,8 +37,11 @@ public class ArmItem extends BlockItem {
 	}
 
 	@Override
-	public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player p_195938_4_) {
-		return !ArmInteractionPoint.isInteractable(world, pos, state);
+	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level world, BlockPos pos,
+		net.minecraft.world.entity.LivingEntity entity) {
+		if (ArmInteractionPoint.isInteractable(world, pos, state))
+			return false;
+		return super.canDestroyBlock(stack, state, world, pos, entity);
 	}
 
 }

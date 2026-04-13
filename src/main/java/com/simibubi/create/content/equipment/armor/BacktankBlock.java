@@ -160,14 +160,14 @@ public class BacktankBlock extends HorizontalKineticBlock implements IBE<Backtan
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 		if (!level.isClientSide) {
 			level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, .75f, 1);
-			player.setItemSlot(EquipmentSlot.CHEST, getCloneItemStack(level, pos, state));
+			player.setItemSlot(EquipmentSlot.CHEST, getCloneItemStack(level, pos, state, true));
 			level.destroyBlock(pos, false);
 		}
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(LevelReader pLevel, BlockPos pos, BlockState state) {
+	public ItemStack getCloneItemStack(LevelReader pLevel, BlockPos pos, BlockState state, boolean includeData) {
 		Item item = asItem();
 		if (item instanceof BacktankItem.BacktankBlockItem placeable)
 			item = placeable.getActualItem();

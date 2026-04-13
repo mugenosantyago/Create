@@ -43,9 +43,11 @@ public class EjectorItem extends BlockItem {
 	}
 
 	@Override
-	public boolean canAttackBlock(BlockState state, Level world, BlockPos pos,
-		Player p_195938_4_) {
-		return !p_195938_4_.isShiftKeyDown();
+	public boolean canDestroyBlock(ItemStack stack, BlockState state, Level world, BlockPos pos,
+		net.minecraft.world.entity.LivingEntity entity) {
+		if (entity instanceof net.minecraft.world.entity.player.Player player && player.isShiftKeyDown())
+			return false;
+		return super.canDestroyBlock(stack, state, world, pos, entity);
 	}
 
 }
