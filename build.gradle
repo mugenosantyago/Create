@@ -1,3 +1,11 @@
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath "org.ow2.asm:asm:9.7"
+        classpath "org.ow2.asm:asm-commons:9.7"
+    }
+}
+
 plugins {
     id("idea")
     id("eclipse")
@@ -16,6 +24,11 @@ import java.util.Collections
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
+
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.commons.ClassRemapper
+import org.objectweb.asm.commons.SimpleRemapper
 
 boolean dev = System.getenv("RELEASE") == null || System.getenv("RELEASE") == "false"
 String buildNumber = System.getenv("BUILD_NUMBER")
@@ -140,13 +153,24 @@ tasks.register("patchPonderJar") {
         def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
         def replacements = [
             "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class",
-            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class",
-            "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor.class"
+            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class"
         ]
-        // New classes not present in upstream Ponder (must be appended after copying orig entries).
+        // Compiled outside mixin-owned package; upstream still references the old accessor FQN — remapped below.
         def additions = [
-            "net/createmod/ponder/mixin/client/ItemRendererMixin.class"
+            "net/createmod/ponder/mixin/client/ItemRendererMixin.class",
+            "net/createmod/ponder/client/ItemRendererAccessor.class"
         ]
+        def oldItemRendererAccessorPath = "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor.class"
+        def itemRendererAccessorRemapper = new SimpleRemapper(
+                "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor",
+                "net/createmod/ponder/client/ItemRendererAccessor"
+        )
+        def remapItemRendererAccessorRefs = { byte[] bytes ->
+            def reader = new ClassReader(bytes)
+            def writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
+            reader.accept(new ClassRemapper(writer, itemRendererAccessorRemapper), ClassReader.EXPAND_FRAMES)
+            writer.toByteArray()
+        }
         (replacements + additions).each { entry ->
             def classFile = new File(classRoot, entry)
             if (!classFile.exists()) {
@@ -160,12 +184,19 @@ tasks.register("patchPonderJar") {
             new ZipOutputStream(new FileOutputStream(target)).withCloseable { zos ->
                 Collections.list(zip.entries()).each { ZipEntry e ->
                     if (e.isDirectory()) return
+                    if (e.name == oldItemRendererAccessorPath) {
+                        return
+                    }
                     def zosEntry = new ZipEntry(e)
                     zos.putNextEntry(zosEntry)
                     if (replacements.contains(e.name)) {
-                        new File(classRoot, e.name).withInputStream { stream -> stream.transferTo(zos) }
+                        def bytes = new File(classRoot, e.name).bytes
+                        zos.write(remapItemRendererAccessorRefs(bytes))
                     } else if (e.name == "ponder-common.mixins.json") {
                         patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
+                    } else if (e.name.endsWith(".class")) {
+                        def bytes = zip.getInputStream(e).bytes
+                        zos.write(remapItemRendererAccessorRefs(bytes))
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }
