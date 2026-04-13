@@ -78,8 +78,10 @@ public class CardboardArmorHandlerClient {
 
 		try {
 			PartialModel model = AllPartialModels.PACKAGES_TO_HIDE_AS.get(getCurrentBoxIndex(player));
-			PackageRenderer.renderBox(player, interpolatedYaw, ms, event.getMultiBufferSource(),
-				event.getPackedLight(), model);
+			PackageRenderer.PackageRenderState boxState = new PackageRenderer.PackageRenderState();
+			boxState.yRot = interpolatedYaw;
+			boxState.entityId = player.getId();
+			PackageRenderer.renderBox(boxState, ms, event.getMultiBufferSource(), event.getPackedLight(), model);
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}

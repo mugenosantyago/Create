@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -43,6 +43,7 @@ public class PackageRenderer extends EntityRenderer<PackageEntity, PackageRender
     public void extractRenderState(PackageEntity entity, PackageRenderState state, float partialTick) {
         super.extractRenderState(entity, state, partialTick);
         state.box = entity.box;
+        state.yRot = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
         // Store entity id for nudge()
         state.entityId = entity.getId();
     }
@@ -71,13 +72,9 @@ public class PackageRenderer extends EntityRenderer<PackageEntity, PackageRender
         sbb.renderInto(ms, buffer.getBuffer(RenderType.solid()));
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(PackageRenderState state) {
-        return null;
-    }
-
     public static class PackageRenderState extends EntityRenderState {
         public ItemStack box = ItemStack.EMPTY;
         public int entityId;
+        public float yRot;
     }
 }
