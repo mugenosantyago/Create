@@ -1,13 +1,13 @@
 package com.simibubi.create.content.redstone.thresholdSwitch;
 
+import java.lang.reflect.Method;
+
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.redstone.DirectedDirectionalBlock;
 import com.simibubi.create.foundation.block.IBE;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -29,11 +29,12 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 public class ThresholdSwitchBlock extends DirectedDirectionalBlock implements IBE<ThresholdSwitchBlockEntity> {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.redstone.thresholdSwitch.ThresholdSwitchBlockClientHooks";
 
 	public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 5);
 
@@ -84,14 +85,16 @@ public class ThresholdSwitchBlock extends DirectedDirectionalBlock implements IB
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (player != null && AllItems.WRENCH.isIn(stack))
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
-		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> withBlockEntityDo(level, pos, be -> this.displayScreen(be, player)));
+		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> {
+			try {
+				Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+				Method open = hooks.getMethod("openScreen", Level.class, BlockPos.class, Player.class);
+				open.invoke(null, level, pos, player);
+			} catch (ReflectiveOperationException e) {
+				throw new RuntimeException(e);
+			}
+		});
 		return InteractionResult.SUCCESS;
-	}
-
-	@OnlyIn(value = Dist.CLIENT)
-	protected void displayScreen(ThresholdSwitchBlockEntity be, Player player) {
-		if (player instanceof LocalPlayer)
-			ScreenOpener.open(new ThresholdSwitchScreen(be));
 	}
 
 	@Override

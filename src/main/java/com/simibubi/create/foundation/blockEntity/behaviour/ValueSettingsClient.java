@@ -22,7 +22,6 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 public class ValueSettingsClient implements GuiLayer {
-	private Minecraft mc;
 
 	public int interactHeldTicks = -1;
 	public BlockPos interactHeldPos = null;
@@ -33,10 +32,6 @@ public class ValueSettingsClient implements GuiLayer {
 	public List<MutableComponent> lastHoverTip;
 	public int hoverTicks;
 	public int hoverWarmup;
-
-	public ValueSettingsClient() {
-		mc = Minecraft.getInstance();
-	}
 
 	public void cancelIfWarmupAlreadyStarted(PlayerInteractEvent.RightClickBlock event) {
 		if (interactHeldTicks != -1 && event.getPos()
@@ -65,6 +60,9 @@ public class ValueSettingsClient implements GuiLayer {
 		if (hoverTicks > 0)
 			hoverTicks--;
 		if (interactHeldTicks == -1)
+			return;
+		Minecraft mc = Minecraft.getInstance();
+		if (mc == null || mc.player == null || mc.level == null)
 			return;
 		Player player = mc.player;
 
@@ -104,7 +102,8 @@ public class ValueSettingsClient implements GuiLayer {
 	}
 
 	public void showHoverTip(List<MutableComponent> tip) {
-		if (mc.screen != null)
+		Minecraft mc = Minecraft.getInstance();
+		if (mc == null || mc.screen != null)
 			return;
 		if (hoverWarmup < 6) {
 			hoverWarmup += 2;

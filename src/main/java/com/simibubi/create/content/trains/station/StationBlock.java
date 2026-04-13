@@ -1,5 +1,7 @@
 package com.simibubi.create.content.trains.station;
 
+import java.lang.reflect.Method;
+
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
@@ -10,13 +12,10 @@ import com.simibubi.create.foundation.advancement.AdvancementBehaviour;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,10 +38,10 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
 public class StationBlock extends Block implements IBE<StationBlockEntity>, IWrenchable, ProperWaterloggedBlock {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.trains.station.StationBlockClientHooks";
 
 	public static final BooleanProperty ASSEMBLING = BooleanProperty.create("assembling");
 
@@ -141,20 +140,16 @@ public class StationBlock extends Block implements IBE<StationBlockEntity>, IWre
 		});
 
 		if (result == InteractionResult.PASS)
-			CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> withBlockEntityDo(level, pos, be -> this.displayScreen(be, player)));
+			CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> {
+				try {
+					Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+					Method open = hooks.getMethod("openScreen", Level.class, BlockPos.class, Player.class);
+					open.invoke(null, level, pos, player);
+				} catch (ReflectiveOperationException e) {
+					throw new RuntimeException(e);
+				}
+			});
 		return InteractionResult.SUCCESS;
-	}
-
-	@OnlyIn(value = Dist.CLIENT)
-	protected void displayScreen(StationBlockEntity be, Player player) {
-		if (!(player instanceof LocalPlayer))
-			return;
-		GlobalStation station = be.getStation();
-		BlockState blockState = be.getBlockState();
-		if (station == null || blockState == null)
-			return;
-		boolean assembling = blockState.getBlock() == this && blockState.getValue(ASSEMBLING);
-		ScreenOpener.open(assembling ? new AssemblyScreen(be, station) : new StationScreen(be, station));
 	}
 
 	@Override

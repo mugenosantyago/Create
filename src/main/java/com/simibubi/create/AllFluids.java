@@ -77,7 +77,8 @@ public class AllFluids {
 	public static final FluidEntry<BaseFlowingFluid.Flowing> HONEY = assignFluidClientSlot(honeyClientExtEntry,
 		REGISTRATE.standardFluid("honey",
 				SolidRenderedPlaceableFluidType.create(0xEAAE2F,
-					() -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF()))
+					() -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF(),
+					Create.asResource("fluid/honey_still"), Create.asResource("fluid/honey_flow")))
 			.lang("Honey")
 			.properties(b -> b.viscosity(2000)
 				.density(1400))
@@ -100,7 +101,8 @@ public class AllFluids {
 	public static final FluidEntry<BaseFlowingFluid.Flowing> CHOCOLATE = assignFluidClientSlot(chocolateClientExtEntry,
 		REGISTRATE.standardFluid("chocolate",
 				SolidRenderedPlaceableFluidType.create(0x622020,
-					() -> 1f / 32f * AllConfigs.client().chocolateTransparencyMultiplier.getF()))
+					() -> 1f / 32f * AllConfigs.client().chocolateTransparencyMultiplier.getF(),
+					Create.asResource("fluid/chocolate_still"), Create.asResource("fluid/chocolate_flow")))
 			.lang("Chocolate")
 			.tag(AllFluidTags.CHOCOLATE.tag)
 			.properties(b -> b.viscosity(1500)
@@ -327,17 +329,14 @@ public class AllFluids {
 		private Vector3f fogColor;
 		private Supplier<Float> fogDistance;
 
-		public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance) {
+		public static FluidTypeFactory create(int fogColor, Supplier<Float> fogDistance, ResourceLocation stillTexture,
+			ResourceLocation flowingTexture) {
 			return (p) -> {
-				SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p);
+				SolidRenderedPlaceableFluidType fluidType = new SolidRenderedPlaceableFluidType(p, stillTexture, flowingTexture);
 				fluidType.fogColor = new Color(fogColor, false).asVectorF();
 				fluidType.fogDistance = fogDistance;
 				return fluidType;
 			};
-		}
-
-		private SolidRenderedPlaceableFluidType(Properties properties) {
-			super(properties);
 		}
 
 		private SolidRenderedPlaceableFluidType(Properties properties, ResourceLocation stillTexture,

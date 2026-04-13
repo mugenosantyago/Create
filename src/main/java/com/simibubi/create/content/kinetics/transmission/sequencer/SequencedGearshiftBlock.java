@@ -1,5 +1,7 @@
 package com.simibubi.create.content.kinetics.transmission.sequencer;
 
+import java.lang.reflect.Method;
+
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.contraption.transformable.TransformableBlock;
@@ -9,16 +11,13 @@ import com.simibubi.create.content.kinetics.base.KineticBlock;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -36,10 +35,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
 public class SequencedGearshiftBlock extends HorizontalAxisKineticBlock implements IBE<SequencedGearshiftBlockEntity>, TransformableBlock {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.kinetics.transmission.sequencer.SequencedGearshiftBlockClientHooks";
 
 	public static final BooleanProperty VERTICAL = BooleanProperty.create("vertical");
 	public static final IntegerProperty STATE = IntegerProperty.create("state", 0, 5);
@@ -97,14 +96,16 @@ public class SequencedGearshiftBlock extends HorizontalAxisKineticBlock implemen
 				return InteractionResult.TRY_WITH_EMPTY_HAND;
 		}
 
-		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> withBlockEntityDo(level, pos, be -> this.displayScreen(be, player)));
+		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> {
+			try {
+				Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+				Method open = hooks.getMethod("openScreen", Level.class, BlockPos.class, Player.class);
+				open.invoke(null, level, pos, player);
+			} catch (ReflectiveOperationException e) {
+				throw new RuntimeException(e);
+			}
+		});
 		return InteractionResult.SUCCESS;
-	}
-
-	@OnlyIn(value = Dist.CLIENT)
-	protected void displayScreen(SequencedGearshiftBlockEntity be, Player player) {
-		if (player instanceof LocalPlayer)
-			ScreenOpener.open(new SequencedGearshiftScreen(be));
 	}
 
 	@Override

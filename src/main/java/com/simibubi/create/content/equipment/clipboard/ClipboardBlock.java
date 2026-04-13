@@ -1,5 +1,6 @@
 package com.simibubi.create.content.equipment.clipboard;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +13,9 @@ import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
 
-import net.createmod.catnip.gui.ScreenOpener;
 import net.createmod.catnip.platform.CatnipServices;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.InteractionResult;
@@ -43,12 +43,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.util.FakePlayer;
 
 public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 	implements IBE<ClipboardBlockEntity>, IWrenchable, ProperWaterloggedBlock {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.equipment.clipboard.ClipboardBlockClientHooks";
 
 	public static final BooleanProperty WRITTEN = BooleanProperty.create("written");
 
@@ -99,15 +100,17 @@ public class ClipboardBlock extends FaceAttachedHorizontalDirectionalBlock
 
 		return onBlockEntityUse(level, pos, cbe -> {
 			if (level.isClientSide())
-				CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> openScreen(player, cbe.components(), pos));
+				CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> {
+					try {
+						Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+						Method open = hooks.getMethod("openScreen", Player.class, DataComponentMap.class, BlockPos.class);
+						open.invoke(null, player, cbe.components(), pos);
+					} catch (ReflectiveOperationException e) {
+						throw new RuntimeException(e);
+					}
+				});
 			return InteractionResult.SUCCESS;
 		});
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private void openScreen(Player player, DataComponentMap components, BlockPos pos) {
-		if (Minecraft.getInstance().player == player)
-			ScreenOpener.open(new ClipboardScreen(player.getInventory().getSelectedSlot(), components, pos));
 	}
 
 	@Override

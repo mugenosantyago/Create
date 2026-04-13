@@ -1,4 +1,7 @@
 package com.simibubi.create.content.redstone.displayLink;
+
+import java.lang.reflect.Method;
+
 import com.simibubi.create.foundation.utility.NbtCompat;
 
 import com.mojang.serialization.Codec;
@@ -10,9 +13,7 @@ import com.simibubi.create.foundation.utility.CreateLang;
 
 import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.nbt.NBTHelper;
-import net.createmod.catnip.outliner.Outliner;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -30,11 +31,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
-
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.util.TriState;
@@ -42,6 +38,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 @EventBusSubscriber
 public abstract class ClickToLinkBlockItem extends BlockItem {
+
+	private static final String CLIENT_HOOKS_CLASS =
+		"com.simibubi.create.content.redstone.displayLink.ClickToLinkBlockItemClientHooks";
+
 	public ClickToLinkBlockItem(Block pBlock, Properties pProperties) {
 		super(pBlock, pProperties);
 	}
@@ -144,31 +144,14 @@ public abstract class ClickToLinkBlockItem extends BlockItem {
 		return useOn;
 	}
 
-	private static BlockPos lastShownPos = null;
-	private static AABB lastShownAABB = null;
-
-	@OnlyIn(Dist.CLIENT)
 	public static void clientTick() {
-		Player player = Minecraft.getInstance().player;
-		if (player == null)
-			return;
-		ItemStack heldItemMainhand = player.getMainHandItem();
-		if (!(heldItemMainhand.getItem() instanceof ClickToLinkBlockItem blockItem))
-			return;
-		if (!heldItemMainhand.has(AllDataComponents.CLICK_TO_LINK_DATA))
-			return;
-
-		//noinspection DataFlowIssue
-		BlockPos selectedPos = heldItemMainhand.get(AllDataComponents.CLICK_TO_LINK_DATA).selectedPos();
-
-		if (!selectedPos.equals(lastShownPos)) {
-			lastShownAABB = blockItem.getSelectionBounds(selectedPos);
-			lastShownPos = selectedPos;
+		try {
+			Class<?> hooks = Class.forName(CLIENT_HOOKS_CLASS);
+			Method tick = hooks.getMethod("clientTick");
+			tick.invoke(null);
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException(e);
 		}
-
-		Outliner.getInstance().showAABB("target", lastShownAABB)
-			.colored(0xffcb74)
-			.lineWidth(1 / 16f);
 	}
 
 	public abstract int getMaxDistanceFromSelection();
@@ -181,16 +164,6 @@ public abstract class ClickToLinkBlockItem extends BlockItem {
 
 	public boolean isValidTarget(LevelAccessor level, BlockPos pos) {
 		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public AABB getSelectionBounds(BlockPos pos) {
-		Level world = Minecraft.getInstance().level;
-		BlockState state = world.getBlockState(pos);
-		VoxelShape shape = state.getShape(world, pos);
-		return shape.isEmpty() ? new AABB(BlockPos.ZERO)
-			: shape.bounds()
-				.move(pos);
 	}
 
 	public record ClickToLinkData(BlockPos selectedPos, ResourceLocation selectedDim) {
