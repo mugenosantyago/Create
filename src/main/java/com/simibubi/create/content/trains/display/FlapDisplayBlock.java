@@ -63,6 +63,19 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 	public static final BooleanProperty UP = BooleanProperty.create("up");
 	public static final BooleanProperty DOWN = BooleanProperty.create("down");
 
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (FlapDisplayBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
+
 	public FlapDisplayBlock(Properties p_49795_) {
 		super(p_49795_);
 		registerDefaultState(defaultBlockState().setValue(UP, false)
@@ -119,7 +132,7 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 		if (player.isShiftKeyDown())
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId());
 		if (placementHelper.matchesItem(stack))
 			return placementHelper.getOffset(player, level, state, pos, hitResult)
 				.placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
@@ -328,8 +341,6 @@ public class FlapDisplayBlock extends HorizontalKineticBlock
 					updateColumn(pLevel, relative, adjacent, false));
 		}
 	}
-
-	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
 
 	@MethodsReturnNonnullByDefault
 	private static class PlacementHelper implements IPlacementHelper {

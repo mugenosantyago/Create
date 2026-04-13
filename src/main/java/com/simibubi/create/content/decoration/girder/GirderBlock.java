@@ -32,7 +32,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +66,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class GirderBlock extends Block implements SimpleWaterloggedBlock, IWrenchable {
 
-	private static final int placementHelperId = PlacementHelpers.register(new GirderPlacementHelper());
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (GirderBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new GirderPlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	public static final BooleanProperty X = BooleanProperty.create("x");
 	public static final BooleanProperty Z = BooleanProperty.create("z");
@@ -125,7 +135,7 @@ public class GirderBlock extends Block implements SimpleWaterloggedBlock, IWrenc
 			return InteractionResult.FAIL;
 		}
 
-		IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper helper = PlacementHelpers.get(placementHelperId());
 		if (helper.matchesItem(stack))
 			return helper.getOffset(player, level, state, pos, hitResult)
 				.placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);

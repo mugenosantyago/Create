@@ -43,7 +43,18 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 	public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (CopycatStepBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	public CopycatStepBlock(Properties pProperties) {
 		super(pProperties);
@@ -54,7 +65,7 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (!player.isShiftKeyDown() && player.mayBuild()) {
-			IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
+			IPlacementHelper helper = PlacementHelpers.get(placementHelperId());
 			if (helper.matchesItem(stack))
 				return helper.getOffset(player, level, state, pos, hitResult)
 					.placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);

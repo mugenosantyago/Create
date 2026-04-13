@@ -46,7 +46,18 @@ public class TableClothBlock extends Block implements IHaveBigOutline, IWrenchab
 
 	public static final BooleanProperty HAS_BE = BooleanProperty.create("entity");
 
-	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (TableClothBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	private DyeColor colour;
 
@@ -97,7 +108,7 @@ public class TableClothBlock extends Block implements IHaveBigOutline, IWrenchab
 		if (!player.mayBuild())
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId());
 		if (placementHelper.matchesItem(heldItem)) {
 			if (shiftKeyDown)
 				return InteractionResult.TRY_WITH_EMPTY_HAND;

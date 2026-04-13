@@ -22,7 +22,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -45,7 +44,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 @MethodsReturnNonnullByDefault
 public class DeployerBlock extends DirectionalAxisKineticBlock implements IBE<DeployerBlockEntity> {
 
-	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (DeployerBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	public DeployerBlock(Properties properties) {
 		super(properties);
@@ -99,7 +109,7 @@ public class DeployerBlock extends DirectionalAxisKineticBlock implements IBE<De
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		ItemStack heldByPlayer = stack.copy();
 
-		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId());
 		if (!player.isShiftKeyDown() && player.mayBuild()) {
 			if (placementHelper.matchesItem(heldByPlayer) && placementHelper.getOffset(player, level, state, pos, hitResult)
 				.placeInWorld(level, (BlockItem) heldByPlayer.getItem(), player, hand, hitResult)

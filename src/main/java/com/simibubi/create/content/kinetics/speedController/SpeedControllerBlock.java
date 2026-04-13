@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +37,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 @MethodsReturnNonnullByDefault
 public class SpeedControllerBlock extends HorizontalAxisKineticBlock implements IBE<SpeedControllerBlockEntity> {
 
-	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (SpeedControllerBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	public SpeedControllerBlock(Properties properties) {
 		super(properties);
@@ -64,7 +74,7 @@ public class SpeedControllerBlock extends HorizontalAxisKineticBlock implements 
 
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-		IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper helper = PlacementHelpers.get(placementHelperId());
 		if (helper.matchesItem(stack))
 			return helper.getOffset(player, level, state, pos, hitResult).placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
 

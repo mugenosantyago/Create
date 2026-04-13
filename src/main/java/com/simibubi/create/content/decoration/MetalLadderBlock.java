@@ -36,7 +36,18 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public class MetalLadderBlock extends LadderBlock implements IWrenchable {
 
-	private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+	/** Lazy registration — see {@link com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock#placementHelperId()}. */
+	private static int placementHelperId = -1;
+
+	private static int placementHelperId() {
+		if (placementHelperId < 0) {
+			synchronized (MetalLadderBlock.class) {
+				if (placementHelperId < 0)
+					placementHelperId = PlacementHelpers.register(new PlacementHelper());
+			}
+		}
+		return placementHelperId;
+	}
 
 	public MetalLadderBlock(Properties p_54345_) {
 		super(p_54345_);
@@ -81,7 +92,7 @@ public class MetalLadderBlock extends LadderBlock implements IWrenchable {
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (player.isShiftKeyDown() || !player.mayBuild())
 			return InteractionResult.TRY_WITH_EMPTY_HAND;
-		IPlacementHelper helper = PlacementHelpers.get(placementHelperId);
+		IPlacementHelper helper = PlacementHelpers.get(placementHelperId());
 		if (helper.matchesItem(stack))
 			return helper.getOffset(player, level, state, pos, hitResult)
 				.placeInWorld(level, (BlockItem) stack.getItem(), player, hand, hitResult);
