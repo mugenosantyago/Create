@@ -41,10 +41,19 @@ public class ProcessingRecipeParams {
 	}
 
 	protected static <P extends ProcessingRecipeParams> MapCodec<P> codec(Supplier<P> factory) {
+		// Same rationale as SequencedAssemblyRecipeSerializer: touching Ingredient.CODEC (and thus NeoForge's
+		// ingredient codec graph) during static init breaks dedicated servers. Also defer listOf() so it is not
+		// invoked while wiring RecordCodecBuilder.group.
+		Codec<Ingredient> ingredientElemCodec = Codec.lazyInitialized(() -> Ingredient.CODEC);
+		Codec<ProcessingOutput> processingOutputElemCodec = Codec.lazyInitialized(() -> ProcessingOutput.CODEC);
+		Codec<List<Either<SizedFluidIngredient, Ingredient>>> ingredientsListCodec =
+			Codec.lazyInitialized(() -> Codec.either(CreateCodecs.SIZED_FLUID_INGREDIENT, ingredientElemCodec).listOf());
+		Codec<List<Either<FluidStack, ProcessingOutput>>> resultsListCodec =
+			Codec.lazyInitialized(() -> Codec.either(FluidStack.CODEC, processingOutputElemCodec).listOf());
 		return RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Codec.either(CreateCodecs.SIZED_FLUID_INGREDIENT, Ingredient.CODEC).listOf().fieldOf("ingredients")
+			ingredientsListCodec.fieldOf("ingredients")
 				.forGetter(ProcessingRecipeParams::ingredients),
-			Codec.either(FluidStack.CODEC, ProcessingOutput.CODEC).listOf().fieldOf("results")
+			resultsListCodec.fieldOf("results")
 				.forGetter(ProcessingRecipeParams::results),
 			Codec.INT.optionalFieldOf("processing_time", 0)
 				.forGetter(ProcessingRecipeParams::processingDuration),
