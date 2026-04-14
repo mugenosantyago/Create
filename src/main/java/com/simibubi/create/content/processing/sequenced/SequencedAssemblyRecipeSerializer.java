@@ -36,6 +36,10 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		// servers before those codecs are needed for actual JSON parsing.
 		Codec<Ingredient> ingredientCodec = Codec.lazyInitialized(() -> Ingredient.CODEC);
 		Codec<ProcessingOutput> processingOutputCodec = Codec.lazyInitialized(() -> ProcessingOutput.CODEC);
+		// RecordCodecBuilder compiles `processingOutputCodec.listOf().fieldOf(...)` into a call to
+		// listOf() while wiring the group — that ran at serializer registration time and defeated lazy
+		// codecs. Wrap the list codec so listOf() only runs when the results field is decoded.
+		Codec<List<ProcessingOutput>> resultsCodec = Codec.lazyInitialized(() -> processingOutputCodec.listOf());
 		// SequencedRecipe.CODEC is already lazy; wrapping listOf() defers ListCodec construction
 		// until the sequence field is decoded (same pattern as ingredient/output codecs).
 		Codec<List<SequencedRecipe<?>>> sequenceCodec = Codec.lazyInitialized(() -> SequencedRecipe.CODEC.listOf());
@@ -44,7 +48,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 				ingredientCodec.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
 				processingOutputCodec.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
 				sequenceCodec.fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
-				processingOutputCodec.listOf().fieldOf("results").forGetter(r -> r.resultPool),
+				resultsCodec.fieldOf("results").forGetter(r -> r.resultPool),
 				ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("loops", 1).forGetter(SequencedAssemblyRecipe::getLoops)
 			).apply(i, (ingredient, transitionalItem, sequence, results, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
