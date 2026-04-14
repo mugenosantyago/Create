@@ -1,5 +1,8 @@
 package com.simibubi.create.content.processing.sequenced;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.mojang.serialization.Codec;
@@ -33,11 +36,14 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		// servers before those codecs are needed for actual JSON parsing.
 		Codec<Ingredient> ingredientCodec = Codec.lazyInitialized(() -> Ingredient.CODEC);
 		Codec<ProcessingOutput> processingOutputCodec = Codec.lazyInitialized(() -> ProcessingOutput.CODEC);
+		// SequencedRecipe.CODEC is already lazy; wrapping listOf() defers ListCodec construction
+		// until the sequence field is decoded (same pattern as ingredient/output codecs).
+		Codec<List<SequencedRecipe<?>>> sequenceCodec = Codec.lazyInitialized(() -> SequencedRecipe.CODEC.listOf());
 		return RecordCodecBuilder.mapCodec(
 			i -> i.group(
 				ingredientCodec.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
 				processingOutputCodec.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
-				SequencedRecipe.CODEC.listOf().fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
+				sequenceCodec.fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
 				processingOutputCodec.listOf().fieldOf("results").forGetter(r -> r.resultPool),
 				ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("loops", 1).forGetter(SequencedAssemblyRecipe::getLoops)
 			).apply(i, (ingredient, transitionalItem, sequence, results, loops) -> {
@@ -56,12 +62,47 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		);
 	}
 
+	/**
+	 * Defers {@code getstatic} on stream codecs whose classes run heavy {@code <clinit>} chains on
+	 * first touch (notably {@link Ingredient#CONTENTS_STREAM_CODEC} → {@link Ingredient#CODEC} via
+	 * NeoForge's {@code IngredientCodecs}, and {@link ProcessingOutput}'s static codecs). Without
+	 * this, {@link #streamCodec()} can initialize those classes during serializer registration before
+	 * recipe JSON is parsed — the same classloading order that produced {@code ClientLevel} errors
+	 * on dedicated servers when a mod registers a client-only ingredient codec.
+	 */
+	private static <B extends RegistryFriendlyByteBuf, V> StreamCodec<B, V> lazyStreamCodec(Supplier<StreamCodec<B, V>> delegate) {
+		return new StreamCodec<>() {
+			private volatile StreamCodec<B, V> resolved;
+
+			private StreamCodec<B, V> resolve() {
+				StreamCodec<B, V> d = resolved;
+				if (d == null) {
+					synchronized (this) {
+						if (resolved == null)
+							resolved = d = delegate.get();
+					}
+				}
+				return d;
+			}
+
+			@Override
+			public V decode(B buf) {
+				return resolve().decode(buf);
+			}
+
+			@Override
+			public void encode(B buf, V value) {
+				resolve().encode(buf, value);
+			}
+		};
+	}
+
 	private StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> buildStreamCodec() {
 		return StreamCodec.composite(
-			Ingredient.CONTENTS_STREAM_CODEC, r -> r.ingredient,
+			lazyStreamCodec(() -> Ingredient.CONTENTS_STREAM_CODEC), r -> r.ingredient,
 			CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC), SequencedAssemblyRecipe::getSequence,
-			CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC), r -> r.resultPool,
-			ProcessingOutput.STREAM_CODEC, r -> r.transitionalItem,
+			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)), r -> r.resultPool,
+			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC), r -> r.transitionalItem,
 			ByteBufCodecs.VAR_INT, r -> r.loops,
 			(ingredient, sequence, resultPool, transitionalItem, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
