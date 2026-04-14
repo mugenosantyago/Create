@@ -66,7 +66,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 				recipe.loops = loops;
 
 				for (int j = 0; j < recipe.sequence.size(); j++)
-					sequence.get(j).initFromSequencedAssembly(recipe, j == 0);
+					((SequencedRecipe<?>) recipe.sequence.get(j)).initFromSequencedAssembly(recipe, j == 0);
 
 				return recipe;
 			})
@@ -117,7 +117,8 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 			(java.util.function.Function<SequencedAssemblyRecipe, net.minecraft.world.item.crafting.Ingredient>) (
 				r -> (net.minecraft.world.item.crafting.Ingredient) r.ingredient),
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC)),
-			(java.util.function.Function<SequencedAssemblyRecipe, List<?>>) (r -> r.sequence),
+			(java.util.function.Function<SequencedAssemblyRecipe, List<SequencedRecipe<?>>>) (
+				(java.util.function.Function<SequencedAssemblyRecipe, ?>) (r -> r.sequence)),
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)), r -> r.resultPool,
 			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC), r -> r.transitionalItem,
 			ByteBufCodecs.VAR_INT, r -> r.loops,
@@ -130,7 +131,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 				recipe.loops = loops;
 
 				for (int j = 0; j < recipe.sequence.size(); j++)
-					sequence.get(j).initFromSequencedAssembly(recipe, j == 0);
+					((SequencedRecipe<?>) recipe.sequence.get(j)).initFromSequencedAssembly(recipe, j == 0);
 
 				return recipe;
 			}
