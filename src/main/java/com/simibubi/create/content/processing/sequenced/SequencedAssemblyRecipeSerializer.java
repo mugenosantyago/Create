@@ -2,6 +2,7 @@ package com.simibubi.create.content.processing.sequenced;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
@@ -23,13 +24,21 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 
 	private volatile StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> streamCodec;
 
+	@SuppressWarnings("removal")
 	private MapCodec<SequencedAssemblyRecipe> buildCodec() {
+		// Do not reference Ingredient.CODEC (or ProcessingOutput.CODEC) directly here: touching
+		// Ingredient.CODEC runs Ingredient's static initializer, which ends in NeoForge's
+		// IngredientCodecs.codec(...) and can eagerly pull modded/custom ingredient codecs that
+		// reference client-only classes. Lazy-wrap so this serializer can be built on dedicated
+		// servers before those codecs are needed for actual JSON parsing.
+		Codec<Ingredient> ingredientCodec = Codec.lazyInitialized(() -> Ingredient.CODEC);
+		Codec<ProcessingOutput> processingOutputCodec = Codec.lazyInitialized(() -> ProcessingOutput.CODEC);
 		return RecordCodecBuilder.mapCodec(
 			i -> i.group(
-				Ingredient.CODEC.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
-				ProcessingOutput.CODEC.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
+				ingredientCodec.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
+				processingOutputCodec.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
 				SequencedRecipe.CODEC.listOf().fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
-				ProcessingOutput.CODEC.listOf().fieldOf("results").forGetter(r -> r.resultPool),
+				processingOutputCodec.listOf().fieldOf("results").forGetter(r -> r.resultPool),
 				ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("loops", 1).forGetter(SequencedAssemblyRecipe::getLoops)
 			).apply(i, (ingredient, transitionalItem, sequence, results, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
