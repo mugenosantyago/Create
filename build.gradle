@@ -3,6 +3,7 @@ buildscript {
     dependencies {
         classpath "org.ow2.asm:asm:9.7"
         classpath "org.ow2.asm:asm-commons:9.7"
+        classpath "org.ow2.asm:asm-tree:9.7"
     }
 }
 
@@ -32,6 +33,18 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.ClassRemapper
 import org.objectweb.asm.commons.SimpleRemapper
+import org.objectweb.asm.tree.AbstractInsnNode
+import org.objectweb.asm.tree.ClassNode
+import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.InsnNode
+import org.objectweb.asm.tree.JumpInsnNode
+import org.objectweb.asm.tree.MethodInsnNode
+import org.objectweb.asm.tree.FieldInsnNode
+import org.objectweb.asm.tree.FrameNode
+import org.objectweb.asm.tree.LabelNode
+import org.objectweb.asm.tree.LineNumberNode
+import org.objectweb.asm.tree.MethodNode
+import org.objectweb.asm.tree.VarInsnNode
 
 boolean dev = System.getenv("RELEASE") == null || System.getenv("RELEASE") == "false"
 String buildNumber = System.getenv("BUILD_NUMBER")
@@ -248,6 +261,80 @@ tasks.register("patchPonderJar") {
             }, ClassReader.EXPAND_FRAMES)
             writer.toByteArray()
         }
+        /**
+         * After {@link #patchCatnipClientboundHandleUsesPlayer}, {@code handle} still does
+         * {@code Minecraft.getInstance().player} with a {@code LocalPlayer}-typed field ref, which forces the
+         * dedicated server to resolve {@code LocalPlayer} during class loading. Use the {@code Player} argument instead.
+         */
+        def removeConfigPacketMinecraftPlayerNullCheck = { byte[] bytes ->
+            def handleDesc = "(Lnet/minecraft/world/entity/player/Player;)V"
+            def reader = new ClassReader(bytes)
+            def cn = new ClassNode()
+            reader.accept(cn, ClassReader.EXPAND_FRAMES)
+            for (MethodNode mn : cn.methods) {
+                if (mn.name != "handle" || mn.desc != handleDesc) {
+                    continue
+                }
+                def insns = mn.instructions
+                AbstractInsnNode cur = insns.first
+                while (cur instanceof LabelNode || cur instanceof LineNumberNode || cur instanceof FrameNode) {
+                    cur = cur.next
+                }
+                if (cur instanceof VarInsnNode && cur.opcode == Opcodes.ALOAD && cur.var == 1) {
+                    continue
+                }
+                if (!(cur instanceof MethodInsnNode)) {
+                    throw new GradleException("ClientboundConfigPacket.handle: expected INVOKESTATIC getInstance, got ${cur}")
+                }
+                def getInstance = (MethodInsnNode) cur
+                if (getInstance.opcode != Opcodes.INVOKESTATIC
+                        || getInstance.owner != "net/minecraft/client/Minecraft"
+                        || getInstance.name != "getInstance") {
+                    throw new GradleException("ClientboundConfigPacket.handle: unexpected start ${getInstance.owner}.${getInstance.name}${getInstance.desc}")
+                }
+                def getField = getInstance.next
+                if (!(getField instanceof FieldInsnNode)
+                        || getField.opcode != Opcodes.GETFIELD
+                        || getField.owner != "net/minecraft/client/Minecraft"
+                        || getField.name != "player") {
+                    throw new GradleException("ClientboundConfigPacket.handle: expected GETFIELD Minecraft.player after getInstance, got ${getField}")
+                }
+                def ifNonNull = getField.next
+                if (!(ifNonNull instanceof JumpInsnNode) || ifNonNull.opcode != Opcodes.IFNONNULL) {
+                    throw new GradleException("ClientboundConfigPacket.handle: expected IFNONNULL after GETFIELD player, got ${ifNonNull}")
+                }
+                def earlyReturn = ifNonNull.next
+                while (earlyReturn instanceof LabelNode || earlyReturn instanceof LineNumberNode || earlyReturn instanceof FrameNode) {
+                    earlyReturn = earlyReturn.next
+                }
+                if (!(earlyReturn instanceof InsnNode) || earlyReturn.opcode != Opcodes.RETURN) {
+                    throw new GradleException("ClientboundConfigPacket.handle: expected RETURN after IFNONNULL, got ${earlyReturn}")
+                }
+                def targetLabel = ((JumpInsnNode) ifNonNull).label
+                insns.remove(getInstance)
+                insns.remove(getField)
+                insns.remove(ifNonNull)
+                insns.remove(earlyReturn)
+                def il = new InsnList()
+                il.add(new VarInsnNode(Opcodes.ALOAD, 1))
+                il.add(new JumpInsnNode(Opcodes.IFNONNULL, targetLabel))
+                il.add(new InsnNode(Opcodes.RETURN))
+                insns.insertBefore(insns.first, il)
+            }
+            def writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES)
+            cn.accept(writer)
+            return writer.toByteArray()
+        }
+        /** Remap any remaining {@code LocalPlayer} type refs (stack maps, debug, unused pool Utf8) to {@code Player}. */
+        def remapCatnipLocalPlayerToPlayer = { byte[] bytes ->
+            def remapper = new SimpleRemapper(
+                    "net/minecraft/client/player/LocalPlayer",
+                    "net/minecraft/world/entity/player/Player")
+            def reader = new ClassReader(bytes)
+            def writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES)
+            reader.accept(new ClassRemapper(writer, remapper), ClassReader.EXPAND_FRAMES)
+            return writer.toByteArray()
+        }
         (replacements + additions).each { entry ->
             def classFile = new File(classRoot, entry)
             if (!classFile.exists()) {
@@ -280,9 +367,13 @@ tasks.register("patchPonderJar") {
                         if (e.name == "net/createmod/catnip/math/VecHelper.class") {
                             bytes = patchVecHelperCallGetFovReturnType(bytes)
                         }
-                        if (e.name == "net/createmod/catnip/net/packets/ClientboundSimpleActionPacket.class"
-                                || e.name == "net/createmod/catnip/net/packets/ClientboundConfigPacket.class") {
+                        if (e.name == "net/createmod/catnip/net/packets/ClientboundConfigPacket.class") {
                             bytes = patchCatnipClientboundHandleUsesPlayer(bytes)
+                            bytes = removeConfigPacketMinecraftPlayerNullCheck(bytes)
+                            bytes = remapCatnipLocalPlayerToPlayer(bytes)
+                        } else if (e.name == "net/createmod/catnip/net/packets/ClientboundSimpleActionPacket.class") {
+                            bytes = patchCatnipClientboundHandleUsesPlayer(bytes)
+                            bytes = remapCatnipLocalPlayerToPlayer(bytes)
                         }
                         zos.write(bytes)
                     } else {
