@@ -58,8 +58,7 @@ public class SequencedAssemblyRecipeBuilder {
 		UnaryOperator<B> builder) {
 		B recipeBuilder = factory.apply(ResourceLocation.withDefaultNamespace("dummy"));
 		Item placeHolder = recipe.getTransitionalItem().getItem();
-		recipe.getSequence()
-			.add(new SequencedRecipe<>(builder.apply(recipeBuilder.require(placeHolder)
+		recipe.addAssemblyStep(new SequencedRecipe<>(builder.apply(recipeBuilder.require(placeHolder)
 					.output(placeHolder))
 				.build()));
 		return this;

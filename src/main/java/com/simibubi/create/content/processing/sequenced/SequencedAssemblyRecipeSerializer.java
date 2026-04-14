@@ -46,19 +46,22 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		Codec<List<ProcessingOutput>> resultsCodec = Codec.lazyInitialized(() -> processingOutputCodec.listOf());
 		// SequencedRecipe.CODEC is already lazy; wrapping listOf() defers ListCodec construction
 		// until the sequence field is decoded (same pattern as ingredient/output codecs).
-		Codec<List<SequencedRecipe<?>>> sequenceCodec = Codec.lazyInitialized(() -> SequencedRecipe.CODEC.listOf());
+		// Do not declare Codec<List<SequencedRecipe<?>>>: that names SequencedRecipe in this class.
+		@SuppressWarnings("unchecked")
+		Codec<List<Object>> sequenceCodec = (Codec<List<Object>>) (Codec<?>) Codec.lazyInitialized(
+			() -> SequencedRecipe.CODEC.listOf());
 		return RecordCodecBuilder.mapCodec(
 			i -> i.group(
 				ingredientCodec.fieldOf("ingredient").forGetter(r -> r.ingredient),
 				processingOutputCodec.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
-				sequenceCodec.fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
+				sequenceCodec.fieldOf("sequence").forGetter(r -> r.sequence),
 				resultsCodec.fieldOf("results").forGetter(r -> r.resultPool),
 				ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("loops", 1).forGetter(SequencedAssemblyRecipe::getLoops)
 			).apply(i, (ingredient, transitionalItem, sequence, results, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
 				recipe.ingredient = ingredient;
 				recipe.transitionalItem = transitionalItem;
-				recipe.sequence.addAll(sequence);
+				recipe.sequence.addAll((List<?>) sequence);
 				recipe.resultPool.addAll(results);
 				recipe.loops = loops;
 
@@ -113,14 +116,15 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 			lazyStreamCodec(() -> net.minecraft.world.item.crafting.Ingredient.CONTENTS_STREAM_CODEC),
 			(java.util.function.Function<SequencedAssemblyRecipe, net.minecraft.world.item.crafting.Ingredient>) (
 				r -> (net.minecraft.world.item.crafting.Ingredient) r.ingredient),
-			CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC), SequencedAssemblyRecipe::getSequence,
+			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC)),
+			(java.util.function.Function<SequencedAssemblyRecipe, List<?>>) (r -> r.sequence),
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)), r -> r.resultPool,
 			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC), r -> r.transitionalItem,
 			ByteBufCodecs.VAR_INT, r -> r.loops,
 			(ingredient, sequence, resultPool, transitionalItem, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
 				recipe.ingredient = ingredient;
-				recipe.getSequence().addAll(sequence);
+				recipe.sequence.addAll(sequence);
 				recipe.resultPool.addAll(resultPool);
 				recipe.transitionalItem = transitionalItem;
 				recipe.loops = loops;

@@ -48,7 +48,13 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	 * Runtime value is always an {@link Ingredient} once the recipe is decoded or synced.
 	 */
 	protected Object ingredient;
-	protected List<SequencedRecipe<?>> sequence;
+	/**
+	 * Stored as raw {@link Object} elements in a {@link List} so this class does not declare
+	 * {@code List<SequencedRecipe<?>>} (which would resolve {@link SequencedRecipe} during
+	 * {@link SequencedAssemblyRecipe} load while recipe codecs register on dedicated servers).
+	 * Runtime entries are always {@link SequencedRecipe} instances.
+	 */
+	protected List<Object> sequence;
 	protected int loops;
 	protected ProcessingOutput transitionalItem;
 
@@ -85,7 +91,8 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		for (RecipeHolder<SequencedAssemblyRecipe> sequencedAssemblyRecipe : all) {
 			if (!sequencedAssemblyRecipe.value().appliesTo(sequencedAssemblyRecipe.id().location(), item))
 				continue;
-			SequencedRecipe<?> nextRecipe = sequencedAssemblyRecipe.value().getNextRecipe(item);
+			SequencedRecipe<?> nextRecipe = (SequencedRecipe<?>) sequencedAssemblyRecipe.value()
+				.getNextRecipe(item);
 			ProcessingRecipe<?, ?> recipe = nextRecipe.getRecipe();
 			if (recipe.getType() != type || !recipeClass.isInstance(recipe))
 				continue;
@@ -104,7 +111,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 		for (RecipeHolder<SequencedAssemblyRecipe> holder : all) {
 			if (holder.value().appliesTo(holder.id().location(), item)) {
-				ProcessingRecipe<?, ?> recipe = holder.value().getNextRecipe(item).getRecipe();
+				ProcessingRecipe<?, ?> recipe = ((SequencedRecipe<?>) holder.value().getNextRecipe(item)).getRecipe();
 
 				if (recipe.getType() == type && recipeClass.isInstance(recipe)) {
 					recipe.enforceNextResult(() -> holder.value().advance(holder.id().location(), item, level.random));
@@ -164,7 +171,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		return ((Ingredient) ingredient).test(input);
 	}
 
-	private SequencedRecipe<?> getNextRecipe(ItemStack input) {
+	private Object getNextRecipe(ItemStack input) {
 		return sequence.get(getStep(input) % sequence.size());
 	}
 
@@ -257,7 +264,8 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		for (int i = 0; i < length; i++) {
 			if (i >= remaining)
 				break;
-			SequencedRecipe<?> sequencedRecipe = sequencedAssemblyRecipe.sequence.get((i + step) % length);
+			SequencedRecipe<?> sequencedRecipe = (SequencedRecipe<?>) sequencedAssemblyRecipe.sequence.get(
+				(i + step) % length);
 			Component textComponent = sequencedRecipe.getAsAssemblyRecipe()
 				.getDescriptionForAssembly();
 			if (i == 0)
@@ -281,8 +289,16 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		return (T) ingredient;
 	}
 
-	public List<SequencedRecipe<?>> getSequence() {
+	/**
+	 * Return type is {@code List<?>} so the {@code SequencedRecipe} class is not named in this
+	 * method's bytecode signature (see {@link #ingredient} / {@link #sequence} field javadocs).
+	 */
+	public List<?> getSequence() {
 		return sequence;
+	}
+
+	protected void addAssemblyStep(Object step) {
+		sequence.add(step);
 	}
 
 	public ItemStack getTransitionalItem() {

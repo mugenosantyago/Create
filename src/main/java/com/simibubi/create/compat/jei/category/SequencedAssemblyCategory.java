@@ -47,6 +47,11 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 		super(info);
 	}
 
+	@SuppressWarnings("unchecked")
+	private static List<SequencedRecipe<?>> sequenceTyped(SequencedAssemblyRecipe recipe) {
+		return (List<SequencedRecipe<?>>) (List<?>) recipe.getSequence();
+	}
+
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, SequencedAssemblyRecipe recipe, IFocusGroup focuses) {
 		boolean noRandomOutput = recipe.getOutputChance() == 1;
@@ -70,19 +75,19 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 
 		int width = 0;
 		int margin = 3;
-		for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence())
+		for (SequencedRecipe<?> sequencedRecipe : sequenceTyped(recipe))
 			width += getSubCategory(sequencedRecipe).getWidth() + margin;
 		width -= margin;
 		int x = width / -2 + getBackground().getWidth() / 2;
 
-		for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence()) {
+		for (SequencedRecipe<?> sequencedRecipe : sequenceTyped(recipe)) {
 			SequencedAssemblySubCategory subCategory = getSubCategory(sequencedRecipe);
 			subCategory.setRecipe(builder, sequencedRecipe, focuses, x);
 			x += subCategory.getWidth() + margin;
 		}
 
 		for (int i = 1; i < recipe.getLoops(); i++) {
-			for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence()) {
+			for (SequencedRecipe<?> sequencedRecipe : sequenceTyped(recipe)) {
 				NonNullList<Ingredient> sequencedIngredients = NonNullList.copyOf(sequencedRecipe.getRecipe()
 					.placementInfo().ingredients());
 				for (Ingredient ingredient : sequencedIngredients.subList(1, sequencedIngredients.size()))
@@ -140,13 +145,13 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 
 		int width = 0;
 		int margin = 3;
-		for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence())
+		for (SequencedRecipe<?> sequencedRecipe : sequenceTyped(recipe))
 			width += getSubCategory(sequencedRecipe).getWidth() + margin;
 		width -= margin;
 		matrixStack.translate(width / -2 + getBackground().getWidth() / 2, 0, 0);
 
 		matrixStack.pushPose();
-		List<SequencedRecipe<?>> sequence = recipe.getSequence();
+		List<SequencedRecipe<?>> sequence = sequenceTyped(recipe);
 		for (int i = 0; i < sequence.size(); i++) {
 			SequencedRecipe<?> sequencedRecipe = sequence.get(i);
 			SequencedAssemblySubCategory subCategory = getSubCategory(sequencedRecipe);
@@ -195,13 +200,13 @@ public class SequencedAssemblyCategory extends CreateRecipeCategory<SequencedAss
 		if (mouseY > 5 && mouseY < 84) {
 			int width = 0;
 			int margin = 3;
-			for (SequencedRecipe<?> sequencedRecipe : recipe.getSequence())
+			for (SequencedRecipe<?> sequencedRecipe : sequenceTyped(recipe))
 				width += getSubCategory(sequencedRecipe).getWidth() + margin;
 			width -= margin;
 			xOffset = width / 2 + getBackground().getWidth() / -2;
 
 			double relativeX = mouseX + xOffset;
-			List<SequencedRecipe<?>> sequence = recipe.getSequence();
+			List<SequencedRecipe<?>> sequence = sequenceTyped(recipe);
 			for (int i = 0; i < sequence.size(); i++) {
 				SequencedRecipe<?> sequencedRecipe = sequence.get(i);
 				SequencedAssemblySubCategory subCategory = getSubCategory(sequencedRecipe);
