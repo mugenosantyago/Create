@@ -1,5 +1,7 @@
 package com.simibubi.create.content.processing.recipe;
 
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
 
 import com.mojang.datafixers.util.Either;
@@ -25,13 +27,13 @@ public class ProcessingOutput {
 
 	public static final ProcessingOutput EMPTY = new ProcessingOutput(ItemStack.EMPTY, 1);
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, ProcessingOutput> STREAM_CODEC = StreamCodec.composite(
-		ByteBufCodecs.registry(Registries.ITEM), i -> i.item,
-		ByteBufCodecs.INT, i -> i.count,
-		DataComponentPatch.STREAM_CODEC, i -> i.patch,
-		ByteBufCodecs.FLOAT, i -> i.chance,
-		ProcessingOutput::new
-	);
+	/**
+	 * Lazily resolves the delegate so {@link ProcessingOutput} can load on dedicated servers without
+	 * running codec {@code <clinit>} chains (including {@link DataComponentPatch} / item codecs) until
+	 * the stream codec is actually used.
+	 */
+	public static final StreamCodec<RegistryFriendlyByteBuf, ProcessingOutput> STREAM_CODEC =
+		lazyStreamCodec(ProcessingOutput::buildStreamCodec);
 
 	private final Item item;
 	private final int count;
@@ -98,48 +100,91 @@ public class ProcessingOutput {
 		}
 	}
 
-	@ScheduledForRemoval(inVersion = "1.21.1+ Port")
-	@Deprecated(since = "6.0.3", forRemoval = true)
-	private static final Codec<Either<ItemStack, Pair<ResourceLocation, Integer>>> ITEM_CODEC_OLD = Codec.either(
-		ItemStack.SINGLE_ITEM_CODEC,
-		ResourceLocation.CODEC.comapFlatMap(
-			loc -> DataResult.error(() -> "Compat cannot be deserialized"),
-			Pair::getFirst
-		)
-	);
+	private static StreamCodec<RegistryFriendlyByteBuf, ProcessingOutput> buildStreamCodec() {
+		return StreamCodec.composite(
+			ByteBufCodecs.registry(Registries.ITEM), i -> i.item,
+			ByteBufCodecs.INT, i -> i.count,
+			DataComponentPatch.STREAM_CODEC, i -> i.patch,
+			ByteBufCodecs.FLOAT, i -> i.chance,
+			ProcessingOutput::new
+		);
+	}
+
+	private static <B extends RegistryFriendlyByteBuf, V> StreamCodec<B, V> lazyStreamCodec(Supplier<StreamCodec<B, V>> delegate) {
+		return new StreamCodec<>() {
+			private volatile StreamCodec<B, V> resolved;
+
+			private StreamCodec<B, V> resolve() {
+				StreamCodec<B, V> d = resolved;
+				if (d == null) {
+					synchronized (this) {
+						if (resolved == null)
+							resolved = d = delegate.get();
+					}
+				}
+				return d;
+			}
+
+			@Override
+			public V decode(B buf) {
+				return resolve().decode(buf);
+			}
+
+			@Override
+			public void encode(B buf, V value) {
+				resolve().encode(buf, value);
+			}
+		};
+	}
 
 	@ScheduledForRemoval(inVersion = "1.21.1+ Port")
 	@Deprecated(since = "6.0.3", forRemoval = true)
-	public static final Codec<ProcessingOutput> CODEC_OLD = RecordCodecBuilder.create(i -> i.group(
-		ITEM_CODEC_OLD.fieldOf("item").forGetter(s -> s.datagenOutput != null ? Either.right(Pair.of(s.datagenOutput, s.count)) : Either.left(s.item.getDefaultInstance())),
-		ExtraCodecs.intRange(1, 99).optionalFieldOf("count", 1).forGetter(s -> s.count),
-		ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("chance", 1F).forGetter(s -> s.chance)
-	).apply(i, (item, count, chance) -> item.map(
-		stack -> new ProcessingOutput(stack.getItem(), count, stack.getComponentsPatch(), chance),
-		compat -> new ProcessingOutput(compat.getFirst(), compat.getSecond(), chance)
-	)));
+	private static Codec<ProcessingOutput> buildCodecOld() {
+		Codec<Either<ItemStack, Pair<ResourceLocation, Integer>>> itemCodecOld = Codec.either(
+			ItemStack.SINGLE_ITEM_CODEC,
+			ResourceLocation.CODEC.comapFlatMap(
+				loc -> DataResult.error(() -> "Compat cannot be deserialized"),
+				Pair::getFirst
+			)
+		);
+		return RecordCodecBuilder.create(i -> i.group(
+			itemCodecOld.fieldOf("item").forGetter(s -> s.datagenOutput != null ? Either.right(Pair.of(s.datagenOutput, s.count)) : Either.left(s.item.getDefaultInstance())),
+			ExtraCodecs.intRange(1, 99).optionalFieldOf("count", 1).forGetter(s -> s.count),
+			ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("chance", 1F).forGetter(s -> s.chance)
+		).apply(i, (item, count, chance) -> item.map(
+			stack -> new ProcessingOutput(stack.getItem(), count, stack.getComponentsPatch(), chance),
+			compat -> new ProcessingOutput(compat.getFirst(), compat.getSecond(), chance)
+		)));
+	}
 
-	private static final Codec<Either<Item, ResourceLocation>> ITEM_CODEC = Codec.either(
-		BuiltInRegistries.ITEM.byNameCodec(),
-		ResourceLocation.CODEC
-	);
-
-	public static final Codec<ProcessingOutput> CODEC_NEW = RecordCodecBuilder.create(i -> i.group(
-		ITEM_CODEC.fieldOf("id").forGetter(s -> {
-			if (s.datagenOutput != null)
-				return Either.right(s.datagenOutput);
-			return Either.left(s.item);
-		}),
-		ExtraCodecs.intRange(1, 99).optionalFieldOf("count", 1).forGetter(s -> s.count),
-		DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(s -> s.patch),
-		ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("chance", 1F).forGetter(s -> s.chance)
-	).apply(i, (item, count, components, chance) -> item.map(
-		stack -> new ProcessingOutput(stack, count, components, chance),
-		compat -> new ProcessingOutput(compat, count, chance)
-	)));
+	private static Codec<ProcessingOutput> buildCodecNew() {
+		Codec<Either<Item, ResourceLocation>> itemCodec = Codec.either(
+			BuiltInRegistries.ITEM.byNameCodec(),
+			ResourceLocation.CODEC
+		);
+		return RecordCodecBuilder.create(i -> i.group(
+			itemCodec.fieldOf("id").forGetter(s -> {
+				if (s.datagenOutput != null)
+					return Either.right(s.datagenOutput);
+				return Either.left(s.item);
+			}),
+			ExtraCodecs.intRange(1, 99).optionalFieldOf("count", 1).forGetter(s -> s.count),
+			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(s -> s.patch),
+			ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("chance", 1F).forGetter(s -> s.chance)
+		).apply(i, (item, count, components, chance) -> item.map(
+			stack -> new ProcessingOutput(stack, count, components, chance),
+			compat -> new ProcessingOutput(compat, count, chance)
+		)));
+	}
 
 	@ScheduledForRemoval(inVersion = "1.21.1+ Port")
 	@Deprecated(since = "6.0.3", forRemoval = true)
-	public static final Codec<ProcessingOutput> CODEC = Codec.withAlternative(CODEC_NEW, CODEC_OLD);
+	public static final Codec<ProcessingOutput> CODEC_OLD = Codec.lazyInitialized(ProcessingOutput::buildCodecOld);
+
+	public static final Codec<ProcessingOutput> CODEC_NEW = Codec.lazyInitialized(ProcessingOutput::buildCodecNew);
+
+	@ScheduledForRemoval(inVersion = "1.21.1+ Port")
+	@Deprecated(since = "6.0.3", forRemoval = true)
+	public static final Codec<ProcessingOutput> CODEC = Codec.lazyInitialized(() -> Codec.withAlternative(CODEC_NEW, CODEC_OLD));
 
 }
