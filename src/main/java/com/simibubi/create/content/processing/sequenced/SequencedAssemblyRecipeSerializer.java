@@ -64,10 +64,6 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 				recipe.sequence.addAll((List<?>) sequence);
 				recipe.resultPool.addAll(results);
 				recipe.loops = loops;
-
-				for (int j = 0; j < recipe.sequence.size(); j++)
-					((SequencedRecipe<?>) recipe.sequence.get(j)).initFromSequencedAssembly(recipe, j == 0);
-
 				return recipe;
 			})
 		);
@@ -129,10 +125,6 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 				recipe.resultPool.addAll(resultPool);
 				recipe.transitionalItem = transitionalItem;
 				recipe.loops = loops;
-
-				for (int j = 0; j < recipe.sequence.size(); j++)
-					((SequencedRecipe<?>) recipe.sequence.get(j)).initFromSequencedAssembly(recipe, j == 0);
-
 				return recipe;
 			}
 		);

@@ -97,6 +97,8 @@ public class SequencedAssemblyRecipeBuilder {
 	}
 
 	public RecipeHolder<SequencedAssemblyRecipe> build() {
+		// Programmatic recipes never go through the JSON codec; bake assembly steps like decode would have.
+		recipe.getSequence();
 		return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, id), recipe);
 	}
 

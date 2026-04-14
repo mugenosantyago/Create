@@ -60,6 +60,13 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	public final List<ProcessingOutput> resultPool;
 
+	/**
+	 * {@link SequencedRecipe#initFromSequencedAssembly} mutates embedded processing recipes; that work must not run
+	 * inside {@link SequencedAssemblyRecipeSerializer}'s codec combiner (still during {@link RecordCodecBuilder#mapCodec}
+	 * setup / decode wiring) or it can interact badly with ingredient/codec classloading on dedicated servers.
+	 */
+	private boolean sequencedStepsInitialized;
+
 	public SequencedAssemblyRecipe(SequencedAssemblyRecipeSerializer serializer) {
 		this.serializer = serializer;
 		sequence = new ArrayList<>();
@@ -172,7 +179,19 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	}
 
 	private Object getNextRecipe(ItemStack input) {
+		ensureSequencedStepsInitialized();
 		return sequence.get(getStep(input) % sequence.size());
+	}
+
+	/**
+	 * Bakes assembly-step ingredient wiring after the recipe JSON/stream payload is fully decoded.
+	 */
+	private void ensureSequencedStepsInitialized() {
+		if (sequencedStepsInitialized)
+			return;
+		sequencedStepsInitialized = true;
+		for (int j = 0; j < sequence.size(); j++)
+			((SequencedRecipe<?>) sequence.get(j)).initFromSequencedAssembly(this, j == 0);
 	}
 
 	private int getStep(ItemStack input) {
@@ -250,7 +269,8 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		if (!(recipe instanceof SequencedAssemblyRecipe sequencedAssemblyRecipe))
 			return;
 
-		int length = sequencedAssemblyRecipe.sequence.size();
+		List<?> seq = sequencedAssemblyRecipe.getSequence();
+		int length = seq.size();
 		int step = sequencedAssemblyRecipe.getStep(stack);
 		int total = length * sequencedAssemblyRecipe.loops;
 		List<Component> tooltip = event.getToolTip();
@@ -264,7 +284,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 		for (int i = 0; i < length; i++) {
 			if (i >= remaining)
 				break;
-			SequencedRecipe<?> sequencedRecipe = (SequencedRecipe<?>) sequencedAssemblyRecipe.sequence.get(
+			SequencedRecipe<?> sequencedRecipe = (SequencedRecipe<?>) seq.get(
 				(i + step) % length);
 			Component textComponent = sequencedRecipe.getAsAssemblyRecipe()
 				.getDescriptionForAssembly();
@@ -294,6 +314,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	 * method's bytecode signature (see {@link #ingredient} / {@link #sequence} field javadocs).
 	 */
 	public List<?> getSequence() {
+		ensureSequencedStepsInitialized();
 		return sequence;
 	}
 
