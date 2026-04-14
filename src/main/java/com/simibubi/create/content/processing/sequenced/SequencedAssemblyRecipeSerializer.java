@@ -15,7 +15,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<SequencedAssemblyRecipe> {
@@ -36,7 +35,10 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		// servers before those codecs are needed for actual JSON parsing.
 		// SequencedAssemblyRecipe also stores its input as Object (see field javadoc) so loading
 		// that class does not force Ingredient <clinit> during codec graph construction.
-		Codec<Ingredient> ingredientCodec = Codec.lazyInitialized(() -> Ingredient.CODEC);
+		// Do not declare Codec<Ingredient>: that type parameter names Ingredient in this class file.
+		@SuppressWarnings("unchecked")
+		Codec<Object> ingredientCodec = (Codec<Object>) (Codec<?>) Codec.lazyInitialized(
+			() -> net.minecraft.world.item.crafting.Ingredient.CODEC);
 		Codec<ProcessingOutput> processingOutputCodec = Codec.lazyInitialized(() -> ProcessingOutput.CODEC);
 		// RecordCodecBuilder compiles `processingOutputCodec.listOf().fieldOf(...)` into a call to
 		// listOf() while wiring the group — that ran at serializer registration time and defeated lazy
@@ -47,7 +49,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		Codec<List<SequencedRecipe<?>>> sequenceCodec = Codec.lazyInitialized(() -> SequencedRecipe.CODEC.listOf());
 		return RecordCodecBuilder.mapCodec(
 			i -> i.group(
-				ingredientCodec.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
+				ingredientCodec.fieldOf("ingredient").forGetter(r -> r.ingredient),
 				processingOutputCodec.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
 				sequenceCodec.fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
 				resultsCodec.fieldOf("results").forGetter(r -> r.resultPool),
@@ -103,9 +105,14 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		};
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> buildStreamCodec() {
-		return StreamCodec.composite(
-			lazyStreamCodec(() -> Ingredient.CONTENTS_STREAM_CODEC), SequencedAssemblyRecipe::getIngredient,
+		// Cast: composite needs Function<C, Ingredient> but we must not use a method handle to a method whose
+		// erased signature still forces Ingredient resolution during serializer setup in some JVMs.
+		return (StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe>) (StreamCodec) StreamCodec.composite(
+			lazyStreamCodec(() -> net.minecraft.world.item.crafting.Ingredient.CONTENTS_STREAM_CODEC),
+			(java.util.function.Function<SequencedAssemblyRecipe, net.minecraft.world.item.crafting.Ingredient>) (
+				r -> (net.minecraft.world.item.crafting.Ingredient) r.ingredient),
 			CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC), SequencedAssemblyRecipe::getSequence,
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)), r -> r.resultPool,
 			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC), r -> r.transitionalItem,

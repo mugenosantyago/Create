@@ -43,7 +43,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	/**
 	 * Stored as {@link Object} so this class does not declare an {@code Ingredient}-typed field.
 	 * That avoids eager {@link Ingredient} class initialization (NeoForge {@code IngredientCodecs}) while
-	 * {@link SequencedAssemblyRecipeSerializer} builds its {@link MapCodec} on dedicated servers — some
+	 * {@link SequencedAssemblyRecipeSerializer} builds its map codec on dedicated servers — some
 	 * modded ingredient codecs incorrectly reference client-only classes such as {@code ClientLevel}.
 	 * Runtime value is always an {@link Ingredient} once the recipe is decoded or synced.
 	 */
@@ -161,7 +161,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 				.id().equals(id);
 		}
 		// Else it must be the first step in a new sequenced assembly recipe
-		return getIngredient().test(input);
+		return ((Ingredient) ingredient).test(input);
 	}
 
 	private SequencedRecipe<?> getNextRecipe(ItemStack input) {
@@ -208,7 +208,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	@Override
 	public net.minecraft.world.item.crafting.PlacementInfo placementInfo() {
-		return net.minecraft.world.item.crafting.PlacementInfo.create(getIngredient());
+		return net.minecraft.world.item.crafting.PlacementInfo.create((Ingredient) ingredient);
 	}
 
 	@Override
@@ -271,8 +271,14 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	}
 
-	public Ingredient getIngredient() {
-		return (Ingredient) ingredient;
+	/**
+	 * Type parameter avoids an {@code Ingredient} return type in the bytecode signature of this class.
+	 * Otherwise {@link SequencedAssemblyRecipe} loading would resolve {@link Ingredient} and run
+	 * {@code Ingredient}'s static initializer (NeoForge {@code IngredientCodecs}) during codec registration.
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getIngredient() {
+		return (T) ingredient;
 	}
 
 	public List<SequencedRecipe<?>> getSequence() {
