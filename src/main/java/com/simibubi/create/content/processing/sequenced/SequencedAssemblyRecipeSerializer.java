@@ -106,25 +106,31 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> buildStreamCodec() {
-		// Cast: composite needs Function<C, Ingredient> but we must not use a method handle to a method whose
-		// erased signature still forces Ingredient resolution during serializer setup in some JVMs.
+		// Raw Function / Function5: any typed getter (Ingredient, List<SequencedRecipe<?>>, …) in this class
+		// file links those classes when the stream codec is built, defeating lazyIngredient codecs on servers.
+		java.util.function.Function id = o -> ((SequencedAssemblyRecipe) o).ingredient;
+		java.util.function.Function seq = o -> ((SequencedAssemblyRecipe) o).sequence;
+		java.util.function.Function pool = o -> ((SequencedAssemblyRecipe) o).resultPool;
+		java.util.function.Function trans = o -> ((SequencedAssemblyRecipe) o).transitionalItem;
+		java.util.function.Function loopsGet = o -> ((SequencedAssemblyRecipe) o).loops;
 		return (StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe>) (StreamCodec) StreamCodec.composite(
 			lazyStreamCodec(() -> net.minecraft.world.item.crafting.Ingredient.CONTENTS_STREAM_CODEC),
-			(java.util.function.Function<SequencedAssemblyRecipe, net.minecraft.world.item.crafting.Ingredient>) (
-				r -> (net.minecraft.world.item.crafting.Ingredient) r.ingredient),
+			id,
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC)),
-			(java.util.function.Function<SequencedAssemblyRecipe, List<SequencedRecipe<?>>>) (
-				(java.util.function.Function<SequencedAssemblyRecipe, ?>) (r -> r.sequence)),
-			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)), r -> r.resultPool,
-			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC), r -> r.transitionalItem,
-			ByteBufCodecs.VAR_INT, r -> r.loops,
-			(ingredient, sequence, resultPool, transitionalItem, loops) -> {
+			seq,
+			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)),
+			pool,
+			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC),
+			trans,
+			ByteBufCodecs.VAR_INT,
+			loopsGet,
+			(com.mojang.datafixers.util.Function5) (ingredient, sequence, resultPool, transitionalItem, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
 				recipe.ingredient = ingredient;
-				recipe.sequence.addAll(sequence);
-				recipe.resultPool.addAll(resultPool);
-				recipe.transitionalItem = transitionalItem;
-				recipe.loops = loops;
+				recipe.sequence.addAll((List) sequence);
+				recipe.resultPool.addAll((List) resultPool);
+				recipe.transitionalItem = (ProcessingOutput) transitionalItem;
+				recipe.loops = (Integer) loops;
 				return recipe;
 			}
 		);

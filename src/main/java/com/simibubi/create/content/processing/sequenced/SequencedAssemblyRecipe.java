@@ -24,7 +24,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -167,15 +166,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	}
 
 	private boolean appliesTo(ResourceLocation id, ItemStack input) {
-		// First, check if the item is already in the middle of a sequenced assembly recipe
-		if (input.has(AllDataComponents.SEQUENCED_ASSEMBLY)) {
-			//noinspection DataFlowIssue
-			return getTransitionalItem().getItem() == input.getItem() && input
-				.get(AllDataComponents.SEQUENCED_ASSEMBLY)
-				.id().equals(id);
-		}
-		// Else it must be the first step in a new sequenced assembly recipe
-		return ((Ingredient) ingredient).test(input);
+		return SequencedAssemblyRecipeIngredientHooks.appliesTo(this, id, input);
 	}
 
 	private Object getNextRecipe(ItemStack input) {
@@ -234,7 +225,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	@Override
 	public net.minecraft.world.item.crafting.PlacementInfo placementInfo() {
-		return net.minecraft.world.item.crafting.PlacementInfo.create((Ingredient) ingredient);
+		return SequencedAssemblyRecipeIngredientHooks.placementInfo(ingredient);
 	}
 
 	@Override
