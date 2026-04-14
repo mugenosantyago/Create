@@ -101,10 +101,13 @@ public class ProcessingOutput {
 	}
 
 	private static StreamCodec<RegistryFriendlyByteBuf, ProcessingOutput> buildStreamCodec() {
+		StreamCodec<RegistryFriendlyByteBuf, DataComponentPatch> lazyDataComponentPatchStreamCodec =
+			lazyStreamCodec(() -> DataComponentPatch.STREAM_CODEC);
+
 		return StreamCodec.composite(
 			ByteBufCodecs.registry(Registries.ITEM), i -> i.item,
 			ByteBufCodecs.INT, i -> i.count,
-			DataComponentPatch.STREAM_CODEC, i -> i.patch,
+			lazyDataComponentPatchStreamCodec, i -> i.patch,
 			ByteBufCodecs.FLOAT, i -> i.chance,
 			ProcessingOutput::new
 		);
@@ -140,8 +143,10 @@ public class ProcessingOutput {
 	@ScheduledForRemoval(inVersion = "1.21.1+ Port")
 	@Deprecated(since = "6.0.3", forRemoval = true)
 	private static Codec<ProcessingOutput> buildCodecOld() {
+		Codec<ItemStack> lazyItemStackCodec = Codec.lazyInitialized(() -> ItemStack.SINGLE_ITEM_CODEC);
+
 		Codec<Either<ItemStack, Pair<ResourceLocation, Integer>>> itemCodecOld = Codec.either(
-			ItemStack.SINGLE_ITEM_CODEC,
+			lazyItemStackCodec,
 			ResourceLocation.CODEC.comapFlatMap(
 				loc -> DataResult.error(() -> "Compat cannot be deserialized"),
 				Pair::getFirst
@@ -158,8 +163,11 @@ public class ProcessingOutput {
 	}
 
 	private static Codec<ProcessingOutput> buildCodecNew() {
+		Codec<Item> lazyItemByNameCodec = Codec.lazyInitialized(() -> BuiltInRegistries.ITEM.byNameCodec());
+		Codec<DataComponentPatch> lazyDataComponentPatchCodec = Codec.lazyInitialized(() -> DataComponentPatch.CODEC);
+
 		Codec<Either<Item, ResourceLocation>> itemCodec = Codec.either(
-			BuiltInRegistries.ITEM.byNameCodec(),
+			lazyItemByNameCodec,
 			ResourceLocation.CODEC
 		);
 		return RecordCodecBuilder.create(i -> i.group(
@@ -169,7 +177,7 @@ public class ProcessingOutput {
 				return Either.left(s.item);
 			}),
 			ExtraCodecs.intRange(1, 99).optionalFieldOf("count", 1).forGetter(s -> s.count),
-			DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(s -> s.patch),
+			lazyDataComponentPatchCodec.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(s -> s.patch),
 			ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("chance", 1F).forGetter(s -> s.chance)
 		).apply(i, (item, count, components, chance) -> item.map(
 			stack -> new ProcessingOutput(stack, count, components, chance),
