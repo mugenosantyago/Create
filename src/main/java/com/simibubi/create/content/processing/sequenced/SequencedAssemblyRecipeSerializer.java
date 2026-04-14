@@ -34,6 +34,8 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		// IngredientCodecs.codec(...) and can eagerly pull modded/custom ingredient codecs that
 		// reference client-only classes. Lazy-wrap so this serializer can be built on dedicated
 		// servers before those codecs are needed for actual JSON parsing.
+		// SequencedAssemblyRecipe also stores its input as Object (see field javadoc) so loading
+		// that class does not force Ingredient <clinit> during codec graph construction.
 		Codec<Ingredient> ingredientCodec = Codec.lazyInitialized(() -> Ingredient.CODEC);
 		Codec<ProcessingOutput> processingOutputCodec = Codec.lazyInitialized(() -> ProcessingOutput.CODEC);
 		// RecordCodecBuilder compiles `processingOutputCodec.listOf().fieldOf(...)` into a call to
@@ -103,7 +105,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 
 	private StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> buildStreamCodec() {
 		return StreamCodec.composite(
-			lazyStreamCodec(() -> Ingredient.CONTENTS_STREAM_CODEC), r -> r.ingredient,
+			lazyStreamCodec(() -> Ingredient.CONTENTS_STREAM_CODEC), SequencedAssemblyRecipe::getIngredient,
 			CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC), SequencedAssemblyRecipe::getSequence,
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)), r -> r.resultPool,
 			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC), r -> r.transitionalItem,

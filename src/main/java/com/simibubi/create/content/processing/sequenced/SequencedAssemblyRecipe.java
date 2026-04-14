@@ -40,7 +40,14 @@ import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	protected SequencedAssemblyRecipeSerializer serializer;
 
-	protected Ingredient ingredient;
+	/**
+	 * Stored as {@link Object} so this class does not declare an {@code Ingredient}-typed field.
+	 * That avoids eager {@link Ingredient} class initialization (NeoForge {@code IngredientCodecs}) while
+	 * {@link SequencedAssemblyRecipeSerializer} builds its {@link MapCodec} on dedicated servers — some
+	 * modded ingredient codecs incorrectly reference client-only classes such as {@code ClientLevel}.
+	 * Runtime value is always an {@link Ingredient} once the recipe is decoded or synced.
+	 */
+	protected Object ingredient;
 	protected List<SequencedRecipe<?>> sequence;
 	protected int loops;
 	protected ProcessingOutput transitionalItem;
@@ -154,7 +161,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 				.id().equals(id);
 		}
 		// Else it must be the first step in a new sequenced assembly recipe
-		return ingredient.test(input);
+		return getIngredient().test(input);
 	}
 
 	private SequencedRecipe<?> getNextRecipe(ItemStack input) {
@@ -201,7 +208,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 
 	@Override
 	public net.minecraft.world.item.crafting.PlacementInfo placementInfo() {
-		return net.minecraft.world.item.crafting.PlacementInfo.create(ingredient);
+		return net.minecraft.world.item.crafting.PlacementInfo.create(getIngredient());
 	}
 
 	@Override
@@ -265,7 +272,7 @@ public class SequencedAssemblyRecipe implements Recipe<RecipeWrapper> {
 	}
 
 	public Ingredient getIngredient() {
-		return ingredient;
+		return (Ingredient) ingredient;
 	}
 
 	public List<SequencedRecipe<?>> getSequence() {
