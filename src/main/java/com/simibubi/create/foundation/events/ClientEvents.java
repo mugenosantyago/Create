@@ -44,7 +44,7 @@ import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelConnection
 import com.simibubi.create.content.logistics.packagePort.PackagePortTargetSelectionHandler;
 import com.simibubi.create.content.logistics.packagerLink.LogisticallyLinkedClientHandler;
 import com.simibubi.create.content.logistics.tableCloth.TableClothOverlayRenderer;
-import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipeClient;
 import com.simibubi.create.content.redstone.displayLink.ClickToLinkBlockItem;
 import com.simibubi.create.content.redstone.link.LinkRenderer;
 import com.simibubi.create.content.redstone.link.controller.LinkedControllerClientHandler;
@@ -275,7 +275,7 @@ public class ClientEvents {
 			modifier.modify(event);
 		}
 
-		SequencedAssemblyRecipe.addToTooltip(event);
+		SequencedAssemblyRecipeClient.addToTooltip(event);
 	}
 
 	@SubscribeEvent

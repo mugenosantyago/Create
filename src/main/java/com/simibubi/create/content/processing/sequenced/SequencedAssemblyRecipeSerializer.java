@@ -108,22 +108,22 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 	private StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> buildStreamCodec() {
 		// Raw Function / Function5: any typed getter (Ingredient, List<SequencedRecipe<?>>, …) in this class
 		// file links those classes when the stream codec is built, defeating lazyIngredient codecs on servers.
-		java.util.function.Function id = o -> ((SequencedAssemblyRecipe) o).ingredient;
-		java.util.function.Function seq = o -> ((SequencedAssemblyRecipe) o).sequence;
-		java.util.function.Function pool = o -> ((SequencedAssemblyRecipe) o).resultPool;
-		java.util.function.Function trans = o -> ((SequencedAssemblyRecipe) o).transitionalItem;
-		java.util.function.Function loopsGet = o -> ((SequencedAssemblyRecipe) o).loops;
+		java.util.function.Function ingredientField = o -> ((SequencedAssemblyRecipe) o).ingredient;
+		java.util.function.Function sequenceField = o -> ((SequencedAssemblyRecipe) o).sequence;
+		java.util.function.Function resultPoolField = o -> ((SequencedAssemblyRecipe) o).resultPool;
+		java.util.function.Function transitionalField = o -> ((SequencedAssemblyRecipe) o).transitionalItem;
+		java.util.function.Function loopsField = o -> ((SequencedAssemblyRecipe) o).loops;
 		return (StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe>) (StreamCodec) StreamCodec.composite(
 			lazyStreamCodec(() -> net.minecraft.world.item.crafting.Ingredient.CONTENTS_STREAM_CODEC),
-			id,
+			ingredientField,
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(SequencedRecipe.STREAM_CODEC)),
-			seq,
+			sequenceField,
 			lazyStreamCodec(() -> CatnipStreamCodecBuilders.list(ProcessingOutput.STREAM_CODEC)),
-			pool,
+			resultPoolField,
 			lazyStreamCodec(() -> ProcessingOutput.STREAM_CODEC),
-			trans,
+			transitionalField,
 			ByteBufCodecs.VAR_INT,
-			loopsGet,
+			loopsField,
 			(com.mojang.datafixers.util.Function5) (ingredient, sequence, resultPool, transitionalItem, loops) -> {
 				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
 				recipe.ingredient = ingredient;
