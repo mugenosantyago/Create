@@ -78,21 +78,21 @@ public class SequencedRecipe<T extends ProcessingRecipe<?, ?>> {
 		);
 	}
 
-	private static DataResult<? extends Codec<? extends Recipe<?>>> codecForAssemblyStepType(ResourceLocation id) {
+	private static DataResult<? extends MapCodec<? extends Recipe<?>>> codecForAssemblyStepType(ResourceLocation id) {
 		if (id.equals(AllRecipeTypes.CUTTING.id))
-			return DataResult.success(castRecipeCodec(AllRecipeTypes.CUTTING.getSerializer()));
+			return DataResult.success(castRecipeMapCodec(AllRecipeTypes.CUTTING.getSerializer()));
 		if (id.equals(AllRecipeTypes.PRESSING.id))
-			return DataResult.success(castRecipeCodec(AllRecipeTypes.PRESSING.getSerializer()));
+			return DataResult.success(castRecipeMapCodec(AllRecipeTypes.PRESSING.getSerializer()));
 		if (id.equals(AllRecipeTypes.FILLING.id))
-			return DataResult.success(castRecipeCodec(AllRecipeTypes.FILLING.getSerializer()));
+			return DataResult.success(castRecipeMapCodec(AllRecipeTypes.FILLING.getSerializer()));
 		if (id.equals(AllRecipeTypes.DEPLOYING.id))
-			return DataResult.success(castRecipeCodec(AllRecipeTypes.DEPLOYING.getSerializer()));
+			return DataResult.success(castRecipeMapCodec(AllRecipeTypes.DEPLOYING.getSerializer()));
 		return DataResult.error(() -> "Unsupported sequenced assembly step type: " + id);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <R extends Recipe<?>> Codec<Recipe<?>> castRecipeCodec(RecipeSerializer<R> serializer) {
-		return (Codec<Recipe<?>>) (Codec<?>) serializer.codec().codec();
+	private static <R extends Recipe<?>> MapCodec<Recipe<?>> castRecipeMapCodec(RecipeSerializer<R> serializer) {
+		return (MapCodec<Recipe<?>>) (MapCodec<?>) serializer.codec();
 	}
 
 	private static StreamCodec<RegistryFriendlyByteBuf, Recipe<?>> assemblyStepRecipeStreamCodec() {
