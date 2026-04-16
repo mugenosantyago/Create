@@ -74,6 +74,8 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 		menu.renderPass = true;
 		super.render(graphics, mouseX, mouseY, partialTicks);
 		menu.renderPass = false;
+		// Last pass so slots, 3D preview, widgets, and tooltips cannot paint over the strip.
+		renderDepositLabel(graphics);
 	}
 
 	@Override
@@ -169,8 +171,6 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 
 	@Override
 	protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-		// After slot items (drawn in super.render); opaque panel so the line stays readable on the GUI art.
-		renderDepositLabel(graphics);
 		if (hoveredToolboxSlot != null)
 			hoveredSlot = hoveredToolboxSlot;
 		super.renderForeground(graphics, mouseX, mouseY, partialTicks);
