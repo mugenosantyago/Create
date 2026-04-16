@@ -467,13 +467,13 @@ public class PipeConnection {
 //		AABB bb = new AABB(start, start.add(offset)).offset(VecHelper.getCenterOf(pos))
 //			.grow(scale.x, scale.y, scale.z);
 //
-//		int color = 0x7fdbda;
+//		int color = 0xFF7fdbda;
 //		if (!fluid.isEmpty()) {
 //			Fluid fluid2 = fluid.getFluid();
 //			if (fluid2 == Fluids.WATER)
-//				color = 0x1D4D9B;
+//				color = 0xFF1D4D9B;
 //			else if (fluid2 == Fluids.LAVA)
-//				color = 0xFF773D;
+//				color = 0xFFFF773D;
 //			else
 //				color = fluid2.getAttributes()
 //					.getColor(fluid);

@@ -63,7 +63,7 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
                 Component.empty());
 		addressBox.setBordered(false);
 		addressBox.setMaxLength(25);
-		addressBox.setTextColor(0x3D3C48);
+		addressBox.setTextColor(0xFF3D3C48);
 		addressBox.setValue(menu.contentHolder.addressFilter);
 		addressBox.setFocused(false);
 		addressBox.mouseClicked(0, 0, 0);
@@ -125,7 +125,7 @@ public class PackagePortScreen extends AbstractSimiContainerScreen<PackagePortMe
 				.isEmpty()) {
 				text = icon.getHoverName()
 					.getString();
-				graphics.drawString(font, text, nameBoxX(text, addressBox), y - 11, 0x3D3C48, false);
+				graphics.drawString(font, text, nameBoxX(text, addressBox), y - 11, 0xFF3D3C48, false);
 			}
 			AllGuiTextures.FROGPORT_EDIT_NAME.render(graphics, nameBoxX(text, addressBox) + font.width(text) + 5,
 				y - 14);

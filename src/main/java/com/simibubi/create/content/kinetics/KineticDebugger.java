@@ -48,7 +48,7 @@ public class KineticDebugger {
 			Outliner.getInstance().chaseAABB("kineticSource", shape.bounds()
 					.move(toOutline))
 				.lineWidth(1 / 16f)
-				.colored(be.hasSource() ? Color.generateFromLong(be.network).getRGB() : 0xffcc00);
+				.colored(be.hasSource() ? Color.generateFromLong(be.network).getRGB() : 0xFFffcc00);
 
 		if (state.getBlock() instanceof IRotate) {
 			Axis axis = ((IRotate) state.getBlock()).getRotationAxis(state);

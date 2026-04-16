@@ -59,7 +59,7 @@ public class LogisticallyLinkedClientHandler {
 						.move(be.getBlockPos()), 2)
 					.lineWidth(1 / 32f)
 					.disableLineNormals()
-					.colored(AnimationTickHolder.getTicks() % 16 < 8 ? 0x708DAD : 0x90ADCD);
+					.colored(AnimationTickHolder.getTicks() % 16 < 8 ? 0xFF708DAD : 0xFF90ADCD);
 			}
 
 		}
@@ -82,7 +82,7 @@ public class LogisticallyLinkedClientHandler {
 				.inflate(-1.5 / 128f))
 			.lineWidth(1 / 32f)
 			.disableLineNormals()
-			.colored(AnimationTickHolder.getTicks() % 16 < 8 ? 0x708DAD : 0x90ADCD);
+			.colored(AnimationTickHolder.getTicks() % 16 < 8 ? 0xFF708DAD : 0xFF90ADCD);
 	}
 
 }

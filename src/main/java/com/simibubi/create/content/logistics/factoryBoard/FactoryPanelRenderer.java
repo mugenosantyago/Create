@@ -104,13 +104,13 @@ public class FactoryPanelRenderer extends SmartBlockEntityRenderer<FactoryPanelB
 
 		if (displayLinkMode) {
 			// Display status
-			color = 0x3C9852;
+			color = 0xFF3C9852;
 			dots = true;
 
 		} else if (redstoneLinkMode) {
 			// Link status
-			color = pathReversed ? (behaviour.count == 0 ? 0x888898 : behaviour.satisfied ? 0xEF0000 : 0x580101)
-				: (behaviour.redstonePowered ? 0xEF0000 : 0x580101);
+			color = pathReversed ? (behaviour.count == 0 ? 0xFF888898 : behaviour.satisfied ? 0xFFEF0000 : 0xFF580101)
+				: (behaviour.redstonePowered ? 0xFFEF0000 : 0xFF580101);
 			yOffset = 0.5f;
 
 		} else {
@@ -122,7 +122,7 @@ public class FactoryPanelRenderer extends SmartBlockEntityRenderer<FactoryPanelB
 
 			if (!behaviour.redstonePowered && !behaviour.waitingForNetwork && glow > 0 && !behaviour.satisfied) {
 				float p = (1 - (1 - glow) * (1 - glow));
-				color = Color.mixColors(color, success ? 0xEAF2EC : 0xE5654B, p);
+				color = Color.mixColors(color, success ? 0xFFEAF2EC : 0xFFE5654B, p);
 				if (!behaviour.satisfied && !behaviour.promisedSatisfied)
 					yOffset += (success ? 1 : 2) * p;
 			}

@@ -307,7 +307,7 @@ public class SteamScenes {
 		scene.idle(30);
 
 		scene.world().setKineticSpeed(engine1Shaft, 16);
-		scene.effects().createRedstoneParticles(util.grid().at(3, 2, 3), 0xFFFFFF, 10);
+		scene.effects().createRedstoneParticles(util.grid().at(3, 2, 3), 0xFFFFFFFF, 10);
 		scene.idle(40);
 
 		scene.overlay().showText(60)
@@ -338,7 +338,7 @@ public class SteamScenes {
 		scene.idle(5);
 
 		scene.world().setKineticSpeed(engine1Shaft, 64);
-		scene.effects().createRedstoneParticles(util.grid().at(3, 2, 3), 0xFFFFFF, 10);
+		scene.effects().createRedstoneParticles(util.grid().at(3, 2, 3), 0xFFFFFFFF, 10);
 		scene.idle(40);
 
 		scene.overlay().showText(80)

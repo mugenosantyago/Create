@@ -1022,17 +1022,17 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 
 		if (count == 0) {
 			return CreateLang.text(inf ? "  \u221e" : inStorage + stacks)
-				.color(0xF1EFE8)
+				.color(0xFFF1EFE8)
 				.component();
 		}
 
 		return CreateLang.text(inf ? "  \u221e" : "   " + inStorage + stacks)
-			.color(satisfied ? 0xD7FFA8 : promisedSatisfied ? 0xffcd75 : 0xFFBFA8)
+			.color(satisfied ? 0xFFD7FFA8 : promisedSatisfied ? 0xFFffcd75 : 0xFFFFBFA8)
 			.add(CreateLang.text(promised == 0 ? "" : "\u23F6"))
 			.add(CreateLang.text("/")
 				.style(ChatFormatting.WHITE))
 			.add(CreateLang.text(count + stacks + "  ")
-				.color(0xF1EFE8))
+				.color(0xFFF1EFE8))
 			.component();
 	}
 
@@ -1067,8 +1067,8 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 	}
 
 	public int getIngredientStatusColor() {
-		return count == 0 || isMissingAddress() || redstonePowered ? 0x888898
-			: waitingForNetwork ? 0x5B3B3B : satisfied ? 0x9EFF7F : promisedSatisfied ? 0x22AFAF : 0x3D6EBD;
+		return count == 0 || isMissingAddress() || redstonePowered ? 0xFF888898
+			: waitingForNetwork ? 0xFF5B3B3B : satisfied ? 0xFF9EFF7F : promisedSatisfied ? 0xFF22AFAF : 0xFF3D6EBD;
 	}
 
 	@Override

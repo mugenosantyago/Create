@@ -48,7 +48,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 public class BeltSlicer {
 
 	public static class Feedback {
-		int color = 0xffffff;
+		int color = 0xFFffffff;
 		AABB bb;
 		String langKey;
 		ChatFormatting formatting = ChatFormatting.WHITE;

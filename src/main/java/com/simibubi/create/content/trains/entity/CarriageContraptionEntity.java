@@ -592,7 +592,7 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 		GlobalStation currentStation = carriage.train.getCurrentStation();
 		if (currentStation != null && spaceDown) {
 			sendPrompt(player, CreateLang.translateDirect("train.arrived_at",
-				Component.literal(currentStation.name).withStyle(s -> s.withColor(0x704630))), false);
+				Component.literal(currentStation.name).withStyle(s -> s.withColor(0xFF704630))), false);
 			return true;
 		}
 
@@ -604,7 +604,7 @@ public class CarriageContraptionEntity extends OrientedContraptionEntity {
 		if (currentStation != null && targetSpeed != 0) {
 			stationMessage = false;
 			sendPrompt(player, CreateLang.translateDirect("train.departing_from",
-				Component.literal(currentStation.name).withStyle(s -> s.withColor(0x704630))), false);
+				Component.literal(currentStation.name).withStyle(s -> s.withColor(0xFF704630))), false);
 		}
 
 		if (currentStation == null) {

@@ -44,7 +44,7 @@ public class FluidRenderer {
 		int color = clientFluid.getTintColor(fluidStack);
 		int blockLightIn = (light >> 4) & 0xF;
 		int luminosity = Math.max(blockLightIn, fluidAttributes.getLightLevel(fluidStack));
-		light = (light & 0xF00000) | luminosity << 4;
+		light = (light & 0xFFF00000) | luminosity << 4;
 
 		if (inbound)
 			direction = direction.getOpposite();

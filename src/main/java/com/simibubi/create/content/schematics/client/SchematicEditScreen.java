@@ -80,7 +80,7 @@ public class SchematicEditScreen extends AbstractSimiScreen {
 		for (EditBox widget : new EditBox[]{xInput, yInput, zInput}) {
 			widget.setMaxLength(6);
 			widget.setBordered(false);
-			widget.setTextColor(0xFFFFFF);
+			widget.setTextColor(0xFFFFFFFF);
 			widget.setFocused(false);
 			widget.mouseClicked(0, 0, 0);
 			widget.setFilter(s -> {
@@ -158,7 +158,7 @@ public class SchematicEditScreen extends AbstractSimiScreen {
 
 		background.render(graphics, x, y);
 		String title = handler.getCurrentSchematicName();
-		graphics.drawString(font, title, x + (background.getWidth() - 8 - font.width(title)) / 2, y + 4, 0x505050, false);
+		graphics.drawString(font, title, x + (background.getWidth() - 8 - font.width(title)) / 2, y + 4, 0xFF505050, false);
 
 		GuiGameElement.of(AllItems.SCHEMATIC.asStack())
 			.<GuiGameElement.GuiRenderBuilder>at(x + background.getWidth() + 6, y + background.getHeight() - 40, -200)

@@ -54,7 +54,7 @@ public class BrassDiodeVisual extends AbstractBlockEntityVisual<BrassDiodeBlockE
     }
 
     protected int getColor() {
-        return Color.mixColors(0x2c0300, 0xcd0000, blockEntity.getProgress());
+        return Color.mixColors(0xFF2c0300, 0xFFcd0000, blockEntity.getProgress());
     }
 
 	@Override

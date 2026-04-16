@@ -367,7 +367,7 @@ public class SchematicHandler implements GuiLayer {
 		bounds = new AABB(0, 0, 0, size.getX(), size.getY(), size.getZ());
 		outline = new AABBOutline(bounds);
 		outline.getParams()
-			.colored(0x6886c5)
+			.colored(0xFF6886c5)
 			.lineWidth(1 / 16f);
 		transformation.init(anchor, settings, bounds);
 	}

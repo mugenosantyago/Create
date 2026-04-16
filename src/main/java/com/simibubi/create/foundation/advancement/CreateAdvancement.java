@@ -103,7 +103,7 @@ public class CreateAdvancement {
 			createBuilder.icon(createBuilder.func.apply(registries));
 
 		mcBuilder.display(createBuilder.icon, Component.translatable(titleKey()),
-			Component.translatable(descriptionKey()).withStyle(s -> s.withColor(0xDBA213)),
+			Component.translatable(descriptionKey()).withStyle(s -> s.withColor(0xFFDBA213)),
 			id.equals("root") ? BACKGROUND : null, createBuilder.type.advancementType, createBuilder.type.toast,
 			createBuilder.type.announce, createBuilder.type.hide);
 

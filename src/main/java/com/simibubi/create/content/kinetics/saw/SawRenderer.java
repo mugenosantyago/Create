@@ -85,7 +85,7 @@ public class SawRenderer extends SafeBlockEntityRenderer<SawBlockEntity> {
 		if (rotate) {
 			superBuffer.rotateCentered(AngleHelper.rad(90), Direction.UP);
 		}
-		superBuffer.color(0xFFFFFF)
+		superBuffer.color(0xFFFFFFFF)
 			.light(light)
 			.renderInto(ms, buffer.getBuffer(RenderType.cutoutMipped()));
 	}

@@ -43,7 +43,7 @@ public final class ClickToLinkBlockItemClientHooks {
 		}
 
 		Outliner.getInstance().showAABB("target", lastShownAABB)
-			.colored(0xffcb74)
+			.colored(0xFFffcb74)
 			.lineWidth(1 / 16f);
 	}
 

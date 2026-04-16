@@ -229,7 +229,7 @@ public class CouplingRenderer {
 			.position()
 			.add(0, yOffset, 0);
 
-		int color = Color.mixColors(0xabf0e9, 0xee8572, (float) Mth
+		int color = Color.mixColors(0xFFabf0e9, 0xFFee8572, (float) Mth
 			.clamp(Math.abs(first.getCouplingLength(true) - connectedCenter.distanceTo(mainCenter)) * 8, 0, 1));
 
 		Outliner.getInstance().showLine(mainCart.getId() + "", mainCenter, connectedCenter)
@@ -239,7 +239,7 @@ public class CouplingRenderer {
 		Vec3 point = mainCart.position()
 			.add(0, yOffset, 0);
 		Outliner.getInstance().showLine(mainCart.getId() + "_dot", point, point.add(0, 1 / 128f, 0))
-			.colored(0xffffff)
+			.colored(0xFFffffff)
 			.lineWidth(1 / 4f);
 	}
 

@@ -201,7 +201,7 @@ public class StationSummaryDisplaySource extends DisplaySource {
 			builder.addTextInput(0, 137, (e, t) -> {
 				e.setValue("");
 				t.withTooltip(ImmutableList.of(CreateLang.translateDirect("display_source.station_summary.filter")
-					.withStyle(s -> s.withColor(0x5391E1)),
+					.withStyle(s -> s.withColor(0xFF5391E1)),
 					CreateLang.translateDirect("gui.schedule.lmb_edit")
 						.withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC)));
 			}, "Filter");

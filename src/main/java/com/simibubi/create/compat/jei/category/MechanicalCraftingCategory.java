@@ -135,7 +135,7 @@ public class MechanicalCraftingCategory extends CreateRecipeCategory<CraftingRec
 			amount++;
 		}
 
-		graphics.drawString(Minecraft.getInstance().font, amount + "", 142, 39, 0xFFFFFF);
+		graphics.drawString(Minecraft.getInstance().font, amount + "", 142, 39, 0xFFFFFFFF);
 		matrixStack.popPose();
 	}
 

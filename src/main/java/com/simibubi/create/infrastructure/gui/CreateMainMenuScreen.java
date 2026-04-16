@@ -46,13 +46,13 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 	private static final Component CURSEFORGE_TOOLTIP;
 
 	static {
-		CURSEFORGE_TOOLTIP = Component.literal("CurseForge").withStyle(s -> s.withColor(0xFC785C).withBold(true));
+		CURSEFORGE_TOOLTIP = Component.literal("CurseForge").withStyle(s -> s.withColor(0xFFFC785C).withBold(true));
 	}
 
 	private static final Component MODRINTH_TOOLTIP;
 
 	static {
-		MODRINTH_TOOLTIP = Component.literal("Modrinth").withStyle(s -> s.withColor(0x3FD32B).withBold(true));
+		MODRINTH_TOOLTIP = Component.literal("Modrinth").withStyle(s -> s.withColor(0xFF3FD32B).withBold(true));
 	}
 
 	public static final String CURSEFORGE_LINK = "https://www.curseforge.com/minecraft/mc-mods/create";

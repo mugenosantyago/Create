@@ -73,7 +73,7 @@ public class ArmRenderer extends KineticBlockEntityRenderer<ArmBlockEntity> {
 			lowerArmAngle = be.lowerArmAngle.getValue(pt) - 135;
 			upperArmAngle = be.upperArmAngle.getValue(pt) - 90;
 			headAngle = be.headAngle.getValue(pt);
-			color = 0xFFFFFF;
+			color = 0xFFFFFFFF;
 		}
 
 		msr.center();

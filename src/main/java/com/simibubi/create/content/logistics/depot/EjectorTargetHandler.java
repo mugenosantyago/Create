@@ -207,7 +207,7 @@ public class EjectorTargetHandler {
 		int segments = (((int) totalFlyingTicks) / 3) + 1;
 		double tickOffset = totalFlyingTicks / segments;
 		boolean valid = xDiff == validX && zDiff == validZ;
-		int intColor = valid ? 0x9ede73 : 0xff7171;
+		int intColor = valid ? 0xFF9ede73 : 0xFFff7171;
 		Vector3f color = new Color(intColor).asVectorF();
 		DustParticleOptions data = new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, color.x(), color.y(), color.z()), 1);
 		ClientLevel world = mc.level;
@@ -263,7 +263,7 @@ public class EjectorTargetHandler {
 		VoxelShape shape = state.getShape(world, pos);
 		AABB boundingBox = shape.isEmpty() ? new AABB(BlockPos.ZERO) : shape.bounds();
 		Outliner.getInstance().showAABB("target", boundingBox.move(pos))
-			.colored(0xffcb74)
+			.colored(0xFFffcb74)
 			.lineWidth(1 / 16f);
 	}
 

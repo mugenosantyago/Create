@@ -82,12 +82,12 @@ public class ElevatorContactScreen extends AbstractSimiScreen {
 
 		addRenderableOnly(new TooltipArea(x + 21, y + 23, 30, 18)
 			.withTooltip(ImmutableList.of(CreateLang.translate("elevator_contact.floor_identifier")
-				.color(0x5391E1)
+				.color(0xFF5391E1)
 				.component(), rmbToEdit)));
 
 		addRenderableOnly(new TooltipArea(x + 57, y + 23, 147, 18).withTooltip(ImmutableList.of(
 			CreateLang.translate("elevator_contact.floor_description")
-				.color(0x5391E1)
+				.color(0xFF5391E1)
 				.component(),
 			CreateLang.translate("crafting_blueprint.optional")
 				.style(ChatFormatting.GRAY)
@@ -126,7 +126,7 @@ public class ElevatorContactScreen extends AbstractSimiScreen {
 		background.render(graphics, x, y);
 
 		FormattedCharSequence formattedcharsequence = title.getVisualOrderText();
-		graphics.drawString(font, formattedcharsequence, (int)((x + (background.getWidth() - 8) / 2 - font.width(formattedcharsequence) / 2)), (int)(y + 6), 0x2F3738, false);
+		graphics.drawString(font, formattedcharsequence, (int)((x + (background.getWidth() - 8) / 2 - font.width(formattedcharsequence) / 2)), (int)(y + 6), 0xFF2F3738, false);
 
 		GuiGameElement.of(AllBlocks.ELEVATOR_CONTACT.asStack()).<GuiGameElement
 				.GuiRenderBuilder>at(x + background.getWidth() + 6, y + background.getHeight() - 56, -200)

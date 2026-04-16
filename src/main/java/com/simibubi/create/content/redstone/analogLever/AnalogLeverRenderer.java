@@ -43,7 +43,7 @@ public class AnalogLeverRenderer extends SafeBlockEntityRenderer<AnalogLeverBloc
 				.renderInto(ms, vb);
 
 		// Indicator
-		int color = Color.mixColors(0x2C0300, 0xCD0000, state / 15f);
+		int color = Color.mixColors(0xFF2C0300, 0xFFCD0000, state / 15f);
 		SuperByteBuffer indicator = transform(CachedBuffers.partial(AllPartialModels.ANALOG_LEVER_INDICATOR, leverState), leverState);
 		indicator.light(light)
 				.color(color)

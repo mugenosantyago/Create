@@ -103,7 +103,7 @@ public class PackagePortTargetSelectionHandler {
 			Vec3 target = ppbe.target.getExactTargetLocation(ppbe, mc.level, pos);
 			if (target == Vec3.ZERO)
 				return;
-			Color color = new Color(0x9ede73);
+			Color color = new Color(0xFF9ede73);
 			animateConnection(mc, source, target, color);
 			Outliner.getInstance().chaseAABB("ChainPointSelected", new AABB(target, target))
 				.colored(color)
@@ -115,7 +115,7 @@ public class PackagePortTargetSelectionHandler {
 		Vec3 target = exactPositionOfTarget;
 		if (blockRayTraceResult.getType() == Type.MISS) {
 			Outliner.getInstance().chaseAABB("ChainPointSelected", new AABB(target, target))
-				.colored(0x9ede73)
+				.colored(0xFF9ede73)
 				.lineWidth(1 / 5f)
 				.disableLineNormals();
 			return;
@@ -128,7 +128,7 @@ public class PackagePortTargetSelectionHandler {
 
 		String validateDiff = validateDiff(target, pos);
 		boolean valid = validateDiff == null;
-		Color color = new Color(valid ? 0x9ede73 : 0xff7171);
+		Color color = new Color(valid ? 0xFF9ede73 : 0xFFff7171);
 		Vec3 source = Vec3.atBottomCenterOf(pos);
 
 		CreateLang.translate(validateDiff != null ? validateDiff : "package_port.valid")

@@ -38,7 +38,7 @@ public class RotationIndicatorParticle extends SimpleAnimatedParticle {
 		this.quadSize *= 0.75F;
 		this.lifetime = lifeSpan + this.random.nextInt(32);
 		this.setFadeColor(color);
-		this.setColor(Color.mixColors(color, 0xFFFFFF, .5f));
+		this.setColor(Color.mixColors(color, 0xFFFFFFFF, .5f));
 		this.setSpriteFromAge(sprite);
 		this.radius1 = radius1;
 		this.radius = radius1;

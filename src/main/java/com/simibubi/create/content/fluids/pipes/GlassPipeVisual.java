@@ -102,7 +102,7 @@ public class GlassPipeVisual extends AbstractBlockEntityVisual<StraightPipeBlock
 			int color = clientFluid.getTintColor(fluidStack);
 			int blockLightIn = (light >> 4) & 0xF;
 			int luminosity = Math.max(blockLightIn, fluidAttributes.getLightLevel(fluidStack));
-			int light = (this.light & 0xF00000) | luminosity << 4;
+			int light = (this.light & 0xFFF00000) | luminosity << 4;
 
 			if (inbound)
 				side = side.getOpposite();

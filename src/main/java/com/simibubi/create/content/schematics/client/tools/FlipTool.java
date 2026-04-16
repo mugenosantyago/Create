@@ -73,7 +73,7 @@ public class FlipTool extends PlacementToolBase {
 		outline.getParams()
 			.lineWidth(1 / 16f)
 			.disableLineNormals()
-			.colored(0xdddddd)
+			.colored(0xFFdddddd)
 			.withFaceTextures(tex, tex);
 		outline.render(ms, buffer, Vec3.ZERO, AnimationTickHolder.getPartialTicks());
 

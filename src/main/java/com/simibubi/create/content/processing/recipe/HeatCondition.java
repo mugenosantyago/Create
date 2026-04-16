@@ -16,7 +16,7 @@ import net.minecraft.util.StringRepresentable;
 
 public enum HeatCondition implements StringRepresentable {
 
-	NONE(0xffffff), HEATED(0xE88300), SUPERHEATED(0x5C93E8),
+	NONE(0xFFffffff), HEATED(0xFFE88300), SUPERHEATED(0xFF5C93E8),
 
 	;
 

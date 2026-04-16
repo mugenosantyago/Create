@@ -296,7 +296,7 @@ public class SchematicannonScreen extends AbstractSimiContainerScreen<Schematica
 			.scale(5)
 			.render(graphics);
 
-		graphics.drawString(font, title, x + (BG_TOP.getWidth() - 8 - font.width(title)) / 2, y + 2, 0x505050, false);
+		graphics.drawString(font, title, x + (BG_TOP.getWidth() - 8 - font.width(title)) / 2, y + 2, 0xFF505050, false);
 
 		Component msg = CreateLang.translateDirect("schematicannon.status." + be.statusMsg);
 		int stringWidth = font.width(msg);
@@ -309,11 +309,11 @@ public class SchematicannonScreen extends AbstractSimiContainerScreen<Schematica
 				.render(graphics);
 		}
 
-		graphics.drawString(font, msg, x + 103 - stringWidth / 2, y + 53, 0xDDEEFF);
+		graphics.drawString(font, msg, x + 103 - stringWidth / 2, y + 53, 0xFFDDEEFF);
 
 		if ("schematicErrored".equals(be.statusMsg))
 			graphics.drawString(font, CreateLang.translateDirect("schematicannon.status.schematicErroredCheckLogs"),
-				x + 103 - stringWidth / 2, y + 65, 0xDDEEFF);
+				x + 103 - stringWidth / 2, y + 65, 0xFFDDEEFF);
 	}
 
 	protected void renderBlueprintHighlight(GuiGraphics graphics, int x, int y) {

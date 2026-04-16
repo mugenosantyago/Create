@@ -106,7 +106,7 @@ public class AttributeFilterScreen extends AbstractFilterScreen<AttributeFilterM
 
 		handleIndicators();
 
-		attributeSelectorLabel = new Label(x + 43, y + 31, CommonComponents.EMPTY).colored(0xF3EBDE)
+		attributeSelectorLabel = new Label(x + 43, y + 31, CommonComponents.EMPTY).colored(0xFFF3EBDE)
 			.withShadow();
 		attributeSelector = new SelectionScrollInput(x + 39, y + 26, 137, 18);
 		attributeSelector.forOptions(Arrays.asList(CommonComponents.EMPTY));

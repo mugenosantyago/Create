@@ -191,7 +191,7 @@ public class LinkedControllerClientHandler {
 			if (!shape.isEmpty())
 				Outliner.getInstance().showAABB("controller", shape.bounds()
 						.move(selectedLocation))
-					.colored(0xB73C2D)
+					.colored(0xFFB73C2D)
 					.lineWidth(1 / 16f);
 
 			for (Integer integer : newKeys) {

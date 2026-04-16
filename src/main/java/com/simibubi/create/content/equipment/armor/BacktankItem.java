@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.Block;
 
 public class BacktankItem extends BaseArmorItem {
     public static final EquipmentSlot SLOT = EquipmentSlot.CHEST;
-    public static final int BAR_COLOR = 0xEFEFEF;
+    public static final int BAR_COLOR = 0xFFEFEFEF;
 
     private final Supplier<BacktankBlockItem> blockItem;
 

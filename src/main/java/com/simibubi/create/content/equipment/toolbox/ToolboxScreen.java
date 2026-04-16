@@ -82,7 +82,8 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 		int y = topPos;
 
 		BG.render(graphics, x, y);
-		graphics.drawString(font, title, x + 15, y + 4, 0x592424, false);
+		// 1.21.6+ requires full ARGB; bare 0xRRGGBB is treated as alpha=0 and text disappears.
+		graphics.drawString(font, title, x + 15, y + 4, 0xFF592424, false);
 
 		int invX = leftPos;
 		int invY = topPos + imageHeight - PLAYER.getHeight();

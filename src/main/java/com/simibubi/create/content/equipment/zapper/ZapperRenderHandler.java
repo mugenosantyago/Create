@@ -40,7 +40,7 @@ public class ZapperRenderHandler extends ShootableGadgetRenderHandler {
 		cachedBeams.forEach(beam -> {
 			Outliner.getInstance().endChasingLine(beam, beam.start, beam.end, 1 - beam.itensity, false)
 				.disableLineNormals()
-				.colored(0xffffff)
+				.colored(0xFFffffff)
 				.lineWidth(beam.itensity * 1 / 8f);
 		});
 

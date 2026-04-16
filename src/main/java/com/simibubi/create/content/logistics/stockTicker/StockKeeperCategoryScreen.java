@@ -231,7 +231,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 			: entry.getHoverName().getString();
 		if (categoryLabel.length() > 20)
 			categoryLabel = categoryLabel.substring(0, 20) + "...";
-		graphics.drawString(font, categoryLabel, 35, 5, 0x656565, false);
+		graphics.drawString(font, categoryLabel, 35, 5, 0xFF656565, false);
 
 		matrixStack.popPose();
 		return cardHeight;
@@ -464,7 +464,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 			.getVisualOrderText();
 
 		int center = leftPos + (AllGuiTextures.STOCK_KEEPER_CATEGORY.getWidth()) / 2;
-		graphics.drawString(font, formattedcharsequence, (int)((center - font.width(formattedcharsequence) / 2)), (int)(topPos + 4), 0x3D3C48, false);
+		graphics.drawString(font, formattedcharsequence, (int)((center - font.width(formattedcharsequence) / 2)), (int)(topPos + 4), 0xFF3D3C48, false);
 
 		if (editingItem == null) {
 			renderCategories(graphics, pMouseX, pMouseY, pPartialTick);
@@ -485,7 +485,7 @@ public class StockKeeperCategoryScreen extends AbstractSimiContainerScreen<Stock
 		formattedcharsequence = CreateLang.translate("gui.stock_ticker.category_editor")
 			.component()
 			.getVisualOrderText();
-		graphics.drawString(font, formattedcharsequence, (int)((center - font.width(formattedcharsequence) / 2)), (int)(topPos - 1), 0x3D3C48, false);
+		graphics.drawString(font, formattedcharsequence, (int)((center - font.width(formattedcharsequence) / 2)), (int)(topPos - 1), 0xFF3D3C48, false);
 	}
 
 	@Override

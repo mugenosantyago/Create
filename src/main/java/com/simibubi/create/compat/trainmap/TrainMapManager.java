@@ -126,10 +126,10 @@ public class TrainMapManager {
 
 	private static List<FormattedText> listTrainDetails(Train train) {
 		List<FormattedText> output = new ArrayList<>();
-		int blue = 0xD3DEDC;
-		int darkBlue = 0x92A9BD;
-		int bright = 0xFFEFEF;
-		int orange = 0xFFAD60;
+		int blue = 0xFFD3DEDC;
+		int darkBlue = 0xFF92A9BD;
+		int bright = 0xFFFFEFEF;
+		int orange = 0xFFFFAD60;
 
 		TrainMapSyncEntry trainEntry = TrainMapSyncClient.currentData.get(train.id);
 		if (trainEntry == null)

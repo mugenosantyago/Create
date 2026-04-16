@@ -54,7 +54,7 @@ public class SpeedGaugeBlockEntity extends GaugeBlockEntity {
 
 		dialTarget = getDialTarget(speed);
 		color = Color.mixColors(SpeedLevel.of(speed)
-			.getColor(), 0xffffff, .25f);
+			.getColor(), 0xFFffffff, .25f);
 
 		setChanged();
 	}

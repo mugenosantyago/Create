@@ -126,8 +126,8 @@ public class ValueSettingsClient implements GuiLayer {
 		int y = guiGraphics.guiHeight() - 75 - lastHoverTip.size() * 12;
 		float alpha = hoverTicks > 5 ? (11 - hoverTicks) / 5f : Math.min(1, hoverTicks / 5f);
 
-		Color color = new Color(0xffffff);
-		Color titleColor = new Color(0xFBDC7D);
+		Color color = new Color(0xFFffffff);
+		Color titleColor = new Color(0xFFFBDC7D);
 		color.setAlpha(alpha);
 		titleColor.setAlpha(alpha);
 

@@ -132,7 +132,7 @@ public class FlapDisplayRenderer extends KineticBlockEntityRenderer<FlapDisplayB
 			this.g = (color >> 8 & 255) / 255f;
 			this.b = (color & 255) / 255f;
 			this.pose = pose;
-			this.light = glowing ? 0xf000f0 : light;
+			this.light = glowing ? 0xFFf000f0 : light;
 			this.paused = paused;
 		}
 

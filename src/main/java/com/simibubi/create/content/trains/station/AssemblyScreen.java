@@ -121,22 +121,22 @@ public class AssemblyScreen extends AbstractStationScreen {
 		int y = guiTop;
 
 		MutableComponent header = CreateLang.translateDirect("station.assembly_title");
-		graphics.drawString(font, header, x + background.getWidth() / 2 - font.width(header) / 2, y + 4, 0x0E2233, false);
+		graphics.drawString(font, header, x + background.getWidth() / 2 - font.width(header) / 2, y + 4, 0xFF0E2233, false);
 
 		AssemblyException lastAssemblyException = blockEntity.lastException;
 		if (lastAssemblyException != null) {
 			MutableComponent text = CreateLang.translateDirect("station.failed");
-			graphics.drawString(font, text, x + 97 - font.width(text) / 2, y + 47, 0x775B5B, false);
+			graphics.drawString(font, text, x + 97 - font.width(text) / 2, y + 47, 0xFF775B5B, false);
 			int offset = 0;
 			if (blockEntity.failedCarriageIndex != -1) {
 				graphics.drawString(font, CreateLang.translateDirect("station.carriage_number", blockEntity.failedCarriageIndex), x + 30,
-					y + 67, 0x7A7A7A, false);
+					y + 67, 0xFF7A7A7A, false);
 				offset += 10;
 			}
-			graphics.drawWordWrap(font, lastAssemblyException.component, x + 30, y + 67 + offset, 134, 0x775B5B);
+			graphics.drawWordWrap(font, lastAssemblyException.component, x + 30, y + 67 + offset, 134, 0xFF775B5B);
 			offset += font.split(lastAssemblyException.component, 134)
 				.size() * 9 + 5;
-			graphics.drawWordWrap(font, CreateLang.translateDirect("station.retry"), x + 30, y + 67 + offset, 134, 0x7A7A7A);
+			graphics.drawWordWrap(font, CreateLang.translateDirect("station.retry"), x + 30, y + 67 + offset, 134, 0xFF7A7A7A);
 			return;
 		}
 
@@ -145,11 +145,11 @@ public class AssemblyScreen extends AbstractStationScreen {
 		MutableComponent text = CreateLang.translateDirect(
 			bogeyCount == 0 ? "station.no_bogeys" : bogeyCount == 1 ? "station.one_bogey" : "station.more_bogeys",
 			bogeyCount);
-		graphics.drawString(font, text, x + 97 - font.width(text) / 2, y + 47, 0x7A7A7A, false);
+		graphics.drawString(font, text, x + 97 - font.width(text) / 2, y + 47, 0xFF7A7A7A, false);
 
-		graphics.drawWordWrap(font, CreateLang.translateDirect("station.how_to"), x + 28, y + 62, 134, 0x7A7A7A);
-		graphics.drawWordWrap(font, CreateLang.translateDirect("station.how_to_1"), x + 28, y + 94, 134, 0x7A7A7A);
-		graphics.drawWordWrap(font, CreateLang.translateDirect("station.how_to_2"), x + 28, y + 117, 138, 0x7A7A7A);
+		graphics.drawWordWrap(font, CreateLang.translateDirect("station.how_to"), x + 28, y + 62, 134, 0xFF7A7A7A);
+		graphics.drawWordWrap(font, CreateLang.translateDirect("station.how_to_1"), x + 28, y + 94, 134, 0xFF7A7A7A);
+		graphics.drawWordWrap(font, CreateLang.translateDirect("station.how_to_2"), x + 28, y + 117, 138, 0xFF7A7A7A);
 	}
 
 	@Override

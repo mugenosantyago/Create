@@ -53,7 +53,7 @@ public class AnalogLeverVisual extends AbstractBlockEntityVisual<AnalogLeverBloc
 	protected void animateLever(float pt) {
 		float state = blockEntity.clientState.getValue(pt);
 
-		indicator.colorRgb(Color.mixColors(0x2C0300, 0xCD0000, state / 15f));
+		indicator.colorRgb(Color.mixColors(0xFF2C0300, 0xFFCD0000, state / 15f));
 		indicator.setChanged();
 
 		float angle = (float) ((state / 15) * 90 / 180 * Math.PI);

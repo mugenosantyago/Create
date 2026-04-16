@@ -17,10 +17,10 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface IRotate extends IWrenchable {
 
 	enum SpeedLevel {
-		NONE(ChatFormatting.DARK_GRAY, 0x000000, 0),
-		SLOW(ChatFormatting.GREEN, 0x22FF22, 10),
-		MEDIUM(ChatFormatting.AQUA, 0x0084FF, 20),
-		FAST(ChatFormatting.LIGHT_PURPLE, 0xFF55FF, 30);
+		NONE(ChatFormatting.DARK_GRAY, 0xFF000000, 0),
+		SLOW(ChatFormatting.GREEN, 0xFF22FF22, 10),
+		MEDIUM(ChatFormatting.AQUA, 0xFF0084FF, 20),
+		FAST(ChatFormatting.LIGHT_PURPLE, 0xFFFF55FF, 30);
 
 		private final ChatFormatting textColor;
 		private final int color;

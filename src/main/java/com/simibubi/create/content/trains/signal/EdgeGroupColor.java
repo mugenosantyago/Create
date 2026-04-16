@@ -7,16 +7,16 @@ import net.minecraft.network.codec.StreamCodec;
 
 public enum EdgeGroupColor {
 
-	YELLOW(0xEBC255),
-	GREEN(0x51C054),
-	BLUE(0x5391E1),
-	ORANGE(0xE36E36),
-	LAVENDER(0xCB92BA),
-	RED(0xA43538),
-	CYAN(0x6EDAD9),
-	BROWN(0xA17C58),
+	YELLOW(0xFFEBC255),
+	GREEN(0xFF51C054),
+	BLUE(0xFF5391E1),
+	ORANGE(0xFFE36E36),
+	LAVENDER(0xFFCB92BA),
+	RED(0xFFA43538),
+	CYAN(0xFF6EDAD9),
+	BROWN(0xFFA17C58),
 
-	WHITE(0xE5E1DC);
+	WHITE(0xFFE5E1DC);
 
 	public static final StreamCodec<ByteBuf, EdgeGroupColor> STREAM_CODEC = CatnipStreamCodecBuilders.ofEnum(EdgeGroupColor.class);
 

@@ -78,7 +78,7 @@ public class ModularGuiLineBuilder {
 											  String dataKey) {
 		EditBox input = new EditBox(font, x + this.x + 5, y, width - 9, 8, CommonComponents.EMPTY);
 		input.setBordered(false);
-		input.setTextColor(0xffffff);
+		input.setTextColor(0xFFffffff);
 		input.setFocused(false);
 		input.mouseClicked(0, 0, 0);
 		TooltipArea tooltipArea = new TooltipArea(this.x + x, y - 4, width, 18);

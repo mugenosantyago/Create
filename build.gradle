@@ -170,24 +170,26 @@ tasks.register("patchPonderJar") {
         def classRoot = sourceSets.ponderPatch.java.destinationDirectory.get().asFile
         def replacements = [
             "net/createmod/ponder/mixin/client/accessor/RenderTypeAccessor.class",
-            "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class",
             "net/createmod/ponder/mixin/client/accessor/GameRendererAccessor.class",
             "net/createmod/catnip/net/base/ClientboundPacketPayload.class"
         ]
         // Compiled outside mixin-owned package; upstream still references the old accessor FQN — remapped below.
         def additions = [
             "net/createmod/ponder/mixin/client/ItemRendererMixin.class",
-            "net/createmod/ponder/client/ItemRendererAccessor.class"
+            "net/createmod/ponder/client/ItemRendererAccessor.class",
+            "net/createmod/ponder/client/RenderSystemAccessor.class"
         ]
         def oldItemRendererAccessorPath = "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor.class"
-        def itemRendererAccessorRemapper = new SimpleRemapper(
-                "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor",
-                "net/createmod/ponder/client/ItemRendererAccessor"
-        )
-        def remapItemRendererAccessorRefs = { byte[] bytes ->
+        /** Upstream Catnip references this FQN; loading it from {@code net.createmod.ponder.mixin.*} causes IllegalClassLoadError. */
+        def oldRenderSystemAccessorPath = "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class"
+        def mixinAccessorRemapper = new SimpleRemapper([
+                "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor" : "net/createmod/ponder/client/ItemRendererAccessor",
+                "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor" : "net/createmod/ponder/client/RenderSystemAccessor"
+        ])
+        def remapMixinAccessorRefs = { byte[] bytes ->
             def reader = new ClassReader(bytes)
             def writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS)
-            reader.accept(new ClassRemapper(writer, itemRendererAccessorRemapper), ClassReader.EXPAND_FRAMES)
+            reader.accept(new ClassRemapper(writer, mixinAccessorRemapper), ClassReader.EXPAND_FRAMES)
             writer.toByteArray()
         }
         /** Ponder calls {@code catnip$callGetFov(...)D}; MC 1.21.8 {@code GameRenderer#getFov} returns float. */
@@ -348,7 +350,7 @@ tasks.register("patchPonderJar") {
             new ZipOutputStream(new FileOutputStream(target)).withCloseable { zos ->
                 Collections.list(zip.entries()).each { ZipEntry e ->
                     if (e.isDirectory()) return
-                    if (e.name == oldItemRendererAccessorPath) {
+                    if (e.name == oldItemRendererAccessorPath || e.name == oldRenderSystemAccessorPath) {
                         return
                     }
                     def zosEntry = new ZipEntry(e)
@@ -356,14 +358,14 @@ tasks.register("patchPonderJar") {
                     if (replacements.contains(e.name)) {
                         def bytes = new File(classRoot, e.name).bytes
                         if (e.name != "net/createmod/catnip/net/base/ClientboundPacketPayload.class") {
-                            bytes = remapItemRendererAccessorRefs(bytes)
+                            bytes = remapMixinAccessorRefs(bytes)
                         }
                         zos.write(bytes)
                     } else if (e.name == "ponder-common.mixins.json") {
                         patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
                     } else if (e.name.endsWith(".class")) {
                         def bytes = zip.getInputStream(e).bytes
-                        bytes = remapItemRendererAccessorRefs(bytes)
+                        bytes = remapMixinAccessorRefs(bytes)
                         if (e.name == "net/createmod/catnip/math/VecHelper.class") {
                             bytes = patchVecHelperCallGetFovReturnType(bytes)
                         }

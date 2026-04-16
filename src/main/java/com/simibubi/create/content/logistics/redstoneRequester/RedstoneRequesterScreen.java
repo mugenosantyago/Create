@@ -72,7 +72,7 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 		if (addressBox == null) {
 			addressBox = new AddressEditBox(this, new NoShadowFontWrapper(font), x + 55, y + 68, 110, 10, false);
 			addressBox.setValue(menu.contentHolder.encodedTargetAdress);
-			addressBox.setTextColor(0x555555);
+			addressBox.setTextColor(0xFF555555);
 		}
 		addRenderableWidget(addressBox);
 
@@ -114,7 +114,7 @@ public class RedstoneRequesterScreen extends AbstractSimiContainerScreen<Redston
 		Component title = CreateLang.text(stack.getHoverName()
 			.getString())
 			.component();
-		pGuiGraphics.drawString(font, title, x + 117 - font.width(title) / 2, y + 4, 0x3D3C48, false);
+		pGuiGraphics.drawString(font, title, x + 117 - font.width(title) / 2, y + 4, 0xFF3D3C48, false);
 
 		GuiGameElement.of(stack)
 			.scale(3)

@@ -41,24 +41,24 @@ public class DyeHelper {
 
 	static {
 		// DyeColor, ( Front RGB, Back RGB )
-		addDye(DyeColor.BLACK, 0x45403B, 0x21201F, Blocks.BLACK_WOOL);
-		addDye(DyeColor.RED, 0xB13937, 0x632737, Blocks.RED_WOOL);
-		addDye(DyeColor.GREEN, 0x208A46, 0x1D6045, Blocks.GREEN_WOOL);
-		addDye(DyeColor.BROWN, 0xAC855C, 0x68533E, Blocks.BROWN_WOOL);
+		addDye(DyeColor.BLACK, 0xFF45403B, 0xFF21201F, Blocks.BLACK_WOOL);
+		addDye(DyeColor.RED, 0xFFB13937, 0xFF632737, Blocks.RED_WOOL);
+		addDye(DyeColor.GREEN, 0xFF208A46, 0xFF1D6045, Blocks.GREEN_WOOL);
+		addDye(DyeColor.BROWN, 0xFFAC855C, 0xFF68533E, Blocks.BROWN_WOOL);
 
-		addDye(DyeColor.BLUE, 0x5391E1, 0x504B90, Blocks.BLUE_WOOL);
-		addDye(DyeColor.GRAY, 0x5D666F, 0x313538, Blocks.GRAY_WOOL);
-		addDye(DyeColor.LIGHT_GRAY, 0x95969B, 0x707070, Blocks.LIGHT_GRAY_WOOL);
-		addDye(DyeColor.PURPLE, 0x9F54AE, 0x63366C, Blocks.PURPLE_WOOL);
+		addDye(DyeColor.BLUE, 0xFF5391E1, 0xFF504B90, Blocks.BLUE_WOOL);
+		addDye(DyeColor.GRAY, 0xFF5D666F, 0xFF313538, Blocks.GRAY_WOOL);
+		addDye(DyeColor.LIGHT_GRAY, 0xFF95969B, 0xFF707070, Blocks.LIGHT_GRAY_WOOL);
+		addDye(DyeColor.PURPLE, 0xFF9F54AE, 0xFF63366C, Blocks.PURPLE_WOOL);
 
-		addDye(DyeColor.CYAN, 0x3EABB4, 0x3C7872, Blocks.CYAN_WOOL);
-		addDye(DyeColor.PINK, 0xD5A8CB, 0xB86B95, Blocks.PINK_WOOL);
-		addDye(DyeColor.LIME, 0xA3DF55, 0x4FB16F, Blocks.LIME_WOOL);
-		addDye(DyeColor.YELLOW, 0xE6D756, 0xE9AC29, Blocks.YELLOW_WOOL);
+		addDye(DyeColor.CYAN, 0xFF3EABB4, 0xFF3C7872, Blocks.CYAN_WOOL);
+		addDye(DyeColor.PINK, 0xFFD5A8CB, 0xFFB86B95, Blocks.PINK_WOOL);
+		addDye(DyeColor.LIME, 0xFFA3DF55, 0xFF4FB16F, Blocks.LIME_WOOL);
+		addDye(DyeColor.YELLOW, 0xFFE6D756, 0xFFE9AC29, Blocks.YELLOW_WOOL);
 
-		addDye(DyeColor.LIGHT_BLUE, 0x69CED2, 0x508AA5, Blocks.LIGHT_BLUE_WOOL);
-		addDye(DyeColor.ORANGE, 0xEE9246, 0xD94927, Blocks.ORANGE_WOOL);
-		addDye(DyeColor.MAGENTA, 0xF062B0, 0xC04488, Blocks.MAGENTA_WOOL);
-		addDye(DyeColor.WHITE, 0xEDEAE5, 0xBBB6B0, Blocks.WHITE_WOOL);
+		addDye(DyeColor.LIGHT_BLUE, 0xFF69CED2, 0xFF508AA5, Blocks.LIGHT_BLUE_WOOL);
+		addDye(DyeColor.ORANGE, 0xFFEE9246, 0xFFD94927, Blocks.ORANGE_WOOL);
+		addDye(DyeColor.MAGENTA, 0xFFF062B0, 0xFFC04488, Blocks.MAGENTA_WOOL);
+		addDye(DyeColor.WHITE, 0xFFEDEAE5, 0xFFBBB6B0, Blocks.WHITE_WOOL);
 	}
 }

@@ -124,7 +124,7 @@ public class TrainRelocator {
 				Vec3 vec1 = toVisualise.get(i).add(offset);
 				Vec3 vec2 = toVisualise.get(i + 1).add(offset);
 				Outliner.getInstance().showLine(Pair.of(relocating, i), vec1.add(0, -.925f, 0), vec2.add(0, -.925f, 0))
-					.colored(lastHoveredResult || i != toVisualise.size() - 2 ? 0x95CD41 : 0xEA5C2B)
+					.colored(lastHoveredResult || i != toVisualise.size() - 2 ? 0xFF95CD41 : 0xFFEA5C2B)
 					.disableLineNormals()
 					.lineWidth(i % 2 == 1 ? 1 / 6f : 1 / 4f);
 			}
@@ -272,7 +272,7 @@ public class TrainRelocator {
 	@OnlyIn(Dist.CLIENT)
 	public static void visualise(Train train, int i, Vec3 v1, Vec3 v2, boolean valid) {
 		Outliner.getInstance().showLine(Pair.of(train, i), v1.add(0, -.825f, 0), v2.add(0, -.825f, 0))
-			.colored(valid ? 0x95CD41 : 0xEA5C2B)
+			.colored(valid ? 0xFF95CD41 : 0xFFEA5C2B)
 			.disableLineNormals()
 			.lineWidth(i % 2 == 1 ? 1 / 6f : 1 / 4f);
 	}

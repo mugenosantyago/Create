@@ -274,7 +274,7 @@ public class TableClothBlockEntity extends SmartBlockEntity implements Transform
 
 			if (!addOntoList)
 				CreateLang.translate("stock_keeper.use_list_to_add_purchases")
-					.color(0xeeeeee)
+					.color(0xFFeeeeee)
 					.sendStatus(player);
 			if (!addOntoList)
 				level.playSound(null, worldPosition, SoundEvents.BOOK_PAGE_TURN, SoundSource.BLOCKS, 1, 1.5f);

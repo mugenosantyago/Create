@@ -670,11 +670,11 @@ public class TrackPlacement {
 			if (hints != null && !hints.either(Collection::isEmpty)) {
 				Outliner.getInstance().showCluster("track_valid", hints.getFirst())
 					.withFaceTexture(AllSpecialTextures.THIN_CHECKERED)
-					.colored(0x95CD41)
+					.colored(0xFF95CD41)
 					.lineWidth(0);
 				Outliner.getInstance().showCluster("track_invalid", hints.getSecond())
 					.withFaceTexture(AllSpecialTextures.THIN_CHECKERED)
-					.colored(0xEA5C2B)
+					.colored(0xFFEA5C2B)
 					.lineWidth(0);
 			}
 		}
@@ -687,7 +687,7 @@ public class TrackPlacement {
 			info.end2Extent = 0;
 		}
 
-		int color = Color.mixColors(0xEA5C2B, 0x95CD41, animation.getValue());
+		int color = Color.mixColors(0xFFEA5C2B, 0xFF95CD41, animation.getValue());
 		Vec3 up = new Vec3(0, 4 / 16f, 0);
 
 		{
@@ -780,7 +780,7 @@ public class TrackPlacement {
 
 	@OnlyIn(Dist.CLIENT)
 	private static void line(int id, Vec3 v1, Vec3 o1, Vec3 ex) {
-		int color = Color.mixColors(0xEA5C2B, 0x95CD41, animation.getValue());
+		int color = Color.mixColors(0xFFEA5C2B, 0xFF95CD41, animation.getValue());
 		Outliner.getInstance().showLine(Pair.of("start", id), v1.subtract(o1), v1.add(ex))
 			.lineWidth(1 / 8f)
 			.disableLineNormals()

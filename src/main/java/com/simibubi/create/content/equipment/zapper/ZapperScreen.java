@@ -45,7 +45,7 @@ public abstract class ZapperScreen extends AbstractSimiScreen {
 		this.zapper = zapper;
 		this.hand = hand;
 		title = CommonComponents.EMPTY;
-		brightColor = 0xFEFEFE;
+		brightColor = 0xFFFEFEFE;
 		fontColor = AllGuiTextures.FONT_COLOR;
 
 		currentPattern = zapper.getOrDefault(AllDataComponents.PLACEMENT_PATTERN, PlacementPatterns.Solid);
@@ -101,7 +101,7 @@ public abstract class ZapperScreen extends AbstractSimiScreen {
 	}
 
 	protected void drawOnBackground(GuiGraphics graphics, int x, int y) {
-		graphics.drawString(font, title, x + (background.getWidth() - font.width(title)) / 2, y + 4, 0x54214F, false);
+		graphics.drawString(font, title, x + (background.getWidth() - font.width(title)) / 2, y + 4, 0xFF54214F, false);
 	}
 
 	@Override

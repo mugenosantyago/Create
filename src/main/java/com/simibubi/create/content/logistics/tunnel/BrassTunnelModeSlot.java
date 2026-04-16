@@ -12,7 +12,7 @@ public class BrassTunnelModeSlot extends CenteredSideValueBoxTransform {
 	
 	@Override
 	public int getOverrideColor() {
-		return 0x592424;
+		return 0xFF592424;
 	}
 	
 }

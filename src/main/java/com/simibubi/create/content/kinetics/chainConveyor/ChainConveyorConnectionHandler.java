@@ -142,7 +142,7 @@ public class ChainConveyorConnectionHandler {
 		}
 
 		if (hitResult == null || hitResult.getType() != Type.BLOCK) {
-			highlightConveyor(firstPos, 0xFFFFFF, "chain_connect");
+			highlightConveyor(firstPos, 0xFFFFFFFF, "chain_connect");
 			return;
 		}
 
@@ -152,14 +152,14 @@ public class ChainConveyorConnectionHandler {
 		BlockState hitState = level.getBlockState(pos);
 
 		if (pos.equals(firstPos)) {
-			highlightConveyor(firstPos, 0xFFFFFF, "chain_connect");
+			highlightConveyor(firstPos, 0xFFFFFFFF, "chain_connect");
 			CreateLang.translate("chain_conveyor.select_second")
 				.sendStatus(player);
 			return;
 		}
 
 		if (!(hitState.getBlock() instanceof ChainConveyorBlock)) {
-			highlightConveyor(firstPos, 0xFFFFFF, "chain_connect");
+			highlightConveyor(firstPos, 0xFFFFFFFF, "chain_connect");
 			return;
 		}
 
@@ -170,7 +170,7 @@ public class ChainConveyorConnectionHandler {
 				.style(ChatFormatting.GREEN)
 				.sendStatus(player);
 
-		int color = success ? 0x95CD41 : 0xEA5C2B;
+		int color = success ? 0xFF95CD41 : 0xFFEA5C2B;
 
 		highlightConveyor(firstPos, color, "chain_connect");
 		highlightConveyor(pos, color, "chain_connect_to");

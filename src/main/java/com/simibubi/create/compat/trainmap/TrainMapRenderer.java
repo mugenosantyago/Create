@@ -134,7 +134,7 @@ public class TrainMapRenderer implements AutoCloseable {
 	}
 
 	public boolean is(int x, int z, int color) {
-		return (getPixel(x, z) & 0xFFFFFF) == (color & 0xFFFFFF);
+		return (getPixel(x, z) & 0xFFFFFFFF) == (color & 0xFFFFFFFF);
 	}
 
 	public boolean isEmpty(int x, int z) {
@@ -143,7 +143,7 @@ public class TrainMapRenderer implements AutoCloseable {
 
 	public int alphaAt(int x, int z) {
 		int pixel = getPixel(x, z);
-		return ((pixel & 0xFFFFFF) != 0) ? ((pixel >>> 24) & 0xFF) : 0;
+		return ((pixel & 0xFFFFFFFF) != 0) ? ((pixel >>> 24) & 0xFF) : 0;
 	}
 
 	//

@@ -32,9 +32,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class SuperGlueSelectionHandler {
 
-	private static final int PASSIVE = 0x4D9162;
-	private static final int HIGHLIGHT = 0x68c586;
-	private static final int FAIL = 0xc5b548;
+	private static final int PASSIVE = 0xFF4D9162;
+	private static final int HIGHLIGHT = 0xFF68c586;
+	private static final int FAIL = 0xFFc5b548;
 
 	private Object clusterOutlineSlot = new Object();
 	private Object bbOutlineSlot = new Object();
@@ -158,7 +158,7 @@ public class SuperGlueSelectionHandler {
 						.lineWidth(1 / 16f);
 
 				Outliner.getInstance().showCluster(clusterOutlineSlot, currentCluster)
-					.colored(0x4D9162)
+					.colored(0xFF4D9162)
 					.disableLineNormals()
 					.lineWidth(1 / 64f);
 			}
@@ -258,7 +258,7 @@ public class SuperGlueSelectionHandler {
 
 		if (currentCluster != null)
 			Outliner.getInstance().showCluster(clusterOutlineSlot, currentCluster)
-				.colored(0xB5F2C6)
+				.colored(0xFFB5F2C6)
 				.withFaceTextures(AllSpecialTextures.GLUE, AllSpecialTextures.HIGHLIGHT_CHECKERED)
 				.disableLineNormals()
 				.lineWidth(1 / 24f);

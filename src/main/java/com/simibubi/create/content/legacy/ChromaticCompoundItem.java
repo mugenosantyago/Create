@@ -57,7 +57,7 @@ public class ChromaticCompoundItem extends Item {
 
 	@Override
 	public int getBarColor(ItemStack stack) {
-		return Color.mixColors(0x413c69, 0xFFFFFF,
+		return Color.mixColors(0xFF413c69, 0xFFFFFFFF,
 			getLight(stack) / (float) AllConfigs.server().recipes.lightSourceCountForRefinedRadiance.get());
 	}
 

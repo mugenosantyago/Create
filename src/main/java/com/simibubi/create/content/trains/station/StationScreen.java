@@ -74,7 +74,7 @@ public class StationScreen extends AbstractStationScreen {
 			Component.literal(station.name));
 		nameBox.setBordered(false);
 		nameBox.setMaxLength(25);
-		nameBox.setTextColor(0x592424);
+		nameBox.setTextColor(0xFF592424);
 		nameBox.setValue(station.name);
 		nameBox.setFocused(false);
 		nameBox.mouseClicked(0, 0, 0);
@@ -122,7 +122,7 @@ public class StationScreen extends AbstractStationScreen {
 		trainNameBox = new EditBox(font, x + 23, y + 47, background.getWidth() - 75, 10, CommonComponents.EMPTY);
 		trainNameBox.setBordered(false);
 		trainNameBox.setMaxLength(35);
-		trainNameBox.setTextColor(0xC6C6C6);
+		trainNameBox.setTextColor(0xFFC6C6C6);
 		trainNameBox.setFocused(false);
 		trainNameBox.mouseClicked(0, 0, 0);
 		trainNameBox.setResponder(onTextChanged);
@@ -288,7 +288,7 @@ public class StationScreen extends AbstractStationScreen {
 		Train train = displayedTrain.get();
 		if (train == null) {
 			MutableComponent header = CreateLang.translateDirect("station.idle");
-			graphics.drawString(font, header, x + 97 - font.width(header) / 2, y + 47, 0x7A7A7A, false);
+			graphics.drawString(font, header, x + 97 - font.width(header) / 2, y + 47, 0xFF7A7A7A, false);
 			return;
 		}
 
@@ -324,7 +324,7 @@ public class StationScreen extends AbstractStationScreen {
 			int buttonX = nameBoxX(text, trainNameBox) + font.width(text) + 5;
 			AllGuiTextures.STATION_EDIT_TRAIN_NAME.render(graphics, Math.min(buttonX, guiLeft + 156), y + 44);
 			if (font.width(text) > trainNameBox.getWidth())
-				graphics.drawString(font, "...", guiLeft + 26, guiTop + 47, 0xa6a6a6);
+				graphics.drawString(font, "...", guiLeft + 26, guiTop + 47, 0xFFa6a6a6);
 		}
 
 		if (!mapModsPresent())

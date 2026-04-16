@@ -151,10 +151,10 @@ public class SchematicTableScreen extends AbstractSimiContainerScreen<SchematicT
 		else
 			titleText = title;
 
-		graphics.drawString(font, titleText, x + (background.getWidth() - 8 - font.width(titleText)) / 2, y + 4, 0x505050, false);
+		graphics.drawString(font, titleText, x + (background.getWidth() - 8 - font.width(titleText)) / 2, y + 4, 0xFF505050, false);
 
 		if (schematicsArea == null)
-			graphics.drawString(font, noSchematics, x + 54, y + 26, 0xD3D3D3);
+			graphics.drawString(font, noSchematics, x + 54, y + 26, 0xFFD3D3D3);
 
 		GuiGameElement.of(renderedItem)
 			.<GuiGameElement.GuiRenderBuilder>at(x + background.getWidth(), y + background.getHeight() - 40, -200)
@@ -185,7 +185,7 @@ public class SchematicTableScreen extends AbstractSimiContainerScreen<SchematicT
 			confirmButton.active = false;
 
 			if (schematicsLabel != null) {
-				schematicsLabel.colored(0xCCDDFF);
+				schematicsLabel.colored(0xFFCCDDFF);
 				String uploadingSchematic = menu.contentHolder.uploadingSchematic;
 				if (uploadingSchematic == null) {
 					schematicsLabel.text = null;
@@ -202,7 +202,7 @@ public class SchematicTableScreen extends AbstractSimiContainerScreen<SchematicT
 			confirmButton.active = true;
 
 			if (schematicsLabel != null)
-				schematicsLabel.colored(0xFFFFFF);
+				schematicsLabel.colored(0xFFFFFFFF);
 			if (schematicsArea != null) {
 				schematicsArea.writingTo(schematicsLabel);
 				schematicsArea.visible = true;

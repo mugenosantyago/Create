@@ -180,7 +180,7 @@ public class SchematicAndQuillHandler {
 		AABB currentSelectionBox = getCurrentSelectionBox();
 		if (currentSelectionBox != null)
 			outliner().chaseAABB(outlineSlot, currentSelectionBox)
-				.colored(0x6886c5)
+				.colored(0xFF6886c5)
 				.withFaceTextures(AllSpecialTextures.CHECKERED, AllSpecialTextures.HIGHLIGHT_CHECKERED)
 				.lineWidth(1 / 16f)
 				.highlightFace(selectedFace);

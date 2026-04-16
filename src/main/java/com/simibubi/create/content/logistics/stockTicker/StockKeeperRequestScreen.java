@@ -232,7 +232,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 		searchBox = new EditBox(new NoShadowFontWrapper(font), x + 71, y + 22, 100, 9, searchLabel);
 		searchBox.setMaxLength(50);
 		searchBox.setBordered(false);
-		searchBox.setTextColor(0x4A2D31);
+		searchBox.setTextColor(0xFF4A2D31);
 		addWidget(searchBox);
 
 		refreshSearchNextTick = true;
@@ -243,7 +243,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 		String previouslyUsedAddress = initial ? blockEntity.previouslyUsedAddress : addressBox.getValue();
 		addressBox =
 			new AddressEditBox(this, new NoShadowFontWrapper(font), x + 27, y + windowHeight - 36, 92, 10, true);
-		addressBox.setTextColor(0x714A40);
+		addressBox.setTextColor(0xFF714A40);
 		addressBox.setValue(previouslyUsedAddress);
 		addRenderableWidget(addressBox);
 
@@ -575,7 +575,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
 		if (itemsToOrder.size() > 9) {
 			graphics.drawString(font, Component.literal("[+" + (itemsToOrder.size() - 9) + "]"), x + windowWidth - 40,
-				orderY + 21, 0xF8F8EC);
+				orderY + 21, 0xFFF8F8EC);
 		}
 
 		boolean justSent = itemsToOrder.isEmpty() && successTicks > 0;
@@ -585,7 +585,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 
 		MutableComponent headerTitle = CreateLang.translate("gui.stock_keeper.title")
 			.component();
-		graphics.drawString(font, headerTitle, x + windowWidth / 2 - font.width(headerTitle) / 2, y + 4, 0x714A40,
+		graphics.drawString(font, headerTitle, x + windowWidth / 2 - font.width(headerTitle) / 2, y + 4, 0xFF714A40,
 			false);
 		MutableComponent component =
 			CreateLang.translate(encodeRequester ? "gui.stock_keeper.configure" : "gui.stock_keeper.send")
@@ -597,14 +597,14 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 			ms.translate(alpha * alpha * 50, 0, 0);
 			if (successTicks < 10)
 				graphics.drawString(font, component, x + windowWidth - 42 - font.width(component) / 2,
-					y + windowHeight - 35, new Color(0x252525).setAlpha(1 - alpha * alpha)
+					y + windowHeight - 35, new Color(0xFF252525).setAlpha(1 - alpha * alpha)
 						.getRGB(),
 					false);
 			ms.popPose();
 
 		} else {
 			graphics.drawString(font, component, x + windowWidth - 42 - font.width(component) / 2,
-				y + windowHeight - 35, 0x252525, false);
+				y + windowHeight - 35, 0xFF252525, false);
 		}
 
 		// Request just sent
@@ -614,7 +614,7 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 			int msgX = x + windowWidth / 2 - (font.width(msg) + 10) / 2;
 			int msgY = orderY + 5;
 			if (alpha > 0) {
-				int c3 = new Color(0x8C5D4B).setAlpha(alpha)
+				int c3 = new Color(0xFF8C5D4B).setAlpha(alpha)
 					.getRGB();
 				int w = font.width(msg) + 14;
 				AllGuiTextures.STOCK_KEEPER_REQUEST_BANNER_L.render(graphics, msgX - 8, msgY - 4);
@@ -666,11 +666,11 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 					FormattedCharSequence sequence = split.get(i);
 					int lineWidth = font.width(sequence);
 					graphics.drawString(font, sequence, x + windowWidth / 2 - lineWidth / 2 + 1,
-						itemsY + 20 + 1 + i * (font.lineHeight + 1), new Color(0x4A2D31).setAlpha(alpha)
+						itemsY + 20 + 1 + i * (font.lineHeight + 1), new Color(0xFF4A2D31).setAlpha(alpha)
 							.getRGB(),
 						false);
 					graphics.drawString(font, sequence, x + windowWidth / 2 - lineWidth / 2,
-						itemsY + 20 + i * (font.lineHeight + 1), new Color(0xF8F8EC).setAlpha(alpha)
+						itemsY + 20 + i * (font.lineHeight + 1), new Color(0xFFF8F8EC).setAlpha(alpha)
 							.getRGB(),
 						false);
 				}
@@ -688,8 +688,8 @@ public class StockKeeperRequestScreen extends AbstractSimiContainerScreen<StockK
 			if (!categories.isEmpty()) {
 				(categoryEntry.hidden ? AllGuiTextures.STOCK_KEEPER_CATEGORY_HIDDEN
 					: AllGuiTextures.STOCK_KEEPER_CATEGORY_SHOWN).render(graphics, itemsX, itemsY + categoryY + 6);
-				graphics.drawString(font, categoryEntry.name, itemsX + 10, itemsY + categoryY + 8, 0x4A2D31, false);
-				graphics.drawString(font, categoryEntry.name, itemsX + 9, itemsY + categoryY + 7, 0xF8F8EC, false);
+				graphics.drawString(font, categoryEntry.name, itemsX + 10, itemsY + categoryY + 8, 0xFF4A2D31, false);
+				graphics.drawString(font, categoryEntry.name, itemsX + 9, itemsY + categoryY + 7, 0xFFF8F8EC, false);
 				if (categoryEntry.hidden)
 					continue;
 			}

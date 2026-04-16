@@ -101,7 +101,7 @@ public class CreateSceneBuilder extends PonderSceneBuilder {
 
 				float speed = kbe.getTheoreticalSpeed();
 				IRotate.SpeedLevel speedLevel = IRotate.SpeedLevel.of(speed);
-				int color = direction ? speed > 0 ? 0xeb5e0b : 0x1687a7 : speedLevel.getColor();
+				int color = direction ? speed > 0 ? 0xFFeb5e0b : 0xFF1687a7 : speedLevel.getColor();
 				int particleSpeed = speedLevel.getParticleSpeed();
 				particleSpeed *= Math.signum(speed);
 

@@ -89,7 +89,7 @@ public class ValueBox extends ChasingAABBOutline {
 			ms.pushPose();
 			ms.scale(-2.01f, -2.01f, 2.01f);
 			ms.translate(-8 / 16.0, -8 / 16.0, -.5 / 16.0);
-			getOutline().render(ms, buffer, 0xffffff);
+			getOutline().render(ms, buffer, 0xFFffffff);
 			ms.popPose();
 		}
 
@@ -157,7 +157,7 @@ public class ValueBox extends ChasingAABBOutline {
 				ms.translate(-1, 3, 0);
 
 			ms.scale(scale, scale, scale);
-			drawString8x(ms, buffer, count, 0, 0, isFilter ? 0xFFFFFF : 0xEDEDED);
+			drawString8x(ms, buffer, count, 0, 0, isFilter ? 0xFFFFFFFF : 0xFFEDEDED);
 		}
 
 	}
@@ -195,7 +195,7 @@ public class ValueBox extends ChasingAABBOutline {
 
 			int overrideColor = transform.getOverrideColor();
 			if (overrideColor == -1)
-				drawString8x(ms, buffer, text, 0, 0, 0xEDEDED);
+				drawString8x(ms, buffer, text, 0, 0, 0xFFEDEDED);
 			else
 				drawString(ms, buffer, text, 0, 0, overrideColor);
 		}
@@ -218,7 +218,7 @@ public class ValueBox extends ChasingAABBOutline {
 			ms.translate(-.5f, -.5f, 5 / 32f);
 
 			int overrideColor = transform.getOverrideColor();
-			icon.render(ms, buffer, overrideColor != -1 ? overrideColor : 0xFFFFFF);
+			icon.render(ms, buffer, overrideColor != -1 ? overrideColor : 0xFFFFFFFF);
 		}
 
 	}

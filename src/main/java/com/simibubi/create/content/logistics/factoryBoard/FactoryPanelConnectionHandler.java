@@ -164,7 +164,7 @@ public class FactoryPanelConnectionHandler {
 
 		Outliner.getInstance()
 			.showAABB(connectingFrom, connectingFromBox)
-			.colored(AnimationTickHolder.getTicks() % 16 > 8 ? 0x38b764 : 0xa7f070)
+			.colored(AnimationTickHolder.getTicks() % 16 > 8 ? 0xFF38b764 : 0xFFa7f070)
 			.lineWidth(1 / 16f);
 
 		mc.player.displayClientMessage(
@@ -203,7 +203,7 @@ public class FactoryPanelConnectionHandler {
 
 		Outliner.getInstance()
 			.showAABB("target", getBB(blockState, validRelocationTarget))
-			.colored(0xeeeeee)
+			.colored(0xFFeeeeee)
 			.disableLineNormals()
 			.lineWidth(1 / 16f);
 	}

@@ -180,7 +180,7 @@ public class AllFanProcessingTypes {
 
 		@Override
 		public void morphAirFlow(AirFlowParticleAccess particleAccess, RandomSource random) {
-			particleAccess.setColor(Color.mixColors(0xFF4400, 0xFF8855, random.nextFloat()));
+			particleAccess.setColor(Color.mixColors(0xFFFF4400, 0xFFFF8855, random.nextFloat()));
 			particleAccess.setAlpha(.5f);
 			if (random.nextFloat() < 1 / 32f)
 				particleAccess.spawnExtraParticle(ParticleTypes.FLAME, .25f);
@@ -252,7 +252,7 @@ public class AllFanProcessingTypes {
 
 		@Override
 		public void morphAirFlow(AirFlowParticleAccess particleAccess, RandomSource random) {
-			particleAccess.setColor(Color.mixColors(0x0, 0x126568, random.nextFloat()));
+			particleAccess.setColor(Color.mixColors(0x0, 0xFF126568, random.nextFloat()));
 			particleAccess.setAlpha(1f);
 			if (random.nextFloat() < 1 / 128f)
 				particleAccess.spawnExtraParticle(ParticleTypes.SOUL_FIRE_FLAME, .125f);
@@ -366,7 +366,7 @@ public class AllFanProcessingTypes {
 
 		@Override
 		public void morphAirFlow(AirFlowParticleAccess particleAccess, RandomSource random) {
-			particleAccess.setColor(Color.mixColors(0x0, 0x555555, random.nextFloat()));
+			particleAccess.setColor(Color.mixColors(0x0, 0xFF555555, random.nextFloat()));
 			particleAccess.setAlpha(1f);
 			if (random.nextFloat() < 1 / 32f)
 				particleAccess.spawnExtraParticle(ParticleTypes.SMOKE, .125f);
@@ -422,7 +422,7 @@ public class AllFanProcessingTypes {
 		public void spawnProcessingParticles(Level level, Vec3 pos) {
 			if (level.random.nextInt(8) != 0)
 				return;
-			Vector3f color = new Color(0x0055FF).asVectorF();
+			Vector3f color = new Color(0xFF0055FF).asVectorF();
 			level.addParticle(new DustParticleOptions(net.minecraft.util.ARGB.colorFromFloat(1.0f, color.x(), color.y(), color.z()), 1), pos.x + (level.random.nextFloat() - .5f) * .5f,
 				pos.y + .5f, pos.z + (level.random.nextFloat() - .5f) * .5f, 0, 1 / 8f, 0);
 			level.addParticle(ParticleTypes.SPIT, pos.x + (level.random.nextFloat() - .5f) * .5f, pos.y + .5f,
@@ -431,7 +431,7 @@ public class AllFanProcessingTypes {
 
 		@Override
 		public void morphAirFlow(AirFlowParticleAccess particleAccess, RandomSource random) {
-			particleAccess.setColor(Color.mixColors(0x4499FF, 0x2277FF, random.nextFloat()));
+			particleAccess.setColor(Color.mixColors(0xFF4499FF, 0xFF2277FF, random.nextFloat()));
 			particleAccess.setAlpha(1f);
 			if (random.nextFloat() < 1 / 32f)
 				particleAccess.spawnExtraParticle(ParticleTypes.BUBBLE, .125f);

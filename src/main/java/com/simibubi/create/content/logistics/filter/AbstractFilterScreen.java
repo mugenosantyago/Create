@@ -82,7 +82,7 @@ public abstract class AbstractFilterScreen<F extends AbstractFilterMenu> extends
 	}
 
 	protected int getTitleColor() {
-		return 0x592424;
+		return 0xFF592424;
 	}
 
 	@Override

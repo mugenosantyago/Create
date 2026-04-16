@@ -81,8 +81,8 @@ public class StationRenderer extends SafeBlockEntityRenderer<StationBlockEntity>
 		MutableBlockPos currentPos = targetPosition.mutable();
 
 		PartialModel assemblyOverlay = track.prepareAssemblyOverlay(level, targetPosition, trackState, direction, ms);
-		int colorWhenValid = 0x96B5FF;
-		int colorWhenCarriage = 0xCAFF96;
+		int colorWhenValid = 0xFF96B5FF;
+		int colorWhenCarriage = 0xFFCAFF96;
 		VertexConsumer vb = buffer.getBuffer(RenderType.cutoutMipped());
 
 		currentPos.move(direction, 1);

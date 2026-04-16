@@ -161,7 +161,7 @@ public class DisplayLinkScreen extends AbstractSimiScreen {
 		sourceWidget.getToolTip().addAll(List.of(
 			CreateLang.translateDirect("display_link.reading_from"),
 			sourceState.getBlock().getName()
-				.withStyle(s -> s.withColor(sources.isEmpty() ? 0xF68989 : 0xF2C16D)),
+				.withStyle(s -> s.withColor(sources.isEmpty() ? 0xFFF68989 : 0xFFF2C16D)),
 			CreateLang.translateDirect("display_link.attached_side"),
 			CreateLang.translateDirect("display_link.view_compatible")
 				.withStyle(ChatFormatting.GRAY)
@@ -178,7 +178,7 @@ public class DisplayLinkScreen extends AbstractSimiScreen {
 		targetWidget.getToolTip().addAll(List.of(
 			CreateLang.translateDirect("display_link.writing_to"),
 			targetState.getBlock().getName()
-				.withStyle(s -> s.withColor(target == null ? 0xF68989 : 0xF2C16D)),
+				.withStyle(s -> s.withColor(target == null ? 0xFFF68989 : 0xFFF2C16D)),
 			CreateLang.translateDirect("display_link.targeted_location"),
 			CreateLang.translateDirect("display_link.view_compatible")
 				.withStyle(ChatFormatting.GRAY)
@@ -258,12 +258,12 @@ public class DisplayLinkScreen extends AbstractSimiScreen {
 
 		background.render(graphics, x, y);
 		MutableComponent header = CreateLang.translateDirect("display_link.title");
-		graphics.drawString(font, header, x + background.getWidth() / 2 - font.width(header) / 2, y + 4, 0x592424, false);
+		graphics.drawString(font, header, x + background.getWidth() / 2 - font.width(header) / 2, y + 4, 0xFF592424, false);
 
 		if (sources.isEmpty())
-			graphics.drawString(font, CreateLang.translateDirect("display_link.no_source"), x + 65, y + 30, 0xD3D3D3);
+			graphics.drawString(font, CreateLang.translateDirect("display_link.no_source"), x + 65, y + 30, 0xFFD3D3D3);
 		if (target == null)
-			graphics.drawString(font, CreateLang.translateDirect("display_link.no_target"), x + 65, y + 109, 0xD3D3D3);
+			graphics.drawString(font, CreateLang.translateDirect("display_link.no_target"), x + 65, y + 109, 0xFFD3D3D3);
 
 		PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		ms.pushPose();

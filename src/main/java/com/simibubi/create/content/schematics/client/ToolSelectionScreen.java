@@ -87,13 +87,13 @@ public class ToolSelectionScreen extends Screen {
 			// RenderSystem.setShaderColor removed in 1.21.8
 
 			if (toolTip.size() > 0)
-				graphics.drawString(font, toolTip.get(0), x - 10, y + 38, 0xEEEEEE + stringAlphaComponent, false);
+				graphics.drawString(font, toolTip.get(0), x - 10, y + 38, 0xFFEEEEEE + stringAlphaComponent, false);
 			if (toolTip.size() > 1)
-				graphics.drawString(font, toolTip.get(1), x - 10, y + 50, 0xCCDDFF + stringAlphaComponent, false);
+				graphics.drawString(font, toolTip.get(1), x - 10, y + 50, 0xFFCCDDFF + stringAlphaComponent, false);
 			if (toolTip.size() > 2)
-				graphics.drawString(font, toolTip.get(2), x - 10, y + 60, 0xCCDDFF + stringAlphaComponent, false);
+				graphics.drawString(font, toolTip.get(2), x - 10, y + 60, 0xFFCCDDFF + stringAlphaComponent, false);
 			if (toolTip.size() > 3)
-				graphics.drawString(font, toolTip.get(3), x - 10, y + 72, 0xCCCCDD + stringAlphaComponent, false);
+				graphics.drawString(font, toolTip.get(3), x - 10, y + 72, 0xFFCCCCDD + stringAlphaComponent, false);
 		}
 
 		// RenderSystem.setShaderColor removed in 1.21.8
@@ -103,9 +103,9 @@ public class ToolSelectionScreen extends Screen {
 				.getGuiScaledWidth();
 			if (!focused)
 				graphics.drawCenteredString(minecraft.font, CreateLang.translateDirect(holdToFocus, keyName), width / 2,
-					y - 10, 0xCCDDFF);
+					y - 10, 0xFFCCDDFF);
 			else
-				graphics.drawCenteredString(minecraft.font, scrollToCycle, width / 2, y - 10, 0xCCDDFF);
+				graphics.drawCenteredString(minecraft.font, scrollToCycle, width / 2, y - 10, 0xFFCCDDFF);
 		} else {
 			x += 65;
 		}
@@ -120,7 +120,7 @@ public class ToolSelectionScreen extends Screen {
 				// RenderSystem.setShaderColor removed in 1.21.8
 				graphics.drawCenteredString(minecraft.font, tools.get(i)
 					.getDisplayName()
-					.getString(), x + i * 50 + 24, y + 28, 0xCCDDFF);
+					.getString(), x + i * 50 + 24, y + 28, 0xFFCCDDFF);
 				alpha = 1;
 			}
 			// RenderSystem.setShaderColor removed in 1.21.8

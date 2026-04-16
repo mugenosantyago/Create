@@ -76,7 +76,7 @@ public class AllFluids {
 
 	public static final FluidEntry<BaseFlowingFluid.Flowing> HONEY = assignFluidClientSlot(honeyClientExtEntry,
 		REGISTRATE.standardFluid("honey",
-				SolidRenderedPlaceableFluidType.create(0xEAAE2F,
+				SolidRenderedPlaceableFluidType.create(0xFFEAAE2F,
 					() -> 1f / 8f * AllConfigs.client().honeyTransparencyMultiplier.getF(),
 					Create.asResource("fluid/honey_still"), Create.asResource("fluid/honey_flow")))
 			.lang("Honey")
@@ -100,7 +100,7 @@ public class AllFluids {
 
 	public static final FluidEntry<BaseFlowingFluid.Flowing> CHOCOLATE = assignFluidClientSlot(chocolateClientExtEntry,
 		REGISTRATE.standardFluid("chocolate",
-				SolidRenderedPlaceableFluidType.create(0x622020,
+				SolidRenderedPlaceableFluidType.create(0xFF622020,
 					() -> 1f / 32f * AllConfigs.client().chocolateTransparencyMultiplier.getF(),
 					Create.asResource("fluid/chocolate_still"), Create.asResource("fluid/chocolate_flow")))
 			.lang("Chocolate")

@@ -33,7 +33,7 @@ public class RotateTool extends PlacementToolBase {
 		line.getParams()
 			.disableCull()
 			.disableLineNormals()
-			.colored(0xdddddd)
+			.colored(0xFFdddddd)
 			.lineWidth(1 / 16f);
 		line.set(start, end)
 			.render(ms, buffer, Vec3.ZERO, AnimationTickHolder.getPartialTicks());

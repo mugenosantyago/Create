@@ -28,8 +28,8 @@ public record HighlightPacket(BlockPos pos) implements ClientboundPacketPayload 
 
 		Outliner.getInstance().showAABB("highlightCommand", Shapes.block().bounds().move(pos), 200)
 			.lineWidth(1 / 32f)
-			.colored(0xEeEeEe)
-			// .colored(0x243B50)
+			.colored(0xFFEeEeEe)
+			// .colored(0xFF243B50)
 			.withFaceTexture(AllSpecialTextures.SELECTION);
 	}
 

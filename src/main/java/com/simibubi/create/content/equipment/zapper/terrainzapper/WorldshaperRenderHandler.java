@@ -33,7 +33,7 @@ public class WorldshaperRenderHandler {
 			return;
 
 		Outliner.getInstance().showCluster("terrainZapper", renderedPositions.get())
-				.colored(0xbfbfbf)
+				.colored(0xFFbfbfbf)
 				.disableLineNormals()
 				.lineWidth(1 / 32f)
 				.withFaceTexture(AllSpecialTextures.CHECKERED);

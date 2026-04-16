@@ -37,7 +37,7 @@ public class AirFlowParticle extends SimpleAnimatedParticle {
 		this.xo = this.x;
 		this.yo = this.y;
 		this.zo = this.z;
-		setColor(0xEEEEEE);
+		setColor(0xFFEEEEEE);
 		setAlpha(.25f);
 	}
 
@@ -79,7 +79,7 @@ public class AirFlowParticle extends SimpleAnimatedParticle {
 
 			FanProcessingType type = getType(distance);
 			if (type == null) {
-				setColor(0xEEEEEE);
+				setColor(0xFFEEEEEE);
 				setAlpha(.25f);
 				selectSprite((int) Mth.clamp((distance / airCurrent.maxDistance) * 8 + random.nextInt(4),
 						0, 7));

@@ -160,9 +160,9 @@ public class TrainHUD {
 				poseStack.pushPose();
 				poseStack.translate(font.width(currentPrompt) / -2f + 82, -27, 100);
 				if (currentPromptShadow)
-					guiGraphics.drawString(font, currentPrompt, 9, 4, 0x544D45);
+					guiGraphics.drawString(font, currentPrompt, 9, 4, 0xFF544D45);
 				else
-					guiGraphics.drawString(font, currentPrompt, 9, 4, 0x544D45, false);
+					guiGraphics.drawString(font, currentPrompt, 9, 4, 0xFF544D45, false);
 				poseStack.popPose();
 			}
 		}

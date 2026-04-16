@@ -16,7 +16,7 @@ public class BrassDiodeRenderer extends ColoredOverlayBlockEntityRenderer<BrassD
 
 	@Override
 	protected int getColor(BrassDiodeBlockEntity be, float partialTicks) {
-		return Color.mixColors(0x2C0300, 0xCD0000, be.getProgress());
+		return Color.mixColors(0xFF2C0300, 0xFFCD0000, be.getProgress());
 	}
 
 	@Override

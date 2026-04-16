@@ -1,4 +1,4 @@
-package net.createmod.ponder.mixin.client.accessor;
+package net.createmod.ponder.client;
 
 import java.lang.reflect.Field;
 
@@ -6,9 +6,10 @@ import org.joml.Vector3f;
 
 /**
  * MC 1.21.8: vanilla no longer exposes shader lights as {@code Vector3f[]} on
- * {@link com.mojang.blaze3d.systems.RenderSystem}. The upstream Ponder build still used a
- * mixin {@code @Accessor} here; that entry is removed from {@code ponder-common.mixins.json}
- * in {@code patchPonderJar} so this type is a plain helper (not a Mixin interface).
+ * {@link com.mojang.blaze3d.systems.RenderSystem}. Must live outside {@code net.createmod.ponder.mixin.*}
+ * so Mixin does not forbid loading it when Catnip (e.g. {@code ShadeSeparatingSuperByteBuffer}) invokes
+ * {@link #catnip$getShaderLightDirections()}. Ponder bytecode is remapped from the old accessor FQN in
+ * {@code patchPonderJar}.
  */
 public interface RenderSystemAccessor {
 	Vector3f FALLBACK_LIGHT_0 = new Vector3f(0.2f, 1.0f, -0.7f).normalize();

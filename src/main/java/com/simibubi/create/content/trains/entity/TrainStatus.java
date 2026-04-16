@@ -115,7 +115,7 @@ public class TrainStatus {
 		Component component =
 			Component.literal(" - ").withStyle(ChatFormatting.GRAY)
 			.append(
-				CreateLang.translateDirect("train.status.collision").withStyle(st -> st.withColor(0xFFD3B4))
+				CreateLang.translateDirect("train.status.collision").withStyle(st -> st.withColor(0xFFFFD3B4))
 			);
 		List<ResourceKey<Level>> presentDimensions = train.getPresentDimensions();
 		Stream<Component> locationComponents = presentDimensions.stream().map(key ->
@@ -126,7 +126,7 @@ public class TrainStatus {
                                 "train.status.collision.where",
 								key.location().toString(),
                                     train.getPositionInDimension(key).get().toShortString()
-                                ).withStyle(style -> style.withColor(0xFFD3B4))
+                                ).withStyle(style -> style.withColor(0xFFFFD3B4))
                         );
                 }
 		);
@@ -162,7 +162,7 @@ public class TrainStatus {
 	public void displayInformation(String key, boolean itsAGoodThing, Object... args) {
         MutableComponent component = Component.literal(" - ").withStyle(ChatFormatting.GRAY)
 			.append(CreateLang.translateDirect("train.status." + key, args)
-				.withStyle(st -> st.withColor(itsAGoodThing ? 0xD5ECC2 : 0xFFD3B4)));
+				.withStyle(st -> st.withColor(itsAGoodThing ? 0xFFD5ECC2 : 0xFFFFD3B4)));
 		addMessage(new StatusMessage(component));
 	}
 

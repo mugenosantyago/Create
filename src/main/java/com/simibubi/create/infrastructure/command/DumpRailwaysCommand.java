@@ -32,14 +32,14 @@ import net.minecraft.world.phys.Vec3;
 public class DumpRailwaysCommand {
 
 	private static final int white = ChatFormatting.WHITE.getColor();
-	private static final int blue = 0xaac8e0;
-	//private static final int blue = 0xD3DEDC;
-	private static final int darkBlue = 0x88a5b7;
-	//private static final int darkBlue = 0x92A9BD;
-	private static final int darkerBlue = 0x6b8694;
-	private static final int darkestBlue = 0x536b75;
-	private static final int bright = 0xFFEFEF;
-	private static final int orange = 0xFFAD60;
+	private static final int blue = 0xFFaac8e0;
+	//private static final int blue = 0xFFD3DEDC;
+	private static final int darkBlue = 0xFF88a5b7;
+	//private static final int darkBlue = 0xFF92A9BD;
+	private static final int darkerBlue = 0xFF6b8694;
+	private static final int darkestBlue = 0xFF536b75;
+	private static final int bright = 0xFFFFEFEF;
+	private static final int orange = 0xFFFFAD60;
 
 	static ArgumentBuilder<CommandSourceStack, ?> register() {
 		return Commands.literal("trains")

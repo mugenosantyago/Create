@@ -270,15 +270,15 @@ public class FluidNetwork {
 //	private void drawDebugOutlines() {
 //		FluidPropagator.showBlockFace(start)
 //			.lineWidth(1 / 8f)
-//			.colored(0xff0000);
+//			.colored(0xFFff0000);
 //		for (Pair<BlockFace, LazyOptional<IFluidHandler>> pair : targets)
 //			FluidPropagator.showBlockFace(pair.getFirst())
 //				.lineWidth(1 / 8f)
-//				.colored(0x00ff00);
+//				.colored(0xFF00ff00);
 //		for (Pair<BlockFace, PipeConnection> pair : frontier)
 //			FluidPropagator.showBlockFace(pair.getFirst())
 //				.lineWidth(1 / 4f)
-//				.colored(0xfaaa33);
+//				.colored(0xFFfaaa33);
 //	}
 
 	private void keepPortableFluidInterfaceEngaged() {

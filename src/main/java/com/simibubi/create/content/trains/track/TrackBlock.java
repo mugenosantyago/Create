@@ -304,7 +304,7 @@ public class TrackBlock extends Block
 			: CreateLang.translateDirect("portal_track." + fail);
 		player.displayClientMessage(Component.literal(" - ")
 			.withStyle(ChatFormatting.GRAY)
-			.append(component.withStyle(st -> st.withColor(0xFFD3B4))), false);
+			.append(component.withStyle(st -> st.withColor(0xFFFFD3B4))), false);
 	}
 
 	@Override

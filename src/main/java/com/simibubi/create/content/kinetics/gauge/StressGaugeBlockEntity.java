@@ -71,11 +71,11 @@ public class StressGaugeBlockEntity extends GaugeBlockEntity {
 
 		if (dialTarget > 0) {
 			if (dialTarget < .5f)
-				color = Color.mixColors(0x00FF00, 0xFFFF00, dialTarget * 2);
+				color = Color.mixColors(0xFF00FF00, 0xFFFFFF00, dialTarget * 2);
 			else if (dialTarget < 1)
-				color = Color.mixColors(0xFFFF00, 0xFF0000, (dialTarget) * 2 - 1);
+				color = Color.mixColors(0xFFFFFF00, 0xFFFF0000, (dialTarget) * 2 - 1);
 			else
-				color = 0xFF0000;
+				color = 0xFFFF0000;
 		}
 
 		sendData();

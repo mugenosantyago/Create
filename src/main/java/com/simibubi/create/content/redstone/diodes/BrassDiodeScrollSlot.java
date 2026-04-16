@@ -29,7 +29,7 @@ public class BrassDiodeScrollSlot extends ValueBoxTransform {
 
 	@Override
 	public int getOverrideColor() {
-		return 0x592424;
+		return 0xFF592424;
 	}
 
 }
