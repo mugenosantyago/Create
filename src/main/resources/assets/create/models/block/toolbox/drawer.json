@@ -8,7 +8,7 @@
 	},
 	"elements": [
 		{
-			"from": [2, 1, 4],
+			"from": [2, 1, 3.976],
 			"to": [14, 3, 10],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {

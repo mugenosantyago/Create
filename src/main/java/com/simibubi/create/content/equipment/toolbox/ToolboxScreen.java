@@ -85,16 +85,6 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 		// 1.21.6+ requires full ARGB; bare 0xRRGGBB is treated as alpha=0 and text disappears.
 		graphics.drawString(font, title, x + 15, y + 4, 0xFF592424, false);
 
-		Component depositLabel = CreateLang.translateDirect("toolbox.depositBox");
-		int depositCenterX = leftPos + 30 + 81 + 9;
-		int depositTextY = topPos + 69 + 18 + 3;
-		int textHalf = font.width(depositLabel) / 2;
-		int pad = 3;
-		graphics.fill(depositCenterX - textHalf - pad, depositTextY - 2, depositCenterX + textHalf + pad,
-			depositTextY + font.lineHeight + 1, 0xE0101010);
-		graphics.drawString(font, depositLabel, depositCenterX - textHalf, depositTextY, AllGuiTextures.FONT_COLOR,
-			false);
-
 		int invX = leftPos;
 		int invY = topPos + imageHeight - PLAYER.getHeight();
 		renderPlayerInventory(graphics, invX, invY);
@@ -132,6 +122,18 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 		}
 	}
 
+	private void renderDepositLabel(GuiGraphics graphics) {
+		Component depositLabel = CreateLang.translateDirect("toolbox.depositBox");
+		int depositCenterX = leftPos + 30 + 81 + 9;
+		int depositTextY = topPos + 69 + 18 + 3;
+		int textHalf = font.width(depositLabel) / 2;
+		int pad = 3;
+		graphics.fill(depositCenterX - textHalf - pad, depositTextY - 2, depositCenterX + textHalf + pad,
+			depositTextY + font.lineHeight + 1, 0xFF2A2A2E);
+		graphics.drawString(font, depositLabel, depositCenterX - textHalf, depositTextY, AllGuiTextures.FONT_COLOR,
+			false);
+	}
+
 	private void renderToolbox(GuiGraphics graphics, int x, int y, float partialTicks) {
         PoseStack ms = com.simibubi.create.foundation.gui.GuiCompat.poseStack(graphics);
 		TransformStack.of(ms)
@@ -167,6 +169,8 @@ public class ToolboxScreen extends AbstractSimiContainerScreen<ToolboxMenu> {
 
 	@Override
 	protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+		// After slot items (drawn in super.render); opaque panel so the line stays readable on the GUI art.
+		renderDepositLabel(graphics);
 		if (hoveredToolboxSlot != null)
 			hoveredSlot = hoveredToolboxSlot;
 		super.renderForeground(graphics, mouseX, mouseY, partialTicks);
