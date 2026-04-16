@@ -199,10 +199,10 @@ public class RadialToolboxMenu extends AbstractSimiScreen {
 			if (i1 > 8) {
 				ms.pushPose();
 				ms.translate((float) (width / 2), (float) (height - 68), 0.0F);
-				int k1 = 16777215;
-				int k = i1 << 24 & -16777216;
+				// 1.21.6+: full ARGB; 0xFFFFFF alone leaves alpha 0 and the line vanishes.
+				int textColor = ((i1 & 0xFF) << 24) | 0xFFFFFF;
 				int l = font.width(tip);
-				graphics.drawString(font, tip, Math.round(-l / 2f), -4, k1 | k, false);
+				graphics.drawString(font, tip, Math.round(-l / 2f), -4, textColor, false);
 				ms.popPose();
 			}
 		}

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 
+import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
 import net.createmod.catnip.data.Iterate;
@@ -23,6 +24,9 @@ public class ToolboxRenderer extends SmartBlockEntityRenderer<ToolboxBlockEntity
 	@Override
 	protected void renderSafe(ToolboxBlockEntity blockEntity, float partialTicks, PoseStack ms,
 		MultiBufferSource buffer, int light, int overlay) {
+
+		if (VisualizationManager.supportsVisualization(blockEntity.getLevel()))
+			return;
 
 		BlockState blockState = blockEntity.getBlockState();
 		Direction facing = blockState.getValue(ToolboxBlock.FACING)
