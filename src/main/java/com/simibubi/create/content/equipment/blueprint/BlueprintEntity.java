@@ -110,6 +110,7 @@ public class BlueprintEntity extends HangingEntity
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
 		builder.define(DATA_DIRECTION_ID, Direction.SOUTH.get3DDataValue());
 	}
 
