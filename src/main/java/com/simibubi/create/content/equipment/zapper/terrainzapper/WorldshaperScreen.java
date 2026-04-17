@@ -254,8 +254,8 @@ public class WorldshaperScreen extends ZapperScreen {
 		// The parent AbstractSimiScreen calls blur multiple times per frame
 		// which causes "Can only blur once per frame" error in Minecraft 1.21.8
 		
-		// Render background with blur only once
-		this.renderBlurredBackground(graphics);
+		// Render regular background without blur to avoid double blur issue
+		this.renderBackground(graphics, mouseX, mouseY, partialTick);
 		
 		// Render the window content manually
 		this.renderWindow(graphics, mouseX, mouseY, partialTick);
