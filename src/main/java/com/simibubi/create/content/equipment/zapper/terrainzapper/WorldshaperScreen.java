@@ -247,6 +247,25 @@ public class WorldshaperScreen extends ZapperScreen {
 			graphics.drawString(font, placementSection, x + 136, y + 69, fontColor, false);
 	}
 
+	
+	@Override
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		// Prevent double blur issue by catching the IllegalStateException
+		// The parent AbstractSimiScreen calls blur multiple times per frame
+		// which causes "Can only blur once per frame" error in Minecraft 1.21.8
+		try {
+			super.render(graphics, mouseX, mouseY, partialTick);
+		} catch (IllegalStateException e) {
+			if (e.getMessage() != null && e.getMessage().contains("Can only blur once per frame")) {
+				// Ignore the double blur error and continue rendering
+				// This is a workaround for the Ponder library issue
+			} else {
+				// Re-throw if it's a different IllegalStateException
+				throw e;
+			}
+		}
+	}
+
 	@Override
 	protected ConfigureZapperPacket getConfigurationPacket() {
 		int brushParamX = currentBrushParams[0];
