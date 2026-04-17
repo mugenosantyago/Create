@@ -132,7 +132,7 @@ public abstract class ZapperScreen extends AbstractSimiScreen {
 		ms.mulPose(Axis.YP.rotationDegrees(-45f));
 		ms.scale(20, 20, 20);
 
-		BlockState state = zapper.getOrDefault(AllDataComponents.SHAPER_BLOCK_USED, Blocks.AIR.defaultBlockState());;
+		BlockState state = zapper.getOrDefault(AllDataComponents.SHAPER_BLOCK_USED, Blocks.AIR.defaultBlockState());
 
 		GuiGameElement.of(state)
 			.render(graphics);
