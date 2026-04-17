@@ -28,6 +28,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -75,7 +77,7 @@ public class BlueprintEntity extends HangingEntity
 
 	protected int size;
 	protected Direction verticalOrientation;
-	// In 1.21.8, HangingEntity.direction is private; we track it locally
+	// In 1.21.8, HangingEntity.direction is private; we track it locally and sync it
 	protected Direction direction = Direction.SOUTH;
 
 	@SuppressWarnings("unchecked")
@@ -89,6 +91,8 @@ public class BlueprintEntity extends HangingEntity
 
 		for (int size = 3; size > 0; size--) {
 			this.size = size;
+			this.setDirection(facing);
+			this.verticalOrientation = verticalOrientation;
 			this.updateFacingWithBoundingBox(facing, verticalOrientation);
 			if (this.survives())
 				break;
@@ -101,8 +105,22 @@ public class BlueprintEntity extends HangingEntity
 		return entityBuilder;
 	}
 
+	private static final EntityDataAccessor<Integer> DATA_DIRECTION_ID =
+		SynchedEntityData.defineId(BlueprintEntity.class, EntityDataSerializers.INT);
+
 	@Override
-	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(DATA_DIRECTION_ID, Direction.SOUTH.get3DDataValue());
+	}
+
+	public Direction getDirection() {
+		return Direction.from3DDataValue(this.getEntityData().get(DATA_DIRECTION_ID));
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+		this.getEntityData().set(DATA_DIRECTION_ID, direction.get3DDataValue());
+	}
 
 	@Override
 
@@ -117,7 +135,7 @@ public class BlueprintEntity extends HangingEntity
 	}
 
 	public void addAdditionalSaveData(CompoundTag p_213281_1_) {
-		p_213281_1_.putByte("Facing", (byte) this.direction.get3DDataValue());
+		p_213281_1_.putByte("Facing", (byte) this.getDirection().get3DDataValue());
 		p_213281_1_.putByte("Orientation", (byte) this.verticalOrientation.get3DDataValue());
 		p_213281_1_.putInt("Size", size);
 		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); net.minecraft.world.level.storage.TagValueOutput __output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(__reporter, registryAccess()); super.addAdditionalSaveData(__output); p_213281_1_.merge(__output.buildResult()); }
@@ -135,26 +153,27 @@ public class BlueprintEntity extends HangingEntity
 
 	public void readAdditionalSaveData(CompoundTag p_70037_1_) {
 		if (p_70037_1_.contains("Facing")) {
-			this.direction = Direction.from3DDataValue(p_70037_1_.getByteOr("Facing", (byte)0));
+			Direction loadedDirection = Direction.from3DDataValue(p_70037_1_.getByteOr("Facing", (byte)0));
+			this.setDirection(loadedDirection);
 			this.verticalOrientation = Direction.from3DDataValue(p_70037_1_.getByteOr("Orientation", (byte)0));
 			this.size = p_70037_1_.getIntOr("Size", 0);
 		} else {
-			this.direction = Direction.SOUTH;
+			this.setDirection(Direction.SOUTH);
 			this.verticalOrientation = Direction.DOWN;
 			this.size = 1;
 		}
 		{ net.minecraft.util.ProblemReporter.Collector __reporter = new net.minecraft.util.ProblemReporter.Collector(); super.readAdditionalSaveData(net.minecraft.world.level.storage.TagValueInput.create(__reporter, registryAccess(), p_70037_1_)); }
-		this.updateFacingWithBoundingBox(this.direction, this.verticalOrientation);
+		this.updateFacingWithBoundingBox(this.getDirection(), this.verticalOrientation);
 	}
 
 	protected void updateFacingWithBoundingBox(Direction facing, Direction verticalOrientation) {
 		Objects.requireNonNull(facing);
-		this.direction = facing;
+		this.setDirection(facing);
 		this.verticalOrientation = verticalOrientation;
 		if (facing.getAxis()
 			.isHorizontal()) {
 			setXRot(0.0F);
-			setYRot(this.direction.get2DDataValue() * 90);
+			setYRot(facing.get2DDataValue() * 90);
 		} else {
 			setXRot(-90 * facing.getAxisDirection()
 				.getStep());
@@ -204,7 +223,7 @@ public class BlueprintEntity extends HangingEntity
 		double d4 = (double) this.getWidth();
 		double d5 = (double) this.getHeight();
 		double d6 = (double) this.getWidth();
-		Direction.Axis direction$axis = this.direction.getAxis();
+		Direction.Axis direction$axis = this.getDirection().getAxis();
 		switch (direction$axis) {
 			case X:
 				d4 = 1.0D;
@@ -225,8 +244,8 @@ public class BlueprintEntity extends HangingEntity
 
 	@Override
 	protected void recalculateBoundingBox() {
-		if (this.direction != null && this.verticalOrientation != null) {
-			setBoundingBox(calculateBoundingBox(pos, direction));
+		if (this.getDirection() != null && this.verticalOrientation != null) {
+			setBoundingBox(calculateBoundingBox(pos, getDirection()));
 		}
 	}
 	@Override
@@ -242,12 +261,13 @@ public class BlueprintEntity extends HangingEntity
 
 		int i = Math.max(1, this.getWidth() / 16);
 		int j = Math.max(1, this.getHeight() / 16);
-		BlockPos blockpos = this.pos.relative(this.direction.getOpposite());
-		Direction upDirection = direction.getAxis()
+		Direction currentDirection = this.getDirection();
+		BlockPos blockpos = this.pos.relative(currentDirection.getOpposite());
+		Direction upDirection = currentDirection.getAxis()
 			.isHorizontal() ? Direction.UP
-			: direction == Direction.UP ? verticalOrientation : verticalOrientation.getOpposite();
-		Direction newDirection = direction.getAxis()
-			.isVertical() ? verticalOrientation.getClockWise() : direction.getCounterClockWise();
+			: currentDirection == Direction.UP ? verticalOrientation : verticalOrientation.getOpposite();
+		Direction newDirection = currentDirection.getAxis()
+			.isVertical() ? verticalOrientation.getClockWise() : currentDirection.getCounterClockWise();
 		BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
 		for (int k = 0; k < i; ++k) {
@@ -258,7 +278,7 @@ public class BlueprintEntity extends HangingEntity
 					.move(newDirection, k + i1)
 					.move(upDirection, l + j1);
 				BlockState blockstate = this.level().getBlockState(blockpos$mutable);
-				if (Block.canSupportCenter(this.level(), blockpos$mutable, this.direction))
+				if (Block.canSupportCenter(this.level(), blockpos$mutable, currentDirection))
 					continue;
 				if (!blockstate.isSolid() && !DiodeBlock.isDiode(blockstate)) {
 					return false;

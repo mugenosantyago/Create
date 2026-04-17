@@ -167,6 +167,10 @@ public class SlidingDoorBlock extends DoorBlock implements IWrenchable, IBE<Slid
 
 	@Override
 	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
+		// Handle null orientation for compatibility
+		if (_orientation == null) {
+			return;
+		}
 		BlockPos fromPos = pPos.relative(_orientation.getFront());
 		boolean lower = pState.getValue(HALF) == DoubleBlockHalf.LOWER;
 		boolean isPowered = isDoorPowered(pLevel, pPos, pState);
