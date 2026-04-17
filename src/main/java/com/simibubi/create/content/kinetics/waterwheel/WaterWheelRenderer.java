@@ -111,22 +111,41 @@ public class WaterWheelRenderer<T extends WaterWheelBlockEntity> extends Kinetic
 		if (path.contains("wood/planks/")) // TerraFirmaCraft
 			return path.substring(12);
 
+		// Handle vanilla wood types (oak, spruce, birch, jungle, acacia, dark_oak, etc.)
+		if (path.equals("oak_planks") || path.equals("spruce_planks") || 
+			path.equals("birch_planks") || path.equals("jungle_planks") ||
+			path.equals("acacia_planks") || path.equals("dark_oak_planks") ||
+			path.equals("mangrove_planks") || path.equals("cherry_planks") ||
+			path.equals("bamboo_planks") || path.equals("crimson_planks") ||
+			path.equals("warped_planks"))
+			return path.substring(0, path.length() - 7); // Remove "_planks" suffix
+
 		return null;
 	}
 
 	private static final String[] LOG_LOCATIONS = new String[] {
 
 		"x_log", "x_stem", "x_block", // Covers most wood types
-		"wood/log/x" // TerraFirmaCraft
+		"wood/log/x", // TerraFirmaCraft
+		"oak_log", "spruce_log", "birch_log", "jungle_log", // Vanilla wood types
+		"acacia_log", "dark_oak_log", "mangrove_log", "cherry_log",
+		"bamboo_block", "crimson_stem", "warped_stem"
 
 	};
 
 	private static BlockState getLogBlockState(String namespace, String wood) {
+		// First try the pattern-based locations
 		for (String location : LOG_LOCATIONS) {
 			Block block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.fromNamespaceAndPath(namespace, location.replace("x", wood)));
 			if (block != null)
 				return block.defaultBlockState();
 		}
+		
+		// Fallback to vanilla log naming convention
+		Block vanillaLog = BuiltInRegistries.BLOCK.getValue(ResourceLocation.fromNamespaceAndPath("minecraft", wood + "_log"));
+		if (vanillaLog != null)
+			return vanillaLog.defaultBlockState();
+			
 		return Blocks.OAK_LOG.defaultBlockState();
 	}
 

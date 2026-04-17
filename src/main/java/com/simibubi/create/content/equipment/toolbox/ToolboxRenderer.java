@@ -39,6 +39,15 @@ public class ToolboxRenderer extends SmartBlockEntityRenderer<ToolboxBlockEntity
 		float drawerOffset = blockEntity.drawers.getValue(partialTicks);
 
 		VertexConsumer builder = buffer.getBuffer(RenderType.cutoutMipped());
+		
+		// Render main toolbox body using block model
+		SuperByteBuffer body = CachedBuffers.block(blockState);
+		body.center()
+			.rotateYDegrees(-facing.toYRot())
+			.light(light)
+			.renderInto(ms, builder);
+		
+		// Render lid
 		lid.center()
 			.rotateYDegrees(-facing.toYRot())
 			.uncenter()
@@ -48,6 +57,7 @@ public class ToolboxRenderer extends SmartBlockEntityRenderer<ToolboxBlockEntity
 			.light(light)
 			.renderInto(ms, builder);
 
+		// Render drawers
 		for (int offset : Iterate.zeroAndOne) {
 			drawer.center()
 					.rotateYDegrees(-facing.toYRot())
