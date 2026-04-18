@@ -1,12 +1,10 @@
 package com.simibubi.create.foundation.events;
 
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllKeys;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.contraptions.elevator.ElevatorControlsHandler;
 import com.simibubi.create.content.contraptions.wrench.RadialWrenchHandler;
 import com.simibubi.create.content.equipment.toolbox.ToolboxHandlerClient;
-import com.simibubi.create.foundation.ponder.PonderHelper;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorConnectionHandler;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainConveyorInteractionHandler;
 import com.simibubi.create.content.kinetics.chainConveyor.ChainPackageInteractionHandler;
@@ -99,12 +97,6 @@ public class InputEvents {
 
 		if (key == mc.options.keyPickItem) {
 			if (ToolboxHandlerClient.onPickItem())
-				event.setCanceled(true);
-			return;
-		}
-
-		if (key == AllKeys.PONDER_TOOL.getKeybind()) {
-			if (PonderHelper.openPonder())
 				event.setCanceled(true);
 			return;
 		}
