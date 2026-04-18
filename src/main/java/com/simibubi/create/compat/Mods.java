@@ -40,7 +40,8 @@ public enum Mods {
 	FTBLIBRARY,
 	SODIUM,
 	INVENTORYSORTER,
-	FARMERSDELIGHT;
+	FARMERSDELIGHT,
+	PONDER;
 
 	private final String id;
 	private final boolean isLoaded;

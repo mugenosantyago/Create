@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.Create;
 import com.simibubi.create.CreateBuildInfo;
+import com.simibubi.create.compat.Mods;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.utility.CreateLang;
 
@@ -161,7 +162,7 @@ public class CreateMainMenuScreen extends AbstractSimiScreen {
 		gettingStarted = Button.builder(CreateLang.translateDirect("menu.ponder_index"), $ -> linkTo(new PonderTagIndexScreen()))
 			.bounds(center + 2, yStart + 48 + -16, bShortWidth, bHeight)
 			.build();
-		gettingStarted.active = !(parent instanceof TitleScreen);
+		gettingStarted.active = !(parent instanceof TitleScreen) && Mods.PONDER.isLoaded();
 		addRenderableWidget(gettingStarted);
 
 		addRenderableWidget(new PlatformIconButton(center - 100, yStart + 48 + -16, bShortWidth / 2, bHeight,

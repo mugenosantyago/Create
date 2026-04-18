@@ -133,7 +133,7 @@ public class CreateClient {
 
 			//AllPonderTags.register();
 			//PonderIndex.register();
-			PonderIndex.addPlugin(new CreatePonderPlugin());
+			Mods.PONDER.executeIfInstalled(() -> () -> PonderIndex.addPlugin(new CreatePonderPlugin()));
 
 			setupConfigUIBackground();
 		});
