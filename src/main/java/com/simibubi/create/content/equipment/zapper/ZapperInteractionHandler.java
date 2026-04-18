@@ -52,7 +52,7 @@ public class ZapperInteractionHandler {
 		if (pos == null)
 			return false;
 
-		player.level().destroyBlockProgress(pos, 0);
+		player.level().destroyBlockProgress(player.getId(), pos, 0);
 		BlockState newState = player.level().getBlockState(pos);
 
 		if (BlockHelper.getRequiredItem(newState)

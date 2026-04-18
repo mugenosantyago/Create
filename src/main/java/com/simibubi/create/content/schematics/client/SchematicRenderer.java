@@ -92,8 +92,8 @@ public class SchematicRenderer {
 		SchematicLevel renderWorld = schematic;
 		BoundingBox bounds = renderWorld.getBounds();
 
-		// ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
-		// sbbBuilder.begin();
+		// Use a placeholder for 1.21.8 compatibility - tesselateBlock functionality disabled
+		SuperByteBuffer sbb = null;
 
 		renderWorld.renderMode = true;
 		ModelBlockRenderer.enableCaching();
@@ -110,8 +110,9 @@ public class SchematicRenderer {
 					poseStack.pushPose();
 					poseStack.translate(localPos.getX(), localPos.getY(), localPos.getZ());
 
-					renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbbBuilder, true,
-						OverlayTexture.NO_OVERLAY);
+					// Skip tesselateBlock for now as sbbBuilder is not available in 1.21.8
+					// renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbb, true,
+					//		OverlayTexture.NO_OVERLAY);
 
 					poseStack.popPose();
 				}
@@ -120,7 +121,7 @@ public class SchematicRenderer {
 		ModelBlockRenderer.clearCache();
 		renderWorld.renderMode = false;
 
-		return sbbBuilder.end();
+		return sbb;
 	}
 
 	private static int getLayerCount() {
