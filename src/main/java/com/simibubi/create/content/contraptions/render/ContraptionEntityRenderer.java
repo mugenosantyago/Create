@@ -126,8 +126,10 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 				random.setSeed(randomSeed);
 				poseStack.pushPose();
 				poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-				// Skip tesselateBlock for now as sbbBuilder is not available in 1.21.8
-				// renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbb, true, OverlayTexture.NO_OVERLAY);
+				// Use direct block rendering as sbbBuilder is not available in 1.21.8
+				for (BlockModelPart part : parts) {
+					part.render(renderWorld, state, pos, poseStack, sbb, true, OverlayTexture.NO_OVERLAY);
+				}
 				poseStack.popPose();
 			}
 		}

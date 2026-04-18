@@ -110,9 +110,10 @@ public class SchematicRenderer {
 					poseStack.pushPose();
 					poseStack.translate(localPos.getX(), localPos.getY(), localPos.getZ());
 
-					// Skip tesselateBlock for now as sbbBuilder is not available in 1.21.8
-					// renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbb, true,
-					//		OverlayTexture.NO_OVERLAY);
+					// Use direct block rendering as sbbBuilder is not available in 1.21.8
+					for (BlockModelPart part : parts) {
+						part.render(renderWorld, state, pos, poseStack, sbb, true, OverlayTexture.NO_OVERLAY);
+					}
 
 					poseStack.popPose();
 				}

@@ -23,6 +23,7 @@ public enum AllKeys {
 	ACTIVATE_TOOL(GLFW.GLFW_KEY_LEFT_CONTROL),
 	TOOLBELT("toolbelt", GLFW.GLFW_KEY_LEFT_ALT, "Access Nearby Toolboxes"),
 	ROTATE_MENU("rotate_menu", GLFW.GLFW_KEY_UNKNOWN, "Open Block Rotation Menu"),
+	PONDER_TOOL("ponder", GLFW.GLFW_KEY_UNKNOWN, "Open Ponder"),
 
 	;
 
