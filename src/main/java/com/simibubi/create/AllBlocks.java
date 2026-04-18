@@ -590,7 +590,8 @@ public class AllBlocks {
 			.clientExtension(() -> () -> new WaterWheelStructuralBlock.RenderProperties())
 			.defaultBlockstate()
 			.properties(p -> p.noOcclusion()
-				.mapColor(MapColor.DIRT))
+				.mapColor(MapColor.DIRT)
+				.noLootTable())
 			.transform(axeOrPickaxe())
 			.lang("Large Water Wheel")
 			.register();
