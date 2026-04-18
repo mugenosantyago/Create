@@ -99,6 +99,10 @@ public class MechanicalPistonBlock extends DirectionalAxisKineticBlock implement
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, net.minecraft.world.level.redstone.Orientation orientation, boolean isMoving) {
+		// Handle null orientation for compatibility in 1.21.8
+		if (orientation == null) {
+			return;
+		}
 		Direction direction = state.getValue(FACING);
 		// In MC 1.21.8, fromPos was replaced by Orientation
 		BlockPos fromPos = pos.relative(orientation.getFront().getOpposite());

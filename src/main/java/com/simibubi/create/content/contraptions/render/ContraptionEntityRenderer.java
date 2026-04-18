@@ -100,8 +100,8 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		var clientContraption = contraption.getOrCreateClientContraptionLazy();
 		RenderedBlocks blocks = clientContraption.getRenderedBlocks();
 
-		ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
-		sbbBuilder.begin();
+		// ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
+		// sbbBuilder.begin();
 
 		ChunkSectionLayer targetLayer = RENDER_TYPE_TO_CHUNK_LAYER.get(layer);
 
@@ -224,6 +224,6 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 	private static class ThreadLocalObjects {
 		public final PoseStack poseStack = new PoseStack();
 		public final RandomSource random = RandomSource.createNewThreadLocalInstance();
-		public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.create();
+		// public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.getInstance(); // Temporarily disabled for 1.21.8 compatibility
 	}
 }

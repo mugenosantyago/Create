@@ -162,6 +162,10 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
 
 	@Override
 	public void neighborChanged(BlockState p_220069_1_, Level world, BlockPos pos, Block p_220069_4_, net.minecraft.world.level.redstone.Orientation _orientation, boolean p_220069_6_) {
+		// Handle null orientation for compatibility in 1.21.8
+		if (_orientation == null) {
+			return;
+		}
 		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (pos.below()
 			.equals(fromPos))

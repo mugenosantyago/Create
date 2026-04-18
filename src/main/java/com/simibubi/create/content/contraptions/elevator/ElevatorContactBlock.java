@@ -106,6 +106,10 @@ public class ElevatorContactBlock extends WrenchableDirectionalBlock
 
 	@Override
 	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pIsMoving) {
+		// Handle null orientation for compatibility in 1.21.8
+		if (_orientation == null) {
+			return;
+		}
 		BlockPos fromPos = pPos.relative(_orientation.getFront());
 		if (pLevel.isClientSide)
 			return;

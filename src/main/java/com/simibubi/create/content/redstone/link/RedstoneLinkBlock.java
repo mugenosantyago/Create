@@ -41,6 +41,10 @@ public class RedstoneLinkBlock extends WrenchableDirectionalBlock implements IBE
 
 	@Override
 	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		// Handle null orientation for compatibility in 1.21.8
+		if (_orientation == null) {
+			return;
+		}
 		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (level.isClientSide)
 			return;

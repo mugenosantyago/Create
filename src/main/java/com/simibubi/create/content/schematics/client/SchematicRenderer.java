@@ -92,8 +92,8 @@ public class SchematicRenderer {
 		SchematicLevel renderWorld = schematic;
 		BoundingBox bounds = renderWorld.getBounds();
 
-		ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
-		sbbBuilder.begin();
+		// ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
+		// sbbBuilder.begin();
 
 		renderWorld.renderMode = true;
 		ModelBlockRenderer.enableCaching();
@@ -131,7 +131,7 @@ public class SchematicRenderer {
 		public final PoseStack poseStack = new PoseStack();
 		public final RandomSource random = RandomSource.createNewThreadLocalInstance();
 		public final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
-		public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.create();
+		// public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.getInstance(); // Temporarily disabled for 1.21.8 compatibility
 	}
 
 }

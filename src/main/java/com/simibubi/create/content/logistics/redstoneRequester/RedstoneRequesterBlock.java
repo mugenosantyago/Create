@@ -149,6 +149,10 @@ public class RedstoneRequesterBlock extends Block implements IBE<RedstoneRequest
 
 	@Override
 	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pNeighborBlock, net.minecraft.world.level.redstone.Orientation _orientation, boolean pMovedByPiston) {
+		// Handle null orientation for compatibility in 1.21.8
+		if (_orientation == null) {
+			return;
+		}
 		BlockPos fromPos = pPos.relative(_orientation.getFront());
 		if (pLevel.isClientSide())
 			return;

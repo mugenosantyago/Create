@@ -85,8 +85,11 @@ public class WaterWheelRenderer<T extends WaterWheelBlockEntity> extends Kinetic
 		ResourceLocation id = RegisteredObjectsHelper.getKeyOrThrow(planksBlock);
 		String wood = plankStateToWoodName(planksBlockState);
 
-		if (wood == null)
-			return BakedModelHelper.generateModel(template, sprite -> null);
+		if (wood == null) {
+			// Fallback to oak if wood type detection fails
+			wood = "oak";
+			System.out.println("WaterWheel: Failed to detect wood type for " + planksBlockState + ", falling back to oak");
+		}
 
 		String namespace = id.getNamespace();
 		BlockState logBlockState = getLogBlockState(namespace, wood);

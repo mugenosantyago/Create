@@ -212,6 +212,10 @@ public class BeltTunnelBlock extends Block implements IBE<BeltTunnelBlockEntity>
 
 	@Override
 	public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, net.minecraft.world.level.redstone.Orientation _orientation, boolean isMoving) {
+		// Handle null orientation for compatibility in 1.21.8
+		if (_orientation == null) {
+			return;
+		}
 		BlockPos fromPos = pos.relative(_orientation.getFront());
 		if (worldIn.isClientSide)
 			return;
