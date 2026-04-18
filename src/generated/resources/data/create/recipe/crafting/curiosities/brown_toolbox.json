@@ -3,16 +3,20 @@
   "category": "misc",
   "key": {
     "C": {
-      "item": "create:cogwheel"
+      "item": "create:cogwheel",
+      "neoforge:ingredient_type": "item"
     },
     "L": {
-      "tag": "c:leathers"
+      "tag": "c:leathers",
+      "neoforge:ingredient_type": "tag"
     },
     "S": {
-      "tag": "c:plates/gold"
+      "tag": "c:plates/gold",
+      "neoforge:ingredient_type": "tag"
     },
     "W": {
-      "tag": "c:chests/wooden"
+      "tag": "c:chests/wooden",
+      "neoforge:ingredient_type": "tag"
     }
   },
   "pattern": [

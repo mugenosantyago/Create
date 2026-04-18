@@ -3,10 +3,12 @@
   "category": "misc",
   "key": {
     "C": {
-      "item": "create:shaft"
+      "item": "create:shaft",
+      "neoforge:ingredient_type": "item"
     },
     "S": {
-      "tag": "minecraft:planks"
+      "tag": "minecraft:planks",
+      "neoforge:ingredient_type": "tag"
     }
   },
   "pattern": [

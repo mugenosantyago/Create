@@ -83,7 +83,6 @@ neoForge {
         }
     }
 
-
     runs {
         configureEach {
             systemProperty("forge.logging.markers", "REGISTRIES")
@@ -112,8 +111,8 @@ neoForge {
             programArgument("--nogui")
         }
 
-        data {
-            data()
+        clientData {
+            type = "clientData"
 
             programArguments.addAll(
                 "--mod", mod_id as String,

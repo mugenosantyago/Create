@@ -26,7 +26,7 @@
     {
       "type": "java",
       "request": "launch",
-      "name": "Data",
+      "name": "ClientData",
       "presentation": {
         "group": "Mod Development - Create",
         "order": 1
@@ -34,10 +34,10 @@
       "projectName": "Create",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/dataRunProgramArgs.txt"
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/clientDataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/dataRunVmArgs.txt",
+        "@/Users/otoyume/Documents/GitHub/Create/build/moddev/clientDataRunVmArgs.txt",
         "-Dfml.modFolders\u003dcreate%%/Users/otoyume/Documents/GitHub/Create/bin/main"
       ],
       "cwd": "${workspaceFolder}/run",

@@ -70,7 +70,7 @@ side = "BOTH"
 modId = "journeymap"
 type = "optional"
 reason = "Versions before 1.21.8 builds do not contain the APIs Create requires to work with JourneyMap."
-versionRange = "[1.21.8-6.0.0,)"
+versionRange = "[1.21.8-6.0.0-beta.52,)"
 ordering = "NONE"
 side = "CLIENT"
 

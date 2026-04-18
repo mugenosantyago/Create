@@ -3,10 +3,12 @@
   "category": "misc",
   "key": {
     "C": {
-      "item": "create:water_wheel"
+      "item": "create:water_wheel",
+      "neoforge:ingredient_type": "item"
     },
     "S": {
-      "tag": "minecraft:planks"
+      "tag": "minecraft:planks",
+      "neoforge:ingredient_type": "tag"
     }
   },
   "pattern": [
