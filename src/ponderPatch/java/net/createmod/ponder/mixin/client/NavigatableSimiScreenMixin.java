@@ -16,21 +16,19 @@ import net.minecraft.client.gui.GuiGraphics;
 @Mixin(NavigatableSimiScreen.class)
 public class NavigatableSimiScreenMixin {
 
-	private boolean catnip$blurAppliedThisFrame = false;
+	// Static field to track blur state across all instances and frames
+	private static long catnip$lastBlurFrame = -1;
 
 	@Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)
 	private void catnip$preventDuplicateBlur(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+		// Get the current frame count from Minecraft's timer
+		long currentFrame = net.minecraft.client.Minecraft.getInstance().getFrameTimeNs();
+
 		// If blur was already applied this frame, skip the background render to prevent second blur
-		if (catnip$blurAppliedThisFrame) {
+		if (catnip$lastBlurFrame == currentFrame) {
 			ci.cancel();
 			return;
 		}
-		catnip$blurAppliedThisFrame = true;
-	}
-
-	@Inject(method = "render", at = @At("HEAD"))
-	private void catnip$resetBlurFlag(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-		// Reset the flag at the start of each frame
-		catnip$blurAppliedThisFrame = false;
+		catnip$lastBlurFrame = currentFrame;
 	}
 }
