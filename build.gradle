@@ -177,7 +177,7 @@ tasks.register("patchPonderJar") {
             "net/createmod/ponder/mixin/client/ItemRendererMixin.class",
             "net/createmod/ponder/client/ItemRendererAccessor.class",
             "net/createmod/ponder/client/RenderSystemAccessor.class",
-            "net/createmod/catnip/gui/NavigatableSimiScreenMixin.class"
+            "net/createmod/ponder/mixin/client/NavigatableSimiScreenMixin.class"
         ]
         def oldItemRendererAccessorPath = "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor.class"
         /** Upstream Catnip references this FQN; loading it from {@code net.createmod.ponder.mixin.*} causes IllegalClassLoadError. */

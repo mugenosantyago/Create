@@ -1,10 +1,11 @@
-package net.createmod.catnip.gui;
+package net.createmod.ponder.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.createmod.catnip.gui.NavigatableSimiScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**
