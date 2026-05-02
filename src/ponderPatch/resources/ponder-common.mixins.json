@@ -12,7 +12,8 @@
     "client.accessor.GameRendererAccessor",
     "client.ItemRendererMixin",
     "client.accessor.RenderTypeAccessor",
-    "client.accessor.ScreenAccessor"
+    "client.accessor.ScreenAccessor",
+    "gui.NavigatableSimiScreenMixin"
   ],
   "mixins": [
     "accessor.BiomeManagerAccessor",
