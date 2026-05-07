@@ -370,7 +370,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
 		.simpleItem()
 		.register();
 
@@ -381,7 +381,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(axeOrPickaxe())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
 		.item(CogwheelBlockItem::new)
 		.build()
 		.register();
@@ -394,7 +394,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.transform(CStress.setNoImpact())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
 			.item(CogwheelBlockItem::new)
 			.build()
 			.register();
@@ -526,7 +526,7 @@ public class AllBlocks {
 		.defaultBlockstate()
 		.transform(CStress.setNoImpact())
 		.transform(displaySource(AllDisplaySources.ITEM_NAMES))
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(BeltModel::new))
 		.clientExtension(() -> () -> new BeltBlock.RenderProperties())
 		.register();
 
@@ -861,7 +861,7 @@ public class AllBlocks {
 		.properties(p -> p.forceSolidOff())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -876,7 +876,7 @@ public class AllBlocks {
 			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
 				(s, f) -> !s.getValue(EncasedPipeBlock.FACING_TO_PROPERTY_MAP.get(f)))))
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withAO))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.transform(EncasingRegistry.addVariantTo(AllBlocks.FLUID_PIPE))
 			.register();
@@ -888,7 +888,7 @@ public class AllBlocks {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.register();
 
@@ -897,7 +897,7 @@ public class AllBlocks {
 		.properties(p -> p.mapColor(MapColor.STONE))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withAO))
 		.transform(CStress.setImpact(4.0))
 		.item()
 		.transform(customItemModel())
@@ -909,7 +909,7 @@ public class AllBlocks {
 			.properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW))
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
 			.item()
 			.transform(customItemModel())
 			.register();
@@ -919,7 +919,7 @@ public class AllBlocks {
 		.transform(pickaxeOnly())
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withAO))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -1540,7 +1540,7 @@ public class AllBlocks {
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.transform(pickaxeOnly())
 		.clientExtension(() -> () -> new TrackBlock.RenderProperties())
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(TrackModel::new))
 		.defaultBlockstate()
 		.tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED)
 		.tag(AllBlockTags.TRACKS.tag)
@@ -1866,7 +1866,7 @@ public class AllBlocks {
 			.properties(p -> p.forceSolidOn())
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(FactoryPanelModel::new))
 			.transform(displaySource(AllDisplaySources.GAUGE_STATUS))
 			.item(FactoryPanelBlockItem::new)
 			.model(() -> AssetLookup::customItemModel)
