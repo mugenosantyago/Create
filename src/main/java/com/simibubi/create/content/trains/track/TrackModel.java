@@ -4,41 +4,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.simibubi.create.foundation.model.BakedQuadHelper;
 
 import net.createmod.catnip.math.VecHelper;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import com.simibubi.create.foundation.client.model.BakedModel;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import com.simibubi.create.foundation.neoforge.compat.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.model.data.ModelData;
+public class TrackModel implements BlockStateModel {
 
-public class TrackModel extends BakedModelWrapper<BakedModel> {
+	private final BlockStateModel wrapped;
 
-	public TrackModel(BakedModel originalModel) {
-		super(originalModel);
+	public TrackModel(BlockStateModel wrapped) {
+		this.wrapped = wrapped;
 	}
 
 	@Override
-	public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-											 @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType renderType) {
-		List<BakedQuad> templateQuads = super.getQuads(state, side, rand, extraData, renderType);
-		if (templateQuads.isEmpty())
-			return templateQuads;
-		if (!extraData.has(TrackBlockEntityTilt.ASCENDING_PROPERTY))
-			return templateQuads;
+	public void collectParts(RandomSource random, List<BlockModelPart> out) {
+		wrapped.collectParts(random, out);
+	}
 
-		double angleIn = extraData.get(TrackBlockEntityTilt.ASCENDING_PROPERTY);
+	@Override
+	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+			List<BlockModelPart> out) {
+		List<BlockModelPart> baseParts = new ArrayList<>();
+		wrapped.collectParts(level, pos, state, random, baseParts);
+
+		if (!state.hasProperty(TrackBlock.SHAPE)) {
+			out.addAll(baseParts);
+			return;
+		}
+
+		BlockEntity be = level.getBlockEntity(pos);
+		if (!(be instanceof TrackBlockEntity trackBE) || trackBE.tilt.smoothingAngle.isEmpty()) {
+			out.addAll(baseParts);
+			return;
+		}
+
+		double angleIn = trackBE.tilt.smoothingAngle.get();
 		double angle = Math.abs(angleIn);
 		boolean flip = angleIn < 0;
 
@@ -53,8 +67,8 @@ public class TrackModel extends BakedModelWrapper<BakedModel> {
 
 		Vec3 verticalOffset = new Vec3(0, -0.25, 0);
 		Vec3 diagonalRotationPoint =
-			(trackShape == TrackShape.ND || trackShape == TrackShape.PD) ? new Vec3((Mth.SQRT_OF_TWO - 1) / 2, 0, 0)
-				: Vec3.ZERO;
+			(trackShape == TrackShape.ND || trackShape == TrackShape.PD)
+				? new Vec3((Mth.SQRT_OF_TWO - 1) / 2, 0, 0) : Vec3.ZERO;
 
 		UnaryOperator<Vec3> transform = v -> {
 			v = v.add(verticalOffset);
@@ -67,17 +81,55 @@ public class TrackModel extends BakedModelWrapper<BakedModel> {
 			return v;
 		};
 
-		int size = templateQuads.size();
-		List<BakedQuad> quads = new ArrayList<>();
-		for (BakedQuad templateQuad : templateQuads) {
-			BakedQuad quad = BakedQuadHelper.clone(templateQuad);
-			int[] vertexData = quad.vertices();
-			for (int j = 0; j < 4; j++)
-				BakedQuadHelper.setXYZ(vertexData, j, transform.apply(BakedQuadHelper.getXYZ(vertexData, j)));
-			quads.add(quad);
+		for (BlockModelPart part : baseParts) {
+			out.add(new TransformedBlockModelPart(part, transform));
+		}
+	}
+
+	@Override
+	public TextureAtlasSprite particleIcon() {
+		return wrapped.particleIcon();
+	}
+
+	private static class TransformedBlockModelPart implements BlockModelPart {
+		private final BlockModelPart wrapped;
+		private final UnaryOperator<Vec3> transform;
+
+		TransformedBlockModelPart(BlockModelPart wrapped, UnaryOperator<Vec3> transform) {
+			this.wrapped = wrapped;
+			this.transform = transform;
 		}
 
-		return quads;
+		@Override
+		public List<BakedQuad> getQuads(Direction side) {
+			List<BakedQuad> quads = wrapped.getQuads(side);
+			if (quads.isEmpty())
+				return quads;
+			List<BakedQuad> result = new ArrayList<>(quads.size());
+			for (BakedQuad quad : quads) {
+				BakedQuad newQuad = BakedQuadHelper.clone(quad);
+				int[] vertexData = newQuad.vertices();
+				for (int j = 0; j < 4; j++)
+					BakedQuadHelper.setXYZ(vertexData, j, transform.apply(BakedQuadHelper.getXYZ(vertexData, j)));
+				result.add(newQuad);
+			}
+			return result;
+		}
+
+		@Override
+		public TextureAtlasSprite particleIcon() {
+			return wrapped.particleIcon();
+		}
+
+		@Override
+		public ChunkSectionLayer getRenderType(BlockState state) {
+			return wrapped.getRenderType(state);
+		}
+
+		@Override
+		public boolean useAmbientOcclusion() {
+			return wrapped.useAmbientOcclusion();
+		}
 	}
 
 }

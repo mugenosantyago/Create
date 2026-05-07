@@ -1,77 +1,58 @@
 package com.simibubi.create.content.kinetics.simpleRelays;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import com.simibubi.create.foundation.model.BlockStateModelUtil;
 
-import net.createmod.ponder.render.VirtualRenderHelper;
+import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import com.simibubi.create.foundation.client.model.BakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.simibubi.create.foundation.neoforge.compat.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.model.data.ModelData;
-import net.neoforged.neoforge.model.data.ModelProperty;
+public class BracketedKineticBlockModel implements BlockStateModel {
 
-public class BracketedKineticBlockModel extends BakedModelWrapper<BakedModel> {
+	private final BlockStateModel wrapped;
 
-	private static final ModelProperty<BracketedModelData> BRACKET_PROPERTY = new ModelProperty<>();
-
-	public BracketedKineticBlockModel(BakedModel template) {
-		super(template);
+	public BracketedKineticBlockModel(BlockStateModel wrapped) {
+		this.wrapped = wrapped;
 	}
 
 	@Override
-	public ModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData blockEntityData) {
-		if (VirtualRenderHelper.isVirtual(blockEntityData))
-			return blockEntityData;
-		BracketedModelData data = new BracketedModelData();
-		BracketedBlockEntityBehaviour attachmentBehaviour =
-			BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
-		if (attachmentBehaviour != null)
-			data.putBracket(attachmentBehaviour.getBracket());
-		return ModelData.builder().with(BRACKET_PROPERTY, data)
-			.build();
+	public void collectParts(RandomSource random, List<BlockModelPart> out) {
+		wrapped.collectParts(random, out);
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData data, RenderType renderType) {
-		if (!VirtualRenderHelper.isVirtual(data)) {
-			if (data.has(BRACKET_PROPERTY)) {
-				BracketedModelData pipeData = data.get(BRACKET_PROPERTY);
-				BlockStateModel bracket = pipeData.getBracket();
-				if (bracket != null)
-					return BlockStateModelUtil.collectQuads(bracket, state, side, rand);
-			}
-			return Collections.emptyList();
+	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+			List<BlockModelPart> out) {
+		if (level instanceof PonderLevel) {
+			wrapped.collectParts(level, pos, state, random, out);
+			return;
 		}
-		return super.getQuads(state, side, rand, data, renderType);
+
+		BracketedBlockEntityBehaviour behaviour =
+			BlockEntityBehaviour.get(level, pos, BracketedBlockEntityBehaviour.TYPE);
+		if (behaviour != null) {
+			BlockState bracketState = behaviour.getBracket();
+			if (bracketState != null) {
+				BlockStateModel bracketModel =
+					Minecraft.getInstance().getBlockRenderer().getBlockModel(bracketState);
+				bracketModel.collectParts(level, pos, bracketState, random, out);
+				return;
+			}
+		}
+		// No bracket: Flywheel handles the visual; render nothing here
 	}
 
-	private static class BracketedModelData {
-		private BlockStateModel bracket;
-
-		public void putBracket(BlockState state) {
-			if (state != null) {
-				this.bracket = Minecraft.getInstance()
-					.getBlockRenderer()
-					.getBlockModel(state);
-			}
-		}
-
-		public BlockStateModel getBracket() {
-			return bracket;
-		}
+	@Override
+	public TextureAtlasSprite particleIcon() {
+		return wrapped.particleIcon();
 	}
 
 }

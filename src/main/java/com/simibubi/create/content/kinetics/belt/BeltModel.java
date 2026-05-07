@@ -7,91 +7,133 @@ import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.AllSpriteShifts;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity.CasingType;
 import com.simibubi.create.foundation.model.BakedQuadHelper;
-import com.simibubi.create.foundation.model.BlockStateModelUtil;
-
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 
 import net.createmod.catnip.render.SpriteShiftEntry;
-import net.minecraft.client.renderer.RenderType;
+import net.createmod.ponder.api.level.PonderLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.simibubi.create.foundation.client.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import com.simibubi.create.foundation.neoforge.compat.client.model.BakedModelWrapper;
-import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 
-public class BeltModel extends BakedModelWrapper<BakedModel> {
+public class BeltModel implements BlockStateModel {
 
 	public static final ModelProperty<CasingType> CASING_PROPERTY = new ModelProperty<>();
 	public static final ModelProperty<Boolean> COVER_PROPERTY = new ModelProperty<>();
 
 	private static final SpriteShiftEntry SPRITE_SHIFT = AllSpriteShifts.ANDESIDE_BELT_CASING;
 
-	public BeltModel(BakedModel template) {
-		super(template);
+	private final BlockStateModel wrapped;
+
+	public BeltModel(BlockStateModel wrapped) {
+		this.wrapped = wrapped;
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleIcon(ModelData data) {
-		if (!data.has(CASING_PROPERTY))
-			return super.getParticleIcon(data);
-		CasingType type = data.get(CASING_PROPERTY);
-		if (type == CasingType.NONE || type == CasingType.BRASS)
-			return super.getParticleIcon(data);
-		return AllSpriteShifts.ANDESITE_CASING.getOriginal();
+	public void collectParts(RandomSource random, List<BlockModelPart> out) {
+		wrapped.collectParts(random, out);
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
-		List<BakedQuad> quads = super.getQuads(state, side, rand, extraData, renderType);
-		if (!extraData.has(CASING_PROPERTY))
-			return quads;
+	public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
+			List<BlockModelPart> out) {
+		List<BlockModelPart> baseParts = new ArrayList<>();
+		wrapped.collectParts(level, pos, state, random, baseParts);
 
-		boolean cover = extraData.get(COVER_PROPERTY);
-		CasingType type = extraData.get(CASING_PROPERTY);
+		if (level instanceof PonderLevel) {
+			out.addAll(baseParts);
+			return;
+		}
+
+		BlockEntity be = level.getBlockEntity(pos);
+		if (!(be instanceof BeltBlockEntity beltBE)) {
+			out.addAll(baseParts);
+			return;
+		}
+
+		CasingType type = beltBE.casing;
+		boolean cover = beltBE.covered;
 		boolean brassCasing = type == CasingType.BRASS;
 
-		if (type == CasingType.NONE || brassCasing && !cover)
-			return quads;
-
-		quads = new ArrayList<>(quads);
+		if (type == CasingType.NONE || brassCasing && !cover) {
+			out.addAll(baseParts);
+			return;
+		}
 
 		if (cover) {
-			boolean alongX = state.getValue(BeltBlock.HORIZONTAL_FACING)
-				.getAxis() == Axis.X;
+			boolean alongX = state.getValue(BeltBlock.HORIZONTAL_FACING).getAxis() == Axis.X;
 			BlockStateModel coverModel =
 				(brassCasing ? alongX ? AllPartialModels.BRASS_BELT_COVER_X : AllPartialModels.BRASS_BELT_COVER_Z
 					: alongX ? AllPartialModels.ANDESITE_BELT_COVER_X : AllPartialModels.ANDESITE_BELT_COVER_Z).get();
-			quads.addAll(BlockStateModelUtil.collectQuads(coverModel, state, side, rand));
+			coverModel.collectParts(level, pos, state, random, out);
 		}
 
-		if (brassCasing)
-			return quads;
+		if (brassCasing) {
+			out.addAll(baseParts);
+			return;
+		}
 
-		for (int i = 0; i < quads.size(); i++) {
-			BakedQuad quad = quads.get(i);
-			TextureAtlasSprite original = quad.sprite();
-			if (original != SPRITE_SHIFT.getOriginal())
-				continue;
+		for (BlockModelPart part : baseParts) {
+			out.add(new SpriteShiftingBlockModelPart(part, SPRITE_SHIFT));
+		}
+	}
 
-			BakedQuad newQuad = BakedQuadHelper.clone(quad);
-			int[] vertexData = newQuad.vertices();
+	@Override
+	public TextureAtlasSprite particleIcon() {
+		return wrapped.particleIcon();
+	}
 
-			for (int vertex = 0; vertex < 4; vertex++) {
-				float u = BakedQuadHelper.getU(vertexData, vertex);
-				float v = BakedQuadHelper.getV(vertexData, vertex);
-				BakedQuadHelper.setU(vertexData, vertex, SPRITE_SHIFT.getTargetU(u));
-				BakedQuadHelper.setV(vertexData, vertex, SPRITE_SHIFT.getTargetV(v));
+	private static class SpriteShiftingBlockModelPart implements BlockModelPart {
+		private final BlockModelPart wrapped;
+		private final SpriteShiftEntry shift;
+
+		SpriteShiftingBlockModelPart(BlockModelPart wrapped, SpriteShiftEntry shift) {
+			this.wrapped = wrapped;
+			this.shift = shift;
+		}
+
+		@Override
+		public List<BakedQuad> getQuads(Direction side) {
+			List<BakedQuad> quads = new ArrayList<>(wrapped.getQuads(side));
+			for (int i = 0; i < quads.size(); i++) {
+				BakedQuad quad = quads.get(i);
+				if (quad.sprite() != shift.getOriginal())
+					continue;
+				BakedQuad newQuad = BakedQuadHelper.clone(quad);
+				int[] vertexData = newQuad.vertices();
+				for (int vertex = 0; vertex < 4; vertex++) {
+					float u = BakedQuadHelper.getU(vertexData, vertex);
+					float v = BakedQuadHelper.getV(vertexData, vertex);
+					BakedQuadHelper.setU(vertexData, vertex, shift.getTargetU(u));
+					BakedQuadHelper.setV(vertexData, vertex, shift.getTargetV(v));
+				}
+				quads.set(i, newQuad);
 			}
-
-			quads.set(i, newQuad);
+			return quads;
 		}
 
-		return quads;
+		@Override
+		public TextureAtlasSprite particleIcon() {
+			return wrapped.particleIcon();
+		}
+
+		@Override
+		public ChunkSectionLayer getRenderType(BlockState state) {
+			return wrapped.getRenderType(state);
+		}
+
+		@Override
+		public boolean useAmbientOcclusion() {
+			return wrapped.useAmbientOcclusion();
+		}
 	}
 
 }
