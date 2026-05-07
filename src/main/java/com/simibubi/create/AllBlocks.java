@@ -951,7 +951,7 @@ public class AllBlocks {
 			.isRedstoneConductor((p1, p2, p3) -> true))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(FluidTankModel::standard))
 		.transform(displaySource(AllDisplaySources.BOILER))
 		.transform(mountedFluidStorage(AllMountedStorageTypes.FLUID_TANK))
 		.onRegister(movementBehaviour(new FluidTankMovementBehavior()))
@@ -969,7 +969,7 @@ public class AllBlocks {
 			.transform(pickaxeOnly())
 			.tag(AllBlockTags.SAFE_NBT.tag)
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(FluidTankModel::creative))
 			.transform(mountedFluidStorage(AllMountedStorageTypes.CREATIVE_FLUID_TANK))
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.item(FluidTankItem::new)
@@ -2220,7 +2220,7 @@ public class AllBlocks {
 			.sound(SoundType.NETHERITE_BLOCK))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel())
+		.onRegister(CreateRegistrate.blockModel(ConnectedGirderModel::new))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -2236,7 +2236,7 @@ public class AllBlocks {
 				.withPool(p.applyExplosionCondition(SHAFT.get(), LootPool.lootPool()
 					.setRolls(ConstantValue.exactly(1.0F))
 					.add(LootItem.lootTableItem(SHAFT.get()))))))
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(ConnectedGirderModel::new))
 			.register();
 
 	public static final BlockEntry<Block> COPYCAT_BASE = REGISTRATE.block("copycat_base", Block::new)
@@ -2252,7 +2252,7 @@ public class AllBlocks {
 		REGISTRATE.block("copycat_step", CopycatStepBlock::new)
 			.properties(p -> p.forceSolidOn())
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(CopycatStepModel::new))
 			.item()
 			.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(CommonMetal.ZINC.ingots),
 				RecipeCategory.BUILDING_BLOCKS, c::get, 4))
@@ -2262,7 +2262,7 @@ public class AllBlocks {
 	public static final BlockEntry<CopycatPanelBlock> COPYCAT_PANEL =
 		REGISTRATE.block("copycat_panel", CopycatPanelBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(CopycatPanelModel::new))
 			.item()
 			.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(CommonMetal.ZINC.ingots),
 				RecipeCategory.BUILDING_BLOCKS, c::get, 4))
@@ -2272,7 +2272,7 @@ public class AllBlocks {
 	public static final BlockEntry<WrenchableDirectionalBlock> COPYCAT_BARS =
 		REGISTRATE.block("copycat_bars", WrenchableDirectionalBlock::new)
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel())
+			.onRegister(CreateRegistrate.blockModel(CopycatBarsModel::new))
 			.register();
 
 	public static final DyedBlockList<SeatBlock> SEATS = new DyedBlockList<>(colour -> {
