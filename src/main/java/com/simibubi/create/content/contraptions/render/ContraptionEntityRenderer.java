@@ -100,8 +100,8 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		var clientContraption = contraption.getOrCreateClientContraptionLazy();
 		RenderedBlocks blocks = clientContraption.getRenderedBlocks();
 
-		// Use a placeholder for 1.21.8 compatibility - tesselateBlock functionality disabled
-		SuperByteBuffer sbb = null;
+		ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
+		sbbBuilder.begin();
 
 		ChunkSectionLayer targetLayer = RENDER_TYPE_TO_CHUNK_LAYER.get(layer);
 
@@ -126,14 +126,14 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 				random.setSeed(randomSeed);
 				poseStack.pushPose();
 				poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-				// tesselateBlock method signature changed in 1.21.8, temporarily disabled
-				// renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbb, true, OverlayTexture.NO_OVERLAY);
+				renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack,
+						_layer -> sbbBuilder, true, OverlayTexture.NO_OVERLAY);
 				poseStack.popPose();
 			}
 		}
 		ModelBlockRenderer.clearCache();
 
-		return sbb;
+		return sbbBuilder.end();
 	}
 
 	@Override
@@ -222,9 +222,10 @@ public class ContraptionEntityRenderer<C extends AbstractContraptionEntity>
 		public AbstractContraptionEntity entity;
 	}
 
+	@SuppressWarnings("deprecation")
 	private static class ThreadLocalObjects {
 		public final PoseStack poseStack = new PoseStack();
 		public final RandomSource random = RandomSource.createNewThreadLocalInstance();
-		// public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.getInstance(); // Temporarily disabled for 1.21.8 compatibility
+		public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.create();
 	}
 }

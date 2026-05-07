@@ -1,22 +1,19 @@
 package com.simibubi.create.foundation.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
 
 import com.simibubi.create.foundation.block.render.CustomBlockModels;
 import com.simibubi.create.foundation.item.render.CustomItemModels;
-import com.simibubi.create.foundation.item.render.CustomRenderedItems;
 
-import net.createmod.catnip.registry.RegisteredObjectsHelper;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.ModelEvent;
 
-// BakedModel and ModelResourceLocation were removed in MC 1.21.8
-// ModelSwapper functionality is stubbed pending full port
 public class ModelSwapper {
 
 	protected CustomBlockModels customBlockModels = new CustomBlockModels();
@@ -31,7 +28,20 @@ public class ModelSwapper {
 	}
 
 	public void registerListeners(IEventBus modEventBus) {
-		// Model baking event registration stubbed for 1.21.8 port
+		modEventBus.addListener(this::onModifyBakingResult);
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
+		Map<BlockState, BlockStateModel> blockStateModels = event.getBakingResult().blockStateModels();
+		customBlockModels.forEach((block, modelFunc) -> {
+			for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+				BlockStateModel original = blockStateModels.get(state);
+				if (original != null) {
+					blockStateModels.put(state, modelFunc.apply(original));
+				}
+			}
+		});
 	}
 
 }

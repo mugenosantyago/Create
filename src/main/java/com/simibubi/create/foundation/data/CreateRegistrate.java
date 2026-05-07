@@ -37,6 +37,7 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.registry.RegisteredObjectsHelper;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.Registry;
@@ -256,13 +257,19 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerCasingConnectivity(entry, consumer));
 	}
 
-	/**
-	 * Placeholder for pre-1.21.8 custom block model registration; the factory is ignored until
-	 * model swapping is reimplemented for the new client model pipeline.
-	 */
-	@SuppressWarnings("unused")
 	public static <T extends Block> NonNullConsumer<? super T> blockModel() {
 		return entry -> {};
+	}
+
+	public static <T extends Block> NonNullConsumer<? super T> blockModel(
+			Function<BlockStateModel, BlockStateModel> factory) {
+		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerBlockModelFunc(entry, factory));
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private static void registerBlockModelFunc(Block entry, Function<BlockStateModel, BlockStateModel> factory) {
+		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
+			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), factory);
 	}
 
 	@SuppressWarnings("unused")
@@ -281,17 +288,10 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		consumer.accept(entry, CreateClient.CASING_CONNECTIVITY);
 	}
 
-	// Model swapping removed in MC 1.21.8 (BakedModel removed)
-	// @OnlyIn(Dist.CLIENT)
-	// private static void registerBlockModel(Block entry, ...) { ... }
-
-	// @OnlyIn(Dist.CLIENT)
-	// private static void registerItemModel(Item entry, ...) { ... }
-
 	@OnlyIn(Dist.CLIENT)
 	private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
 		ConnectedTextureBehaviour behavior = behaviorSupplier.get();
 		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), model -> model);
+			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
 	}
 }

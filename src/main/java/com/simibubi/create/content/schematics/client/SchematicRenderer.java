@@ -92,8 +92,8 @@ public class SchematicRenderer {
 		SchematicLevel renderWorld = schematic;
 		BoundingBox bounds = renderWorld.getBounds();
 
-		// Use a placeholder for 1.21.8 compatibility - tesselateBlock functionality disabled
-		SuperByteBuffer sbb = null;
+		ShadedBlockSbbBuilder sbbBuilder = objects.sbbBuilder;
+		sbbBuilder.begin();
 
 		renderWorld.renderMode = true;
 		ModelBlockRenderer.enableCaching();
@@ -109,11 +109,8 @@ public class SchematicRenderer {
 				if (!parts.isEmpty()) {
 					poseStack.pushPose();
 					poseStack.translate(localPos.getX(), localPos.getY(), localPos.getZ());
-
-					// tesselateBlock method signature changed in 1.21.8, temporarily disabled
-					// renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack, sbb, true,
-					//		OverlayTexture.NO_OVERLAY);
-
+					renderer.tesselateBlock(renderWorld, parts, state, pos, poseStack,
+							_layer -> sbbBuilder, true, OverlayTexture.NO_OVERLAY);
 					poseStack.popPose();
 				}
 			}
@@ -121,7 +118,7 @@ public class SchematicRenderer {
 		ModelBlockRenderer.clearCache();
 		renderWorld.renderMode = false;
 
-		return sbb;
+		return sbbBuilder.end();
 	}
 
 	private static int getLayerCount() {
@@ -132,7 +129,7 @@ public class SchematicRenderer {
 		public final PoseStack poseStack = new PoseStack();
 		public final RandomSource random = RandomSource.createNewThreadLocalInstance();
 		public final BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
-		// public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.getInstance(); // Temporarily disabled for 1.21.8 compatibility
+		public final ShadedBlockSbbBuilder sbbBuilder = ShadedBlockSbbBuilder.create();
 	}
 
 }
