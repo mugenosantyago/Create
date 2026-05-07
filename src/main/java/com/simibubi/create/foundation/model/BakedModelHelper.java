@@ -75,9 +75,19 @@ public class BakedModelHelper {
 	}
 
 	/**
-	 * MC 1.21.8 removed {@code SimpleBakedModel}; sprite-swapped models are not rebuilt here yet.
+	 * MC 1.21.8: Sprite swapping is now handled via Flywheel's BakedModelBuffererMixin.
+	 * This method sets the sprite swapper for the current thread before returning the template.
+	 * The sprite swapper will be applied when the model is buffered by Flywheel.
 	 */
 	public static BlockStateModel generateModel(BlockStateModel template, UnaryOperator<TextureAtlasSprite> spriteSwapper) {
+		try {
+			// Use reflection to call the mixin since it's in the flywheelPatch source set
+			Class<?> mixinClass = Class.forName("dev.engine_room.flywheel.lib.model.baked.BakedModelBuffererMixin");
+			java.lang.reflect.Method setSpriteSwapper = mixinClass.getMethod("setSpriteSwapper", UnaryOperator.class);
+			setSpriteSwapper.invoke(null, spriteSwapper);
+		} catch (Exception e) {
+			// Flywheel mixin not available (e.g., during data gen or when Flywheel is not loaded)
+		}
 		return template;
 	}
 }

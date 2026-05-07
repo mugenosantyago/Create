@@ -417,7 +417,8 @@ tasks.register("patchFlywheelJar") {
             "dev/engine_room/flywheel/backend/mixin/RenderSystemMixin.class",
             "dev/engine_room/flywheel/backend/mixin/GlStateManagerMixin.class",
             "dev/engine_room/flywheel/impl/mixin/LevelRendererMixin.class",
-            "dev/engine_room/flywheel/impl/visualization/storage/LightUpdatedVisualStorageMixin.class"
+            "dev/engine_room/flywheel/impl/visualization/storage/LightUpdatedVisualStorageMixin.class",
+            "dev/engine_room/flywheel/lib/model/baked/BakedModelBuffererMixin.class"
         ]
         flywheelReplacements.each { entry ->
             def f = new File(classRoot, entry)
