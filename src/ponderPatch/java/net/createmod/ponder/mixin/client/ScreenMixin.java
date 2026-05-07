@@ -18,7 +18,7 @@ public class ScreenMixin {
 	@Inject(method = "renderBackground", at = @At("HEAD"), cancellable = true)
 	private void ponder$skipBlurInSimiScreen(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
 		// Check if we're inside AbstractSimiScreen.renderWindowBackground
-		if (net.createmod.ponder.mixin.client.NavigatableSimiScreenMixin.catnip$isInsideRenderWindowBackground()) {
+		if (BlurFlag.isInsideRenderWindowBackground()) {
 			// Skip the blur by cancelling the entire renderBackground call
 			ci.cancel();
 		}

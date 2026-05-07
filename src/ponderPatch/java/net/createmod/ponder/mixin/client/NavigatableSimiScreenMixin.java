@@ -16,20 +16,13 @@ import net.minecraft.client.gui.GuiGraphics;
 @Mixin(AbstractSimiScreen.class)
 public class NavigatableSimiScreenMixin {
 
-	// ThreadLocal flag to track when we're inside renderWindowBackground
-	private static final ThreadLocal<Boolean> INSIDE_RENDER_WINDOW_BG = ThreadLocal.withInitial(() -> false);
-
 	@Inject(method = "renderWindowBackground", at = @At("HEAD"))
 	private void catnip$enterRenderWindowBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-		INSIDE_RENDER_WINDOW_BG.set(true);
+		BlurFlag.setInsideRenderWindowBackground(true);
 	}
 
 	@Inject(method = "renderWindowBackground", at = @At("RETURN"))
 	private void catnip$exitRenderWindowBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-		INSIDE_RENDER_WINDOW_BG.set(false);
-	}
-
-	public static boolean catnip$isInsideRenderWindowBackground() {
-		return INSIDE_RENDER_WINDOW_BG.get();
+		BlurFlag.setInsideRenderWindowBackground(false);
 	}
 }
