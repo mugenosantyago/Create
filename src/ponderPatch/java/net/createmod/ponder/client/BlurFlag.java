@@ -1,4 +1,4 @@
-package net.createmod.ponder.mixin.client;
+package net.createmod.ponder.client;
 
 /**
  * Shared flag for tracking when AbstractSimiScreen is inside renderWindowBackground.

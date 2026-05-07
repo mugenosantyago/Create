@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.createmod.catnip.gui.AbstractSimiScreen;
+import net.createmod.ponder.client.BlurFlag;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**

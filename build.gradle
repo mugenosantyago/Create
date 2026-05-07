@@ -179,14 +179,15 @@ tasks.register("patchPonderJar") {
             "net/createmod/ponder/client/RenderSystemAccessor.class",
             "net/createmod/ponder/mixin/client/NavigatableSimiScreenMixin.class",
             "net/createmod/ponder/mixin/client/ScreenMixin.class",
-            "net/createmod/ponder/mixin/client/BlurFlag.class"
+            "net/createmod/ponder/client/BlurFlag.class"
         ]
         def oldItemRendererAccessorPath = "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor.class"
         /** Upstream Catnip references this FQN; loading it from {@code net.createmod.ponder.mixin.*} causes IllegalClassLoadError. */
         def oldRenderSystemAccessorPath = "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor.class"
         def mixinAccessorRemapper = new SimpleRemapper([
                 "net/createmod/ponder/mixin/client/accessor/ItemRendererAccessor" : "net/createmod/ponder/client/ItemRendererAccessor",
-                "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor" : "net/createmod/ponder/client/RenderSystemAccessor"
+                "net/createmod/ponder/mixin/client/accessor/RenderSystemAccessor" : "net/createmod/ponder/client/RenderSystemAccessor",
+                "net/createmod/ponder/mixin/client/BlurFlag" : "net/createmod/ponder/client/BlurFlag"
         ])
         def remapMixinAccessorRefs = { byte[] bytes ->
             def reader = new ClassReader(bytes)
