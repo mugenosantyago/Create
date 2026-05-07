@@ -13,7 +13,8 @@
     "client.ItemRendererMixin",
     "client.accessor.RenderTypeAccessor",
     "client.accessor.ScreenAccessor",
-    "client.NavigatableSimiScreenMixin"
+    "client.NavigatableSimiScreenMixin",
+    "client.ScreenMixin"
   ],
   "mixins": [
     "accessor.BiomeManagerAccessor",

@@ -11,24 +11,25 @@ import net.minecraft.client.gui.GuiGraphics;
 /**
  * MC 1.21.8: renderBlurredBackground can only be called once per frame.
  * AbstractSimiScreen.renderWindowBackground calls Screen.renderBackground which applies blur.
- * This mixin prevents duplicate blur calls within the same frame.
+ * This mixin prevents duplicate blur calls by setting a flag when inside renderWindowBackground.
  */
 @Mixin(AbstractSimiScreen.class)
 public class NavigatableSimiScreenMixin {
 
-	// Static field to track blur state across all instances and frames
-	private static long catnip$lastBlurFrame = -1;
+	// ThreadLocal flag to track when we're inside renderWindowBackground
+	private static final ThreadLocal<Boolean> INSIDE_RENDER_WINDOW_BG = ThreadLocal.withInitial(() -> false);
 
-	@Inject(method = "renderWindowBackground", at = @At("HEAD"), cancellable = true)
-	private void catnip$preventDuplicateBlur(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-		// Get the current frame count from Minecraft's timer
-		long currentFrame = net.minecraft.client.Minecraft.getInstance().getFrameTimeNs();
+	@Inject(method = "renderWindowBackground", at = @At("HEAD"))
+	private void catnip$enterRenderWindowBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+		INSIDE_RENDER_WINDOW_BG.set(true);
+	}
 
-		// If blur was already applied this frame, skip the window background render to prevent second blur
-		if (catnip$lastBlurFrame == currentFrame) {
-			ci.cancel();
-			return;
-		}
-		catnip$lastBlurFrame = currentFrame;
+	@Inject(method = "renderWindowBackground", at = @At("RETURN"))
+	private void catnip$exitRenderWindowBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+		INSIDE_RENDER_WINDOW_BG.set(false);
+	}
+
+	public static boolean catnip$isInsideRenderWindowBackground() {
+		return INSIDE_RENDER_WINDOW_BG.get();
 	}
 }
