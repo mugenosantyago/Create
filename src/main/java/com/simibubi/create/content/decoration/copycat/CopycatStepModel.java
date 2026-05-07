@@ -11,7 +11,6 @@ import net.createmod.catnip.data.Iterate;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import com.simibubi.create.foundation.client.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -20,8 +19,10 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import net.neoforged.neoforge.model.data.ModelData;
 
+/**
+ * MC 1.21.8: Updated for BlockStateModel API.
+ */
 public class CopycatStepModel extends CopycatModel {
 
 	protected static final Vec3 VEC_Y_3 = new Vec3(0, .75, 0);
@@ -29,22 +30,19 @@ public class CopycatStepModel extends CopycatModel {
 	protected static final Vec3 VEC_Y_N2 = new Vec3(0, -.5, 0);
 	protected static final AABB CUBE_AABB = new AABB(BlockPos.ZERO);
 
-	public CopycatStepModel(BakedModel originalModel) {
+	public CopycatStepModel(BlockStateModel originalModel) {
 		super(originalModel);
 	}
 
 	@Override
-	protected List<BakedQuad> getCroppedQuads(BlockState state, Direction side, RandomSource rand, BlockState material,
-		ModelData wrappedData, RenderType renderType) {
-		Direction facing = state.getOptionalValue(CopycatStepBlock.FACING)
+	protected List<BakedQuad> processQuadsForFace(List<BakedQuad> templateQuads, Direction side,
+			BlockState copycatState, BlockState material) {
+		Direction facing = copycatState.getOptionalValue(CopycatStepBlock.FACING)
 			.orElse(Direction.SOUTH);
-		boolean upperHalf = state.getOptionalValue(CopycatStepBlock.HALF)
+		boolean upperHalf = copycatState.getOptionalValue(CopycatStepBlock.HALF)
 			.orElse(Half.BOTTOM) == Half.TOP;
 
-		BlockStateModel model = getModelOf(material);
-		List<BakedQuad> templateQuads = BlockStateModelUtil.collectQuads(model, material, side, rand);
 		int size = templateQuads.size();
-
 		List<BakedQuad> quads = new ArrayList<>();
 
 		Vec3 normal = Vec3.atLowerCornerOf(facing.getUnitVec3i());

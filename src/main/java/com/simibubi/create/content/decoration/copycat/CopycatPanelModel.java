@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import com.simibubi.create.foundation.client.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -23,40 +22,42 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import net.neoforged.neoforge.model.data.ModelData;
 
+/**
+ * MC 1.21.8: Updated for BlockStateModel API.
+ */
 public class CopycatPanelModel extends CopycatModel {
 
 	protected static final AABB CUBE_AABB = new AABB(BlockPos.ZERO);
 
-	public CopycatPanelModel(BakedModel originalModel) {
+	public CopycatPanelModel(BlockStateModel originalModel) {
 		super(originalModel);
 	}
 
 	@Override
-	protected List<BakedQuad> getCroppedQuads(BlockState state, Direction side, RandomSource rand, BlockState material,
-		ModelData wrappedData, RenderType renderType) {
-		Direction facing = state.getOptionalValue(CopycatPanelBlock.FACING)
+	protected List<BakedQuad> processQuadsForFace(List<BakedQuad> templateQuads, Direction side,
+			BlockState copycatState, BlockState material) {
+		Direction facing = copycatState.getOptionalValue(CopycatPanelBlock.FACING)
 			.orElse(Direction.UP);
-		BlockRenderDispatcher blockRenderer = Minecraft.getInstance()
-			.getBlockRenderer();
 
+		BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+
+		// Handle special cases
 		BlockState specialCopycatModelState = null;
 		if (CopycatSpecialCases.isBarsMaterial(material))
 			specialCopycatModelState = AllBlocks.COPYCAT_BARS.getDefaultState();
-		if (CopycatSpecialCases.isTrapdoorMaterial(material))
-			return BlockStateModelUtil.collectQuads(blockRenderer.getBlockModel(material), material, side, rand);
-
-		if (specialCopycatModelState != null) {
-			BlockStateModel barsModel =
-				blockRenderer.getBlockModel(specialCopycatModelState.setValue(DirectionalBlock.FACING, facing));
-			return BlockStateModelUtil.collectQuads(barsModel, material, side, rand);
+		if (CopycatSpecialCases.isTrapdoorMaterial(material)) {
+			BlockStateModel model = blockRenderer.getBlockModel(material);
+			return BlockStateModelUtil.collectQuads(model, material, side, null);
 		}
 
-		BlockStateModel model = getModelOf(material);
-		List<BakedQuad> templateQuads = BlockStateModelUtil.collectQuads(model, material, side, rand);
-		int size = templateQuads.size();
+		if (specialCopycatModelState != null) {
+			BlockStateModel barsModel = blockRenderer.getBlockModel(
+				specialCopycatModelState.setValue(DirectionalBlock.FACING, facing));
+			return BlockStateModelUtil.collectQuads(barsModel, material, side, null);
+		}
 
+		int size = templateQuads.size();
 		List<BakedQuad> quads = new ArrayList<>();
 
 		Vec3 normal = Vec3.atLowerCornerOf(facing.getUnitVec3i());
@@ -82,7 +83,6 @@ public class CopycatPanelModel extends CopycatModel {
 				quads.add(BakedQuadHelper.cloneWithCustomGeometry(quad,
 					BakedModelHelper.cropAndMove(quad.vertices(), quad.sprite(), bb, normalScaledN13)));
 			}
-
 		}
 
 		return quads;

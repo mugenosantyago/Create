@@ -11,38 +11,33 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import com.simibubi.create.foundation.client.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.neoforged.neoforge.model.data.ModelData;
 
+/**
+ * MC 1.21.8: Updated for BlockStateModel API.
+ */
 public class CopycatBarsModel extends CopycatModel {
 
-	public CopycatBarsModel(BakedModel originalModel) {
+	public CopycatBarsModel(BlockStateModel originalModel) {
 		super(originalModel);
 	}
 
 	@Override
-	public boolean useAmbientOcclusion() {
-		return false;
-	}
-
-	@Override
-	protected List<BakedQuad> getCroppedQuads(BlockState state, Direction side, RandomSource rand, BlockState material,
-											  ModelData wrappedData, RenderType renderType) {
+	protected List<BakedQuad> processQuadsForFace(List<BakedQuad> templateQuads, Direction side,
+			BlockState copycatState, BlockState material) {
 		BlockStateModel model = getModelOf(material);
-		List<BakedQuad> superQuads = wrapped.getQuads(state, side, rand, wrappedData, renderType);
 		TextureAtlasSprite targetSprite = model.particleIcon();
 
-		boolean vertical = state.getValue(CopycatPanelBlock.FACING)
+		boolean vertical = copycatState.getValue(CopycatPanelBlock.FACING)
 			.getAxis() == Axis.Y;
 
 		if (side != null && (vertical || side.getAxis() == Axis.Y)) {
-			List<BakedQuad> templateQuads = BlockStateModelUtil.collectQuads(model, material, null, rand);
-			for (BakedQuad quad : templateQuads) {
+			List<BakedQuad> materialQuads = BlockStateModelUtil.collectQuads(model, material, null, null);
+			for (BakedQuad quad : materialQuads) {
 				if (quad.direction() != Direction.UP)
 					continue;
 				targetSprite = quad.sprite();
@@ -51,11 +46,11 @@ public class CopycatBarsModel extends CopycatModel {
 		}
 
 		if (targetSprite == null)
-			return superQuads;
+			return templateQuads;
 
 		List<BakedQuad> quads = new ArrayList<>();
 
-		for (BakedQuad quad : superQuads) {
+		for (BakedQuad quad : templateQuads) {
 			TextureAtlasSprite original = quad.sprite();
 			BakedQuad newQuad = BakedQuadHelper.clone(quad);
 			int[] vertexData = newQuad.vertices();
