@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.simibubi.create.CreateClient;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.api.contraption.storage.fluid.MountedFluidStorageType;
@@ -21,7 +20,6 @@ import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.api.registry.registrate.SimpleBuilder;
 import com.simibubi.create.content.decoration.encasing.CasingConnectivity;
 import com.simibubi.create.content.fluids.VirtualFluid;
-import com.simibubi.create.foundation.block.connected.CTModel;
 import com.simibubi.create.foundation.block.connected.ConnectedTextureBehaviour;
 import com.simibubi.create.foundation.item.TooltipModifier;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -273,13 +271,36 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 	@OnlyIn(Dist.CLIENT)
 	private static <T extends Block> void registerCasingConnectivity(T entry,
 																	 BiConsumer<T, CasingConnectivity> consumer) {
-		consumer.accept(entry, CreateClient.CASING_CONNECTIVITY);
+		try {
+			Class<?> createClientClass = Class.forName("com.simibubi.create.CreateClient");
+			Object casingConnectivity = createClientClass.getField("CASING_CONNECTIVITY").get(null);
+			consumer.accept(entry, (CasingConnectivity) casingConnectivity);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to access CASING_CONNECTIVITY", e);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	private static void registerCTBehviour(Block entry, Supplier<ConnectedTextureBehaviour> behaviorSupplier) {
-		ConnectedTextureBehaviour behavior = behaviorSupplier.get();
-		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), model -> new CTModel(model, behavior));
+		try {
+			ConnectedTextureBehaviour behavior = behaviorSupplier.get();
+			Class<?> createClientClass = Class.forName("com.simibubi.create.CreateClient");
+			Object modelSwapper = createClientClass.getField("MODEL_SWAPPER").get(null);
+			Class<?> modelSwapperClass = modelSwapper.getClass();
+			Object customBlockModels = modelSwapperClass.getMethod("getCustomBlockModels").invoke(modelSwapper);
+			Class<?> customBlockModelsClass = customBlockModels.getClass();
+			Class<?> ctModelClass = Class.forName("com.simibubi.create.foundation.block.connected.CTModel");
+			customBlockModelsClass.getMethod("register", ResourceLocation.class, Function.class)
+				.invoke(customBlockModels, RegisteredObjectsHelper.getKeyOrThrow(entry), (Function<?, ?>) model -> {
+					try {
+						return ctModelClass.getConstructor(Class.forName("net.minecraft.client.renderer.block.model.BlockStateModel"), ConnectedTextureBehaviour.class)
+							.newInstance(model, behavior);
+					} catch (Exception e) {
+						throw new RuntimeException("Failed to create CTModel", e);
+					}
+				});
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to register CT behaviour", e);
+		}
 	}
 }
