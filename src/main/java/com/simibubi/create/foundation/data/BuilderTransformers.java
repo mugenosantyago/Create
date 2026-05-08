@@ -417,7 +417,7 @@ public class BuilderTransformers {
 			ItemBuilder<TableClothBlockItem, BlockBuilder<B, P>> item = b.initialProperties(initialProps)
 				.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 				.defaultBlockstate()
-				.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) TableClothModel::new))
+				.onRegister(CreateRegistrate.blockModel(TableClothModel::new))
 				.tag(AllBlockTags.TABLE_CLOTHS.tag, soundTag)
 				.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.create.table_cloth"))
 				.item(TableClothBlockItem::new);
