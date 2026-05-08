@@ -100,7 +100,7 @@ public class CreateClient {
 		POTATO_CANNON_RENDER_HANDLER.registerListeners(neoEventBus);
 
 		Mods.FTBLIBRARY.executeIfInstalled(() -> () -> FTBIntegration.init(modEventBus, neoEventBus));
-		Mods.SODIUM.executeIfInstalled(() -> () -> SodiumCompat.init(modEventBus, neoEventBus));
+		// Mods.SODIUM.executeIfInstalled(() -> () -> SodiumCompat.init(modEventBus, neoEventBus));
 		PojavChecker.init();
 	}
 
