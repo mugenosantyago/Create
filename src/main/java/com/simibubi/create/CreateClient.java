@@ -1,11 +1,12 @@
 package com.simibubi.create;
 
+import com.simibubi.create.AllBlockEntityTypes;
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.Mods;
 import com.simibubi.create.content.decoration.copycat.CopycatBlockColors;
 import com.simibubi.create.content.legacy.ChromaticCompoundColor;
 import com.simibubi.create.compat.ftb.FTBIntegration;
 import com.simibubi.create.compat.pojav.PojavChecker;
-import com.simibubi.create.compat.sodium.SodiumCompat;
 import com.simibubi.create.content.contraptions.glue.SuperGlueSelectionHandler;
 import com.simibubi.create.content.contraptions.render.ContraptionEntityRenderer;
 import com.simibubi.create.content.decoration.encasing.CasingConnectivity;
@@ -15,6 +16,7 @@ import com.simibubi.create.content.equipment.zapper.ZapperRenderHandler;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
 import com.simibubi.create.content.kinetics.waterwheel.WaterWheelRenderer;
+import com.simibubi.create.content.kinetics.waterwheel.WaterWheelVisual;
 import com.simibubi.create.content.schematics.client.ClientSchematicLoader;
 import com.simibubi.create.content.schematics.client.SchematicAndQuillHandler;
 import com.simibubi.create.content.schematics.client.SchematicHandler;
@@ -46,6 +48,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
+import dev.engine_room.flywheel.api.instance.Instance;
+import dev.engine_room.flywheel.api.model.Model;
+import dev.engine_room.flywheel.api.visualization.VisualizationContext;
+import dev.engine_room.flywheel.lib.model.baked.BakedModelBuilder;
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -136,6 +143,7 @@ public class CreateClient {
 			Mods.PONDER.executeIfInstalled(() -> () -> PonderIndex.addPlugin(new CreatePonderPlugin()));
 
 			setupConfigUIBackground();
+			registerWaterWheelVisuals();
 		});
 	}
 
@@ -157,6 +165,15 @@ public class CreateClient {
 				.withButtonLabels("Client Settings", "World Generation Settings", "Gameplay Settings")
 				.withSpecs(AllConfigs.client().specification, AllConfigs.common().specification, AllConfigs.server().specification)
 		);
+	}
+
+	private static void registerWaterWheelVisuals() {
+		SimpleBlockEntityVisualizer.builder(AllBlockEntityTypes.WATER_WHEEL.get())
+			.factory(WaterWheelVisual::standard)
+			.apply();
+		SimpleBlockEntityVisualizer.builder(AllBlockEntityTypes.LARGE_WATER_WHEEL.get())
+			.factory(WaterWheelVisual::large)
+			.apply();
 	}
 
 	public static void invalidateRenderers() {
