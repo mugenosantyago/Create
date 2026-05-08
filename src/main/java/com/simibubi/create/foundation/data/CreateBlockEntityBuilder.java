@@ -96,8 +96,10 @@ public class CreateBlockEntityBuilder<T extends BlockEntity, P> extends BlockEnt
 			CatnipServices.PLATFORM.executeOnClientOnly(() -> this::registerVisualizer);
 		}
 
-		this.visualFactory = visualFactory;
-		this.renderNormally = renderNormally;
+		CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> {
+			this.visualFactory = visualFactory;
+			this.renderNormally = renderNormally;
+		});
 
 		return this;
 	}
