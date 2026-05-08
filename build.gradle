@@ -439,6 +439,16 @@ tasks.register("patchFlywheelJar") {
                     zos.putNextEntry(zosEntry)
                     if (flywheelReplacements.contains(e.name)) {
                         new File(classRoot, e.name).withInputStream { stream -> stream.transferTo(zos) }
+                    } else if (e.name == "META-INF/neoforge.mods.toml") {
+                        // Remove [[mixins]] blocks — FML 9.0.18 can't parse the array-of-tables format.
+                        // Flywheel mixin configs are declared via MixinConfigs in MANIFEST.MF instead.
+                        def toml = zip.getInputStream(e).text
+                        def patched = toml.replaceAll(/(?m)^\[\[mixins\]\]\r?\nconfig\s*=\s*"[^"]+"\r?\n/, "")
+                        zos.write(patched.bytes)
+                    } else if (e.name == "META-INF/MANIFEST.MF") {
+                        def manifest = zip.getInputStream(e).text.stripTrailing()
+                        manifest += "\nMixinConfigs: flywheel.backend.mixins.json,flywheel.impl.mixins.json,flywheel.impl.neoforge.mixins.json\n"
+                        zos.write(manifest.bytes)
                     } else {
                         zip.getInputStream(e).transferTo(zos)
                     }
