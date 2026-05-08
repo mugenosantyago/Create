@@ -68,7 +68,8 @@
     "client.LevelRendererMixin",
     "compat.xaeros.XaeroFullscreenMapAccessor",
     "compat.xaeros.XaeroFullscreenMapMixin",
-    "compat.xaeros.XaeroPauseScreenOverrideMixin"
+    "compat.xaeros.XaeroPauseScreenOverrideMixin",
+    "client.NeoforgeMeshEmitterMixin"
   ],
   "injectors": {
     "defaultRequire": 1
