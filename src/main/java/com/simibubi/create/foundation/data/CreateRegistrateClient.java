@@ -1,5 +1,6 @@
 package com.simibubi.create.foundation.data;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
@@ -21,15 +22,32 @@ public class CreateRegistrateClient {
 			String methodName = parts.length > 1 ? parts[1] : "new";
 			
 			Class<?> factoryClass = Class.forName(className);
-			Method method = factoryClass.getMethod(methodName);
-			Object factory = method.invoke(null);
+			Function<BlockStateModel, BlockStateModel> factory;
 			
-			if (factory == null) {
-				throw new RuntimeException("Factory method returned null in " + className + "." + methodName);
+			if (methodName.equals("new")) {
+				// Handle constructor reference
+				Constructor<?> constructor = factoryClass.getConstructor(BlockStateModel.class);
+				factory = model -> {
+					try {
+						return (BlockStateModel) constructor.newInstance(model);
+					} catch (Exception e) {
+						throw new RuntimeException("Failed to instantiate " + className, e);
+					}
+				};
+			} else {
+				// Handle static method reference
+				Method method = factoryClass.getMethod(methodName);
+				Object factoryObj = method.invoke(null);
+				
+				if (factoryObj == null) {
+					throw new RuntimeException("Factory method returned null in " + className + "." + methodName);
+				}
+				
+				factory = (Function<BlockStateModel, BlockStateModel>) factoryObj;
 			}
 			
 			CreateClient.MODEL_SWAPPER.getCustomBlockModels()
-				.register(RegisteredObjectsHelper.getKeyOrThrow(entry), (Function<BlockStateModel, BlockStateModel>) factory);
+				.register(RegisteredObjectsHelper.getKeyOrThrow(entry), factory);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to register block model for " + factorySpec, e);
 		}
