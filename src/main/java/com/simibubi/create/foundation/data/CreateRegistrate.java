@@ -36,6 +36,7 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.registry.RegisteredObjectsHelper;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -256,8 +257,8 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 		return entry -> {};
 	}
 
-	public static <T extends Block> NonNullConsumer<? super T> blockModel(java.util.function.Supplier<?> factory) {
-		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> CreateRegistrateClient.registerBlockModel(entry, factory.get()));
+	public static <T extends Block> NonNullConsumer<? super T> blockModel(Function<BlockStateModel, BlockStateModel> factory) {
+		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> CreateRegistrateClient.registerBlockModel(entry, factory));
 	}
 
 	@SuppressWarnings("unused")
