@@ -364,6 +364,16 @@ tasks.register("patchPonderJar") {
                             bytes = remapMixinAccessorRefs(bytes)
                         }
                         zos.write(bytes)
+                    } else if (e.name == "META-INF/neoforge.mods.toml") {
+                        // Remove [[mixins]] blocks — FML 9.0.18 can't parse the array-of-tables format.
+                        // Ponder mixin configs are declared via MixinConfigs in MANIFEST.MF instead.
+                        def toml = zip.getInputStream(e).text
+                        def patched = toml.replaceAll(/(?m)^\[\[mixins\]\]\r?\nconfig\s*=\s*"[^"]+"\r?\n/, "")
+                        zos.write(patched.bytes)
+                    } else if (e.name == "META-INF/MANIFEST.MF") {
+                        def manifest = zip.getInputStream(e).text.stripTrailing()
+                        manifest += "\nMixinConfigs: ponder.mixins.json,ponder-common.mixins.json\n"
+                        zos.write(manifest.bytes)
                     } else if (e.name == "ponder-common.mixins.json") {
                         patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
                     } else if (e.name.endsWith(".class")) {
