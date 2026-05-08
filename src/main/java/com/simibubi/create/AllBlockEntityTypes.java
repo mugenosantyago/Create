@@ -147,6 +147,7 @@ import com.simibubi.create.content.kinetics.turntable.TurntableBlockEntity;
 import com.simibubi.create.content.kinetics.waterwheel.LargeWaterWheelBlockEntity;
 import com.simibubi.create.content.kinetics.waterwheel.WaterWheelBlockEntity;
 import com.simibubi.create.content.kinetics.waterwheel.WaterWheelRenderer;
+import com.simibubi.create.content.kinetics.waterwheel.WaterWheelVisual;
 import com.simibubi.create.content.logistics.chute.ChuteBlockEntity;
 import com.simibubi.create.content.logistics.chute.ChuteRenderer;
 import com.simibubi.create.content.logistics.chute.SmartChuteBlockEntity;
@@ -705,12 +706,14 @@ public class AllBlockEntityTypes {
 
 	public static final BlockEntityEntry<WaterWheelBlockEntity> WATER_WHEEL = REGISTRATE
 		.blockEntity("water_wheel", WaterWheelBlockEntity::new)
+		.visual(() -> WaterWheelVisual::standard)
 		.validBlocks(AllBlocks.WATER_WHEEL)
 		.renderer(() -> WaterWheelRenderer::standard)
 		.register();
  
 	public static final BlockEntityEntry<LargeWaterWheelBlockEntity> LARGE_WATER_WHEEL = REGISTRATE
 		.blockEntity("large_water_wheel", LargeWaterWheelBlockEntity::new)
+		.visual(() -> WaterWheelVisual::large)
 		.validBlocks(AllBlocks.LARGE_WATER_WHEEL)
 		.renderer(() -> WaterWheelRenderer::large)
 		.register();

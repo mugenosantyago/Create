@@ -18,7 +18,7 @@ public class NeoforgeMeshEmitterMixin {
 		return BakedModelBuffererMixin.swapSpriteInQuad(quad);
 	}
 
-	@ModifyVariable(method = "putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFFII[Z)V", at = @At("HEAD"), argsOnly = true)
+	@ModifyVariable(method = "putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFFF[IIZ)V", at = @At("HEAD"), argsOnly = true)
 	private BakedQuad flywheel$swapSpriteInQuad2(BakedQuad quad) {
 		return BakedModelBuffererMixin.swapSpriteInQuad(quad);
 	}
