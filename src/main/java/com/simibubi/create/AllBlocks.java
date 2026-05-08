@@ -370,7 +370,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) BracketedKineticBlockModel::new))
 		.simpleItem()
 		.register();
 
@@ -381,7 +381,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(axeOrPickaxe())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) BracketedKineticBlockModel::new))
 		.item(CogwheelBlockItem::new)
 		.build()
 		.register();
@@ -394,7 +394,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.transform(CStress.setNoImpact())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) BracketedKineticBlockModel::new))
 			.item(CogwheelBlockItem::new)
 			.build()
 			.register();
@@ -526,7 +526,7 @@ public class AllBlocks {
 		.defaultBlockstate()
 		.transform(CStress.setNoImpact())
 		.transform(displaySource(AllDisplaySources.ITEM_NAMES))
-		.onRegister(CreateRegistrate.blockModel(BeltModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) BeltModel::new))
 		.clientExtension(() -> () -> new BeltBlock.RenderProperties())
 		.register();
 
@@ -861,7 +861,7 @@ public class AllBlocks {
 		.properties(p -> p.forceSolidOff())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
+		.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) PipeAttachmentModel::withoutAO))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -888,7 +888,7 @@ public class AllBlocks {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
+			.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) PipeAttachmentModel::withoutAO))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.register();
 
@@ -909,7 +909,7 @@ public class AllBlocks {
 			.properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW))
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
+			.onRegister(CreateRegistrate.blockModel(() -> (java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel>) PipeAttachmentModel::withoutAO))
 			.item()
 			.transform(customItemModel())
 			.register();

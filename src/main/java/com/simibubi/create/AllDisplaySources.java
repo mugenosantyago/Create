@@ -45,20 +45,20 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class AllDisplaySources {
-	private static final CreateRegistrate REGISTRATE = net.neoforged.api.distmarker.Dist.CLIENT == net.neoforged.fml.loading.FMLEnvironment.dist ? Create.registrate() : null;
+	private static final CreateRegistrate REGISTRATE = Create.registrate();
 
-	public static final RegistryEntry<DisplaySource, DeathCounterDisplaySource> DEATH_COUNT = REGISTRATE != null ? REGISTRATE.displaySource("death_count", DeathCounterDisplaySource::new)
+	public static final RegistryEntry<DisplaySource, DeathCounterDisplaySource> DEATH_COUNT = REGISTRATE.displaySource("death_count", DeathCounterDisplaySource::new)
 		.associate(Blocks.RESPAWN_ANCHOR)
-		.register() : null;
-	public static final RegistryEntry<DisplaySource, ScoreboardDisplaySource> SCOREBOARD = REGISTRATE != null ? REGISTRATE.displaySource("scoreboard", ScoreboardDisplaySource::new)
+		.register();
+	public static final RegistryEntry<DisplaySource, ScoreboardDisplaySource> SCOREBOARD = REGISTRATE.displaySource("scoreboard", ScoreboardDisplaySource::new)
 		.associate(BlockEntityType.COMMAND_BLOCK)
-		.register() : null;
-	public static final RegistryEntry<DisplaySource, EnchantPowerDisplaySource> ENCHANT_POWER = REGISTRATE != null ? REGISTRATE.displaySource("enchant_power", EnchantPowerDisplaySource::new)
+		.register();
+	public static final RegistryEntry<DisplaySource, EnchantPowerDisplaySource> ENCHANT_POWER = REGISTRATE.displaySource("enchant_power", EnchantPowerDisplaySource::new)
 		.associate(BlockEntityType.ENCHANTING_TABLE)
-		.register() : null;
-	public static final RegistryEntry<DisplaySource, RedstonePowerDisplaySource> REDSTONE_POWER = REGISTRATE != null ? REGISTRATE.displaySource("redstone_power", RedstonePowerDisplaySource::new)
+		.register();
+	public static final RegistryEntry<DisplaySource, RedstonePowerDisplaySource> REDSTONE_POWER = REGISTRATE.displaySource("redstone_power", RedstonePowerDisplaySource::new)
 		.associate(Blocks.TARGET)
-		.register() : null;
+		.register();
 
 	public static final RegistryEntry<DisplaySource, NixieTubeDisplaySource> NIXIE_TUBE = simple("nixie_tube", NixieTubeDisplaySource::new);
 	public static final RegistryEntry<DisplaySource, ItemNameDisplaySource> ITEM_NAMES = simple("item_names", ItemNameDisplaySource::new);
@@ -87,7 +87,7 @@ public class AllDisplaySources {
 	public static final RegistryEntry<DisplaySource, FluidListDisplaySource> LIST_FLUIDS = simple("list_fluids", FluidListDisplaySource::new);
 	public static final RegistryEntry<DisplaySource, PackageAddressDisplaySource> READ_PACKAGE_ADDRESS = simple("read_package_address", PackageAddressDisplaySource::new);
 
-	public static final RegistryEntry<DisplaySource, ComputerDisplaySource> COMPUTER = REGISTRATE != null ? REGISTRATE.displaySource("computer", ComputerDisplaySource::new)
+	public static final RegistryEntry<DisplaySource, ComputerDisplaySource> COMPUTER = REGISTRATE.displaySource("computer", ComputerDisplaySource::new)
 		.onRegisterAfter(Registries.BLOCK_ENTITY_TYPE, source -> {
 			if (!Mods.COMPUTERCRAFT.isLoaded())
 				return;
@@ -102,9 +102,9 @@ public class AllDisplaySources {
 				}
 			}
 		})
-		.register() : null;
+		.register();
 
-	public static final Map<String, RegistryEntry<DisplaySource, ? extends DisplaySource>> LEGACY_NAMES = REGISTRATE != null ? Util.make(() -> {
+	public static final Map<String, RegistryEntry<DisplaySource, ? extends DisplaySource>> LEGACY_NAMES = Util.make(() -> {
 		Map<String, RegistryEntry<DisplaySource, ? extends DisplaySource>> map = new HashMap<>();
 		map.put("death_count_display_source", DEATH_COUNT);
 		map.put("scoreboard_display_source", SCOREBOARD);
@@ -148,10 +148,10 @@ public class AllDisplaySources {
 		map.put("computer_display_source", COMPUTER);
 
 		return map;
-	}) : Map.of();
+	});
 
 	private static <T extends DisplaySource> RegistryEntry<DisplaySource, T> simple(String name, Supplier<T> supplier) {
-		return REGISTRATE != null ? REGISTRATE.displaySource(name, supplier).register() : null;
+		return REGISTRATE.displaySource(name, supplier).register();
 	}
 
 	public static void register() {
