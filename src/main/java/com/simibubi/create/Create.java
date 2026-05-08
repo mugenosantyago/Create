@@ -92,12 +92,15 @@ public class Create {
 
 	private static CreateRegistrate getRegistrate() {
 		if (REGISTRATE == null) {
-			REGISTRATE = CreateRegistrate.create(ID)
-				.defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
-				.setTooltipModifierFactory(item ->
-					new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
-						.andThen(TooltipModifier.mapNull(KineticStats.create(item)))
-				);
+			// Only load CreateRegistrate on the client side to avoid client-only class loading on the server
+			if (net.neoforged.api.distmarker.Dist.CLIENT == net.neoforged.fml.loading.FMLEnvironment.dist) {
+				REGISTRATE = CreateRegistrate.create(ID)
+					.defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
+					.setTooltipModifierFactory(item ->
+						new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
+							.andThen(TooltipModifier.mapNull(KineticStats.create(item)))
+					);
+			}
 		}
 		return REGISTRATE;
 	}
@@ -117,7 +120,10 @@ public class Create {
 		LOGGER.info("{} {} initializing! Commit hash: {}", NAME, CreateBuildInfo.VERSION, CreateBuildInfo.GIT_COMMIT);
 		ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
-		getRegistrate().registerEventListeners(modEventBus);
+		// Only register event listeners on the client side to avoid loading CreateRegistrate (which has client-only imports) on the server
+		if (net.neoforged.api.distmarker.Dist.CLIENT == net.neoforged.fml.loading.FMLEnvironment.dist) {
+			getRegistrate().registerEventListeners(modEventBus);
+		}
 
 		AllSoundEvents.prepare();
 		AllCreativeModeTabs.register(modEventBus);
