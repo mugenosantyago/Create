@@ -370,7 +370,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simple.relays.BracketedKineticBlockModel"))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel"))
 		.simpleItem()
 		.register();
 
@@ -381,7 +381,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(axeOrPickaxe())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simple.relays.BracketedKineticBlockModel"))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel"))
 		.item(CogwheelBlockItem::new)
 		.build()
 		.register();
@@ -394,7 +394,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.transform(CStress.setNoImpact())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simple.relays.BracketedKineticBlockModel"))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel"))
 			.item(CogwheelBlockItem::new)
 			.build()
 			.register();
