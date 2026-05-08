@@ -117,7 +117,7 @@ public class Create {
 		LOGGER.info("{} {} initializing! Commit hash: {}", NAME, CreateBuildInfo.VERSION, CreateBuildInfo.GIT_COMMIT);
 		ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
-		REGISTRATE.registerEventListeners(modEventBus);
+		getRegistrate().registerEventListeners(modEventBus);
 
 		AllSoundEvents.prepare();
 		AllCreativeModeTabs.register(modEventBus);

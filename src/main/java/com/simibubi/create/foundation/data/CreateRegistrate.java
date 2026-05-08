@@ -37,7 +37,6 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.registry.RegisteredObjectsHelper;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -259,12 +258,12 @@ public class CreateRegistrate extends AbstractRegistrate<CreateRegistrate> {
 	}
 
 	public static <T extends Block> NonNullConsumer<? super T> blockModel(
-			Function<BlockStateModel, BlockStateModel> factory) {
+			java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel> factory) {
 		return entry -> CatnipServices.PLATFORM.executeOnClientOnly(() -> () -> registerBlockModelFunc(entry, factory));
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static void registerBlockModelFunc(Block entry, Function<BlockStateModel, BlockStateModel> factory) {
+	private static void registerBlockModelFunc(Block entry, java.util.function.Function<net.minecraft.client.renderer.block.model.BlockStateModel, net.minecraft.client.renderer.block.model.BlockStateModel> factory) {
 		CreateClient.MODEL_SWAPPER.getCustomBlockModels()
 			.register(RegisteredObjectsHelper.getKeyOrThrow(entry), factory);
 	}
