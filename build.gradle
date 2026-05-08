@@ -372,7 +372,7 @@ tasks.register("patchPonderJar") {
                         zos.write(patched.bytes)
                     } else if (e.name == "META-INF/MANIFEST.MF") {
                         def manifest = zip.getInputStream(e).text.stripTrailing()
-                        manifest += "\nMixinConfigs: ponder.mixins.json,ponder-common.mixins.json\n"
+                        manifest += "\nMixinConfigs: ponder.mixins.json,\n ponder-common.mixins.json\n"
                         zos.write(manifest.bytes)
                     } else if (e.name == "ponder-common.mixins.json") {
                         patchedMixinsJson.asFile.withInputStream { stream -> stream.transferTo(zos) }
@@ -457,7 +457,7 @@ tasks.register("patchFlywheelJar") {
                         zos.write(patched.bytes)
                     } else if (e.name == "META-INF/MANIFEST.MF") {
                         def manifest = zip.getInputStream(e).text.stripTrailing()
-                        manifest += "\nMixinConfigs: flywheel.backend.mixins.json,flywheel.impl.mixins.json,flywheel.impl.neoforge.mixins.json\n"
+                        manifest += "\nMixinConfigs: flywheel.backend.mixins.json,\n flywheel.impl.mixins.json,\n flywheel.impl.neoforge.mixins.json\n"
                         zos.write(manifest.bytes)
                     } else {
                         zip.getInputStream(e).transferTo(zos)
