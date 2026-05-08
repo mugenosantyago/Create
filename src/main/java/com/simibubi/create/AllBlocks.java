@@ -1866,7 +1866,7 @@ public class AllBlocks {
 			.properties(p -> p.forceSolidOn())
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.gauge.FactoryPanelModel"))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.logistics.factoryBoard.FactoryPanelModel"))
 			.transform(displaySource(AllDisplaySources.GAUGE_STATUS))
 			.item(FactoryPanelBlockItem::new)
 			.model(() -> AssetLookup::customItemModel)
