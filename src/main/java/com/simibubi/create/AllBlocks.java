@@ -370,7 +370,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simple.relays.BracketedKineticBlockModel"))
 		.simpleItem()
 		.register();
 
@@ -381,7 +381,7 @@ public class AllBlocks {
 		.transform(CStress.setNoImpact())
 		.transform(axeOrPickaxe())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simple.relays.BracketedKineticBlockModel"))
 		.item(CogwheelBlockItem::new)
 		.build()
 		.register();
@@ -394,7 +394,7 @@ public class AllBlocks {
 			.transform(axeOrPickaxe())
 			.transform(CStress.setNoImpact())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(BracketedKineticBlockModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.simple.relays.BracketedKineticBlockModel"))
 			.item(CogwheelBlockItem::new)
 			.build()
 			.register();
@@ -526,7 +526,7 @@ public class AllBlocks {
 		.defaultBlockstate()
 		.transform(CStress.setNoImpact())
 		.transform(displaySource(AllDisplaySources.ITEM_NAMES))
-		.onRegister(CreateRegistrate.blockModel(BeltModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.belt.BeltModel"))
 		.clientExtension(() -> () -> new BeltBlock.RenderProperties())
 		.register();
 
@@ -861,7 +861,7 @@ public class AllBlocks {
 		.properties(p -> p.forceSolidOff())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withoutAO"))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -876,7 +876,7 @@ public class AllBlocks {
 			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
 				(s, f) -> !s.getValue(EncasedPipeBlock.FACING_TO_PROPERTY_MAP.get(f)))))
-			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withAO))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withAO"))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.transform(EncasingRegistry.addVariantTo(AllBlocks.FLUID_PIPE))
 			.register();
@@ -888,7 +888,7 @@ public class AllBlocks {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withoutAO"))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.register();
 
@@ -897,7 +897,7 @@ public class AllBlocks {
 		.properties(p -> p.mapColor(MapColor.STONE))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withAO))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withAO"))
 		.transform(CStress.setImpact(4.0))
 		.item()
 		.transform(customItemModel())
@@ -909,7 +909,7 @@ public class AllBlocks {
 			.properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW))
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withoutAO))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withoutAO"))
 			.item()
 			.transform(customItemModel())
 			.register();
@@ -919,7 +919,7 @@ public class AllBlocks {
 		.transform(pickaxeOnly())
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(PipeAttachmentModel::withAO))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withAO"))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -951,7 +951,7 @@ public class AllBlocks {
 			.isRedstoneConductor((p1, p2, p3) -> true))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(FluidTankModel::standard))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.tank.FluidTankModel#standard"))
 		.transform(displaySource(AllDisplaySources.BOILER))
 		.transform(mountedFluidStorage(AllMountedStorageTypes.FLUID_TANK))
 		.onRegister(movementBehaviour(new FluidTankMovementBehavior()))
@@ -969,7 +969,7 @@ public class AllBlocks {
 			.transform(pickaxeOnly())
 			.tag(AllBlockTags.SAFE_NBT.tag)
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(FluidTankModel::creative))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.tank.FluidTankModel#creative"))
 			.transform(mountedFluidStorage(AllMountedStorageTypes.CREATIVE_FLUID_TANK))
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.item(FluidTankItem::new)
@@ -1540,7 +1540,7 @@ public class AllBlocks {
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.transform(pickaxeOnly())
 		.clientExtension(() -> () -> new TrackBlock.RenderProperties())
-		.onRegister(CreateRegistrate.blockModel(TrackModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.trains.track.TrackModel"))
 		.defaultBlockstate()
 		.tag(Tags.Blocks.RELOCATION_NOT_SUPPORTED)
 		.tag(AllBlockTags.TRACKS.tag)
@@ -1866,7 +1866,7 @@ public class AllBlocks {
 			.properties(p -> p.forceSolidOn())
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(FactoryPanelModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.kinetics.gauge.FactoryPanelModel"))
 			.transform(displaySource(AllDisplaySources.GAUGE_STATUS))
 			.item(FactoryPanelBlockItem::new)
 			.model(() -> AssetLookup::customItemModel)
@@ -2220,7 +2220,7 @@ public class AllBlocks {
 			.sound(SoundType.NETHERITE_BLOCK))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(ConnectedGirderModel::new))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.decoration.girder.ConnectedGirderModel"))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -2236,7 +2236,7 @@ public class AllBlocks {
 				.withPool(p.applyExplosionCondition(SHAFT.get(), LootPool.lootPool()
 					.setRolls(ConstantValue.exactly(1.0F))
 					.add(LootItem.lootTableItem(SHAFT.get()))))))
-			.onRegister(CreateRegistrate.blockModel(ConnectedGirderModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.decoration.girder.ConnectedGirderModel"))
 			.register();
 
 	public static final BlockEntry<Block> COPYCAT_BASE = REGISTRATE.block("copycat_base", Block::new)
@@ -2252,7 +2252,7 @@ public class AllBlocks {
 		REGISTRATE.block("copycat_step", CopycatStepBlock::new)
 			.properties(p -> p.forceSolidOn())
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(CopycatStepModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.decoration.copycat.CopycatStepModel"))
 			.item()
 			.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(CommonMetal.ZINC.ingots),
 				RecipeCategory.BUILDING_BLOCKS, c::get, 4))
@@ -2262,7 +2262,7 @@ public class AllBlocks {
 	public static final BlockEntry<CopycatPanelBlock> COPYCAT_PANEL =
 		REGISTRATE.block("copycat_panel", CopycatPanelBlock::new)
 			.transform(BuilderTransformers.copycat())
-			.onRegister(CreateRegistrate.blockModel(CopycatPanelModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.decoration.copycat.CopycatPanelModel"))
 			.item()
 			.recipe((c, p) -> p.stonecutting(com.simibubi.create.foundation.data.recipe.DataIngredientCompat.tag(CommonMetal.ZINC.ingots),
 				RecipeCategory.BUILDING_BLOCKS, c::get, 4))
@@ -2272,7 +2272,7 @@ public class AllBlocks {
 	public static final BlockEntry<WrenchableDirectionalBlock> COPYCAT_BARS =
 		REGISTRATE.block("copycat_bars", WrenchableDirectionalBlock::new)
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(CopycatBarsModel::new))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.decoration.copycat.CopycatBarsModel"))
 			.register();
 
 	public static final DyedBlockList<SeatBlock> SEATS = new DyedBlockList<>(colour -> {
