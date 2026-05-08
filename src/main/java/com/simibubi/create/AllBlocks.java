@@ -861,7 +861,7 @@ public class AllBlocks {
 		.properties(p -> p.forceSolidOff())
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withoutAO"))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.PipeAttachmentModel#withoutAO"))
 		.item()
 		.transform(customItemModel())
 		.register();
@@ -876,7 +876,7 @@ public class AllBlocks {
 			.onRegister(CreateRegistrate.connectedTextures(() -> new EncasedCTBehaviour(AllSpriteShifts.COPPER_CASING)))
 			.onRegister(CreateRegistrate.casingConnectivity((block, cc) -> cc.make(block, AllSpriteShifts.COPPER_CASING,
 				(s, f) -> !s.getValue(EncasedPipeBlock.FACING_TO_PROPERTY_MAP.get(f)))))
-			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withAO"))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.PipeAttachmentModel#withAO"))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.transform(EncasingRegistry.addVariantTo(AllBlocks.FLUID_PIPE))
 			.register();
@@ -888,7 +888,7 @@ public class AllBlocks {
 			.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withoutAO"))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.PipeAttachmentModel#withoutAO"))
 			.loot((p, b) -> p.dropOther(b, FLUID_PIPE.get()))
 			.register();
 
@@ -897,7 +897,7 @@ public class AllBlocks {
 		.properties(p -> p.mapColor(MapColor.STONE))
 		.transform(pickaxeOnly())
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withAO"))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.PipeAttachmentModel#withAO"))
 		.transform(CStress.setImpact(4.0))
 		.item()
 		.transform(customItemModel())
@@ -909,7 +909,7 @@ public class AllBlocks {
 			.properties(p -> p.mapColor(MapColor.TERRACOTTA_YELLOW))
 			.transform(pickaxeOnly())
 			.defaultBlockstate()
-			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withoutAO"))
+			.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.PipeAttachmentModel#withoutAO"))
 			.item()
 			.transform(customItemModel())
 			.register();
@@ -919,7 +919,7 @@ public class AllBlocks {
 		.transform(pickaxeOnly())
 		.addLayer(() -> () -> net.minecraft.client.renderer.chunk.ChunkSectionLayer.CUTOUT_MIPPED)
 		.defaultBlockstate()
-		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.pipes.PipeAttachmentModel#withAO"))
+		.onRegister(CreateRegistrate.blockModel(() -> "com.simibubi.create.content.fluids.PipeAttachmentModel#withAO"))
 		.item()
 		.transform(customItemModel())
 		.register();
