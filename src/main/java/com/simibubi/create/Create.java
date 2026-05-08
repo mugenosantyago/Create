@@ -88,12 +88,19 @@ public class Create {
 	 * </br
 	 * If you were using this instance to register a callback listener use {@link CreateRegistrateRegistrationCallback#register} instead.
 	 */
-	private static final CreateRegistrate REGISTRATE = CreateRegistrate.create(ID)
-		.defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
-		.setTooltipModifierFactory(item ->
-			new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
-				.andThen(TooltipModifier.mapNull(KineticStats.create(item)))
-		);
+	private static CreateRegistrate REGISTRATE;
+
+	private static CreateRegistrate getRegistrate() {
+		if (REGISTRATE == null) {
+			REGISTRATE = CreateRegistrate.create(ID)
+				.defaultCreativeTab((ResourceKey<CreativeModeTab>) null)
+				.setTooltipModifierFactory(item ->
+					new ItemDescription.Modifier(item, FontHelper.Palette.STANDARD_CREATE)
+						.andThen(TooltipModifier.mapNull(KineticStats.create(item)))
+				);
+		}
+		return REGISTRATE;
+	}
 
 	public static final ServerSchematicLoader SCHEMATIC_RECEIVER = new ServerSchematicLoader();
 	public static final RedstoneLinkNetworkHandler REDSTONE_LINK_NETWORK_HANDLER = new RedstoneLinkNetworkHandler();
