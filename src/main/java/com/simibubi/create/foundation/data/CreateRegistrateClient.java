@@ -36,14 +36,27 @@ public class CreateRegistrateClient {
 				};
 			} else {
 				// Handle static method reference
-				Method method = factoryClass.getMethod(methodName);
-				Object factoryObj = method.invoke(null);
-				
-				if (factoryObj == null) {
-					throw new RuntimeException("Factory method returned null in " + className + "." + methodName);
+				try {
+					// Try no-arg method first (returns a Function)
+					Method method = factoryClass.getMethod(methodName);
+					Object factoryObj = method.invoke(null);
+					
+					if (factoryObj == null) {
+						throw new RuntimeException("Factory method returned null in " + className + "." + methodName);
+					}
+					
+					factory = (Function<BlockStateModel, BlockStateModel>) factoryObj;
+				} catch (NoSuchMethodException e) {
+					// Try method with BlockStateModel parameter (factory method)
+					final Method method = factoryClass.getMethod(methodName, BlockStateModel.class);
+					factory = model -> {
+						try {
+							return (BlockStateModel) method.invoke(null, model);
+						} catch (Exception ex) {
+							throw new RuntimeException("Failed to call factory method " + className + "." + methodName, ex);
+						}
+					};
 				}
-				
-				factory = (Function<BlockStateModel, BlockStateModel>) factoryObj;
 			}
 			
 			CreateClient.MODEL_SWAPPER.getCustomBlockModels()
