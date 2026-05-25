@@ -5,16 +5,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.createmod.catnip.gui.AbstractSimiScreen;
+import net.createmod.catnip.gui.NavigatableSimiScreen;
 import net.createmod.ponder.client.BlurFlag;
 import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * MC 1.21.8: renderBlurredBackground can only be called once per frame.
- * AbstractSimiScreen.renderWindowBackground calls Screen.renderBackground which applies blur.
+ * NavigatableSimiScreen.renderWindowBackground calls renderBackground which applies blur.
  * This mixin prevents duplicate blur calls by setting a flag when inside renderWindowBackground.
+ * NOTE: Must target NavigatableSimiScreen (not AbstractSimiScreen) because NavigatableSimiScreen
+ * overrides renderWindowBackground without calling super, so AbstractSimiScreen injections never fire.
  */
-@Mixin(AbstractSimiScreen.class)
+@Mixin(NavigatableSimiScreen.class)
 public class NavigatableSimiScreenMixin {
 
 	@Inject(method = "renderWindowBackground", at = @At("HEAD"))
