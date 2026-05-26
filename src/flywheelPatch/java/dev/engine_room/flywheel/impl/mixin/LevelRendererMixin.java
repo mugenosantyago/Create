@@ -53,9 +53,15 @@ abstract class LevelRendererMixin {
 	@Nullable
 	private RenderContextImpl flywheel$renderContext;
 
+	@Unique
+	private static int flywheel$debugCounter = 0;
+
 	@Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/lighting/LevelLightEngine;runLightUpdates()I", shift = At.Shift.AFTER), require = 0)
 	private void flywheel$beginRender(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, Matrix4f modelMatrix, Matrix4f projectionMatrix, GpuBufferSlice gpuBufferSlice, Vector4f fogRedGreenBlue, boolean isSkyDark, CallbackInfo ci) {
 		flywheel$renderContext = RenderContextImpl.create((LevelRenderer) (Object) this, level, renderBuffers, modelMatrix, projectionMatrix, camera, deltaTracker.getGameTimeDeltaPartialTick(false));
+		if (flywheel$debugCounter < 3) {
+			System.out.println("[Flywheel-DEBUG] beginRender fired, context=" + flywheel$renderContext);
+		}
 
 		VisualizationManager manager = VisualizationManager.get(level);
 		if (manager != null) {
@@ -77,6 +83,10 @@ abstract class LevelRendererMixin {
 
 	@Inject(method = "renderBlockEntities", at = @At("HEAD"), require = 0)
 	private void flywheel$beforeBlockEntities(CallbackInfo ci) {
+		if (flywheel$debugCounter < 3) {
+			System.out.println("[Flywheel-DEBUG] beforeBlockEntities fired, context=" + flywheel$renderContext);
+			flywheel$debugCounter++;
+		}
 		if (flywheel$renderContext != null) {
 			VisualizationManager manager = VisualizationManager.get(level);
 			if (manager != null) {
